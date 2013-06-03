@@ -1,0 +1,25 @@
+#!/bin/bash
+
+set -e
+set -x
+
+VERSION=2012-01-11
+INSTALL_DIR=$APPLICATION_DIR/gmap-gsnap-$VERSION
+if [ -e $INSTALL_DIR ]; then
+    rm -fr $INSTALL_DIR
+fi
+DIST_DIR=$INSTALL_DIR/dist
+mkdir -p $DIST_DIR
+pushd $DIST_DIR
+
+wget -q -O gmap-gsnap-$VERSION.tar.gz http://research-pub.gene.com/gmap/src/gmap-gsnap-$VERSION.tar.gz
+tar -xzf gmap-gsnap-$VERSION.tar.gz
+cd gmap-$VERSION
+./configure \
+--disable-wall \
+--prefix=$INSTALL_DIR
+make
+make install
+popd
+
+

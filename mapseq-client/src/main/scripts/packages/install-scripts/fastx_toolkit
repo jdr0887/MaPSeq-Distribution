@@ -1,0 +1,26 @@
+#!/bin/bash
+
+set -e
+set -x
+
+VERSION=0.0.13
+INSTALL_DIR=$APPLICATION_DIR/fastx_toolkit-$VERSION
+
+if [ -e $INSTALL_DIR ]; then
+    rm -fr $INSTALL_DIR
+fi
+DIST_DIR=$INSTALL_DIR/dist
+mkdir -p $DIST_DIR
+pushd $DIST_DIR
+
+wget -q -O fastx_toolkit-$VERSION.tar.bz2 http://hannonlab.cshl.edu/fastx_toolkit/fastx_toolkit-$VERSION.tar.bz2
+tar -xjf fastx_toolkit-$VERSION.tar.bz2 
+cd fastx_toolkit-$VERSION
+./configure \
+--disable-wall \
+--prefix=$INSTALL_DIR \
+GTEXTUTILS_CFLAGS="-I$INSTALL_DIR/../libgtextutils-0.6/include/gtextutils" \
+GTEXTUTILS_LIBS="-L$INSTALL_DIR/../libgtextutils-0.6/lib -lgtextutils"
+make
+make install
+popd

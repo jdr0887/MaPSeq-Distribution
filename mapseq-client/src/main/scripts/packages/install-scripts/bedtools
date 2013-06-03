@@ -1,0 +1,25 @@
+#!/bin/bash
+
+set -e
+set -x
+
+VERSION=2.16.1
+INSTALL_DIR=$APPLICATION_DIR/bedtools-$VERSION
+if [ -e $INSTALL_DIR ]; then
+    rm -fr $INSTALL_DIR
+fi
+DIST_DIR=$INSTALL_DIR/dist
+mkdir -p $DIST_DIR
+pushd $DIST_DIR
+
+wget -q -O BEDTools.v$VERSION.tar.gz http://bedtools.googlecode.com/files/BEDTools.v$VERSION.tar.gz
+tar -xzf BEDTools.v$VERSION.tar.gz
+cd BEDTools-Version-$VERSION
+make
+mkdir $INSTALL_DIR/bin
+cp ./bin/* $INSTALL_DIR/bin/
+popd
+
+
+
+

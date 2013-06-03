@@ -1,0 +1,25 @@
+#!/bin/bash
+
+set -e
+set -x
+
+VERSION=0.6.1
+INSTALL_DIR=$APPLICATION_DIR/bwa-$VERSION
+if [ -e $INSTALL_DIR ]; then
+    rm -fr $INSTALL_DIR
+fi
+DIST_DIR=$INSTALL_DIR/dist
+mkdir -p $DIST_DIR
+pushd $DIST_DIR
+wget -q -O bwa-$VERSION.tar.bz2 http://iweb.dl.sourceforge.net/project/bio-bwa/bwa-$VERSION.tar.bz2
+tar -xjf bwa-$VERSION.tar.bz2
+cd bwa-$VERSION
+make
+mkdir $INSTALL_DIR/bin
+cp bwa $INSTALL_DIR/bin
+popd
+
+
+
+
+

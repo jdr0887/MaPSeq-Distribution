@@ -1,0 +1,24 @@
+#!/bin/bash
+
+set -e
+set -x
+
+VERSION=0.12.7
+INSTALL_DIR=$APPLICATION_DIR/bowtie-$VERSION
+if [ -e $INSTALL_DIR ]; then
+    rm -fr $INSTALL_DIR
+fi
+DIST_DIR=$INSTALL_DIR/dist
+mkdir -p $DIST_DIR
+pushd $DIST_DIR
+wget -q -O bowtie-$VERSION.zip http://iweb.dl.sourceforge.net/project/bowtie-bio/bowtie/$VERSION/bowtie-$VERSION-src.zip
+unzip bowtie-$VERSION.zip
+cd bowtie-$VERSION
+make
+mkdir $INSTALL_DIR/bin
+cp bowtie $INSTALL_DIR/bin
+popd
+
+
+
+

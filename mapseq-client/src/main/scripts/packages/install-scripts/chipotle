@@ -1,0 +1,27 @@
+#!/bin/bash
+
+set -e
+set -x
+
+VERSION=2.0
+INSTALL_DIR=$APPLICATION_DIR/chipotle-$VERSION
+if [ -e $INSTALL_DIR ]; then
+    rm -fr $INSTALL_DIR
+fi
+DIST_DIR=$INSTALL_DIR/dist
+mkdir -p $DIST_DIR
+pushd $DIST_DIR
+
+wget -q -O Linux-Unix-Mac-chipotle$VERSION.zip http://iweb.dl.sourceforge.net/project/chipotle-2/chipotle-2/ChIPOTle$VERSION/Linux-Unix-Mac-chipotle$VERSION.zip
+unzip Linux-Unix-Mac-chipotle$VERSION.zip
+cd chipotle_lite_binary
+cat analysis.h | sed 's/#include <string>/#include <cstring>/g' > analysis.h.tmp
+mv analysis.h.tmp analysis.h
+make
+mkdir $INSTALL_DIR/bin
+cp chipotle $INSTALL_DIR/bin
+popd
+
+
+
+

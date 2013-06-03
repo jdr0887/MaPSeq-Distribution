@@ -1,0 +1,25 @@
+#!/bin/bash
+
+set -e
+set -x
+
+VERSION=1.12.5
+INSTALL_DIR=$APPLICATION_DIR/staden-io_lib-$VERSION
+if [ -e $INSTALL_DIR ]; then
+    rm -fr $INSTALL_DIR
+fi
+DIST_DIR=$INSTALL_DIR/dist
+mkdir -p $DIST_DIR
+pushd $DIST_DIR
+
+wget -q -O staden-io_lib-$VERSION.tar.gz http://iweb.dl.sourceforge.net/project/staden/io_lib/$VERSION/io_lib-$VERSION.tar.gz
+tar -xzf staden-io_lib-$VERSION.tar.gz
+cd io_lib-$VERSION
+./configure \
+--disable-wall \
+--prefix=$INSTALL_DIR
+make
+make install
+popd
+
+

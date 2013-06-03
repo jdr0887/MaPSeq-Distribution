@@ -1,0 +1,11 @@
+gatk
+bedtools
+libgtextutils
+fastx_toolkit
+samtools
+bwa
+staden-io_lib
+bowtie
+gmap-gsnap
+mapsplice
+chipotle

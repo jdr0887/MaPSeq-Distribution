@@ -1,0 +1,23 @@
+#!/bin/bash
+
+set -e
+set -x
+
+VERSION=1.5-16-g58245bf
+INSTALL_DIR=$APPLICATION_DIR/gatk-$VERSION
+if [ -e $INSTALL_DIR ]; then
+    rm -fr $INSTALL_DIR
+fi
+DIST_DIR=$INSTALL_DIR/dist
+mkdir -p $DIST_DIR
+pushd $DIST_DIR
+
+wget -q -O GenomeAnalysisTK-$VERSION.tar.bz2 ftp://ftp.broadinstitute.org/pub/gsa/GenomeAnalysisTK/GenomeAnalysisTK-$VERSION.tar.bz2
+bunzip2 GenomeAnalysisTK-$VERSION.tar.bz2
+tar -xf GenomeAnalysisTK-$VERSION.tar
+mv GenomeAnalysisTK-$VERSION/*.jar $INSTALL_DIR/
+popd
+
+
+
+

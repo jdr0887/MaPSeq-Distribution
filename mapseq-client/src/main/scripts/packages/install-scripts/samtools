@@ -1,0 +1,29 @@
+#!/bin/bash
+
+set -e
+set -x
+
+VERSION=0.1.18
+INSTALL_DIR=$APPLICATION_DIR/samtools-$VERSION
+if [ -e $INSTALL_DIR ]; then
+    rm -fr $INSTALL_DIR
+fi
+DIST_DIR=$INSTALL_DIR/dist
+mkdir -p $DIST_DIR
+pushd $DIST_DIR
+wget -q -O samtools-$VERSION.tar.bz2 http://iweb.dl.sourceforge.net/project/samtools/samtools/$VERSION/samtools-$VERSION.tar.bz2
+tar -xjf samtools-$VERSION.tar.bz2
+cd samtools-$VERSION
+make
+mkdir $INSTALL_DIR/bin
+cp samtools $INSTALL_DIR/bin
+cp bcftools/bcftools $INSTALL_DIR/bin
+cp misc/maq2sam-long $INSTALL_DIR/bin
+cp misc/maq2sam-short $INSTALL_DIR/bin
+cp misc/md5sum-lite $INSTALL_DIR/bin
+cp misc/seqtk $INSTALL_DIR/bin
+cp misc/wgsim $INSTALL_DIR/bin
+
+popd
+
+

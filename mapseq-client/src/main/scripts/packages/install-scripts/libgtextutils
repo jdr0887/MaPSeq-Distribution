@@ -1,0 +1,23 @@
+#!/bin/bash
+
+set -e
+set -x
+
+VERSION=0.6
+INSTALL_DIR=$APPLICATION_DIR/libgtextutils-$VERSION
+if [ -e $INSTALL_DIR ]; then
+    rm -fr $INSTALL_DIR
+fi
+DIST_DIR=$INSTALL_DIR/dist
+mkdir -p $DIST_DIR
+pushd $DIST_DIR
+
+wget -q -O libgtextutils-$VERSION.tar.bz2 http://hannonlab.cshl.edu/fastx_toolkit/libgtextutils-$VERSION.tar.bz2
+tar -xjf libgtextutils-$VERSION.tar.bz2
+cd libgtextutils-$VERSION
+./configure \
+--disable-wall \
+--prefix=$INSTALL_DIR
+make
+make install
+popd

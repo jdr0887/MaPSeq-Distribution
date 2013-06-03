@@ -1,0 +1,29 @@
+#!/bin/bash
+
+set -e
+set -x
+
+VERSION=1.15.2
+INSTALL_DIR=$APPLICATION_DIR/MapSplice-$VERSION
+if [ -e $INSTALL_DIR ]; then
+    rm -fr $INSTALL_DIR
+fi
+DIST_DIR=$INSTALL_DIR/dist
+mkdir -p $DIST_DIR
+pushd $DIST_DIR
+wget -q -O MapSplice_$VERSION.tar.gz http://protocols.netlab.uky.edu/~kai/downloads/MapSplice_$VERSION.tar.gz
+tar -xzf MapSplice_$VERSION.tar.gz
+cd MapSplice_$VERSION
+make
+mkdir $INSTALL_DIR/bin
+for i in `find ./bin -perm 755 -type f`; do 
+    cp $i $INSTALL_DIR/bin    
+done
+for i in `find ./bin -perm 775 -type f`; do 
+    cp $i $INSTALL_DIR/bin    
+done
+popd
+
+
+
+
