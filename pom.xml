@@ -51,7 +51,7 @@
   <modules>
     <module>mapseq-commands</module>
     <module>mapseq-features</module>
-    <module>mapseq-server</module>
+    <!-- <module>mapseq-server</module> -->
     <module>mapseq-client</module>
   </modules>
 </project>
