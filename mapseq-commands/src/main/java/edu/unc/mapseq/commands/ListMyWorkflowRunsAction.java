@@ -11,6 +11,7 @@ import java.util.Locale;
 
 import org.apache.felix.gogo.commands.Argument;
 import org.apache.felix.gogo.commands.Command;
+import org.apache.felix.gogo.commands.Option;
 import org.apache.karaf.shell.console.AbstractAction;
 
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
@@ -22,100 +23,157 @@ import edu.unc.mapseq.dao.model.WorkflowRun;
 @Command(scope = "mapseq", name = "list-my-workflow-runs", description = "List my WorkflowRun instances")
 public class ListMyWorkflowRunsAction extends AbstractAction {
 
-    @Argument(index = 0, name = "workflowId", description = "Workflow identifier", required = false, multiValued = false)
-    private Long workflowId;
+	@Argument(index = 0, name = "workflowId", description = "Workflow identifier", required = false, multiValued = false)
+	private Long workflowId;
 
-    private MaPSeqDAOBean mapseqDAOBean;
+	@Option(name = "-l", description = "long format", required = false, multiValued = false)
+	private Boolean longFormat;
 
-    public ListMyWorkflowRunsAction() {
-        super();
-    }
+	private MaPSeqDAOBean mapseqDAOBean;
 
-    @Override
-    public Object doExecute() {
+	public ListMyWorkflowRunsAction() {
+		super();
+	}
 
-        Account account = null;
-        try {
-            account = mapseqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
-        } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
-        }
+	@Override
+	public Object doExecute() {
 
-        if (account == null) {
-            System.err.println("No account found");
-            return null;
-        }
+		Account account = null;
+		try {
+			account = mapseqDAOBean.getAccountDAO().findByName(
+					System.getProperty("user.name"));
+		} catch (MaPSeqDAOException e) {
+			e.printStackTrace();
+		}
 
-        List<WorkflowRun> workflowRunList = new ArrayList<WorkflowRun>();
-        WorkflowRunDAO workflowRunDAO = mapseqDAOBean.getWorkflowRunDAO();
-        try {
-            if (workflowId != null) {
-                workflowRunList.addAll(workflowRunDAO.findByWorkflowId(workflowId));
-            } else {
-                workflowRunList.addAll(workflowRunDAO.findByCreator(account.getId()));
-            }
-        } catch (MaPSeqDAOException e) {
-        }
-        try {
-            if (workflowRunList != null && workflowRunList.size() > 0) {
-                StringBuilder sb = new StringBuilder();
-                Formatter formatter = new Formatter(sb, Locale.US);
-                formatter.format("%1$-8s %2$-25s %3$-54s %4$-18s %5$-18s %6$-18s %7$s%n", "ID", "Workflow Name",
-                        "Workflow Run Name", "Created Date", "Start Date", "End Date", "Status");
+		if (account == null) {
+			System.err.println("No account found");
+			return null;
+		}
 
-                Collections.sort(workflowRunList, new Comparator<WorkflowRun>() {
-                    @Override
-                    public int compare(WorkflowRun wr1, WorkflowRun wr2) {
-                        return wr1.getId().compareTo(wr2.getId());
-                    }
-                });
+		List<WorkflowRun> workflowRunList = new ArrayList<WorkflowRun>();
+		WorkflowRunDAO workflowRunDAO = mapseqDAOBean.getWorkflowRunDAO();
+		try {
+			if (workflowId != null) {
+				workflowRunList.addAll(workflowRunDAO
+						.findByWorkflowId(workflowId));
+			} else {
+				workflowRunList.addAll(workflowRunDAO.findByCreator(account
+						.getId()));
+			}
+		} catch (MaPSeqDAOException e) {
+		}
+		try {
+			if (workflowRunList != null && workflowRunList.size() > 0) {
+				StringBuilder sb = new StringBuilder();
+				Formatter formatter = new Formatter(sb, Locale.US);
+				if (longFormat != null && longFormat) {
+					formatter
+							.format("%1$-8s %2$-25s %3$-54s %4$-18s %5$-18s %6$-18s %7$-18s %8$-18s %9$s%n",
+									"ID", "Workflow Name", "Workflow Run Name",
+									"Created Date", "Start Date", "End Date",
+									"Status", "Submit Directory",
+									"Condor DAG ClusterId");
+				} else {
+					formatter
+							.format("%1$-8s %2$-25s %3$-54s %4$-18s %5$-18s %6$-18s %7$s%n",
+									"ID", "Workflow Name", "Workflow Run Name",
+									"Created Date", "Start Date", "End Date",
+									"Status");
+				}
 
-                for (WorkflowRun workflowRun : workflowRunList) {
+				Collections.sort(workflowRunList,
+						new Comparator<WorkflowRun>() {
+							@Override
+							public int compare(WorkflowRun wr1, WorkflowRun wr2) {
+								return wr1.getId().compareTo(wr2.getId());
+							}
+						});
 
-                    if (!account.equals(workflowRun.getCreator())) {
-                        continue;
-                    }
+				for (WorkflowRun workflowRun : workflowRunList) {
 
-                    Date createdDate = workflowRun.getCreationDate();
-                    String formattedCreatedDate = "";
-                    if (createdDate != null) {
-                        formattedCreatedDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(
-                                createdDate);
-                    }
-                    Date startDate = workflowRun.getStartDate();
-                    String formattedStartDate = "";
-                    if (startDate != null) {
-                        formattedStartDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(
-                                startDate);
-                    }
-                    Date endDate = workflowRun.getEndDate();
-                    String formattedEndDate = "";
-                    if (endDate != null) {
-                        formattedEndDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(
-                                endDate);
-                    }
-                    formatter.format("%1$-8s %2$-25s %3$-54s %4$-18s %5$-18s %6$-18s %7$s%n", workflowRun.getId(),
-                            workflowRun.getWorkflow().getName(), workflowRun.getName(), formattedCreatedDate,
-                            formattedStartDate, formattedEndDate, workflowRun.getStatus().getState());
-                    formatter.flush();
+					if (!account.equals(workflowRun.getCreator())) {
+						continue;
+					}
 
-                }
-                System.out.println(formatter.toString());
-                formatter.close();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+					Date createdDate = workflowRun.getCreationDate();
+					String formattedCreatedDate = "";
+					if (createdDate != null) {
+						formattedCreatedDate = DateFormat.getDateTimeInstance(
+								DateFormat.SHORT, DateFormat.SHORT).format(
+								createdDate);
+					}
+					Date startDate = workflowRun.getStartDate();
+					String formattedStartDate = "";
+					if (startDate != null) {
+						formattedStartDate = DateFormat.getDateTimeInstance(
+								DateFormat.SHORT, DateFormat.SHORT).format(
+								startDate);
+					}
+					Date endDate = workflowRun.getEndDate();
+					String formattedEndDate = "";
+					if (endDate != null) {
+						formattedEndDate = DateFormat.getDateTimeInstance(
+								DateFormat.SHORT, DateFormat.SHORT).format(
+								endDate);
+					}
+					if (longFormat != null && longFormat) {
+						formatter
+								.format("%1$-8s %2$-25s %3$-54s %4$-18s %5$-18s %6$-18s %7$-18s %8$-18s %9$s%n",
+										workflowRun.getId(), workflowRun
+												.getWorkflow().getName(),
+										workflowRun.getName(),
+										formattedCreatedDate,
+										formattedStartDate, formattedEndDate,
+										workflowRun.getStatus().getState(),
+										workflowRun.getSubmitDirectory(),
+										workflowRun.getCondorDAGClusterId());
+					} else {
+						formatter
+								.format("%1$-8s %2$-25s %3$-54s %4$-18s %5$-18s %6$-18s %7$s%n",
+										workflowRun.getId(), workflowRun
+												.getWorkflow().getName(),
+										workflowRun.getName(),
+										formattedCreatedDate,
+										formattedStartDate, formattedEndDate,
+										workflowRun.getStatus().getState());
 
-    }
+					}
+					formatter.flush();
 
-    public MaPSeqDAOBean getMapseqDAOBean() {
-        return mapseqDAOBean;
-    }
+				}
+				System.out.println(formatter.toString());
+				formatter.close();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 
-    public void setMapseqDAOBean(MaPSeqDAOBean mapseqDAOBean) {
-        this.mapseqDAOBean = mapseqDAOBean;
-    }
+	}
+
+	public MaPSeqDAOBean getMapseqDAOBean() {
+		return mapseqDAOBean;
+	}
+
+	public void setMapseqDAOBean(MaPSeqDAOBean mapseqDAOBean) {
+		this.mapseqDAOBean = mapseqDAOBean;
+	}
+
+	public Boolean getLongFormat() {
+		return longFormat;
+	}
+
+	public void setLongFormat(Boolean longFormat) {
+		this.longFormat = longFormat;
+	}
+
+	public Long getWorkflowId() {
+		return workflowId;
+	}
+
+	public void setWorkflowId(Long workflowId) {
+		this.workflowId = workflowId;
+	}
 
 }
