@@ -4,92 +4,92 @@
   <command-bundle xmlns="http://karaf.apache.org/xmlns/shell/v1.1.0">
     <command name="mapseq/synchronize-condor-with-workflow-run">
       <action class="edu.unc.mapseq.commands.SynchronizeCondorWithWorkflowRunAction">
-        <property name="mapseqDAOBean" ref="mapseqDAOBean" />
+        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
     <command name="mapseq/check-workflow-status">
       <action class="edu.unc.mapseq.commands.CheckWorkflowStatusAction">
-        <property name="mapseqDAOBean" ref="mapseqDAOBean" />
+        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
     <command name="mapseq/create-htsf-sample">
       <action class="edu.unc.mapseq.commands.CreateHTSFSampleAction">
-        <property name="mapseqDAOBean" ref="mapseqDAOBean" />
+        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
     <command name="mapseq/create-sequencer-run">
       <action class="edu.unc.mapseq.commands.CreateSequencerRunAction">
-        <property name="mapseqDAOBean" ref="mapseqDAOBean" />
+        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
     <command name="mapseq/reset-workflow-run">
       <action class="edu.unc.mapseq.commands.ResetWorkflowRunAction">
-        <property name="mapseqDAOBean" ref="mapseqDAOBean" />
+        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
     <command name="mapseq/create-sequencer-run-from-sample-sheet">
       <action class="edu.unc.mapseq.commands.CreateSequencerRunFromSampleSheetAction">
-        <property name="mapseqDAOBean" ref="mapseqDAOBean" />
+        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
     <command name="mapseq/create-study">
       <action class="edu.unc.mapseq.commands.CreateStudyAction">
-        <property name="mapseqDAOBean" ref="mapseqDAOBean" />
+        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
     <command name="mapseq/create-workflow">
       <action class="edu.unc.mapseq.commands.CreateWorkflowAction">
-        <property name="mapseqDAOBean" ref="mapseqDAOBean" />
+        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
     <command name="mapseq/delete-sequencer-run">
       <action class="edu.unc.mapseq.commands.DeleteSequencerRunAction">
-        <property name="mapseqDAOBean" ref="mapseqDAOBean" />
+        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
     <command name="mapseq/delete-workflow-run">
       <action class="edu.unc.mapseq.commands.DeleteWorkflowRunAction">
-        <property name="mapseqDAOBean" ref="mapseqDAOBean" />
+        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
     <command name="mapseq/list-htsf-samples">
       <action class="edu.unc.mapseq.commands.ListHTSFSamplesAction">
-        <property name="mapseqDAOBean" ref="mapseqDAOBean" />
+        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
     <command name="mapseq/list-htsf-sample-attributes">
       <action class="edu.unc.mapseq.commands.ListHTSFSampleAttributesAction">
-        <property name="mapseqDAOBean" ref="mapseqDAOBean" />
+        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
     <command name="mapseq/list-my-workflow-runs">
       <action class="edu.unc.mapseq.commands.ListMyWorkflowRunsAction">
-        <property name="mapseqDAOBean" ref="mapseqDAOBean" />
+        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
     <command name="mapseq/list-platforms">
       <action class="edu.unc.mapseq.commands.ListPlatformsAction">
-        <property name="mapseqDAOBean" ref="mapseqDAOBean" />
+        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
     <command name="mapseq/list-sequencer-runs">
       <action class="edu.unc.mapseq.commands.ListSequencerRunsAction">
-        <property name="mapseqDAOBean" ref="mapseqDAOBean" />
+        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
     <command name="mapseq/list-studies">
       <action class="edu.unc.mapseq.commands.ListStudiesAction">
-        <property name="mapseqDAOBean" ref="mapseqDAOBean" />
+        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
     <command name="mapseq/list-workflows">
       <action class="edu.unc.mapseq.commands.ListWorkflowsAction">
-        <property name="mapseqDAOBean" ref="mapseqDAOBean" />
+        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
   </command-bundle>
 
-  <reference id="mapseqConfigurationService" interface="edu.unc.mapseq.config.MaPSeqConfigurationService" />
+  <reference id="maPSeqConfigurationService" interface="edu.unc.mapseq.config.MaPSeqConfigurationService" />
   <reference id="accountDAO" interface="edu.unc.mapseq.dao.AccountDAO" />
   <reference id="accountGroupDAO" interface="edu.unc.mapseq.dao.AccountGroupDAO" />
   <reference id="fileDataDAO" interface="edu.unc.mapseq.dao.FileDataDAO" />
@@ -102,7 +102,7 @@
   <reference id="workflowPlanDAO" interface="edu.unc.mapseq.dao.WorkflowPlanDAO" />
   <reference id="workflowRunDAO" interface="edu.unc.mapseq.dao.WorkflowRunDAO" />
 
-  <bean id="mapseqDAOBean" class="edu.unc.mapseq.dao.MaPSeqDAOBean">
+  <bean id="maPSeqDAOBean" class="edu.unc.mapseq.dao.MaPSeqDAOBean">
     <property name="accountDAO" ref="accountDAO" />
     <property name="accountGroupDAO" ref="accountGroupDAO" />
     <property name="fileDataDAO" ref="fileDataDAO" />
