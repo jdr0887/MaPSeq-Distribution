@@ -18,13 +18,13 @@ import edu.unc.mapseq.dao.model.SequencerRun;
 @Command(scope = "mapseq", name = "list-sequencer-runs", description = "List SequencerRuns")
 public class ListSequencerRunsAction extends AbstractAction {
 
-    private MaPSeqDAOBean mapseqDAOBean;
+    private MaPSeqDAOBean maPSeqDAOBean;
 
     @Override
     protected Object doExecute() throws Exception {
 
         List<SequencerRun> srList = new ArrayList<SequencerRun>();
-        SequencerRunDAO sequencerRunDAO = mapseqDAOBean.getSequencerRunDAO();
+        SequencerRunDAO sequencerRunDAO = maPSeqDAOBean.getSequencerRunDAO();
         try {
             srList.addAll(sequencerRunDAO.findAll());
         } catch (Exception e) {
@@ -59,12 +59,12 @@ public class ListSequencerRunsAction extends AbstractAction {
         return null;
     }
 
-    public MaPSeqDAOBean getMapseqDAOBean() {
-        return mapseqDAOBean;
+    public MaPSeqDAOBean getMaPSeqDAOBean() {
+        return maPSeqDAOBean;
     }
 
-    public void setMapseqDAOBean(MaPSeqDAOBean mapseqDAOBean) {
-        this.mapseqDAOBean = mapseqDAOBean;
+    public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
+        this.maPSeqDAOBean = maPSeqDAOBean;
     }
 
 }

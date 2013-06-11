@@ -17,7 +17,7 @@ import edu.unc.mapseq.dao.model.HTSFSample;
 @Command(scope = "mapseq", name = "list-htsf-sample-attributes", description = "List HTSFSample Attributes")
 public class ListHTSFSampleAttributesAction extends AbstractAction {
 
-    private MaPSeqDAOBean mapseqDAOBean;
+    private MaPSeqDAOBean maPSeqDAOBean;
 
     @Argument(index = 0, name = "htsfSampleId", description = "HTSFSample Identifier", required = true, multiValued = false)
     private Long htsfSampleId;
@@ -29,7 +29,7 @@ public class ListHTSFSampleAttributesAction extends AbstractAction {
     @Override
     public Object doExecute() {
 
-        HTSFSampleDAO htsfSampleDAO = mapseqDAOBean.getHTSFSampleDAO();
+        HTSFSampleDAO htsfSampleDAO = maPSeqDAOBean.getHTSFSampleDAO();
         HTSFSample entity = null;
         try {
             entity = htsfSampleDAO.findById(htsfSampleId);
@@ -58,12 +58,12 @@ public class ListHTSFSampleAttributesAction extends AbstractAction {
         return null;
     }
 
-    public MaPSeqDAOBean getMapseqDAOBean() {
-        return mapseqDAOBean;
+    public MaPSeqDAOBean getMaPSeqDAOBean() {
+        return maPSeqDAOBean;
     }
 
-    public void setMapseqDAOBean(MaPSeqDAOBean mapseqDAOBean) {
-        this.mapseqDAOBean = mapseqDAOBean;
+    public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
+        this.maPSeqDAOBean = maPSeqDAOBean;
     }
 
     public Long getHtsfSampleId() {

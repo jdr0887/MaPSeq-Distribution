@@ -13,7 +13,7 @@ import edu.unc.mapseq.dao.model.Workflow;
 @Command(scope = "mapseq", name = "create-workflow", description = "Create Workflow")
 public class CreateWorkflowAction extends AbstractAction {
 
-    private MaPSeqDAOBean mapseqDAOBean;
+    private MaPSeqDAOBean maPSeqDAOBean;
 
     @Argument(index = 0, name = "name", description = "Name", required = true, multiValued = false)
     private String name;
@@ -29,9 +29,9 @@ public class CreateWorkflowAction extends AbstractAction {
             Workflow workflow = new Workflow();
             workflow.setCreationDate(d);
             workflow.setModificationDate(d);
-            workflow.setCreator(mapseqDAOBean.getAccountDAO().findByName(System.getProperty("user.name")));
+            workflow.setCreator(maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name")));
             workflow.setName(name);
-            Long workflowId = mapseqDAOBean.getWorkflowDAO().save(workflow);
+            Long workflowId = maPSeqDAOBean.getWorkflowDAO().save(workflow);
             return workflowId;
         } catch (MaPSeqDAOException e1) {
             e1.printStackTrace();
@@ -39,12 +39,20 @@ public class CreateWorkflowAction extends AbstractAction {
         return null;
     }
 
-    public MaPSeqDAOBean getMapseqDAOBean() {
-        return mapseqDAOBean;
+    public MaPSeqDAOBean getMaPSeqDAOBean() {
+        return maPSeqDAOBean;
     }
 
-    public void setMapseqDAOBean(MaPSeqDAOBean mapseqDAOBean) {
-        this.mapseqDAOBean = mapseqDAOBean;
+    public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
+        this.maPSeqDAOBean = maPSeqDAOBean;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
 }

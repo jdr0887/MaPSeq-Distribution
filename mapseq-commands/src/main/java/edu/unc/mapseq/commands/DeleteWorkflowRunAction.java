@@ -30,7 +30,7 @@ public class DeleteWorkflowRunAction extends AbstractAction {
 
     private final Logger logger = LoggerFactory.getLogger(DeleteWorkflowRunAction.class);
 
-    private MaPSeqDAOBean mapseqDAOBean;
+    private MaPSeqDAOBean maPSeqDAOBean;
 
     @Argument(index = 0, name = "workflowRunId", description = "Workflow Run Identifier", required = false, multiValued = true)
     private List<Long> workflowRunIdList;
@@ -60,9 +60,9 @@ public class DeleteWorkflowRunAction extends AbstractAction {
             }
         }
 
-        WorkflowRunDAO workflowRunDAO = mapseqDAOBean.getWorkflowRunDAO();
-        JobDAO jobDAO = mapseqDAOBean.getJobDAO();
-        WorkflowPlanDAO workflowPlanDAO = mapseqDAOBean.getWorkflowPlanDAO();
+        WorkflowRunDAO workflowRunDAO = maPSeqDAOBean.getWorkflowRunDAO();
+        JobDAO jobDAO = maPSeqDAOBean.getJobDAO();
+        WorkflowPlanDAO workflowPlanDAO = maPSeqDAOBean.getWorkflowPlanDAO();
 
         for (Long workflowRunId : wrIdList) {
             try {
@@ -104,12 +104,28 @@ public class DeleteWorkflowRunAction extends AbstractAction {
         return null;
     }
 
-    public MaPSeqDAOBean getMapseqDAOBean() {
-        return mapseqDAOBean;
+    public MaPSeqDAOBean getMaPSeqDAOBean() {
+        return maPSeqDAOBean;
     }
 
-    public void setMapseqDAOBean(MaPSeqDAOBean mapseqDAOBean) {
-        this.mapseqDAOBean = mapseqDAOBean;
+    public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
+        this.maPSeqDAOBean = maPSeqDAOBean;
+    }
+
+    public List<Long> getWorkflowRunIdList() {
+        return workflowRunIdList;
+    }
+
+    public void setWorkflowRunIdList(List<Long> workflowRunIdList) {
+        this.workflowRunIdList = workflowRunIdList;
+    }
+
+    public String getWorkflowRunIdRange() {
+        return workflowRunIdRange;
+    }
+
+    public void setWorkflowRunIdRange(String workflowRunIdRange) {
+        this.workflowRunIdRange = workflowRunIdRange;
     }
 
 }

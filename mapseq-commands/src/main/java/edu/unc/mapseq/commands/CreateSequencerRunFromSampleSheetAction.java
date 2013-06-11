@@ -27,7 +27,7 @@ import edu.unc.mapseq.dao.model.Study;
 @Command(scope = "mapseq", name = "create-sequencer-run-from-samplesheet", description = "Create SequencerRun from SampleSheet")
 public class CreateSequencerRunFromSampleSheetAction extends AbstractAction {
 
-    private MaPSeqDAOBean mapseqDAOBean;
+    private MaPSeqDAOBean maPSeqDAOBean;
 
     @Argument(index = 0, name = "platformId", description = "Platform Id", required = true, multiValued = false)
     private Long platformId;
@@ -51,7 +51,7 @@ public class CreateSequencerRunFromSampleSheetAction extends AbstractAction {
 
         Account account = null;
         try {
-            account = mapseqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
+            account = maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
         } catch (MaPSeqDAOException e) {
             e.printStackTrace();
         }
@@ -64,7 +64,7 @@ public class CreateSequencerRunFromSampleSheetAction extends AbstractAction {
         Date creationDate = new Date();
         Platform platform = null;
         try {
-            PlatformDAO platformDAO = mapseqDAOBean.getPlatformDAO();
+            PlatformDAO platformDAO = maPSeqDAOBean.getPlatformDAO();
             platform = platformDAO.findById(platformId);
         } catch (MaPSeqDAOException e) {
             e.printStackTrace();
@@ -80,7 +80,7 @@ public class CreateSequencerRunFromSampleSheetAction extends AbstractAction {
         sequencerRun.setPlatform(platform);
 
         try {
-            Long sequencerRunId = mapseqDAOBean.getSequencerRunDAO().save(sequencerRun);
+            Long sequencerRunId = maPSeqDAOBean.getSequencerRunDAO().save(sequencerRun);
             sequencerRun.setId(sequencerRunId);
         } catch (MaPSeqDAOException e1) {
             e1.printStackTrace();
@@ -107,7 +107,7 @@ public class CreateSequencerRunFromSampleSheetAction extends AbstractAction {
 
                 Study study = null;
                 try {
-                    study = mapseqDAOBean.getStudyDAO().findByName(sampleProject);
+                    study = maPSeqDAOBean.getStudyDAO().findByName(sampleProject);
                 } catch (Exception e) {
                     // swallow exceptions
                 }
@@ -117,7 +117,7 @@ public class CreateSequencerRunFromSampleSheetAction extends AbstractAction {
                     study.setModificationDate(creationDate);
                     study.setCreator(account);
                     study.setName(sampleProject);
-                    Long studyId = mapseqDAOBean.getStudyDAO().save(study);
+                    Long studyId = maPSeqDAOBean.getStudyDAO().save(study);
                     study.setId(studyId);
                 }
 
@@ -143,7 +143,7 @@ public class CreateSequencerRunFromSampleSheetAction extends AbstractAction {
                     attributes.add(descAttribute);
                     htsfSample.setAttributes(attributes);
 
-                    Long htsfSampleId = mapseqDAOBean.getHTSFSampleDAO().save(htsfSample);
+                    Long htsfSampleId = maPSeqDAOBean.getHTSFSampleDAO().save(htsfSample);
                     htsfSample.setId(htsfSampleId);
 
                 }
@@ -160,12 +160,44 @@ public class CreateSequencerRunFromSampleSheetAction extends AbstractAction {
         return null;
     }
 
-    public MaPSeqDAOBean getMapseqDAOBean() {
-        return mapseqDAOBean;
+    public MaPSeqDAOBean getMaPSeqDAOBean() {
+        return maPSeqDAOBean;
     }
 
-    public void setMapseqDAOBean(MaPSeqDAOBean mapseqDAOBean) {
-        this.mapseqDAOBean = mapseqDAOBean;
+    public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
+        this.maPSeqDAOBean = maPSeqDAOBean;
+    }
+
+    public Long getPlatformId() {
+        return platformId;
+    }
+
+    public void setPlatformId(Long platformId) {
+        this.platformId = platformId;
+    }
+
+    public String getBaseRunFolder() {
+        return baseRunFolder;
+    }
+
+    public void setBaseRunFolder(String baseRunFolder) {
+        this.baseRunFolder = baseRunFolder;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public File getSampleSheet() {
+        return sampleSheet;
+    }
+
+    public void setSampleSheet(File sampleSheet) {
+        this.sampleSheet = sampleSheet;
     }
 
 }

@@ -18,7 +18,7 @@ import edu.unc.mapseq.dao.model.SequencerRunStatusType;
 @Command(scope = "mapseq", name = "create-sequencer-run", description = "Create SequencerRun")
 public class CreateSequencerRunAction extends AbstractAction {
 
-    private MaPSeqDAOBean mapseqDAOBean;
+    private MaPSeqDAOBean maPSeqDAOBean;
 
     @Argument(index = 0, name = "Platform Identifier", description = "Platform Id", required = true, multiValued = false)
     private Long platformId;
@@ -41,7 +41,7 @@ public class CreateSequencerRunAction extends AbstractAction {
 
         Account account = null;
         try {
-            account = mapseqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
+            account = maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
         } catch (MaPSeqDAOException e) {
             e.printStackTrace();
         }
@@ -68,7 +68,7 @@ public class CreateSequencerRunAction extends AbstractAction {
             sequencerRun.setBaseDirectory(baseRunFolder);
             sequencerRun.setCreationDate(creationDate);
             sequencerRun.setModificationDate(creationDate);
-            sequencerRun.setPlatform(mapseqDAOBean.getPlatformDAO().findById(this.platformId));
+            sequencerRun.setPlatform(maPSeqDAOBean.getPlatformDAO().findById(this.platformId));
             try {
                 SequencerRunStatusType statusType = SequencerRunStatusType.valueOf(status);
                 sequencerRun.setStatus(statusType);
@@ -81,7 +81,7 @@ public class CreateSequencerRunAction extends AbstractAction {
                 System.err.println(sb.toString().replaceFirst(",", ""));
                 return null;
             }
-            SequencerRunDAO sequencerRunDAO = mapseqDAOBean.getSequencerRunDAO();
+            SequencerRunDAO sequencerRunDAO = maPSeqDAOBean.getSequencerRunDAO();
             Long sequencerRunId = sequencerRunDAO.save(sequencerRun);
             return sequencerRunId;
         } catch (MaPSeqDAOException e1) {
@@ -90,12 +90,44 @@ public class CreateSequencerRunAction extends AbstractAction {
         return null;
     }
 
-    public MaPSeqDAOBean getMapseqDAOBean() {
-        return mapseqDAOBean;
+    public MaPSeqDAOBean getMaPSeqDAOBean() {
+        return maPSeqDAOBean;
     }
 
-    public void setMapseqDAOBean(MaPSeqDAOBean mapseqDAOBean) {
-        this.mapseqDAOBean = mapseqDAOBean;
+    public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
+        this.maPSeqDAOBean = maPSeqDAOBean;
+    }
+
+    public Long getPlatformId() {
+        return platformId;
+    }
+
+    public void setPlatformId(Long platformId) {
+        this.platformId = platformId;
+    }
+
+    public String getBaseRunFolder() {
+        return baseRunFolder;
+    }
+
+    public void setBaseRunFolder(String baseRunFolder) {
+        this.baseRunFolder = baseRunFolder;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
 }

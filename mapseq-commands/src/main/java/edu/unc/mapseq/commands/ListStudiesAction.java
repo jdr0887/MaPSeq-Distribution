@@ -18,7 +18,7 @@ import edu.unc.mapseq.dao.model.Study;
 @Command(scope = "mapseq", name = "list-studies", description = "List Studies")
 public class ListStudiesAction extends AbstractAction {
 
-    private MaPSeqDAOBean mapseqDAOBean;
+    private MaPSeqDAOBean maPSeqDAOBean;
 
     public ListStudiesAction() {
         super();
@@ -28,7 +28,7 @@ public class ListStudiesAction extends AbstractAction {
     public Object doExecute() {
 
         List<Study> studyList = new ArrayList<Study>();
-        StudyDAO studyDAO = mapseqDAOBean.getStudyDAO();
+        StudyDAO studyDAO = maPSeqDAOBean.getStudyDAO();
 
         try {
             studyList.addAll(studyDAO.findAll());
@@ -61,12 +61,12 @@ public class ListStudiesAction extends AbstractAction {
         return null;
     }
 
-    public MaPSeqDAOBean getMapseqDAOBean() {
-        return mapseqDAOBean;
+    public MaPSeqDAOBean getMaPSeqDAOBean() {
+        return maPSeqDAOBean;
     }
 
-    public void setMapseqDAOBean(MaPSeqDAOBean mapseqDAOBean) {
-        this.mapseqDAOBean = mapseqDAOBean;
+    public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
+        this.maPSeqDAOBean = maPSeqDAOBean;
     }
 
 }

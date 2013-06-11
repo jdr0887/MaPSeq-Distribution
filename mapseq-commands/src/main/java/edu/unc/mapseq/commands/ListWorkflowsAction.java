@@ -17,7 +17,7 @@ import edu.unc.mapseq.dao.model.Workflow;
 @Command(scope = "mapseq", name = "list-workflows", description = "List Workflows")
 public class ListWorkflowsAction extends AbstractAction {
 
-    private MaPSeqDAOBean mapseqDAOBean;
+    private MaPSeqDAOBean maPSeqDAOBean;
 
     public ListWorkflowsAction() {
         super();
@@ -27,7 +27,7 @@ public class ListWorkflowsAction extends AbstractAction {
     public Object doExecute() {
 
         List<Workflow> workflowList = new ArrayList<Workflow>();
-        WorkflowDAO workflowDAO = mapseqDAOBean.getWorkflowDAO();
+        WorkflowDAO workflowDAO = maPSeqDAOBean.getWorkflowDAO();
         try {
             workflowList.addAll(workflowDAO.findAll());
         } catch (Exception e) {
@@ -57,12 +57,12 @@ public class ListWorkflowsAction extends AbstractAction {
         return null;
     }
 
-    public MaPSeqDAOBean getMapseqDAOBean() {
-        return mapseqDAOBean;
+    public MaPSeqDAOBean getMaPSeqDAOBean() {
+        return maPSeqDAOBean;
     }
 
-    public void setMapseqDAOBean(MaPSeqDAOBean mapseqDAOBean) {
-        this.mapseqDAOBean = mapseqDAOBean;
+    public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
+        this.maPSeqDAOBean = maPSeqDAOBean;
     }
 
 }

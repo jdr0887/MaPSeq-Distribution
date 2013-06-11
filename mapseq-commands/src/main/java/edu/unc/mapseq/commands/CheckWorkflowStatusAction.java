@@ -27,7 +27,7 @@ public class CheckWorkflowStatusAction extends AbstractAction {
     @Argument(index = 0, name = "studyName", description = "Study Name", required = true, multiValued = false)
     private String studyName;
 
-    private MaPSeqDAOBean mapseqDAOBean;
+    private MaPSeqDAOBean maPSeqDAOBean;
 
     public CheckWorkflowStatusAction() {
         super();
@@ -37,7 +37,7 @@ public class CheckWorkflowStatusAction extends AbstractAction {
     public Object doExecute() {
 
         List<WorkflowPlan> wpList = new ArrayList<WorkflowPlan>();
-        WorkflowPlanDAO workflowPlanDAO = mapseqDAOBean.getWorkflowPlanDAO();
+        WorkflowPlanDAO workflowPlanDAO = maPSeqDAOBean.getWorkflowPlanDAO();
         try {
             List<WorkflowPlan> wfPlanList = workflowPlanDAO.findByStudyName(this.studyName);
             if (wfPlanList != null) {
@@ -45,7 +45,7 @@ public class CheckWorkflowStatusAction extends AbstractAction {
             }
         } catch (MaPSeqDAOException e) {
         }
-        HTSFSampleDAO hTSFSampleDAO = mapseqDAOBean.getHTSFSampleDAO();
+        HTSFSampleDAO hTSFSampleDAO = maPSeqDAOBean.getHTSFSampleDAO();
 
         try {
 
@@ -117,12 +117,20 @@ public class CheckWorkflowStatusAction extends AbstractAction {
         return null;
     }
 
-    public MaPSeqDAOBean getMapseqDAOBean() {
-        return mapseqDAOBean;
+    public String getStudyName() {
+        return studyName;
     }
 
-    public void setMapseqDAOBean(MaPSeqDAOBean mapseqDAOBean) {
-        this.mapseqDAOBean = mapseqDAOBean;
+    public void setStudyName(String studyName) {
+        this.studyName = studyName;
+    }
+
+    public MaPSeqDAOBean getMaPSeqDAOBean() {
+        return maPSeqDAOBean;
+    }
+
+    public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
+        this.maPSeqDAOBean = maPSeqDAOBean;
     }
 
 }

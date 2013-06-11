@@ -13,12 +13,12 @@ import edu.unc.mapseq.dao.model.SequencerRun;
 @Command(scope = "mapseq", name = "test-connection-pooling", description = "Test connection pooling")
 public class TestConnectionPoolingAction extends AbstractAction {
 
-    private MaPSeqDAOBean mapseqDAOBean;
+    private MaPSeqDAOBean maPSeqDAOBean;
 
     @Override
     protected Object doExecute() throws Exception {
 
-        SequencerRunDAO sequencerRunDAO = mapseqDAOBean.getSequencerRunDAO();
+        SequencerRunDAO sequencerRunDAO = maPSeqDAOBean.getSequencerRunDAO();
         Date d = new Date();
         for (int i = 0; i < 10000; ++i) {
             SequencerRun entity = new SequencerRun();
@@ -34,12 +34,12 @@ public class TestConnectionPoolingAction extends AbstractAction {
         return null;
     }
 
-    public MaPSeqDAOBean getMapseqDAOBean() {
-        return mapseqDAOBean;
+    public MaPSeqDAOBean getMaPSeqDAOBean() {
+        return maPSeqDAOBean;
     }
 
-    public void setMapseqDAOBean(MaPSeqDAOBean mapseqDAOBean) {
-        this.mapseqDAOBean = mapseqDAOBean;
+    public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
+        this.maPSeqDAOBean = maPSeqDAOBean;
     }
 
 }

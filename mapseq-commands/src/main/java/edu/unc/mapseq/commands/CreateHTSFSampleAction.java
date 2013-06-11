@@ -47,7 +47,7 @@ public class CreateHTSFSampleAction extends AbstractAction {
     @Argument(index = 6, name = "read2Fastq", description = "Read 2 Fastq File", required = true, multiValued = false)
     private String read2Fastq;
 
-    private MaPSeqDAOBean mapseqDAOBean;
+    private MaPSeqDAOBean maPSeqDAOBean;
 
     public CreateHTSFSampleAction() {
         super();
@@ -58,7 +58,7 @@ public class CreateHTSFSampleAction extends AbstractAction {
 
         SequencerRun sequencerRun = null;
         try {
-            sequencerRun = mapseqDAOBean.getSequencerRunDAO().findById(this.sequencerRunId);
+            sequencerRun = maPSeqDAOBean.getSequencerRunDAO().findById(this.sequencerRunId);
         } catch (Exception e1) {
         }
 
@@ -164,11 +164,11 @@ public class CreateHTSFSampleAction extends AbstractAction {
             read1FastqFD.setName(read1FastqFile.getName());
             read1FastqFD.setPath(read1FastqFile.getParentFile().getAbsolutePath());
 
-            List<FileData> fileDataList = mapseqDAOBean.getFileDataDAO().findByExample(read1FastqFD);
+            List<FileData> fileDataList = maPSeqDAOBean.getFileDataDAO().findByExample(read1FastqFD);
             if (fileDataList != null && fileDataList.size() > 0) {
                 read1FastqFD = fileDataList.get(0);
             } else {
-                Long id = mapseqDAOBean.getFileDataDAO().save(read1FastqFD);
+                Long id = maPSeqDAOBean.getFileDataDAO().save(read1FastqFD);
                 read1FastqFD.setId(id);
             }
             fileDataSet.add(read1FastqFD);
@@ -178,26 +178,26 @@ public class CreateHTSFSampleAction extends AbstractAction {
                 read2FastqFD.setMimeType(MimeType.FASTQ);
                 read2FastqFD.setName(read2FastqFile.getName());
                 read2FastqFD.setPath(read2FastqFile.getParentFile().getAbsolutePath());
-                fileDataList = mapseqDAOBean.getFileDataDAO().findByExample(read2FastqFD);
+                fileDataList = maPSeqDAOBean.getFileDataDAO().findByExample(read2FastqFD);
                 if (fileDataList != null && fileDataList.size() > 0) {
                     read2FastqFD = fileDataList.get(0);
                 } else {
-                    Long id = mapseqDAOBean.getFileDataDAO().save(read2FastqFD);
+                    Long id = maPSeqDAOBean.getFileDataDAO().save(read2FastqFD);
                     read2FastqFD.setId(id);
                 }
                 fileDataSet.add(read2FastqFD);
             }
 
-            HTSFSampleDAO htsfSampleDAO = mapseqDAOBean.getHTSFSampleDAO();
+            HTSFSampleDAO htsfSampleDAO = maPSeqDAOBean.getHTSFSampleDAO();
 
             HTSFSample htsfSample = new HTSFSample();
             htsfSample.setName(name);
-            htsfSample.setCreator(mapseqDAOBean.getAccountDAO().findByName(System.getProperty("user.name")));
+            htsfSample.setCreator(maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name")));
             Date creationDate = new Date();
             htsfSample.setCreationDate(creationDate);
             htsfSample.setModificationDate(creationDate);
             htsfSample.setBarcode(barcode);
-            htsfSample.setStudy(mapseqDAOBean.getStudyDAO().findById(this.studyId));
+            htsfSample.setStudy(maPSeqDAOBean.getStudyDAO().findById(this.studyId));
             htsfSample.setLaneIndex(laneIndex);
             htsfSample.setSequencerRun(sequencerRun);
             htsfSample.setFileDatas(fileDataSet);
@@ -209,6 +209,70 @@ public class CreateHTSFSampleAction extends AbstractAction {
         }
 
         return null;
+    }
+
+    public MaPSeqDAOBean getMaPSeqDAOBean() {
+        return maPSeqDAOBean;
+    }
+
+    public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
+        this.maPSeqDAOBean = maPSeqDAOBean;
+    }
+
+    public Long getSequencerRunId() {
+        return sequencerRunId;
+    }
+
+    public void setSequencerRunId(Long sequencerRunId) {
+        this.sequencerRunId = sequencerRunId;
+    }
+
+    public Integer getLaneIndex() {
+        return laneIndex;
+    }
+
+    public void setLaneIndex(Integer laneIndex) {
+        this.laneIndex = laneIndex;
+    }
+
+    public String getBarcode() {
+        return barcode;
+    }
+
+    public void setBarcode(String barcode) {
+        this.barcode = barcode;
+    }
+
+    public Long getStudyId() {
+        return studyId;
+    }
+
+    public void setStudyId(Long studyId) {
+        this.studyId = studyId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getRead1Fastq() {
+        return read1Fastq;
+    }
+
+    public void setRead1Fastq(String read1Fastq) {
+        this.read1Fastq = read1Fastq;
+    }
+
+    public String getRead2Fastq() {
+        return read2Fastq;
+    }
+
+    public void setRead2Fastq(String read2Fastq) {
+        this.read2Fastq = read2Fastq;
     }
 
 }

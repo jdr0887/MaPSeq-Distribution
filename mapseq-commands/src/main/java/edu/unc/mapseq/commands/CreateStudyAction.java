@@ -13,7 +13,7 @@ import edu.unc.mapseq.dao.model.Study;
 @Command(scope = "mapseq", name = "create-study", description = "Create Study")
 public class CreateStudyAction extends AbstractAction {
 
-    private MaPSeqDAOBean mapseqDAOBean;
+    private MaPSeqDAOBean maPSeqDAOBean;
 
     @Argument(index = 0, name = "grant", description = "Grant", required = true, multiValued = false)
     private String grant;
@@ -42,16 +42,16 @@ public class CreateStudyAction extends AbstractAction {
             study.setCreationDate(d);
             study.setModificationDate(d);
             study.setApproved(approved);
-            study.setCreator(mapseqDAOBean.getAccountDAO().findByName(System.getProperty("user.name")));
+            study.setCreator(maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name")));
             study.setGrant(grant);
             study.setName(name);
             if (primaryContactId != null) {
-                study.setPrimaryContact(mapseqDAOBean.getAccountDAO().findById(primaryContactId));
+                study.setPrimaryContact(maPSeqDAOBean.getAccountDAO().findById(primaryContactId));
             }
             if (principalInvestigatorId != null) {
-                study.setPrincipalInvestigator(mapseqDAOBean.getAccountDAO().findById(principalInvestigatorId));
+                study.setPrincipalInvestigator(maPSeqDAOBean.getAccountDAO().findById(principalInvestigatorId));
             }
-            Long studyId = mapseqDAOBean.getStudyDAO().save(study);
+            Long studyId = maPSeqDAOBean.getStudyDAO().save(study);
             return studyId;
         } catch (MaPSeqDAOException e1) {
             e1.printStackTrace();
@@ -59,12 +59,52 @@ public class CreateStudyAction extends AbstractAction {
         return null;
     }
 
-    public MaPSeqDAOBean getMapseqDAOBean() {
-        return mapseqDAOBean;
+    public MaPSeqDAOBean getMaPSeqDAOBean() {
+        return maPSeqDAOBean;
     }
 
-    public void setMapseqDAOBean(MaPSeqDAOBean mapseqDAOBean) {
-        this.mapseqDAOBean = mapseqDAOBean;
+    public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
+        this.maPSeqDAOBean = maPSeqDAOBean;
+    }
+
+    public String getGrant() {
+        return grant;
+    }
+
+    public void setGrant(String grant) {
+        this.grant = grant;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Long getPrimaryContactId() {
+        return primaryContactId;
+    }
+
+    public void setPrimaryContactId(Long primaryContactId) {
+        this.primaryContactId = primaryContactId;
+    }
+
+    public Long getPrincipalInvestigatorId() {
+        return principalInvestigatorId;
+    }
+
+    public void setPrincipalInvestigatorId(Long principalInvestigatorId) {
+        this.principalInvestigatorId = principalInvestigatorId;
+    }
+
+    public Boolean getApproved() {
+        return approved;
+    }
+
+    public void setApproved(Boolean approved) {
+        this.approved = approved;
     }
 
 }

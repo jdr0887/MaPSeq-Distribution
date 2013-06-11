@@ -42,7 +42,7 @@ public class SynchronizeCondorWithWorkflowRunAction extends AbstractAction {
     @Argument(index = 0, name = "workflowRunId", description = "WorkflowRun identifier", required = true, multiValued = true)
     private List<Long> workflowRunIdList;
 
-    private MaPSeqDAOBean mapseqDAOBean;
+    private MaPSeqDAOBean maPSeqDAOBean;
 
     public SynchronizeCondorWithWorkflowRunAction() {
         super();
@@ -53,7 +53,7 @@ public class SynchronizeCondorWithWorkflowRunAction extends AbstractAction {
         logger.info("ENTERING doExecute()");
         Account account = null;
         try {
-            account = mapseqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
+            account = maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
         } catch (MaPSeqDAOException e) {
             e.printStackTrace();
         }
@@ -64,7 +64,7 @@ public class SynchronizeCondorWithWorkflowRunAction extends AbstractAction {
         }
 
         List<WorkflowRun> workflowRunList = new ArrayList<WorkflowRun>();
-        WorkflowRunDAO workflowRunDAO = mapseqDAOBean.getWorkflowRunDAO();
+        WorkflowRunDAO workflowRunDAO = maPSeqDAOBean.getWorkflowRunDAO();
         try {
             if (workflowRunIdList != null) {
                 for (Long id : workflowRunIdList) {
@@ -116,7 +116,7 @@ public class SynchronizeCondorWithWorkflowRunAction extends AbstractAction {
                         fileMap.get(f.getParentFile().toPath()).add(f);
                     }
 
-                    List<WorkflowPlan> workflowPlanList = mapseqDAOBean.getWorkflowPlanDAO().findByWorkflowRunId(
+                    List<WorkflowPlan> workflowPlanList = maPSeqDAOBean.getWorkflowPlanDAO().findByWorkflowRunId(
                             workflowRun.getId());
 
                     if (workflowPlanList != null && workflowPlanList.size() > 0) {
@@ -127,7 +127,7 @@ public class SynchronizeCondorWithWorkflowRunAction extends AbstractAction {
 
                             if (wp.getSequencerRun() != null) {
 
-                                List<HTSFSample> sampleList = mapseqDAOBean.getHTSFSampleDAO().findBySequencerRunId(
+                                List<HTSFSample> sampleList = maPSeqDAOBean.getHTSFSampleDAO().findBySequencerRunId(
                                         wp.getSequencerRun().getId());
 
                                 sampleLoop: for (HTSFSample sample : sampleList) {
@@ -271,20 +271,20 @@ public class SynchronizeCondorWithWorkflowRunAction extends AbstractAction {
 
     }
 
-    public MaPSeqDAOBean getMapseqDAOBean() {
-        return mapseqDAOBean;
-    }
-
-    public void setMapseqDAOBean(MaPSeqDAOBean mapseqDAOBean) {
-        this.mapseqDAOBean = mapseqDAOBean;
-    }
-
     public List<Long> getWorkflowRunIdList() {
         return workflowRunIdList;
     }
 
     public void setWorkflowRunIdList(List<Long> workflowRunIdList) {
         this.workflowRunIdList = workflowRunIdList;
+    }
+
+    public MaPSeqDAOBean getMaPSeqDAOBean() {
+        return maPSeqDAOBean;
+    }
+
+    public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
+        this.maPSeqDAOBean = maPSeqDAOBean;
     }
 
 }

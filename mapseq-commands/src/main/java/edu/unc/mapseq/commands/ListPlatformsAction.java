@@ -15,7 +15,7 @@ import edu.unc.mapseq.dao.model.Platform;
 @Command(scope = "mapseq", name = "list-platforms", description = "List Platforms")
 public class ListPlatformsAction extends AbstractAction {
 
-    private MaPSeqDAOBean mapseqDAOBean;
+    private MaPSeqDAOBean maPSeqDAOBean;
 
     public ListPlatformsAction() {
         super();
@@ -25,7 +25,7 @@ public class ListPlatformsAction extends AbstractAction {
     public Object doExecute() {
 
         List<Platform> platformList = new ArrayList<Platform>();
-        PlatformDAO platformDAO = mapseqDAOBean.getPlatformDAO();
+        PlatformDAO platformDAO = maPSeqDAOBean.getPlatformDAO();
         try {
             platformList.addAll(platformDAO.findAll());
         } catch (Exception e) {
@@ -47,12 +47,12 @@ public class ListPlatformsAction extends AbstractAction {
 
     }
 
-    public MaPSeqDAOBean getMapseqDAOBean() {
-        return mapseqDAOBean;
+    public MaPSeqDAOBean getMaPSeqDAOBean() {
+        return maPSeqDAOBean;
     }
 
-    public void setMapseqDAOBean(MaPSeqDAOBean mapseqDAOBean) {
-        this.mapseqDAOBean = mapseqDAOBean;
+    public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
+        this.maPSeqDAOBean = maPSeqDAOBean;
     }
 
 }

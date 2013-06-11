@@ -15,7 +15,7 @@ import edu.unc.mapseq.dao.model.WorkflowRunStatusType;
 @Command(scope = "mapseq", name = "reset-workflow-run", description = "Reset WorkflowRun")
 public class ResetWorkflowRunAction extends AbstractAction {
 
-    private MaPSeqDAOBean mapseqDAOBean;
+    private MaPSeqDAOBean maPSeqDAOBean;
 
     @Argument(index = 0, name = "workflowRunId", description = "Workflow Run Identifier", required = true, multiValued = true)
     private List<Long> workflowRunIdList;
@@ -29,7 +29,7 @@ public class ResetWorkflowRunAction extends AbstractAction {
 
         if (this.workflowRunIdList != null && this.workflowRunIdList.size() > 0) {
 
-            WorkflowRunDAO workflowRunDAO = mapseqDAOBean.getWorkflowRunDAO();
+            WorkflowRunDAO workflowRunDAO = maPSeqDAOBean.getWorkflowRunDAO();
 
             for (Long workflowRunId : this.workflowRunIdList) {
                 try {
@@ -49,12 +49,20 @@ public class ResetWorkflowRunAction extends AbstractAction {
         return null;
     }
 
-    public MaPSeqDAOBean getMapseqDAOBean() {
-        return mapseqDAOBean;
+    public MaPSeqDAOBean getMaPSeqDAOBean() {
+        return maPSeqDAOBean;
     }
 
-    public void setMapseqDAOBean(MaPSeqDAOBean mapseqDAOBean) {
-        this.mapseqDAOBean = mapseqDAOBean;
+    public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
+        this.maPSeqDAOBean = maPSeqDAOBean;
+    }
+
+    public List<Long> getWorkflowRunIdList() {
+        return workflowRunIdList;
+    }
+
+    public void setWorkflowRunIdList(List<Long> workflowRunIdList) {
+        this.workflowRunIdList = workflowRunIdList;
     }
 
 }

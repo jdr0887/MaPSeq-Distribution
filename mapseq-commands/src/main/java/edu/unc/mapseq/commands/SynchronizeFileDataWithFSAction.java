@@ -20,7 +20,7 @@ import edu.unc.mapseq.dao.model.SequencerRun;
 @Command(scope = "mapseq", name = "synchronize-file-data-with-file-system", description = "Synchronize File Data entries with FS")
 public class SynchronizeFileDataWithFSAction extends AbstractAction {
 
-    private MaPSeqDAOBean mapseqDAOBean;
+    private MaPSeqDAOBean maPSeqDAOBean;
 
     @Argument(index = 0, name = "sequencerRunId", description = "Sequencer Run Identifier", required = true, multiValued = true)
     private List<Long> sequencerRunIdList;
@@ -28,9 +28,9 @@ public class SynchronizeFileDataWithFSAction extends AbstractAction {
     @Override
     protected Object doExecute() throws Exception {
 
-        SequencerRunDAO sequencerRunDAO = mapseqDAOBean.getSequencerRunDAO();
+        SequencerRunDAO sequencerRunDAO = maPSeqDAOBean.getSequencerRunDAO();
 
-        HTSFSampleDAO htsfSampleDAO = mapseqDAOBean.getHTSFSampleDAO();
+        HTSFSampleDAO htsfSampleDAO = maPSeqDAOBean.getHTSFSampleDAO();
 
         try {
             List<SequencerRun> sequencerRunList = sequencerRunDAO.findAll();
@@ -82,12 +82,12 @@ public class SynchronizeFileDataWithFSAction extends AbstractAction {
         return null;
     }
 
-    public MaPSeqDAOBean getMapseqDAOBean() {
-        return mapseqDAOBean;
+    public MaPSeqDAOBean getMaPSeqDAOBean() {
+        return maPSeqDAOBean;
     }
 
-    public void setMapseqDAOBean(MaPSeqDAOBean mapseqDAOBean) {
-        this.mapseqDAOBean = mapseqDAOBean;
+    public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
+        this.maPSeqDAOBean = maPSeqDAOBean;
     }
 
     public List<Long> getSequencerRunIdList() {

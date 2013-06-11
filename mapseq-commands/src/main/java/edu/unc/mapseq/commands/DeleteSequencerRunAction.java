@@ -22,7 +22,7 @@ import edu.unc.mapseq.dao.model.WorkflowRun;
 @Command(scope = "mapseq", name = "delete-sequencer-run", description = "Delete SequencerRun")
 public class DeleteSequencerRunAction extends AbstractAction {
 
-    private MaPSeqDAOBean mapseqDAOBean;
+    private MaPSeqDAOBean maPSeqDAOBean;
 
     @Argument(index = 0, name = "sequencerRunId", description = "Sequencer Run Identifier", required = true, multiValued = true)
     private List<Long> sequencerRunIdList;
@@ -36,11 +36,11 @@ public class DeleteSequencerRunAction extends AbstractAction {
 
         if (this.sequencerRunIdList != null && this.sequencerRunIdList.size() > 0) {
 
-            SequencerRunDAO sequencerRunDAO = mapseqDAOBean.getSequencerRunDAO();
-            HTSFSampleDAO htsfSampleDAO = mapseqDAOBean.getHTSFSampleDAO();
-            WorkflowPlanDAO workflowPlanDAO = mapseqDAOBean.getWorkflowPlanDAO();
-            WorkflowRunDAO workflowRunDAO = mapseqDAOBean.getWorkflowRunDAO();
-            JobDAO jobDAO = mapseqDAOBean.getJobDAO();
+            SequencerRunDAO sequencerRunDAO = maPSeqDAOBean.getSequencerRunDAO();
+            HTSFSampleDAO htsfSampleDAO = maPSeqDAOBean.getHTSFSampleDAO();
+            WorkflowPlanDAO workflowPlanDAO = maPSeqDAOBean.getWorkflowPlanDAO();
+            WorkflowRunDAO workflowRunDAO = maPSeqDAOBean.getWorkflowRunDAO();
+            JobDAO jobDAO = maPSeqDAOBean.getJobDAO();
 
             for (Long sequencerRunId : this.sequencerRunIdList) {
                 try {
@@ -87,12 +87,20 @@ public class DeleteSequencerRunAction extends AbstractAction {
         return null;
     }
 
-    public MaPSeqDAOBean getMapseqDAOBean() {
-        return mapseqDAOBean;
+    public MaPSeqDAOBean getMaPSeqDAOBean() {
+        return maPSeqDAOBean;
     }
 
-    public void setMapseqDAOBean(MaPSeqDAOBean mapseqDAOBean) {
-        this.mapseqDAOBean = mapseqDAOBean;
+    public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
+        this.maPSeqDAOBean = maPSeqDAOBean;
+    }
+
+    public List<Long> getSequencerRunIdList() {
+        return sequencerRunIdList;
+    }
+
+    public void setSequencerRunIdList(List<Long> sequencerRunIdList) {
+        this.sequencerRunIdList = sequencerRunIdList;
     }
 
 }
