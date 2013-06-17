@@ -11,7 +11,7 @@
   <version>0.2.3-SNAPSHOT</version>
   <packaging>pom</packaging>
   <properties>
-    <mapseq.modules.version>0.0.3</mapseq.modules.version>
+    <mapseq.modules.version>0.0.4</mapseq.modules.version>
     <mapseq.parent.version>0.2.3</mapseq.parent.version>
   </properties>
   <issueManagement>
