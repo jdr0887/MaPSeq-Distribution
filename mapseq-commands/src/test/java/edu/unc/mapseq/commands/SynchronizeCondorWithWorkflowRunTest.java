@@ -32,7 +32,7 @@ public class SynchronizeCondorWithWorkflowRunTest {
 
         Collection<File> fileCollection = FileUtils.listFiles(
                 submitDirectory,
-                FileFilterUtils.or(FileFilterUtils.suffixFileFilter("_1.sub"),
+                FileFilterUtils.or(FileFilterUtils.suffixFileFilter("_1.sh"),
                         FileFilterUtils.suffixFileFilter("dag.dagman.log")), DirectoryFileFilter.DIRECTORY);
         Map<Path, List<File>> fileMap = new HashMap<Path, List<File>>();
         for (File f : fileCollection) {
@@ -60,7 +60,7 @@ public class SynchronizeCondorWithWorkflowRunTest {
             // File subFile = fileList.get(0);
             // System.out.println(subFile.getName());
             try {
-                File dagFile = fileList.get(1);
+                File dagFile = fileList.get(0);
                 System.out.println(dagFile.getName());
                 List<String> dagFileLines = FileUtils.readLines(dagFile);
                 for (String line : dagFileLines) {

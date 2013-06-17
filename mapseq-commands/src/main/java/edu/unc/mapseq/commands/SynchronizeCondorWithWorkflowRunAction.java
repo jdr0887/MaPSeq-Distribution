@@ -89,7 +89,7 @@ public class SynchronizeCondorWithWorkflowRunAction extends AbstractAction {
                 File submitDirectory = new File(System.getenv("MAPSEQ_HOME"), "submit");
                 Collection<File> fileCollection = FileUtils.listFiles(
                         submitDirectory,
-                        FileFilterUtils.or(FileFilterUtils.suffixFileFilter("_1.sub"),
+                        FileFilterUtils.or(FileFilterUtils.suffixFileFilter("_1.sh"),
                                 FileFilterUtils.suffixFileFilter("dag.dagman.log")), DirectoryFileFilter.DIRECTORY);
 
                 long endTime = new Date().getTime();
@@ -147,14 +147,18 @@ public class SynchronizeCondorWithWorkflowRunAction extends AbstractAction {
                                             }
                                         });
 
-                                        File subFile = fileList.get(0);
+                                        if (fileList == null || fileList != null && fileList.size() != 2) {
+                                            continue;
+                                        }
+
+                                        File subFile = fileList.get(1);
                                         String subFileContents = FileUtils.readFileToString(subFile);
                                         if (subFileContents.contains(String.format("--sequencerRunId %d",
                                                 sequencerRun.getId()))
                                                 && subFileContents.contains(String.format("--workflowRunId %d",
                                                         workflowRun.getId()))) {
 
-                                            File dagFile = fileList.get(1);
+                                            File dagFile = fileList.get(0);
                                             System.out.printf("Reading %s%n", dagFile.getAbsolutePath());
                                             List<String> dagFileLines = FileUtils.readLines(dagFile);
                                             for (String line : dagFileLines) {
@@ -212,7 +216,11 @@ public class SynchronizeCondorWithWorkflowRunAction extends AbstractAction {
                                             }
                                         });
 
-                                        File subFile = fileList.get(0);
+                                        if (fileList == null || fileList != null && fileList.size() != 2) {
+                                            continue;
+                                        }
+
+                                        File subFile = fileList.get(1);
                                         String subFileContents = FileUtils.readFileToString(subFile);
                                         if (subFileContents.contains(String.format("--sequencerRunId %d",
                                                 sequencerRun.getId()))
@@ -221,7 +229,7 @@ public class SynchronizeCondorWithWorkflowRunAction extends AbstractAction {
                                                 && subFileContents.contains(String.format("--workflowRunId %d",
                                                         workflowRun.getId()))) {
 
-                                            File dagFile = fileList.get(1);
+                                            File dagFile = fileList.get(0);
                                             System.out.printf("Reading %s%n", dagFile.getAbsolutePath());
                                             List<String> dagFileLines = FileUtils.readLines(dagFile);
                                             for (String line : dagFileLines) {
