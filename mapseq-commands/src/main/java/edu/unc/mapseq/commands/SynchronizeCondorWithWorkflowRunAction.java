@@ -1,7 +1,6 @@
 package edu.unc.mapseq.commands;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -9,14 +8,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.apache.commons.io.filefilter.IOFileFilter;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.felix.gogo.commands.Argument;
 import org.apache.felix.gogo.commands.Command;
@@ -85,36 +83,47 @@ public class SynchronizeCondorWithWorkflowRunAction extends AbstractAction {
                     }
                 });
 
-                long startTime = new Date().getTime();
                 File submitDirectory = new File(System.getenv("MAPSEQ_HOME"), "submit");
-                Collection<File> fileCollection = FileUtils.listFiles(
-                        submitDirectory,
-                        FileFilterUtils.or(FileFilterUtils.suffixFileFilter("_1.sh"),
-                                FileFilterUtils.suffixFileFilter("dag.dagman.log")), DirectoryFileFilter.DIRECTORY);
 
-                long endTime = new Date().getTime();
-                System.out.printf("Duration to find files...%s%n", ((endTime - startTime) / 1000) / 60);
+                for (final WorkflowRun workflowRun : workflowRunList) {
 
-                for (WorkflowRun workflowRun : workflowRunList) {
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(workflowRun.getCreationDate());
+                    final String formattedDate = DateFormatUtils.format(calendar, "yyyy-MM-dd");
+
+                    long startTime = new Date().getTime();
+                    IOFileFilter shFF = FileFilterUtils.suffixFileFilter("_1.sh");
+                    IOFileFilter dagLogFF = FileFilterUtils.suffixFileFilter("dag.dagman.log");
+                    Collection<File> fileCollection = FileUtils.listFiles(submitDirectory,
+                            FileFilterUtils.or(shFF, dagLogFF), new IOFileFilter() {
+
+                                @Override
+                                public boolean accept(File dir, String name) {
+                                    return dir.getAbsolutePath().contains(workflowRun.getWorkflow().getName())
+                                            && dir.getAbsolutePath().contains(formattedDate);
+                                }
+
+                                @Override
+                                public boolean accept(File file) {
+                                    return true;
+                                }
+                            });
+                    long endTime = new Date().getTime();
+                    System.out.printf("Duration to find files...%s%n", ((endTime - startTime) / 1000) / 60);
+
+                    List<File> fileList = new ArrayList<File>(fileCollection);
+                    Collections.sort(fileList, new Comparator<File>() {
+                        @Override
+                        public int compare(File o1, File o2) {
+                            if (o1.getName().contains("dagman")) {
+                                return 1;
+                            }
+                            return 0;
+                        }
+                    });
+
                     logger.debug(workflowRun.toString());
                     startTime = new Date().getTime();
-
-                    Map<Path, List<File>> fileMap = new HashMap<Path, List<File>>();
-                    for (File f : fileCollection) {
-                        if (!f.getAbsolutePath().contains(workflowRun.getWorkflow().getName())) {
-                            continue;
-                        }
-                        if (!fileMap.containsKey(f.getParentFile().toPath())) {
-                            fileMap.put(f.getParentFile().toPath(), new ArrayList<File>());
-                        }
-                    }
-
-                    for (File f : fileCollection) {
-                        if (!f.getAbsolutePath().contains(workflowRun.getWorkflow().getName())) {
-                            continue;
-                        }
-                        fileMap.get(f.getParentFile().toPath()).add(f);
-                    }
 
                     List<WorkflowPlan> workflowPlanList = maPSeqDAOBean.getWorkflowPlanDAO().findByWorkflowRunId(
                             workflowRun.getId());
@@ -135,58 +144,40 @@ public class SynchronizeCondorWithWorkflowRunAction extends AbstractAction {
 
                                     SequencerRun sequencerRun = sample.getSequencerRun();
 
-                                    for (Path key : fileMap.keySet()) {
-                                        List<File> fileList = fileMap.get(key);
-                                        Collections.sort(fileList, new Comparator<File>() {
-                                            @Override
-                                            public int compare(File o1, File o2) {
-                                                if (o1.getName().contains("dagman")) {
-                                                    return 1;
-                                                }
-                                                return 0;
-                                            }
-                                        });
+                                    File subFile = fileList.get(1);
+                                    String subFileContents = FileUtils.readFileToString(subFile);
+                                    if (subFileContents.contains(String.format("--sequencerRunId %d",
+                                            sequencerRun.getId()))
+                                            && subFileContents.contains(String.format("--workflowRunId %d",
+                                                    workflowRun.getId()))) {
 
-                                        if (fileList == null || fileList != null && fileList.size() != 2) {
-                                            continue;
-                                        }
-
-                                        File subFile = fileList.get(1);
-                                        String subFileContents = FileUtils.readFileToString(subFile);
-                                        if (subFileContents.contains(String.format("--sequencerRunId %d",
-                                                sequencerRun.getId()))
-                                                && subFileContents.contains(String.format("--workflowRunId %d",
-                                                        workflowRun.getId()))) {
-
-                                            File dagFile = fileList.get(0);
-                                            System.out.printf("Reading %s%n", dagFile.getAbsolutePath());
-                                            List<String> dagFileLines = FileUtils.readLines(dagFile);
-                                            for (String line : dagFileLines) {
-                                                if (line.contains("Job terminated.")) {
-                                                    String[] lineSplit = line.split(" ");
-                                                    try {
-                                                        if (workflowRun.getStartDate() == null) {
-                                                            Calendar c = Calendar.getInstance();
-                                                            c.setTime(workflowRun.getCreationDate());
-                                                            c.add(Calendar.MINUTE, 2);
-                                                            workflowRun.setStartDate(c.getTime());
-                                                        }
-                                                        Date endDate = DateUtils.parseDate(
-                                                                String.format("%s %s", lineSplit[2], lineSplit[3]),
-                                                                new String[] { "MM/dd HH:mm:ss" });
+                                        File dagFile = fileList.get(0);
+                                        System.out.printf("Reading %s%n", dagFile.getAbsolutePath());
+                                        List<String> dagFileLines = FileUtils.readLines(dagFile);
+                                        for (String line : dagFileLines) {
+                                            if (line.contains("Job terminated.")) {
+                                                String[] lineSplit = line.split(" ");
+                                                try {
+                                                    if (workflowRun.getStartDate() == null) {
                                                         Calendar c = Calendar.getInstance();
-                                                        c.setTime(endDate);
-                                                        c.set(Calendar.YEAR, 2013);
-                                                        workflowRun.setEndDate(c.getTime());
-                                                        workflowRun.setStatus(WorkflowRunStatusType.DONE);
-                                                        workflowRunDAO.save(workflowRun);
-                                                    } catch (ParseException e) {
-                                                        e.printStackTrace();
+                                                        c.setTime(workflowRun.getCreationDate());
+                                                        c.add(Calendar.MINUTE, 2);
+                                                        workflowRun.setStartDate(c.getTime());
                                                     }
-                                                    break sampleLoop;
+                                                    Date endDate = DateUtils.parseDate(
+                                                            String.format("%s %s", lineSplit[2], lineSplit[3]),
+                                                            new String[] { "MM/dd HH:mm:ss" });
+                                                    Calendar c = Calendar.getInstance();
+                                                    c.setTime(endDate);
+                                                    c.set(Calendar.YEAR, 2013);
+                                                    workflowRun.setEndDate(c.getTime());
+                                                    workflowRun.setStatus(WorkflowRunStatusType.DONE);
+                                                    workflowRunDAO.save(workflowRun);
+                                                } catch (ParseException e) {
+                                                    e.printStackTrace();
                                                 }
+                                                break sampleLoop;
                                             }
-
                                         }
 
                                     }
@@ -204,60 +195,42 @@ public class SynchronizeCondorWithWorkflowRunAction extends AbstractAction {
 
                                     SequencerRun sequencerRun = sample.getSequencerRun();
 
-                                    for (Path key : fileMap.keySet()) {
-                                        List<File> fileList = fileMap.get(key);
-                                        Collections.sort(fileList, new Comparator<File>() {
-                                            @Override
-                                            public int compare(File o1, File o2) {
-                                                if (o1.getName().contains("dagman")) {
-                                                    return 1;
-                                                }
-                                                return 0;
-                                            }
-                                        });
+                                    File subFile = fileList.get(1);
+                                    String subFileContents = FileUtils.readFileToString(subFile);
+                                    if (subFileContents.contains(String.format("--sequencerRunId %d",
+                                            sequencerRun.getId()))
+                                            && subFileContents.contains(String.format("--htsfSampleId %d",
+                                                    sample.getId()))
+                                            && subFileContents.contains(String.format("--workflowRunId %d",
+                                                    workflowRun.getId()))) {
 
-                                        if (fileList == null || fileList != null && fileList.size() != 2) {
-                                            continue;
-                                        }
-
-                                        File subFile = fileList.get(1);
-                                        String subFileContents = FileUtils.readFileToString(subFile);
-                                        if (subFileContents.contains(String.format("--sequencerRunId %d",
-                                                sequencerRun.getId()))
-                                                && subFileContents.contains(String.format("--htsfSampleId %d",
-                                                        sample.getId()))
-                                                && subFileContents.contains(String.format("--workflowRunId %d",
-                                                        workflowRun.getId()))) {
-
-                                            File dagFile = fileList.get(0);
-                                            System.out.printf("Reading %s%n", dagFile.getAbsolutePath());
-                                            List<String> dagFileLines = FileUtils.readLines(dagFile);
-                                            for (String line : dagFileLines) {
-                                                if (line.contains("Job terminated.")) {
-                                                    String[] lineSplit = line.split(" ");
-                                                    try {
-                                                        if (workflowRun.getStartDate() == null) {
-                                                            Calendar c = Calendar.getInstance();
-                                                            c.setTime(workflowRun.getCreationDate());
-                                                            c.add(Calendar.MINUTE, 2);
-                                                            workflowRun.setStartDate(c.getTime());
-                                                        }
-                                                        Date endDate = DateUtils.parseDate(
-                                                                String.format("%s %s", lineSplit[2], lineSplit[3]),
-                                                                new String[] { "MM/dd HH:mm:ss" });
+                                        File dagFile = fileList.get(0);
+                                        System.out.printf("Reading %s%n", dagFile.getAbsolutePath());
+                                        List<String> dagFileLines = FileUtils.readLines(dagFile);
+                                        for (String line : dagFileLines) {
+                                            if (line.contains("Job terminated.")) {
+                                                String[] lineSplit = line.split(" ");
+                                                try {
+                                                    if (workflowRun.getStartDate() == null) {
                                                         Calendar c = Calendar.getInstance();
-                                                        c.setTime(endDate);
-                                                        c.set(Calendar.YEAR, 2013);
-                                                        workflowRun.setEndDate(c.getTime());
-                                                        workflowRun.setStatus(WorkflowRunStatusType.DONE);
-                                                        workflowRunDAO.save(workflowRun);
-                                                    } catch (ParseException e) {
-                                                        e.printStackTrace();
+                                                        c.setTime(workflowRun.getCreationDate());
+                                                        c.add(Calendar.MINUTE, 2);
+                                                        workflowRun.setStartDate(c.getTime());
                                                     }
-                                                    break sampleLoop;
+                                                    Date endDate = DateUtils.parseDate(
+                                                            String.format("%s %s", lineSplit[2], lineSplit[3]),
+                                                            new String[] { "MM/dd HH:mm:ss" });
+                                                    Calendar c = Calendar.getInstance();
+                                                    c.setTime(endDate);
+                                                    c.set(Calendar.YEAR, 2013);
+                                                    workflowRun.setEndDate(c.getTime());
+                                                    workflowRun.setStatus(WorkflowRunStatusType.DONE);
+                                                    workflowRunDAO.save(workflowRun);
+                                                } catch (ParseException e) {
+                                                    e.printStackTrace();
                                                 }
+                                                break sampleLoop;
                                             }
-
                                         }
 
                                     }
