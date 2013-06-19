@@ -14,7 +14,6 @@ import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
-import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.felix.gogo.commands.Argument;
 import org.apache.felix.gogo.commands.Command;
@@ -87,13 +86,6 @@ public class SynchronizeCondorWithWorkflowRunAction extends AbstractAction {
 
                 for (final WorkflowRun workflowRun : workflowRunList) {
 
-                    if (workflowRun.getStartDate() == null) {
-                        continue;
-                    }
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTime(workflowRun.getStartDate());
-                    final String formattedDate = DateFormatUtils.format(calendar, "yyyy-MM-dd");
-
                     long startTime = new Date().getTime();
                     IOFileFilter shFF = FileFilterUtils.suffixFileFilter("_1.sh");
                     IOFileFilter dagLogFF = FileFilterUtils.suffixFileFilter("dag.dagman.log");
@@ -102,8 +94,7 @@ public class SynchronizeCondorWithWorkflowRunAction extends AbstractAction {
 
                                 @Override
                                 public boolean accept(File dir, String name) {
-                                    return dir.getAbsolutePath().contains(workflowRun.getWorkflow().getName())
-                                            && dir.getAbsolutePath().contains(formattedDate);
+                                    return dir.getAbsolutePath().contains(workflowRun.getWorkflow().getName());
                                 }
 
                                 @Override
