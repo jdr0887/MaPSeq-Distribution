@@ -87,8 +87,11 @@ public class SynchronizeCondorWithWorkflowRunAction extends AbstractAction {
 
                 for (final WorkflowRun workflowRun : workflowRunList) {
 
+                    if (workflowRun.getStartDate() == null) {
+                        continue;
+                    }
                     Calendar calendar = Calendar.getInstance();
-                    calendar.setTime(workflowRun.getCreationDate());
+                    calendar.setTime(workflowRun.getStartDate());
                     final String formattedDate = DateFormatUtils.format(calendar, "yyyy-MM-dd");
 
                     long startTime = new Date().getTime();
