@@ -2,6 +2,11 @@
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" default-activation="lazy">
 
   <command-bundle xmlns="http://karaf.apache.org/xmlns/shell/v1.1.0">
+    <command name="mapseq/edit-htsf-sample-attribute">
+      <action class="edu.unc.mapseq.commands.EditHTSFSampleAttributeAction">
+        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
+      </action>
+    </command>
     <command name="mapseq/synchronize-condor-with-workflow-run">
       <action class="edu.unc.mapseq.commands.SynchronizeCondorWithWorkflowRunAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
