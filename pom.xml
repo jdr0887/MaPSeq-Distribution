@@ -8,7 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.unc.mapseq</groupId>
   <artifactId>distribution</artifactId>
-  <version>0.2.10-SNAPSHOT</version>
+  <version>0.2.9-SNAPSHOT</version>
   <packaging>pom</packaging>
   <properties>
     <mapseq.modules.version>0.0.4</mapseq.modules.version>
