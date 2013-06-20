@@ -2,7 +2,7 @@
   <parent>
     <groupId>edu.unc</groupId>
     <artifactId>mapseq</artifactId>
-    <version>0.2.3</version>
+    <version>0.2.4</version>
   </parent>
   <name>MaPSeq :: Distribution</name>
   <modelVersion>4.0.0</modelVersion>
@@ -11,8 +11,8 @@
   <version>0.2.9-SNAPSHOT</version>
   <packaging>pom</packaging>
   <properties>
-    <mapseq.modules.version>0.0.4</mapseq.modules.version>
-    <mapseq.parent.version>0.2.3</mapseq.parent.version>
+    <mapseq.modules.version>0.0.5</mapseq.modules.version>
+    <mapseq.parent.version>0.2.4</mapseq.parent.version>
   </properties>
   <issueManagement>
     <system>gForge</system>
