@@ -176,10 +176,19 @@ public class SynchronizeCondorWithWorkflowRunAction extends AbstractAction {
                                     SequencerRun sequencerRun = sample.getSequencerRun();
 
                                     File subFile = fileList.get(1);
+                                    logger.info("subFile.getAbsolutePath()", subFile.getAbsolutePath());
                                     String subFileContents = FileUtils.readFileToString(subFile);
                                     String sequencerRunIdArg = String.format("--sequencerRunId %d",
                                             sequencerRun.getId());
                                     String htsfSampleIdArg = String.format("--htsfSampleId %d", sample.getId());
+
+                                    logger.info("subFileContents.contains(sequencerRunIdArg) == {}",
+                                            subFileContents.contains(sequencerRunIdArg));
+                                    logger.info("subFileContents.contains(htsfSampleIdArg) == {}",
+                                            subFileContents.contains(htsfSampleIdArg));
+                                    logger.info("subFileContents.contains(workflowRunIdArg) == {}",
+                                            subFileContents.contains(workflowRunIdArg));
+
                                     if (subFileContents.contains(sequencerRunIdArg)
                                             && subFileContents.contains(htsfSampleIdArg)
                                             && subFileContents.contains(workflowRunIdArg)) {
