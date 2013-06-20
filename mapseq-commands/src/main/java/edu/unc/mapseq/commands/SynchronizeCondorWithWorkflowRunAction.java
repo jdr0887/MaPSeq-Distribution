@@ -85,13 +85,10 @@ public class SynchronizeCondorWithWorkflowRunAction extends AbstractAction {
 
                 for (final WorkflowRun workflowRun : workflowRunList) {
 
-                    long startTime = new Date().getTime();
                     IOFileFilter shFF = FileFilterUtils.suffixFileFilter("_1.sh");
                     IOFileFilter dagLogFF = FileFilterUtils.suffixFileFilter("dag.dagman.log");
                     Collection<File> fileCollection = FileUtils.listFiles(new File(workflowRun.getSubmitDirectory()),
                             FileFilterUtils.or(shFF, dagLogFF), DirectoryFileFilter.INSTANCE);
-                    long endTime = new Date().getTime();
-                    System.out.printf("Duration to find files...%s%n", ((endTime - startTime) / 1000) / 60);
 
                     List<File> fileList = new ArrayList<File>(fileCollection);
                     Collections.sort(fileList, new Comparator<File>() {
@@ -105,16 +102,17 @@ public class SynchronizeCondorWithWorkflowRunAction extends AbstractAction {
                     });
 
                     logger.debug(workflowRun.toString());
-                    startTime = new Date().getTime();
 
                     List<WorkflowPlan> workflowPlanList = maPSeqDAOBean.getWorkflowPlanDAO().findByWorkflowRunId(
                             workflowRun.getId());
+
+                    String workflowRunIdArg = String.format("--workflowRunId %d", workflowRun.getId());
 
                     if (workflowPlanList != null && workflowPlanList.size() > 0) {
 
                         for (WorkflowPlan wp : workflowPlanList) {
 
-                            logger.debug(wp.toString());
+                            logger.info(wp.toString());
 
                             if (wp.getSequencerRun() != null) {
 
@@ -122,19 +120,19 @@ public class SynchronizeCondorWithWorkflowRunAction extends AbstractAction {
                                         wp.getSequencerRun().getId());
 
                                 sampleLoop: for (HTSFSample sample : sampleList) {
-                                    logger.debug(sample.toString());
+                                    logger.info(sample.toString());
 
                                     SequencerRun sequencerRun = sample.getSequencerRun();
 
                                     File subFile = fileList.get(1);
                                     String subFileContents = FileUtils.readFileToString(subFile);
-                                    if (subFileContents.contains(String.format("--sequencerRunId %d",
-                                            sequencerRun.getId()))
-                                            && subFileContents.contains(String.format("--workflowRunId %d",
-                                                    workflowRun.getId()))) {
+                                    String sequencerRunIdArg = String.format("--sequencerRunId %d",
+                                            sequencerRun.getId());
+                                    if (subFileContents.contains(sequencerRunIdArg)
+                                            && subFileContents.contains(workflowRunIdArg)) {
 
                                         File dagFile = fileList.get(0);
-                                        System.out.printf("Reading %s%n", dagFile.getAbsolutePath());
+                                        logger.info("Reading %s%n", dagFile.getAbsolutePath());
                                         List<String> dagFileLines = FileUtils.readLines(dagFile);
                                         for (String line : dagFileLines) {
                                             if (line.contains("Job terminated.")) {
@@ -173,21 +171,21 @@ public class SynchronizeCondorWithWorkflowRunAction extends AbstractAction {
                                 Set<HTSFSample> sampleSet = wp.getHTSFSamples();
 
                                 sampleLoop: for (HTSFSample sample : sampleSet) {
-                                    logger.debug(sample.toString());
+                                    logger.info(sample.toString());
 
                                     SequencerRun sequencerRun = sample.getSequencerRun();
 
                                     File subFile = fileList.get(1);
                                     String subFileContents = FileUtils.readFileToString(subFile);
-                                    if (subFileContents.contains(String.format("--sequencerRunId %d",
-                                            sequencerRun.getId()))
-                                            && subFileContents.contains(String.format("--htsfSampleId %d",
-                                                    sample.getId()))
-                                            && subFileContents.contains(String.format("--workflowRunId %d",
-                                                    workflowRun.getId()))) {
+                                    String sequencerRunIdArg = String.format("--sequencerRunId %d",
+                                            sequencerRun.getId());
+                                    String htsfSampleIdArg = String.format("--htsfSampleId %d", sample.getId());
+                                    if (subFileContents.contains(sequencerRunIdArg)
+                                            && subFileContents.contains(htsfSampleIdArg)
+                                            && subFileContents.contains(workflowRunIdArg)) {
 
                                         File dagFile = fileList.get(0);
-                                        System.out.printf("Reading %s%n", dagFile.getAbsolutePath());
+                                        logger.info("Reading %s%n", dagFile.getAbsolutePath());
                                         List<String> dagFileLines = FileUtils.readLines(dagFile);
                                         for (String line : dagFileLines) {
                                             if (line.contains("Job terminated.")) {
@@ -223,8 +221,6 @@ public class SynchronizeCondorWithWorkflowRunAction extends AbstractAction {
 
                         }
                     }
-                    endTime = new Date().getTime();
-                    System.out.printf("Duration to process WorkflowRun...%s%n", ((endTime - startTime) / 1000) / 60);
                 }
             }
         } catch (Exception e) {
