@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.lang.time.DateUtils;
@@ -82,26 +83,13 @@ public class SynchronizeCondorWithWorkflowRunAction extends AbstractAction {
                     }
                 });
 
-                File submitDirectory = new File(System.getenv("MAPSEQ_HOME"), "submit");
-
                 for (final WorkflowRun workflowRun : workflowRunList) {
 
                     long startTime = new Date().getTime();
                     IOFileFilter shFF = FileFilterUtils.suffixFileFilter("_1.sh");
                     IOFileFilter dagLogFF = FileFilterUtils.suffixFileFilter("dag.dagman.log");
-                    Collection<File> fileCollection = FileUtils.listFiles(submitDirectory,
-                            FileFilterUtils.or(shFF, dagLogFF), new IOFileFilter() {
-
-                                @Override
-                                public boolean accept(File dir, String name) {
-                                    return dir.getAbsolutePath().contains(workflowRun.getWorkflow().getName());
-                                }
-
-                                @Override
-                                public boolean accept(File file) {
-                                    return true;
-                                }
-                            });
+                    Collection<File> fileCollection = FileUtils.listFiles(new File(workflowRun.getSubmitDirectory()),
+                            FileFilterUtils.or(shFF, dagLogFF), DirectoryFileFilter.INSTANCE);
                     long endTime = new Date().getTime();
                     System.out.printf("Duration to find files...%s%n", ((endTime - startTime) / 1000) / 60);
 
