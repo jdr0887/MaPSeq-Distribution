@@ -176,7 +176,7 @@ public class SynchronizeCondorWithWorkflowRunAction extends AbstractAction {
                                     SequencerRun sequencerRun = sample.getSequencerRun();
 
                                     File subFile = fileList.get(1);
-                                    logger.info("subFile.getAbsolutePath()", subFile.getAbsolutePath());
+                                    logger.info("subFile.getAbsolutePath() == {} ", subFile.getAbsolutePath());
                                     String subFileContents = FileUtils.readFileToString(subFile);
                                     String sequencerRunIdArg = String.format("--sequencerRunId %d",
                                             sequencerRun.getId());
