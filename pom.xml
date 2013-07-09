@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
-    <groupId>edu.unc</groupId>
+    <groupId>edu.unc.mapseq</groupId>
     <artifactId>mapseq</artifactId>
-    <version>0.2.4</version>
+    <version>0.0.1</version>
   </parent>
   <name>MaPSeq :: Distribution</name>
   <modelVersion>4.0.0</modelVersion>
@@ -11,27 +11,18 @@
   <version>0.2.11-SNAPSHOT</version>
   <packaging>pom</packaging>
   <properties>
+    <karaf.version>2.3.1</karaf.version>
+    <cxf.version>2.7.3</cxf.version>
+    <activemq.version>5.8.0</activemq.version>
     <mapseq.modules.version>0.0.6</mapseq.modules.version>
-    <mapseq.parent.version>0.2.4</mapseq.parent.version>
+    <mapseq.parent.version>0.2.5</mapseq.parent.version>
+    <renci.jlrm.version>0.2.34</renci.jlrm.version>
+    <renci.commons.version>0.2.0</renci.commons.version>
   </properties>
   <issueManagement>
     <system>gForge</system>
     <url>https://code.renci.org/gf/project/mapseq/tracker/</url>
   </issueManagement>
-  <ciManagement>
-    <system>hudson</system>
-    <url>https://ci-dev.renci.org/hudson/mapseq</url>
-    <notifiers>
-      <notifier>
-	<type>mail</type>
-	<sendOnError>true</sendOnError>
-	<sendOnFailure>true</sendOnFailure>
-	<configuration>
-	  <address>jdr0887@renci.org</address>
-	</configuration>
-      </notifier>
-    </notifiers>
-  </ciManagement>
   <licenses>    
     <license>
       <name>RENCI Open Source Software License</name>
@@ -47,9 +38,76 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
+      	<groupId>edu.unc.mapseq.mapseq-dao</groupId>
+      	<artifactId>mapseq-dao-api</artifactId>
+      	<version>${mapseq.parent.version}</version>
+      </dependency>
+      <dependency>
+      	<groupId>edu.unc.mapseq.mapseq-dao</groupId>
+      	<artifactId>mapseq-dao-jpa</artifactId>
+      	<version>${mapseq.parent.version}</version>
+      </dependency>
+      <dependency>
+      	<groupId>edu.unc.mapseq.mapseq-dao</groupId>
+      	<artifactId>mapseq-dao-ws</artifactId>
+      	<version>${mapseq.parent.version}</version>
+      </dependency>
+      <dependency>
+      	<groupId>org.renci.commons</groupId>
+      	<artifactId>commons-exec</artifactId>
+      	<version>${renci.commons.version}</version>
+      </dependency>
+      <dependency>
+      	<groupId>edu.unc.mapseq</groupId>
+      	<artifactId>mapseq-pipeline-api</artifactId>
+      	<version>${mapseq.parent.version}</version>
+      </dependency>
+      <dependency>
       	<groupId>edu.unc.mapseq</groupId>
       	<artifactId>modules</artifactId>
       	<version>${mapseq.modules.version}</version>
+      </dependency>
+      <dependency>
+      	<groupId>org.apache.felix</groupId>
+      	<artifactId>org.apache.felix.gogo.runtime</artifactId>
+      	<version>0.10.0</version>
+      </dependency>
+      <dependency>
+      	<groupId>org.osgi</groupId>
+      	<artifactId>org.osgi.compendium</artifactId>
+      	<version>4.3.1</version>
+      </dependency>
+      <dependency>
+      	<groupId>org.osgi</groupId>
+      	<artifactId>org.osgi.core</artifactId>
+      	<version>4.3.1</version>
+      	<scope>provided</scope>
+      </dependency>
+      <dependency>
+      	<groupId>org.hibernate</groupId>
+      	<artifactId>hibernate-validator</artifactId>
+      	<version>4.2.0.Final</version>
+      </dependency>
+      <dependency>
+      	<groupId>org.apache.geronimo.specs</groupId>
+      	<artifactId>geronimo-jms_1.1_spec</artifactId>
+      	<version>1.1.1</version>
+      </dependency>
+      <dependency>
+      	<groupId>org.apache.karaf</groupId>
+      	<artifactId>org.apache.karaf.util</artifactId>
+      	<version>${karaf.version}</version>
+      </dependency>
+      <dependency>
+      	<groupId>org.apache.karaf.shell</groupId>
+      	<artifactId>org.apache.karaf.shell.console</artifactId>
+      	<version>${karaf.version}</version>
+      </dependency>
+      <dependency>
+      	<groupId>org.apache.karaf</groupId>
+      	<artifactId>apache-karaf</artifactId>
+      	<version>${karaf.version}</version>
+      	<type>tar.gz</type>
       </dependency>
     </dependencies>
   </dependencyManagement>
