@@ -86,7 +86,7 @@
       <plugin>
         <groupId>edu.unc.mapseq.maven-plugins</groupId>
         <artifactId>scripts-plugin</artifactId>
-        <version>0.0.3</version>
+        <version>0.0.7</version>
         <configuration>
           <outputDir>${project.basedir}/src/main/distribution/bin</outputDir>
         </configuration>
@@ -96,6 +96,7 @@
               <goal>list-studies-script</goal>
               <goal>register-account-script</goal>
               <goal>upload-file-script</goal>
+              <goal>download-file-script</goal>
               <goal>check-workflow-status-script</goal>
               <goal>list-platforms-script</goal>
               <goal>list-sequencer-runs-script</goal>
