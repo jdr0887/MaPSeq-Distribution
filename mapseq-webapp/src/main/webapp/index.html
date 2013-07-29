@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Hello World</title>
+<script
+	src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+$(document).ready(function() {
+	
+  $("#searchform").submit(function() {
+    var startDate = $('#startDate').val();
+    console.log(startDate);
+    var endDate = $('#endDate').val();
+    console.log(endDate);
+    		
+	$.ajax({
+      url:"http://localhost:8181/cxf/WorkflowRun/WorkflowRunService/findByCreatorAndDateRange/46625/" + startDate + "/" + endDate,
+      dataType: "json",
+      type:"GET",
+      success: addToTable
+    });
+    return false;
+  });
+});
+    </script>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+	<div class="container">
+		<form id="searchform">
+			<input type="text" placeholder="Start Date" id="startDate" /> <input
+				type="text" placeholder="End Date" id="endDate" /> <input
+				type="submit" value="Search" id="search" />
+		</form>
+		<section id="results">
+			<table id="table_id">
+				<thead>
+					<tr>
+						<th>Column 1</th>
+						<th>Column 2</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Row 1 Data 1</td>
+						<td>Row 1 Data 2</td>
+					</tr>
+					<tr>
+						<td>Row 2 Data 1</td>
+						<td>Row 2 Data 2</td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
+	</div>
+</body>
+</html>
+
