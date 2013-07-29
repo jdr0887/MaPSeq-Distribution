@@ -10,32 +10,6 @@
   <artifactId>mapseq-webapp</artifactId>
   <version>0.2.16-SNAPSHOT</version>
   <packaging>war</packaging>
-  <dependencies>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
-      <version>4.3.0</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>${servlet.spec.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.myfaces.core</groupId>
-      <artifactId>myfaces-api</artifactId>
-      <version>${jsf-myfaces.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.myfaces.core</groupId>
-      <artifactId>myfaces-impl</artifactId>
-      <version>${jsf-myfaces.version}</version>
-      <scope>provided</scope>
-    </dependency>    
-  </dependencies>
   <build>
     <resources>
       <resource>
@@ -70,42 +44,13 @@
 	    <supportedProjectType>war</supportedProjectType>
 	  </supportedProjectTypes>
 	  <instructions>
-	    <Import-Package>
-	      javax.el,
-	      javax.faces.webapp,
-	      javax.servlet;version="2.5.0",
-	      javax.servlet.http;version="2.5.0",
-	      javax.servlet.resources;version="2.5.0",
-	      javax.servlet.jsp;version="2.1.0",
-	      javax.servlet.jsp.jstl.core;version="1.1.2",
-	      javax.servlet.jsp.jstl.fmt;version="1.1.2",
-	      javax.servlet.jsp.jstl.tlv;version="1.1.2",
-	      org.apache.taglibs.standard.resources;version="1.1.2",
-	      org.apache.taglibs.standard.tag.common.core;version="1.1.2",
-	      org.apache.taglibs.standard.tag.rt.core;version="1.1.2",
-	      org.apache.taglibs.standard.tei;version="1.1.2",
-	      org.apache.taglibs.standard.tlv;version="1.1.2",
-	      com.sun.el.lang,
-	      com.sun.el.parser,
-	      com.sun.el,
-	      com.sun.el.util,
-	      javax.faces.*                        
-	    </Import-Package>
+	    <Import-Package>*</Import-Package>
 	    <Export-Package>!*</Export-Package>
 	    <!--<Export-Package>!*</Export-Package>-->
-	    <Bundle-Classpath>.,
-	    WEB-INF/classes
+	    <Bundle-Classpath>.,WEB-INF/classes
 	    </Bundle-Classpath>
-	    <Web-ContextPath>jsf-sample</Web-ContextPath>
-	    <Require-Bundle>
-	      org.apache.myfaces.core.api,org.apache.myfaces.core.impl
-	    </Require-Bundle>
-	    <_removeheaders>
-	      Include-Resource,
-	      Private-Package,
-	      Embed-Dependency,
-	      Embed-Transitive
-	    </_removeheaders>
+	    <Web-ContextPath>mapseq</Web-ContextPath>
+	    <_removeheaders>Include-Resource,Private-Package,Embed-Dependency,Embed-Transitive</_removeheaders>
 	  </instructions>
 	</configuration>
 	<executions>
