@@ -2,13 +2,13 @@
   <parent>
     <groupId>edu.unc.mapseq</groupId>
     <artifactId>distribution</artifactId>
-    <version>0.2.16-SNAPSHOT</version>
+    <version>0.2.17-SNAPSHOT</version>
   </parent>
   <name>MaPSeq :: Distribution :: Web App</name>
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.unc.mapseq.distribution</groupId>
   <artifactId>mapseq-webapp</artifactId>
-  <version>0.2.16-SNAPSHOT</version>
+  <version>0.2.17-SNAPSHOT</version>
   <packaging>war</packaging>
   <build>
     <resources>
@@ -46,7 +46,6 @@
 	  <instructions>
 	    <Import-Package>*</Import-Package>
 	    <Export-Package>!*</Export-Package>
-	    <!--<Export-Package>!*</Export-Package>-->
 	    <Bundle-Classpath>.,WEB-INF/classes
 	    </Bundle-Classpath>
 	    <Web-ContextPath>mapseq</Web-ContextPath>
