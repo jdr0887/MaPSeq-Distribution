@@ -1,0 +1,82 @@
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Workflow Runs</title>
+    <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script type='text/javascript' src="http://datatables.net/release-datatables/media/js/jquery.dataTables.js"></script>
+<script type='text/javascript'>//<![CDATA[ 
+$(window).load(function(){
+
+  var thisTable = $("#workflowRuns").dataTable({
+    "sPaginationType": "full_numbers",
+    "bJQueryUI": true,
+    "aaSorting": [[ 1, "asc" ]]
+  });
+
+  function addToTable(response) {
+    $.each(response.workflowRun, function(i, workflowRun) {
+      thisTable.fnAddData([
+        workflowRun['@id'], 
+	workflowRun.workflow['@name'],  
+	workflowRun.workflow['@version'],  
+	workflowRun['@name'],
+	workflowRun.status, 
+	workflowRun['@creationDate'], 
+	workflowRun.startDate,
+	workflowRun.endDate
+      ]);
+    });
+  }
+
+  $("#searchform").submit(function() {
+
+  thisTable.fnClearTable();
+    var startDate = $('#startDate').val();
+    console.log(startDate);
+    var endDate = $('#endDate').val();
+    console.log(endDate);
+    		
+    $.ajax({
+      url:"/cxf/WorkflowRun/WorkflowRunService/findByCreatorAndCreationDateRange/46625/" + startDate + "/" + endDate,
+      <!--url:"test/json.txt",-->
+      dataType: "json",
+      type:"GET",
+      success: addToTable
+    });
+    return false;
+  });
+});//]]>
+</script>
+<link rel="stylesheet" type="text/css" href="css/data_tables.css">
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="container">
+    <form id="searchform" >
+      <input type="text" placeholder="Start Date" id="startDate" /> 
+      <input type="text" placeholder="End Date" id="endDate" /> 
+      <input type="submit" value="Search" id="search" />
+    </form>
+    <section id="results">
+      <table id="workflowRuns" class="display">
+	<thead>
+	  <tr>
+	    <th width="5%">ID</th>
+	    <th width="15%">Workflow Name</th>
+	    <th width="5%">Workflow Version</th>
+	    <th width="25%">Name</th>
+	    <th width="5%">Status</th>
+	    <th width="15%">Date Created</th>
+	    <th width="15%">Date Started</th>
+	    <th width="15%">Date Finished</th>
+	  </tr>
+	</thead>
+	<tbody>
+	</tbody>
+      </table>
+    </section>
+  </div>
+</body>
+</html>
+
