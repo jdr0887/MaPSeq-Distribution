@@ -1,17 +1,29 @@
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <!DOCTYPE html>
 <html>
   <head>
     <title>Workflow Runs</title>
-    <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-    <script type='text/javascript' src="http://datatables.net/release-datatables/media/js/jquery.dataTables.js"></script>
-<script type='text/javascript'>//<![CDATA[ 
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+    <link rel="stylesheet" type="text/css" href="css/data_tables.css"/>
+    <link rel="stylesheet" href="css/style.css" />
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="http://datatables.net/release-datatables/media/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" src="js/jquery.dateFormat-1.0.js"></script>
+    <script type="text/javascript" src="js/document-ready-integration.js" ></script>
+    <script type='text/javascript'>//<![CDATA[ 
+
+$(function() {
+  $( "#startDate" ).datepicker({ dateFormat: "yy-mm-dd" });
+  $( "#endDate" ).datepicker({ dateFormat: "yy-mm-dd" });
+});
+
 $(window).load(function(){
 
   var thisTable = $("#workflowRuns").dataTable({
     "sPaginationType": "full_numbers",
     "bJQueryUI": true,
-    "aaSorting": [[ 1, "asc" ]]
+    "aaSorting": [[ 6, "asc" ]]
   });
 
   function addToTable(response) {
@@ -20,26 +32,49 @@ $(window).load(function(){
         workflowRun['@id'], 
 	workflowRun.workflow['@name'],  
 	workflowRun.workflow['@version'],  
-	workflowRun['@name'],
+	"<a href='jobs.html?workflowRunId=" + workflowRun['@id'] + "'>" + workflowRun['@name'] + "</a>",
 	workflowRun.status, 
-	workflowRun['@creationDate'], 
-	workflowRun.startDate,
-	workflowRun.endDate
+	$.format.date(workflowRun['@creationDate'], 'MM/dd/yyyy hh:mm:ss a'), 
+	$.format.date(workflowRun.startDate, 'MM/dd/yyyy hh:mm:ss a'),
+	$.format.date(workflowRun.endDate, 'MM/dd/yyyy hh:mm:ss a')
       ]);
     });
   }
 
   $("#searchform").submit(function() {
 
-  thisTable.fnClearTable();
+    thisTable.fnClearTable();
+
+    var username = $('#username').val();
+    console.log(username);
+
+    var userId;
+
+    $.ajax({
+      url:"/cxf/Account/AccountService/findByName/" + username,
+      <!-- url:"test/account.json.txt",-->
+      async: false,
+      dataType: "json",
+      type:"GET",
+      success: function(response) {    
+        console.log(response.account['@id']);
+        userId = response.account['@id'];
+      } 
+    });
+     
+    if (userId == "") {
+      alert("user '" + username + "' does not exit");
+      return false;
+    } 
+
     var startDate = $('#startDate').val();
     console.log(startDate);
     var endDate = $('#endDate').val();
     console.log(endDate);
     		
     $.ajax({
-      url:"/cxf/WorkflowRun/WorkflowRunService/findByCreatorAndCreationDateRange/46625/" + startDate + "/" + endDate,
-      <!--url:"test/json.txt",-->
+      url:"/cxf/WorkflowRun/WorkflowRunService/findByCreatorAndCreationDateRange/" + userId + "/" + startDate + "/" + endDate,
+      <!--url:"test/workflowRun.json.txt",-->
       dataType: "json",
       type:"GET",
       success: addToTable
@@ -48,12 +83,11 @@ $(window).load(function(){
   });
 });//]]>
 </script>
-<link rel="stylesheet" type="text/css" href="css/data_tables.css">
-<link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
   <div class="container">
     <form id="searchform" >
+      <input type="text" placeholder="Username" id="username" /> 
       <input type="text" placeholder="Start Date" id="startDate" /> 
       <input type="text" placeholder="End Date" id="endDate" /> 
       <input type="submit" value="Search" id="search" />
