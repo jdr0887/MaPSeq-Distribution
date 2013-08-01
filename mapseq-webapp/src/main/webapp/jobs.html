@@ -1,0 +1,73 @@
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Jobs</title>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+    <link rel="stylesheet" type="text/css" href="css/data_tables.css"/>
+    <link rel="stylesheet" href="css/style.css" />
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="http://datatables.net/release-datatables/media/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" src="js/purl.js"></script>
+    <script type="text/javascript" src="js/jquery.dateFormat-1.0.js"></script>
+    <script type="text/javascript" src="js/document-ready-integration.js" ></script>
+    <script type='text/javascript'>//<![CDATA[ 
+
+$(window).load(function(){
+
+  var thisTable = $("#jobs").dataTable({
+    "sPaginationType": "full_numbers",
+    "bJQueryUI": true,
+    "aaSorting": [[ 4, "asc" ]]
+  });
+
+  function addToTable(response) {
+    $.each(response.job, function(i, job) {
+      thisTable.fnAddData([
+        job['@id'],
+        job['@name'],
+	job.status, 
+	$.format.date(job['@creationDate'], 'MM/dd/yyyy hh:mm:ss a'),
+	$.format.date(job.startDate, 'MM/dd/yyyy hh:mm:ss a'),
+	$.format.date(job.endDate, 'MM/dd/yyyy hh:mm:ss a')
+      ]);
+    });
+  }
+
+  $.ajax({
+    url:"/cxf/Job/JobService/findByWorkflowRunId/" + $.url().param('workflowRunId'),
+    async: false,
+    dataType: "json",
+    type:"GET",
+    success: addToTable
+  });
+  return false;
+});//]]>
+</script>
+</head>
+<body>
+  <div class="container">
+    <form id="" >
+      <input type="hidden" id="workflowRunId" /> 
+    </form>
+    <section id="results">
+      <table id="jobs" class="display">
+	<thead>
+	  <tr>
+	    <th width="5%">ID</th>
+	    <th width="30%">Name</th>
+	    <th width="5%">Status</th>
+	    <th width="15%">Date Created</th>
+	    <th width="15%">Date Started</th>
+	    <th width="15%">Date Finished</th>
+	  </tr>
+	</thead>
+	<tbody>
+	</tbody>
+      </table>
+    </section>
+  </div>
+</body>
+</html>
+
