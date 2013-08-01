@@ -31,9 +31,9 @@ $(window).load(function(){
       thisTable.fnAddData([
         workflowRun['@id'], 
 	workflowRun.workflow['@name'],  
-	workflowRun.workflow['@version'],  
 	"<a href='jobs.html?workflowRunId=" + workflowRun['@id'] + "'>" + workflowRun['@name'] + "</a>",
-	workflowRun.status, 
+	workflowRun.status,
+	workflowRun.version,  
 	$.format.date(workflowRun['@creationDate'], 'MM/dd/yyyy hh:mm:ss a'), 
 	$.format.date(workflowRun.startDate, 'MM/dd/yyyy hh:mm:ss a'),
 	$.format.date(workflowRun.endDate, 'MM/dd/yyyy hh:mm:ss a')
