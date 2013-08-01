@@ -17,7 +17,7 @@
     <cxf.version>2.7.3</cxf.version>
     <activemq.version>5.8.0</activemq.version>
     <mapseq.modules.version>0.0.11</mapseq.modules.version>
-    <mapseq.version>0.2.14</mapseq.version>
+    <mapseq.version>0.2.16</mapseq.version>
     <renci.jlrm.version>0.3.10</renci.jlrm.version>
     <renci.commons.version>0.2.0</renci.commons.version>
   </properties>
@@ -37,14 +37,6 @@
     <connection>scm:git:ssh://developername@code.renci.org/gitroot/mps_dist</connection>
     <tag>HEAD</tag>
   </scm>
-  <repositories>
-    <repository>
-      <id>prime-repo</id>
-      <name>PrimeFaces Maven Repository</name>
-      <url>http://repository.primefaces.org</url>
-      <layout>default</layout>
-    </repository>
-  </repositories>
   <dependencyManagement>
     <dependencies>
       <dependency>
