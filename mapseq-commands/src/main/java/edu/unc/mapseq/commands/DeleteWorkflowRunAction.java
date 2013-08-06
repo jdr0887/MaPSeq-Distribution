@@ -7,7 +7,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.felix.gogo.commands.Argument;
 import org.apache.felix.gogo.commands.Command;
-import org.apache.felix.gogo.commands.Option;
 import org.apache.karaf.shell.console.AbstractAction;
 import org.renci.common.exec.BashExecutor;
 import org.renci.common.exec.CommandInput;
@@ -35,9 +34,6 @@ public class DeleteWorkflowRunAction extends AbstractAction {
     @Argument(index = 0, name = "workflowRunId", description = "Workflow Run Identifier", required = false, multiValued = true)
     private List<Long> workflowRunIdList;
 
-    @Option(name = "-r", aliases = {}, description = "Workflow Run ID Range", required = false, multiValued = false)
-    private String workflowRunIdRange;
-
     public DeleteWorkflowRunAction() {
         super();
     }
@@ -45,61 +41,54 @@ public class DeleteWorkflowRunAction extends AbstractAction {
     @Override
     public Object doExecute() {
 
-        List<Long> wrIdList = new ArrayList<Long>();
-
-        if (this.workflowRunIdList != null && this.workflowRunIdList.size() > 0) {
-            wrIdList.addAll(this.workflowRunIdList);
-        }
-
-        if (StringUtils.isNotEmpty(this.workflowRunIdRange)) {
-            String[] split = this.workflowRunIdRange.trim().split("-");
-            String rangeStart = split[0];
-            String rangeEnd = split[1];
-            for (int i = Integer.valueOf(rangeStart); i <= Integer.valueOf(rangeEnd); ++i) {
-                wrIdList.add(Long.valueOf(i));
-            }
-        }
-
         WorkflowRunDAO workflowRunDAO = maPSeqDAOBean.getWorkflowRunDAO();
         JobDAO jobDAO = maPSeqDAOBean.getJobDAO();
         WorkflowPlanDAO workflowPlanDAO = maPSeqDAOBean.getWorkflowPlanDAO();
 
-        for (Long workflowRunId : wrIdList) {
-            try {
-                WorkflowRun workflowRun = workflowRunDAO.findById(workflowRunId);
-                if (workflowRun != null) {
+        if (workflowRunIdList != null && workflowRunIdList.size() > 0) {
 
-                    List<WorkflowPlan> workflowPlanList = workflowPlanDAO.findByWorkflowRunId(workflowRun.getId());
+            List<String> condorJobIdList = new ArrayList<String>();
 
-                    for (WorkflowPlan entity : workflowPlanList) {
-                        logger.info("Deleting WorkflowPlan: " + entity.getId());
-                        workflowPlanDAO.delete(entity);
-                    }
+            for (Long workflowRunId : workflowRunIdList) {
+                try {
+                    WorkflowRun workflowRun = workflowRunDAO.findById(workflowRunId);
+                    if (workflowRun != null) {
 
-                    List<Job> jobList = jobDAO.findByWorkflowRunId(workflowRun.getId());
-                    jobDAO.delete(jobList);
+                        List<WorkflowPlan> workflowPlanList = workflowPlanDAO.findByWorkflowRunId(workflowRun.getId());
 
-                    logger.info("Deleting WorkflowRun: " + workflowRun.getId());
-                    if (workflowRun.getCondorDAGClusterId() != null) {
-                        CommandInput commandInput = new CommandInput();
-                        String condorHome = System.getenv("CONDOR_HOME");
-                        String command = String.format("%s/bin/condor_rm %d.0", condorHome,
-                                workflowRun.getCondorDAGClusterId());
-                        commandInput.setCommand(command);
-                        try {
-                            CommandOutput commandOutput = BashExecutor.getInstance().execute(commandInput,
-                                    new File(System.getProperty("user.home"), ".bashrc"),
-                                    new File(System.getProperty("user.home"), ".mapseqrc"));
-                            logger.debug("commandOutput.getExitCode(): {}", commandOutput.getExitCode());
-                        } catch (ExecutorException e) {
-                            logger.error("Error", e);
+                        for (WorkflowPlan entity : workflowPlanList) {
+                            logger.info("Deleting WorkflowPlan: " + entity.getId());
+                            workflowPlanDAO.delete(entity);
                         }
+
+                        List<Job> jobList = jobDAO.findByWorkflowRunId(workflowRun.getId());
+                        jobDAO.delete(jobList);
+
+                        logger.info("Deleting WorkflowRun: " + workflowRun.getId());
+                        if (workflowRun.getCondorDAGClusterId() != null) {
+                            condorJobIdList.add(String.format("%d.0", workflowRun.getCondorDAGClusterId()));
+                        }
+                        workflowRunDAO.delete(workflowRun);
                     }
-                    workflowRunDAO.delete(workflowRun);
+                } catch (MaPSeqDAOException e) {
+                    e.printStackTrace();
                 }
-            } catch (MaPSeqDAOException e) {
-                e.printStackTrace();
+
             }
+
+            CommandInput commandInput = new CommandInput();
+            String condorHome = System.getenv("CONDOR_HOME");
+            String command = String.format("%s/bin/condor_rm %s", condorHome, StringUtils.join(condorJobIdList, " "));
+            commandInput.setCommand(command);
+            try {
+                CommandOutput commandOutput = BashExecutor.getInstance().execute(commandInput,
+                        new File(System.getProperty("user.home"), ".bashrc"),
+                        new File(System.getProperty("user.home"), ".mapseqrc"));
+                logger.debug("commandOutput.getExitCode(): {}", commandOutput.getExitCode());
+            } catch (ExecutorException e) {
+                logger.error("Error", e);
+            }
+
         }
         return null;
     }
@@ -118,14 +107,6 @@ public class DeleteWorkflowRunAction extends AbstractAction {
 
     public void setWorkflowRunIdList(List<Long> workflowRunIdList) {
         this.workflowRunIdList = workflowRunIdList;
-    }
-
-    public String getWorkflowRunIdRange() {
-        return workflowRunIdRange;
-    }
-
-    public void setWorkflowRunIdRange(String workflowRunIdRange) {
-        this.workflowRunIdRange = workflowRunIdRange;
     }
 
 }
