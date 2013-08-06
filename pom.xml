@@ -12,12 +12,10 @@
   <packaging>pom</packaging>
   <properties>
     <karaf.version>2.3.2</karaf.version>
-    <jsf-myfaces.version>1.2.12</jsf-myfaces.version>
-    <servlet.spec.version>2.5</servlet.spec.version>
-    <cxf.version>2.7.3</cxf.version>
+    <cxf.version>2.7.6</cxf.version>
     <activemq.version>5.8.0</activemq.version>
     <mapseq.modules.version>0.0.11</mapseq.modules.version>
-    <mapseq.version>0.2.17</mapseq.version>
+    <mapseq.version>0.2.18</mapseq.version>
     <renci.jlrm.version>0.3.10</renci.jlrm.version>
     <renci.commons.version>0.2.0</renci.commons.version>
   </properties>
