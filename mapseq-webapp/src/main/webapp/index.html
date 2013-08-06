@@ -28,6 +28,13 @@ $(window).load(function(){
 
   function addToTable(response) {
     $.each(response.workflowRun, function(i, workflowRun) {
+    	
+    	var workflowRunStartDate = "";
+    	if (workflowRun.startDate != null && workflowRun.startDate != "") {
+    		$.format.date(workflowRun.startDate, 'MM/dd/yyyy hh:mm:ss a')
+    		workflowRunStartDate = "";
+    	}
+    	
       thisTable.fnAddData([
         workflowRun['@id'], 
 	workflowRun.workflow['@name'],  
