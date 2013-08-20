@@ -15,17 +15,16 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.WorkflowDAO;
 import edu.unc.mapseq.dao.model.Workflow;
-import edu.unc.mapseq.dao.ws.WebServiceDAOManager;
+import edu.unc.mapseq.dao.rs.RSDAOManager;
 
 public class ListWorkflows implements Runnable {
 
     private final static HelpFormatter helpFormatter = new HelpFormatter();
 
     private final static Options cliOptions = new Options();
-
-    private final WebServiceDAOManager daoMgr = WebServiceDAOManager.getInstance();
 
     public ListWorkflows() {
         super();
@@ -34,8 +33,12 @@ public class ListWorkflows implements Runnable {
     @Override
     public void run() {
 
+        //WSDAOManager daoMgr = WSDAOManager.getInstance();
+        RSDAOManager daoMgr = RSDAOManager.getInstance();
+        MaPSeqDAOBean mapseqDAOBean = daoMgr.getMaPSeqDAOBean();
+
         List<Workflow> workflowList = new ArrayList<Workflow>();
-        WorkflowDAO workflowDAO = daoMgr.getWSDAOBean().getWorkflowDAO();
+        WorkflowDAO workflowDAO = mapseqDAOBean.getWorkflowDAO();
         try {
             workflowList.addAll(workflowDAO.findAll());
         } catch (Exception e) {

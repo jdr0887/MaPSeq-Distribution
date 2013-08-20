@@ -16,20 +16,19 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import edu.unc.mapseq.dao.HTSFSampleDAO;
+import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.SequencerRunDAO;
 import edu.unc.mapseq.dao.model.Account;
 import edu.unc.mapseq.dao.model.HTSFSample;
 import edu.unc.mapseq.dao.model.SequencerRun;
-import edu.unc.mapseq.dao.ws.WebServiceDAOManager;
+import edu.unc.mapseq.dao.rs.RSDAOManager;
 
 public class ListHTSFSamples implements Runnable {
 
     private final static HelpFormatter helpFormatter = new HelpFormatter();
 
     private final static Options cliOptions = new Options();
-
-    private final WebServiceDAOManager daoMgr = WebServiceDAOManager.getInstance();
 
     private List<Long> sequencerRunIdList;
 
@@ -39,10 +38,14 @@ public class ListHTSFSamples implements Runnable {
 
     @Override
     public void run() {
+        //WSDAOManager daoMgr = WSDAOManager.getInstance();
+        RSDAOManager daoMgr = RSDAOManager.getInstance();
+
+        MaPSeqDAOBean mapseqDAOBean = daoMgr.getMaPSeqDAOBean();
 
         Account account = null;
         try {
-            account = daoMgr.getWSDAOBean().getAccountDAO().findByName(System.getProperty("user.name"));
+            account = mapseqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
         } catch (MaPSeqDAOException e) {
         }
 
@@ -52,7 +55,7 @@ public class ListHTSFSamples implements Runnable {
         }
 
         List<SequencerRun> srList = new ArrayList<SequencerRun>();
-        SequencerRunDAO sequencerRunDAO = daoMgr.getWSDAOBean().getSequencerRunDAO();
+        SequencerRunDAO sequencerRunDAO = mapseqDAOBean.getSequencerRunDAO();
         for (Long sequencerRunId : sequencerRunIdList) {
             SequencerRun sequencerRun = null;
             try {
@@ -87,7 +90,7 @@ public class ListHTSFSamples implements Runnable {
             Formatter formatter = new Formatter(sb, Locale.US);
             formatter.format("%1$-18s %2$-18s %3$-36s %4$s%n", "HTSF Sample ID", "Sample Name", "Lane", "Barcode");
             for (SequencerRun sequencerRun : srList) {
-                HTSFSampleDAO htsfSampleDAO = daoMgr.getWSDAOBean().getHTSFSampleDAO();
+                HTSFSampleDAO htsfSampleDAO = mapseqDAOBean.getHTSFSampleDAO();
                 try {
                     List<HTSFSample> htsfSampleList = htsfSampleDAO.findBySequencerRunId(sequencerRun.getId());
                     for (HTSFSample sample : htsfSampleList) {

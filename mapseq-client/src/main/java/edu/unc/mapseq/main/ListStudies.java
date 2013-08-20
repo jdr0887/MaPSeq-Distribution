@@ -16,17 +16,16 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang.StringUtils;
 
+import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.StudyDAO;
 import edu.unc.mapseq.dao.model.Study;
-import edu.unc.mapseq.dao.ws.WebServiceDAOManager;
+import edu.unc.mapseq.dao.rs.RSDAOManager;
 
 public class ListStudies implements Runnable {
 
     private final static HelpFormatter helpFormatter = new HelpFormatter();
 
     private final static Options cliOptions = new Options();
-
-    private final WebServiceDAOManager daoMgr = WebServiceDAOManager.getInstance();
 
     public ListStudies() {
         super();
@@ -35,8 +34,12 @@ public class ListStudies implements Runnable {
     @Override
     public void run() {
 
+        //WSDAOManager daoMgr = WSDAOManager.getInstance();
+        RSDAOManager daoMgr = RSDAOManager.getInstance();
+        MaPSeqDAOBean mapseqDAOBean = daoMgr.getMaPSeqDAOBean();
+
         List<Study> studyList = new ArrayList<Study>();
-        StudyDAO studyDAO = daoMgr.getWSDAOBean().getStudyDAO();
+        StudyDAO studyDAO = mapseqDAOBean.getStudyDAO();
 
         try {
             studyList.addAll(studyDAO.findAll());

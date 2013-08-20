@@ -16,11 +16,12 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowRunDAO;
 import edu.unc.mapseq.dao.model.Account;
 import edu.unc.mapseq.dao.model.WorkflowRun;
-import edu.unc.mapseq.dao.ws.WebServiceDAOManager;
+import edu.unc.mapseq.dao.rs.RSDAOManager;
 
 public class ListMyWorkflowRuns implements Runnable {
 
@@ -35,11 +36,14 @@ public class ListMyWorkflowRuns implements Runnable {
     @Override
     public void run() {
 
-        WebServiceDAOManager daoMgr = WebServiceDAOManager.getInstance();
+        // WSDAOManager daoMgr = WSDAOManager.getInstance();
+        RSDAOManager daoMgr = RSDAOManager.getInstance();
+
+        MaPSeqDAOBean mapseqDAOBean = daoMgr.getMaPSeqDAOBean();
 
         Account account = null;
         try {
-            account = daoMgr.getWSDAOBean().getAccountDAO().findByName(System.getProperty("user.name"));
+            account = mapseqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
         } catch (MaPSeqDAOException e) {
         }
 
@@ -49,7 +53,7 @@ public class ListMyWorkflowRuns implements Runnable {
         }
 
         List<WorkflowRun> workflowRunList = null;
-        WorkflowRunDAO workflowRunDAO = daoMgr.getWSDAOBean().getWorkflowRunDAO();
+        WorkflowRunDAO workflowRunDAO = mapseqDAOBean.getWorkflowRunDAO();
         try {
             workflowRunList = workflowRunDAO.findByCreator(account.getId());
         } catch (MaPSeqDAOException e) {
