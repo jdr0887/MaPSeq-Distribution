@@ -13,12 +13,13 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.SequencerRunDAO;
 import edu.unc.mapseq.dao.model.Account;
 import edu.unc.mapseq.dao.model.SequencerRun;
 import edu.unc.mapseq.dao.model.SequencerRunStatusType;
-import edu.unc.mapseq.dao.ws.WebServiceDAOManager;
+import edu.unc.mapseq.dao.rs.RSDAOManager;
 
 public class CreateSequencerRun implements Callable<Long> {
 
@@ -40,11 +41,14 @@ public class CreateSequencerRun implements Callable<Long> {
 
     @Override
     public Long call() {
-        WebServiceDAOManager daoMgr = WebServiceDAOManager.getInstance();
+        //WSDAOManager daoMgr = WSDAOManager.getInstance();
+        RSDAOManager daoMgr = RSDAOManager.getInstance();
+
+        MaPSeqDAOBean mapseqDAOBean = daoMgr.getMaPSeqDAOBean();
 
         Account account = null;
         try {
-            account = daoMgr.getWSDAOBean().getAccountDAO().findByName(System.getProperty("user.name"));
+            account = mapseqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
         } catch (MaPSeqDAOException e) {
             e.printStackTrace();
         }
@@ -71,9 +75,9 @@ public class CreateSequencerRun implements Callable<Long> {
             sequencerRun.setBaseDirectory(this.getBaseRunFolder());
             sequencerRun.setCreationDate(creationDate);
             sequencerRun.setModificationDate(creationDate);
-            sequencerRun.setPlatform(daoMgr.getWSDAOBean().getPlatformDAO().findById(this.platformId));
+            sequencerRun.setPlatform(mapseqDAOBean.getPlatformDAO().findById(this.platformId));
             sequencerRun.setStatus(status);
-            SequencerRunDAO sequencerRunDAO = daoMgr.getWSDAOBean().getSequencerRunDAO();
+            SequencerRunDAO sequencerRunDAO = mapseqDAOBean.getSequencerRunDAO();
             Long sequencerRunId = sequencerRunDAO.save(sequencerRun);
             return sequencerRunId;
         } catch (MaPSeqDAOException e1) {

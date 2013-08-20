@@ -11,9 +11,10 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.model.Study;
-import edu.unc.mapseq.dao.ws.WebServiceDAOManager;
+import edu.unc.mapseq.dao.rs.RSDAOManager;
 
 public class CreateStudy implements Callable<Long> {
 
@@ -37,23 +38,25 @@ public class CreateStudy implements Callable<Long> {
 
     @Override
     public Long call() {
-        WebServiceDAOManager daoMgr = WebServiceDAOManager.getInstance();
+        //WSDAOManager daoMgr = WSDAOManager.getInstance();
+        RSDAOManager daoMgr = RSDAOManager.getInstance();
+        MaPSeqDAOBean mapseqDAOBean = daoMgr.getMaPSeqDAOBean();
         Date d = new Date();
         try {
             Study study = new Study();
             study.setCreationDate(d);
             study.setModificationDate(d);
             study.setApproved(approved);
-            study.setCreator(daoMgr.getWSDAOBean().getAccountDAO().findByName(System.getProperty("user.name")));
+            study.setCreator(mapseqDAOBean.getAccountDAO().findByName(System.getProperty("user.name")));
             study.setGrant(grant);
             study.setName(name);
             if (primaryContactId != null) {
-                study.setPrimaryContact(daoMgr.getWSDAOBean().getAccountDAO().findById(primaryContactId));
+                study.setPrimaryContact(mapseqDAOBean.getAccountDAO().findById(primaryContactId));
             }
             if (principalInvestigatorId != null) {
-                study.setPrincipalInvestigator(daoMgr.getWSDAOBean().getAccountDAO().findById(principalInvestigatorId));
+                study.setPrincipalInvestigator(mapseqDAOBean.getAccountDAO().findById(principalInvestigatorId));
             }
-            Long studyId = daoMgr.getWSDAOBean().getStudyDAO().save(study);
+            Long studyId = mapseqDAOBean.getStudyDAO().save(study);
             return studyId;
         } catch (MaPSeqDAOException e1) {
             e1.printStackTrace();

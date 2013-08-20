@@ -17,6 +17,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
 
+import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.PlatformDAO;
 import edu.unc.mapseq.dao.model.Account;
@@ -26,15 +27,13 @@ import edu.unc.mapseq.dao.model.Platform;
 import edu.unc.mapseq.dao.model.SequencerRun;
 import edu.unc.mapseq.dao.model.SequencerRunStatusType;
 import edu.unc.mapseq.dao.model.Study;
-import edu.unc.mapseq.dao.ws.WebServiceDAOManager;
+import edu.unc.mapseq.dao.rs.RSDAOManager;
 
 public class CreateSequencerRunFromSampleSheet implements Runnable {
 
     private final static HelpFormatter helpFormatter = new HelpFormatter();
 
     private final static Options cliOptions = new Options();
-
-    private final WebServiceDAOManager daoMgr = WebServiceDAOManager.getInstance();
 
     private Long platformId;
 
@@ -52,9 +51,14 @@ public class CreateSequencerRunFromSampleSheet implements Runnable {
     @Override
     public void run() {
 
+        //WSDAOManager daoMgr = WSDAOManager.getInstance();
+        RSDAOManager daoMgr = RSDAOManager.getInstance();
+
+        MaPSeqDAOBean mapseqDAOBean = daoMgr.getMaPSeqDAOBean();
+
         Account account = null;
         try {
-            account = daoMgr.getWSDAOBean().getAccountDAO().findByName(System.getProperty("user.name"));
+            account = mapseqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
         } catch (MaPSeqDAOException e) {
         }
 
@@ -66,7 +70,7 @@ public class CreateSequencerRunFromSampleSheet implements Runnable {
         Date creationDate = new Date();
         Platform platform = null;
         try {
-            PlatformDAO platformDAO = daoMgr.getWSDAOBean().getPlatformDAO();
+            PlatformDAO platformDAO = mapseqDAOBean.getPlatformDAO();
             platform = platformDAO.findById(platformId);
         } catch (MaPSeqDAOException e) {
             e.printStackTrace();
@@ -82,7 +86,7 @@ public class CreateSequencerRunFromSampleSheet implements Runnable {
         sequencerRun.setPlatform(platform);
 
         try {
-            Long sequencerRunId = daoMgr.getWSDAOBean().getSequencerRunDAO().save(sequencerRun);
+            Long sequencerRunId = mapseqDAOBean.getSequencerRunDAO().save(sequencerRun);
             sequencerRun.setId(sequencerRunId);
         } catch (MaPSeqDAOException e1) {
             e1.printStackTrace();
@@ -109,7 +113,7 @@ public class CreateSequencerRunFromSampleSheet implements Runnable {
 
                 Study study = null;
                 try {
-                    study = daoMgr.getWSDAOBean().getStudyDAO().findByName(sampleProject);
+                    study = mapseqDAOBean.getStudyDAO().findByName(sampleProject);
                 } catch (Exception e) {
                     // swallow exceptions
                 }
@@ -119,7 +123,7 @@ public class CreateSequencerRunFromSampleSheet implements Runnable {
                     study.setModificationDate(creationDate);
                     study.setCreator(account);
                     study.setName(sampleProject);
-                    Long studyId = daoMgr.getWSDAOBean().getStudyDAO().save(study);
+                    Long studyId = mapseqDAOBean.getStudyDAO().save(study);
                     study.setId(studyId);
                 }
 
@@ -145,7 +149,7 @@ public class CreateSequencerRunFromSampleSheet implements Runnable {
                     attributes.add(descAttribute);
                     htsfSample.setAttributes(attributes);
 
-                    Long htsfSampleId = daoMgr.getWSDAOBean().getHTSFSampleDAO().save(htsfSample);
+                    Long htsfSampleId = mapseqDAOBean.getHTSFSampleDAO().save(htsfSample);
                     htsfSample.setId(htsfSampleId);
 
                 }

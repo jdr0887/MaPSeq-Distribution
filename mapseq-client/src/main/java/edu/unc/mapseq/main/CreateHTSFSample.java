@@ -21,13 +21,14 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 
 import edu.unc.mapseq.dao.HTSFSampleDAO;
+import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.model.Account;
 import edu.unc.mapseq.dao.model.FileData;
 import edu.unc.mapseq.dao.model.HTSFSample;
 import edu.unc.mapseq.dao.model.MimeType;
 import edu.unc.mapseq.dao.model.SequencerRun;
-import edu.unc.mapseq.dao.ws.WebServiceDAOManager;
+import edu.unc.mapseq.dao.rs.RSDAOManager;
 
 public class CreateHTSFSample implements Callable<Long> {
 
@@ -55,11 +56,15 @@ public class CreateHTSFSample implements Callable<Long> {
 
     @Override
     public Long call() {
-        WebServiceDAOManager daoMgr = WebServiceDAOManager.getInstance();
+
+        //WSDAOManager daoMgr = WSDAOManager.getInstance();
+        RSDAOManager daoMgr = RSDAOManager.getInstance();
+
+        MaPSeqDAOBean mapseqDAOBean = daoMgr.getMaPSeqDAOBean();
 
         Account account = null;
         try {
-            account = daoMgr.getWSDAOBean().getAccountDAO().findByName(System.getProperty("user.name"));
+            account = mapseqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
         } catch (MaPSeqDAOException e) {
             e.printStackTrace();
         }
@@ -71,7 +76,7 @@ public class CreateHTSFSample implements Callable<Long> {
 
         SequencerRun sequencerRun = null;
         try {
-            sequencerRun = daoMgr.getWSDAOBean().getSequencerRunDAO().findById(this.sequencerRunId);
+            sequencerRun = mapseqDAOBean.getSequencerRunDAO().findById(this.sequencerRunId);
         } catch (Exception e1) {
         }
 
@@ -175,11 +180,11 @@ public class CreateHTSFSample implements Callable<Long> {
             read1FastqFD.setName(read1Fastq.getName());
             read1FastqFD.setPath(read1Fastq.getParentFile().getAbsolutePath());
 
-            List<FileData> fileDataList = daoMgr.getWSDAOBean().getFileDataDAO().findByExample(read1FastqFD);
+            List<FileData> fileDataList = mapseqDAOBean.getFileDataDAO().findByExample(read1FastqFD);
             if (fileDataList != null && fileDataList.size() > 0) {
                 read1FastqFD = fileDataList.get(0);
             } else {
-                Long id = daoMgr.getWSDAOBean().getFileDataDAO().save(read1FastqFD);
+                Long id = mapseqDAOBean.getFileDataDAO().save(read1FastqFD);
                 read1FastqFD.setId(id);
             }
             fileDataSet.add(read1FastqFD);
@@ -189,26 +194,26 @@ public class CreateHTSFSample implements Callable<Long> {
                 read2FastqFD.setMimeType(MimeType.FASTQ);
                 read2FastqFD.setName(read2Fastq.getName());
                 read2FastqFD.setPath(read2Fastq.getParentFile().getAbsolutePath());
-                fileDataList = daoMgr.getWSDAOBean().getFileDataDAO().findByExample(read2FastqFD);
+                fileDataList = mapseqDAOBean.getFileDataDAO().findByExample(read2FastqFD);
                 if (fileDataList != null && fileDataList.size() > 0) {
                     read2FastqFD = fileDataList.get(0);
                 } else {
-                    Long id = daoMgr.getWSDAOBean().getFileDataDAO().save(read2FastqFD);
+                    Long id = mapseqDAOBean.getFileDataDAO().save(read2FastqFD);
                     read2FastqFD.setId(id);
                 }
                 fileDataSet.add(read2FastqFD);
             }
 
-            HTSFSampleDAO htsfSampleDAO = daoMgr.getWSDAOBean().getHTSFSampleDAO();
+            HTSFSampleDAO htsfSampleDAO = mapseqDAOBean.getHTSFSampleDAO();
 
             HTSFSample htsfSample = new HTSFSample();
             htsfSample.setName(getName());
-            htsfSample.setCreator(daoMgr.getWSDAOBean().getAccountDAO().findByName(System.getProperty("user.name")));
+            htsfSample.setCreator(mapseqDAOBean.getAccountDAO().findByName(System.getProperty("user.name")));
             Date creationDate = new Date();
             htsfSample.setCreationDate(creationDate);
             htsfSample.setModificationDate(creationDate);
             htsfSample.setBarcode(barcode);
-            htsfSample.setStudy(daoMgr.getWSDAOBean().getStudyDAO().findById(this.studyId));
+            htsfSample.setStudy(mapseqDAOBean.getStudyDAO().findById(this.studyId));
             htsfSample.setLaneIndex(laneIndex);
             htsfSample.setSequencerRun(sequencerRun);
             htsfSample.setFileDatas(fileDataSet);

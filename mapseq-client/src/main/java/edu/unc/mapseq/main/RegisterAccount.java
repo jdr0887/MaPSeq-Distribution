@@ -13,10 +13,11 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.model.Account;
 import edu.unc.mapseq.dao.model.AccountGroup;
-import edu.unc.mapseq.dao.ws.WebServiceDAOManager;
+import edu.unc.mapseq.dao.rs.RSDAOManager;
 
 public class RegisterAccount implements Callable<Long> {
 
@@ -24,18 +25,20 @@ public class RegisterAccount implements Callable<Long> {
 
     private final static Options cliOptions = new Options();
 
-    private final WebServiceDAOManager daoMgr = WebServiceDAOManager.getInstance();
-
     public RegisterAccount() {
         super();
     }
 
     @Override
     public Long call() {
+        //WSDAOManager daoMgr = WSDAOManager.getInstance();
+        RSDAOManager daoMgr = RSDAOManager.getInstance();
+
+        MaPSeqDAOBean mapseqDAOBean = daoMgr.getMaPSeqDAOBean();
 
         Account account = null;
         try {
-            account = daoMgr.getWSDAOBean().getAccountDAO().findByName(System.getProperty("user.name"));
+            account = mapseqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
             if (account != null) {
                 System.out.println("Account already exists for: " + System.getProperty("user.name"));
                 return account.getId();
@@ -49,17 +52,20 @@ public class RegisterAccount implements Callable<Long> {
     }
 
     private Long createAccount() {
+        //WSDAOManager daoMgr = WSDAOManager.getInstance();
+        RSDAOManager daoMgr = RSDAOManager.getInstance();
+        MaPSeqDAOBean mapseqDAOBean = daoMgr.getMaPSeqDAOBean();
         try {
             Account account = new Account();
             Date creationDate = new Date();
             account.setCreationDate(creationDate);
             account.setModificationDate(creationDate);
             Set<AccountGroup> accountGroupSet = new HashSet<AccountGroup>();
-            AccountGroup accountGroup = daoMgr.getWSDAOBean().getAccountGroupDAO().findByName("public");
+            AccountGroup accountGroup = mapseqDAOBean.getAccountGroupDAO().findByName("public");
             accountGroupSet.add(accountGroup);
             account.setAccountGroups(accountGroupSet);
             account.setName(System.getProperty("user.name"));
-            Long accountId = daoMgr.getWSDAOBean().getAccountDAO().save(account);
+            Long accountId = mapseqDAOBean.getAccountDAO().save(account);
             return accountId;
         } catch (MaPSeqDAOException e) {
             e.printStackTrace();
