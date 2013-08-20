@@ -18,21 +18,20 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import edu.unc.mapseq.dao.HTSFSampleDAO;
+import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowPlanDAO;
 import edu.unc.mapseq.dao.model.Account;
 import edu.unc.mapseq.dao.model.HTSFSample;
 import edu.unc.mapseq.dao.model.WorkflowPlan;
 import edu.unc.mapseq.dao.model.WorkflowRun;
-import edu.unc.mapseq.dao.ws.WebServiceDAOManager;
+import edu.unc.mapseq.dao.rs.RSDAOManager;
 
 public class CheckWorkflowStatus implements Runnable {
 
     private final static HelpFormatter helpFormatter = new HelpFormatter();
 
     private final static Options cliOptions = new Options();
-
-    private final WebServiceDAOManager daoMgr = WebServiceDAOManager.getInstance();
 
     private String studyName;
 
@@ -43,9 +42,13 @@ public class CheckWorkflowStatus implements Runnable {
     @Override
     public void run() {
 
+        // WSDAOManager daoMgr = WSDAOManager.getInstance();
+        RSDAOManager daoMgr = RSDAOManager.getInstance();
+
+        MaPSeqDAOBean mapseqDAOBean = daoMgr.getMaPSeqDAOBean();
         Account account = null;
         try {
-            account = daoMgr.getWSDAOBean().getAccountDAO().findByName(System.getProperty("user.name"));
+            account = mapseqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
         } catch (MaPSeqDAOException e) {
         }
 
@@ -55,7 +58,7 @@ public class CheckWorkflowStatus implements Runnable {
         }
 
         List<WorkflowPlan> wpList = new ArrayList<WorkflowPlan>();
-        WorkflowPlanDAO workflowPlanDAO = daoMgr.getWSDAOBean().getWorkflowPlanDAO();
+        WorkflowPlanDAO workflowPlanDAO = mapseqDAOBean.getWorkflowPlanDAO();
         try {
             List<WorkflowPlan> wfPlanList = workflowPlanDAO.findByStudyName(this.studyName);
             if (wfPlanList != null) {
@@ -63,7 +66,7 @@ public class CheckWorkflowStatus implements Runnable {
             }
         } catch (MaPSeqDAOException e) {
         }
-        HTSFSampleDAO hTSFSampleDAO = daoMgr.getWSDAOBean().getHTSFSampleDAO();
+        HTSFSampleDAO hTSFSampleDAO = mapseqDAOBean.getHTSFSampleDAO();
 
         try {
 
