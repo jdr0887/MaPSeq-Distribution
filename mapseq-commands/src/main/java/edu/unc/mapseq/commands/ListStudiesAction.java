@@ -10,6 +10,8 @@ import java.util.Locale;
 import org.apache.commons.lang.StringUtils;
 import org.apache.felix.gogo.commands.Command;
 import org.apache.karaf.shell.console.AbstractAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.StudyDAO;
@@ -17,6 +19,8 @@ import edu.unc.mapseq.dao.model.Study;
 
 @Command(scope = "mapseq", name = "list-studies", description = "List Studies")
 public class ListStudiesAction extends AbstractAction {
+
+    private final Logger logger = LoggerFactory.getLogger(ListStudiesAction.class);
 
     private MaPSeqDAOBean maPSeqDAOBean;
 
@@ -26,6 +30,7 @@ public class ListStudiesAction extends AbstractAction {
 
     @Override
     public Object doExecute() {
+        logger.debug("ENTERING doExecute()");
 
         List<Study> studyList = new ArrayList<Study>();
         StudyDAO studyDAO = maPSeqDAOBean.getStudyDAO();

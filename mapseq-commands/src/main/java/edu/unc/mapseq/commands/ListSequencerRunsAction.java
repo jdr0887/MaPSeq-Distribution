@@ -9,6 +9,8 @@ import java.util.Locale;
 
 import org.apache.felix.gogo.commands.Command;
 import org.apache.karaf.shell.console.AbstractAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.SequencerRunDAO;
@@ -18,10 +20,13 @@ import edu.unc.mapseq.dao.model.SequencerRun;
 @Command(scope = "mapseq", name = "list-sequencer-runs", description = "List SequencerRuns")
 public class ListSequencerRunsAction extends AbstractAction {
 
+    private final Logger logger = LoggerFactory.getLogger(ListSequencerRunsAction.class);
+
     private MaPSeqDAOBean maPSeqDAOBean;
 
     @Override
     protected Object doExecute() throws Exception {
+        logger.debug("ENTERING doExecute()");
 
         List<SequencerRun> srList = new ArrayList<SequencerRun>();
         SequencerRunDAO sequencerRunDAO = maPSeqDAOBean.getSequencerRunDAO();

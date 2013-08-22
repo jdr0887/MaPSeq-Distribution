@@ -7,6 +7,8 @@ import java.util.Locale;
 
 import org.apache.felix.gogo.commands.Command;
 import org.apache.karaf.shell.console.AbstractAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.PlatformDAO;
@@ -14,6 +16,8 @@ import edu.unc.mapseq.dao.model.Platform;
 
 @Command(scope = "mapseq", name = "list-platforms", description = "List Platforms")
 public class ListPlatformsAction extends AbstractAction {
+
+    private final Logger logger = LoggerFactory.getLogger(ListPlatformsAction.class);
 
     private MaPSeqDAOBean maPSeqDAOBean;
 
@@ -23,6 +27,7 @@ public class ListPlatformsAction extends AbstractAction {
 
     @Override
     public Object doExecute() {
+        logger.debug("ENTERING doExecute()");
 
         List<Platform> platformList = new ArrayList<Platform>();
         PlatformDAO platformDAO = maPSeqDAOBean.getPlatformDAO();
