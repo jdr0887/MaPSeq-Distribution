@@ -8,7 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.unc.mapseq</groupId>
   <artifactId>distribution</artifactId>
-  <version>0.2.29-SNAPSHOT</version>
+  <version>0.2.29</version>
   <packaging>pom</packaging>
   <properties>
     <karaf.version>2.3.2</karaf.version>
@@ -33,7 +33,7 @@
   <scm>
     <developerConnection>scm:git:ssh://${user.name}@code.renci.org/gitroot/mps_dist</developerConnection>
     <connection>scm:git:ssh://developername@code.renci.org/gitroot/mps_dist</connection>
-    <tag>HEAD</tag>
+    <tag>distribution-0.2.29</tag>
   </scm>
   <dependencyManagement>
     <dependencies>
