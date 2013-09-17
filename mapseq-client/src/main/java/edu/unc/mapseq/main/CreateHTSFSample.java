@@ -28,7 +28,7 @@ import edu.unc.mapseq.dao.model.FileData;
 import edu.unc.mapseq.dao.model.HTSFSample;
 import edu.unc.mapseq.dao.model.MimeType;
 import edu.unc.mapseq.dao.model.SequencerRun;
-import edu.unc.mapseq.dao.rs.RSDAOManager;
+import edu.unc.mapseq.dao.ws.WSDAOManager;
 
 public class CreateHTSFSample implements Callable<Long> {
 
@@ -57,8 +57,8 @@ public class CreateHTSFSample implements Callable<Long> {
     @Override
     public Long call() {
 
-        //WSDAOManager daoMgr = WSDAOManager.getInstance();
-        RSDAOManager daoMgr = RSDAOManager.getInstance();
+        WSDAOManager daoMgr = WSDAOManager.getInstance();
+        //RSDAOManager daoMgr = RSDAOManager.getInstance();
 
         MaPSeqDAOBean mapseqDAOBean = daoMgr.getMaPSeqDAOBean();
 

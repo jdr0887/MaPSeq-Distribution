@@ -14,7 +14,7 @@ import org.apache.commons.cli.ParseException;
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.model.Study;
-import edu.unc.mapseq.dao.rs.RSDAOManager;
+import edu.unc.mapseq.dao.ws.WSDAOManager;
 
 public class CreateStudy implements Callable<Long> {
 
@@ -38,8 +38,8 @@ public class CreateStudy implements Callable<Long> {
 
     @Override
     public Long call() {
-        //WSDAOManager daoMgr = WSDAOManager.getInstance();
-        RSDAOManager daoMgr = RSDAOManager.getInstance();
+        WSDAOManager daoMgr = WSDAOManager.getInstance();
+        // RSDAOManager daoMgr = RSDAOManager.getInstance();
         MaPSeqDAOBean mapseqDAOBean = daoMgr.getMaPSeqDAOBean();
         Date d = new Date();
         try {

@@ -17,7 +17,7 @@ import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.model.Account;
 import edu.unc.mapseq.dao.model.AccountGroup;
-import edu.unc.mapseq.dao.rs.RSDAOManager;
+import edu.unc.mapseq.dao.ws.WSDAOManager;
 
 public class RegisterAccount implements Callable<Long> {
 
@@ -31,8 +31,8 @@ public class RegisterAccount implements Callable<Long> {
 
     @Override
     public Long call() {
-        //WSDAOManager daoMgr = WSDAOManager.getInstance();
-        RSDAOManager daoMgr = RSDAOManager.getInstance();
+        WSDAOManager daoMgr = WSDAOManager.getInstance();
+        // RSDAOManager daoMgr = RSDAOManager.getInstance();
 
         MaPSeqDAOBean mapseqDAOBean = daoMgr.getMaPSeqDAOBean();
 
@@ -52,8 +52,8 @@ public class RegisterAccount implements Callable<Long> {
     }
 
     private Long createAccount() {
-        //WSDAOManager daoMgr = WSDAOManager.getInstance();
-        RSDAOManager daoMgr = RSDAOManager.getInstance();
+        WSDAOManager daoMgr = WSDAOManager.getInstance();
+        // RSDAOManager daoMgr = RSDAOManager.getInstance();
         MaPSeqDAOBean mapseqDAOBean = daoMgr.getMaPSeqDAOBean();
         try {
             Account account = new Account();

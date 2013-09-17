@@ -27,7 +27,7 @@ import edu.unc.mapseq.dao.model.Platform;
 import edu.unc.mapseq.dao.model.SequencerRun;
 import edu.unc.mapseq.dao.model.SequencerRunStatusType;
 import edu.unc.mapseq.dao.model.Study;
-import edu.unc.mapseq.dao.rs.RSDAOManager;
+import edu.unc.mapseq.dao.ws.WSDAOManager;
 
 public class CreateSequencerRunFromSampleSheet implements Runnable {
 
@@ -51,8 +51,8 @@ public class CreateSequencerRunFromSampleSheet implements Runnable {
     @Override
     public void run() {
 
-        //WSDAOManager daoMgr = WSDAOManager.getInstance();
-        RSDAOManager daoMgr = RSDAOManager.getInstance();
+        WSDAOManager daoMgr = WSDAOManager.getInstance();
+        //RSDAOManager daoMgr = RSDAOManager.getInstance();
 
         MaPSeqDAOBean mapseqDAOBean = daoMgr.getMaPSeqDAOBean();
 
