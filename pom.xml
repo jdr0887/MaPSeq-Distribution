@@ -16,7 +16,7 @@
     <activemq.version>5.8.0</activemq.version>
     <mapseq.modules.version>0.0.22</mapseq.modules.version>
     <mapseq.version>0.2.30</mapseq.version>
-    <renci.jlrm.version>0.3.14</renci.jlrm.version>
+    <renci.jlrm.version>0.3.22</renci.jlrm.version>
     <renci.commons.version>0.2.0</renci.commons.version>
   </properties>
   <issueManagement>
