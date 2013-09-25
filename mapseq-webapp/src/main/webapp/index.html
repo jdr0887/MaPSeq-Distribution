@@ -87,9 +87,12 @@ $(window).load(function(){
     console.log(startDate);
     var endDate = $('#endDate').val();
     console.log(endDate);
+    var status = $('#status').val();
+    console.log(status);
     		
     $.ajax({
-      url:"/cxf/WorkflowRun/WorkflowRunService/findByCreatorAndCreationDateRange/" + userId + "/" + startDate + "/" + endDate,
+      url:"/cxf/WorkflowRun/WorkflowRunService/findByCreatorAndCreationDateRangeAndStatus/"
+      + userId + "/" + startDate + "/" + endDate + "/" + status,
       <!--url:"test/workflowRun.json.txt",-->
       dataType: "json",
       type:"GET",
@@ -103,9 +106,17 @@ $(window).load(function(){
 <body>
   <div class="container">
     <form id="searchform">
-      <input type="text" placeholder="Username" id="username" /> <input type="text" placeholder="Start Date"
-        id="startDate" /> <input type="text" placeholder="End Date" id="endDate" /> <input type="submit"
-        value="Search" id="search" />
+      <input type="text" placeholder="Username" id="username" />
+      <input type="text" placeholder="Start Date" id="startDate" />
+      <input type="text" placeholder="End Date" id="endDate" /> 
+      <select id="status">
+	<option value="Select One">Select One</option> 
+	<option value="PENDING">Pending</option> 
+	<option value="RUNNING">Running</option> 
+	<option value="FAILED">Failed</option> 
+	<option value="DONE">Done</option> 
+      </select>
+      <input type="submit" value="Search" id="search" />
     </form>
     <section id="results">
       <table id="workflowRuns" class="display">
