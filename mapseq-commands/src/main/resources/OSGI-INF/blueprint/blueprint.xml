@@ -2,6 +2,21 @@
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" default-activation="lazy">
 
   <command-bundle xmlns="http://karaf.apache.org/xmlns/shell/v1.1.0">
+    <command name="mapseq/generate-weekly-workflow-run-report">
+      <action class="edu.unc.mapseq.commands.reports.GenerateWeeklyWorkflowRunReportAction">
+        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
+      </action>
+    </command>
+    <command name="mapseq/generate-monthly-workflow-run-report">
+      <action class="edu.unc.mapseq.commands.reports.GenerateMonthlyWorkflowRunReportAction">
+        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
+      </action>
+    </command>
+    <command name="mapseq/generate-weekly-jobs-per-cluster-report">
+      <action class="edu.unc.mapseq.commands.reports.GenerateWeeklyJobsPerClusterReportAction">
+        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
+      </action>
+    </command>
     <command name="mapseq/edit-htsf-sample-attribute">
       <action class="edu.unc.mapseq.commands.EditHTSFSampleAttributeAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
