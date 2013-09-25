@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.Properties;
 
 import javax.activation.DataHandler;
-import javax.activation.DataSource;
 import javax.activation.FileDataSource;
 import javax.mail.BodyPart;
 import javax.mail.Message;
@@ -68,8 +67,16 @@ public class GenerateWeeklyWorkflowRunReportAction extends AbstractAction {
             Multipart multipart = new MimeMultipart();
             multipart.addBodyPart(messageBodyPart);
             messageBodyPart = new MimeBodyPart();
-            DataSource source = new FileDataSource(report);
-            messageBodyPart.setDataHandler(new DataHandler(source));
+            // messageBodyPart.setHeader("Content-Type", "image/png");
+            // messageBodyPart.setHeader("Content-ID", "<image>");
+            FileDataSource fileDataSource = new FileDataSource(report.getName()) {
+                @Override
+                public String getContentType() {
+                    return "image/png";
+                }
+            };
+            DataHandler dataHandler = new DataHandler(fileDataSource);
+            messageBodyPart.setDataHandler(dataHandler);
             messageBodyPart.setFileName(report.getName());
             multipart.addBodyPart(messageBodyPart);
             message.setContent(multipart);
