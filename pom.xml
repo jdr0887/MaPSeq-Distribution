@@ -15,8 +15,8 @@
     <cxf.version>2.7.6</cxf.version>
     <activemq.version>5.8.0</activemq.version>
     <mapseq.modules.version>0.0.22</mapseq.modules.version>
-    <mapseq.version>0.2.30</mapseq.version>
-    <renci.jlrm.version>0.3.23</renci.jlrm.version>
+    <mapseq.version>0.2.31</mapseq.version>
+    <renci.jlrm.version>0.3.24</renci.jlrm.version>
     <renci.commons.version>0.2.0</renci.commons.version>
   </properties>
   <issueManagement>
@@ -45,6 +45,11 @@
       <dependency>
       	<groupId>edu.unc.mapseq.mapseq-dao</groupId>
       	<artifactId>mapseq-dao-jpa</artifactId>
+      	<version>${mapseq.version}</version>
+      </dependency>
+      <dependency>
+      	<groupId>edu.unc.mapseq</groupId>
+      	<artifactId>mapseq-reporting</artifactId>
       	<version>${mapseq.version}</version>
       </dependency>
       <dependency>
