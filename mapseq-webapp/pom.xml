@@ -2,13 +2,13 @@
   <parent>
     <groupId>edu.unc.mapseq</groupId>
     <artifactId>distribution</artifactId>
-    <version>0.2.39</version>
+    <version>0.2.40-SNAPSHOT</version>
   </parent>
   <name>MaPSeq :: Distribution :: Web App</name>
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.unc.mapseq.distribution</groupId>
   <artifactId>mapseq-webapp</artifactId>
-  <version>0.2.39</version>
+  <version>0.2.40-SNAPSHOT</version>
   <packaging>war</packaging>
   <build>
     <resources>
