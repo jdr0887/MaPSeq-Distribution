@@ -3,22 +3,7 @@ package edu.unc.mapseq.commands.reports;
 import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Properties;
 
-import javax.activation.DataHandler;
-import javax.activation.FileDataSource;
-import javax.mail.BodyPart;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-
-import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.felix.gogo.commands.Argument;
 import org.apache.felix.gogo.commands.Command;
 import org.apache.karaf.shell.console.AbstractAction;
@@ -49,43 +34,75 @@ public class GenerateWeeklyWorkflowRunReportAction extends AbstractAction {
         File report = reportMgr.createWorkflowRunPieChart(getMaPSeqDAOBean(), c.getTime(), date);
         logger.info("report.getAbsolutePath(): {}", report.getAbsolutePath());
 
-        Properties properties = System.getProperties();
-        properties.setProperty("mail.user", System.getProperty("user.name"));
-        properties.setProperty("mail.smtp.host", "localhost");
-        properties.setProperty("mail.smtp.port", "25");
-        // properties.setProperty("mail.smtp.auth", "true");
-        Session session = Session.getDefaultInstance(properties);
-        try {
-            MimeMessage message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(String.format("%s@unc.edu", System.getProperty("user.name"))));
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(toEmailAddress));
-            message.setSubject(String.format("MaPSeq Weekly WorkflowRun Report (%s - %s)",
-                    DateFormatUtils.format(c.getTime(), "MM/dd"), DateFormatUtils.format(date, "MM/dd")));
+        // EmailAttachment attachment = new EmailAttachment();
+        // attachment.setPath(report.getAbsolutePath());
+        // attachment.setDisposition(EmailAttachment.ATTACHMENT);
+        // attachment.setDescription("Picture of John");
+        // attachment.setName("John");
+        //
+        // // Create the email message
+        // MultiPartEmail email = new MultiPartEmail();
+        // email.setHostName("localhost");
+        // email.addTo("jdr0887@renci.org");
+        // email.setFrom("jdr0887@renci.org", "Jason");
+        // email.setSubject("The picture");
+        // email.setMsg("Here is the picture you wanted");
+        //
+        // // add the attachment
+        // email.attach(attachment);
+        //ClassLoader bakCL = Thread.currentThread().getContextClassLoader();
+        // // Thread.currentThread().setContextClassLoader(null);
+        // Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+        // try {
+        // email.send();
+        // } finally {
+        // Thread.currentThread().setContextClassLoader(bakCL);
+        // }
 
-            BodyPart messageBodyPart = new MimeBodyPart();
-            messageBodyPart.setText("See Attachments");
-            Multipart multipart = new MimeMultipart();
-            multipart.addBodyPart(messageBodyPart);
-            messageBodyPart = new MimeBodyPart();
-            // messageBodyPart.setHeader("Content-Type", "image/png");
-            // messageBodyPart.setHeader("Content-ID", "<image>");
-            FileDataSource fileDataSource = new FileDataSource(report.getName()) {
-                @Override
-                public String getContentType() {
-                    return "image/png";
-                }
-            };
-            DataHandler dataHandler = new DataHandler(fileDataSource);
-            messageBodyPart.setDataHandler(dataHandler);
-            messageBodyPart.setFileName(report.getName());
-            multipart.addBodyPart(messageBodyPart);
-            message.setContent(multipart);
-
-            Transport.send(message);
-        } catch (MessagingException mex) {
-            mex.printStackTrace();
-        }
-        report.delete();
+        // Properties properties = System.getProperties();
+        // properties.setProperty("mail.smtp.host", "localhost");
+        // Session session = Session.getDefaultInstance(properties);
+        //
+        // try {
+        // MimeMessage message = new MimeMessage(session);
+        // message.setFrom(new InternetAddress(String.format("%s@unc.edu", System.getProperty("user.name"))));
+        // message.addRecipient(Message.RecipientType.TO, new InternetAddress(toEmailAddress));
+        // message.setSubject(String.format("MaPSeq Weekly WorkflowRun Report (%s - %s)",
+        // DateFormatUtils.format(c.getTime(), "MM/dd"), DateFormatUtils.format(date, "MM/dd")));
+        // message.setText("See Attachments");
+        //
+        // BodyPart messageBodyPart = new MimeBodyPart();
+        // messageBodyPart.setText("See Attachments");
+        //
+        // Multipart multipart = new MimeMultipart();
+        // multipart.addBodyPart(messageBodyPart);
+        //
+        // messageBodyPart = new MimeBodyPart();
+        // messageBodyPart.setHeader("Content-Type", "image/png");
+        // DataSource source = new FileDataSource(report);
+        // messageBodyPart.setDataHandler(new DataHandler(source));
+        // messageBodyPart.setFileName(report.getName());
+        // multipart.addBodyPart(messageBodyPart);
+        //
+        // // MimeBodyPart messageBodyPart = new MimeBodyPart();
+        // // messageBodyPart.attachFile(report);
+        // // Multipart multipart = new MimeMultipart();
+        // // multipart.addBodyPart(messageBodyPart);
+        //
+        // message.setContent(multipart);
+        //
+        // //Thread.currentThread().setContextClassLoader(null);
+        // Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+        // try {
+        // Transport.send(message);
+        // } finally {
+        // Thread.currentThread().setContextClassLoader(bakCL);
+        // }
+        //
+        // } catch (MessagingException mex) {
+        // mex.printStackTrace();
+        // }
+        // report.delete();
         return null;
     }
 

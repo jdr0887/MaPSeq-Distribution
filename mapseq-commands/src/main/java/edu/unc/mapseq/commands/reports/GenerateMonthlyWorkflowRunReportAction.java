@@ -50,35 +50,32 @@ public class GenerateMonthlyWorkflowRunReportAction extends AbstractAction {
         File report = reportMgr.createWorkflowRunPieChart(getMaPSeqDAOBean(), c.getTime(), date);
         logger.info("report.getAbsolutePath(): {}", report.getAbsolutePath());
 
-        Properties properties = System.getProperties();
-        properties.setProperty("mail.user", System.getProperty("user.name"));
-        properties.setProperty("mail.smtp.host", "localhost");
-        properties.setProperty("mail.smtp.port", "25");
-        // properties.setProperty("mail.smtp.auth", "true");
-        Session session = Session.getDefaultInstance(properties);
-        try {
-            MimeMessage message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(String.format("%s@unc.edu", System.getProperty("user.name"))));
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(toEmailAddress));
-            message.setSubject(String.format("MaPSeq Monthly WorkflowRun Report (%s - %s)",
-                    DateFormatUtils.format(c.getTime(), "MM/dd"), DateFormatUtils.format(date, "MM/dd")));
-
-            BodyPart messageBodyPart = new MimeBodyPart();
-            messageBodyPart.setText("See Attachments");
-            Multipart multipart = new MimeMultipart();
-            multipart.addBodyPart(messageBodyPart);
-            messageBodyPart = new MimeBodyPart();
-            DataSource source = new FileDataSource(report);
-            messageBodyPart.setDataHandler(new DataHandler(source));
-            messageBodyPart.setFileName(report.getName());
-            multipart.addBodyPart(messageBodyPart);
-            message.setContent(multipart);
-
-            Transport.send(message);
-        } catch (MessagingException mex) {
-            mex.printStackTrace();
-        }
-        report.delete();
+        // Properties properties = System.getProperties();
+        // properties.setProperty("mail.smtp.host", "localhost");
+        // Session session = Session.getDefaultInstance(properties);
+        // try {
+        // MimeMessage message = new MimeMessage(session);
+        // message.setFrom(new InternetAddress(String.format("%s@unc.edu", System.getProperty("user.name"))));
+        // message.addRecipient(Message.RecipientType.TO, new InternetAddress(toEmailAddress));
+        // message.setSubject(String.format("MaPSeq Monthly WorkflowRun Report (%s - %s)",
+        // DateFormatUtils.format(c.getTime(), "MM/dd"), DateFormatUtils.format(date, "MM/dd")));
+        //
+        // BodyPart messageBodyPart = new MimeBodyPart();
+        // messageBodyPart.setText("See Attachments");
+        // Multipart multipart = new MimeMultipart();
+        // multipart.addBodyPart(messageBodyPart);
+        // messageBodyPart = new MimeBodyPart();
+        // DataSource source = new FileDataSource(report);
+        // messageBodyPart.setDataHandler(new DataHandler(source));
+        // messageBodyPart.setFileName(report.getName());
+        // multipart.addBodyPart(messageBodyPart);
+        // message.setContent(multipart);
+        //
+        // Transport.send(message);
+        // } catch (MessagingException mex) {
+        // mex.printStackTrace();
+        // }
+        // report.delete();
         return null;
     }
 
