@@ -12,12 +12,14 @@
     <bundle>mvn:commons-collections/commons-collections/${commons.collections.version}</bundle>
     <bundle>mvn:commons-beanutils/commons-beanutils/${commons.beanutils.version}</bundle>
     <bundle>mvn:commons-discovery/commons-discovery/${commons.discovery.version}</bundle>
+    <bundle>mvn:org.apache.commons/commons-email/1.3.1</bundle>
     <bundle>mvn:org.renci.osgi.bundles/xz-1.0-bundle/0.0.1</bundle>
     <bundle>mvn:org.apache.commons/commons-compress/1.4</bundle>
     <bundle>mvn:net.sourceforge.serp/com.springsource.serp/1.13.1</bundle>
     <bundle>mvn:org.apache.openjpa/openjpa/${openjpa.version}</bundle>
     <bundle>mvn:org.apache.log4j/com.springsource.org.apache.log4j/1.2.15</bundle>
     <bundle>mvn:org.apache.geronimo.specs/geronimo-validation_1.0_spec/1.1</bundle>
+    <!-- <bundle>mvn:org.apache.geronimo.javamail/geronimo-javamail_1.4_mail/1.8</bundle> -->
     <bundle>mvn:javax.xml.stream/com.springsource.javax.xml.stream/1.0.1</bundle>
     <bundle>mvn:org.xmlpull/com.springsource.org.xmlpull/1.1.4.c</bundle>
     <bundle>mvn:com.thoughtworks.xstream/com.springsource.com.thoughtworks.xstream/1.3.1</bundle>
