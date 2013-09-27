@@ -64,8 +64,7 @@ public class CreateHTSFSampleAction extends AbstractAction {
 
         if (sequencerRun == null) {
             System.err.println("SequencerRun not found: " + this.sequencerRunId);
-            System.err
-                    .println("Please run <MAPSEQ_HOME>/bin/mapseq-list-sequencer-runs.sh and use a valid SequencerRun Identifier.");
+            System.err.println("Please run list-sequencer-runs and use a valid SequencerRun Identifier.");
             return null;
         }
 
@@ -141,7 +140,9 @@ public class CreateHTSFSampleAction extends AbstractAction {
 
         try {
             File newR1FastqFile = new File(htsfSampleOutputDir, read1FastqFile.getName());
-            FileUtils.copyFile(read1FastqFile, newR1FastqFile);
+            if (!read1FastqFile.getAbsolutePath().equals(newR1FastqFile.getAbsolutePath())) {
+                FileUtils.copyFile(read1FastqFile, newR1FastqFile);
+            }
         } catch (IOException e1) {
             e1.printStackTrace();
         }
@@ -149,7 +150,9 @@ public class CreateHTSFSampleAction extends AbstractAction {
         if (read2Fastq != null) {
             try {
                 File newR2FastqFile = new File(htsfSampleOutputDir, read2FastqFile.getName());
-                FileUtils.copyFile(read2FastqFile, newR2FastqFile);
+                if (!read2FastqFile.getAbsolutePath().equals(newR2FastqFile.getAbsolutePath())) {
+                    FileUtils.copyFile(read2FastqFile, newR2FastqFile);
+                }
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
