@@ -2,13 +2,13 @@
   <parent>
     <groupId>edu.unc.mapseq</groupId>
     <artifactId>distribution</artifactId>
-    <version>0.2.40</version>
+    <version>0.2.41-SNAPSHOT</version>
   </parent>
   <name>MaPSeq :: Distribution :: Client</name>
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.unc.mapseq.distribution</groupId>
   <artifactId>mapseq-client</artifactId>
-  <version>0.2.40</version>
+  <version>0.2.41-SNAPSHOT</version>
   <packaging>jar</packaging>
   <dependencies>
     <dependency>
