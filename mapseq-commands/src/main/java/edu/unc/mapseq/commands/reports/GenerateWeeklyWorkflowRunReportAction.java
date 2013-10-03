@@ -37,7 +37,7 @@ public class GenerateWeeklyWorkflowRunReportAction extends AbstractAction {
         File report = reportMgr.createWorkflowRunPieChart(getMaPSeqDAOBean(), c.getTime(), date);
         logger.info("report.getAbsolutePath(): {}", report.getAbsolutePath());
 
-        String subject = String.format("MaPSeq Weekly WorkflowRun Report (%s - %s)",
+        String subject = String.format("MaPSeq :: Weekly WorkflowRun Report (%s - %s)",
                 DateFormatUtils.format(c.getTime(), "MM/dd"), DateFormatUtils.format(date, "MM/dd"));
 
         EmailAttachment attachment = new EmailAttachment();
