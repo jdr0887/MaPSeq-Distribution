@@ -12,8 +12,13 @@
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/generate-weekly-jobs-per-cluster-report">
-      <action class="edu.unc.mapseq.commands.reports.GenerateWeeklyJobsPerClusterReportAction">
+    <command name="mapseq/generate-weekly-workflow-jobs-per-cluster-report">
+      <action class="edu.unc.mapseq.commands.reports.GenerateWeeklyWorkflowJobsPerClusterReportAction">
+        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
+      </action>
+    </command>
+    <command name="mapseq/generate-weekly-workflow-jobs-report">
+      <action class="edu.unc.mapseq.commands.reports.GenerateWeeklyWorkflowJobsReportAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
