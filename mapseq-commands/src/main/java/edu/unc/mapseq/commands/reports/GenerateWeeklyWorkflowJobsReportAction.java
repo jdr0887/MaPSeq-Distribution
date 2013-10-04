@@ -38,7 +38,8 @@ public class GenerateWeeklyWorkflowJobsReportAction extends AbstractAction {
         Calendar c = Calendar.getInstance();
         c.setTime(date);
         c.add(Calendar.WEEK_OF_YEAR, -1);
-        File report = reportMgr.createJobsPerClusterBarChart(getMaPSeqDAOBean(), workflowId, c.getTime(), date);
+        File report = reportMgr.createWorkflowJobDurationLayeredBarChart(getMaPSeqDAOBean(), workflowId, c.getTime(),
+                date);
         logger.info("report.getAbsolutePath(): {}", report.getAbsolutePath());
 
         Workflow workflow = getMaPSeqDAOBean().getWorkflowDAO().findById(workflowId);
