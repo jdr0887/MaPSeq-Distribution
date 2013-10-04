@@ -39,7 +39,7 @@ public class GenerateWeeklyWorkflowJobsPerClusterReportAction extends AbstractAc
         c.setTime(date);
         c.add(Calendar.WEEK_OF_YEAR, -1);
         Workflow workflow = getMaPSeqDAOBean().getWorkflowDAO().findById(workflowId);
-        File report = reportMgr.createJobsPerClusterPieChart(getMaPSeqDAOBean(), workflowId, c.getTime(), date);
+        File report = reportMgr.createWorkflowJobsPerClusterPieChart(getMaPSeqDAOBean(), workflowId, c.getTime(), date);
         logger.info("report.getAbsolutePath(): {}", report.getAbsolutePath());
 
         String subject = String.format("MaPSeq :: %s :: Weekly Jobs Per Cluster Report (%s - %s)", workflow.getName(),
