@@ -2,23 +2,23 @@
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" default-activation="lazy">
 
   <command-bundle xmlns="http://karaf.apache.org/xmlns/shell/v1.1.0">
-    <command name="mapseq/generate-weekly-workflow-run-report">
-      <action class="edu.unc.mapseq.commands.reports.GenerateWeeklyWorkflowRunReportAction">
+    <command name="mapseq/generate-workflow-run-weekly-report">
+      <action class="edu.unc.mapseq.commands.reports.WorkflowRunWeeklyReportAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/generate-monthly-workflow-run-report">
-      <action class="edu.unc.mapseq.commands.reports.GenerateMonthlyWorkflowRunReportAction">
+    <command name="mapseq/generate-workflow-run-monthly-report">
+      <action class="edu.unc.mapseq.commands.reports.WorkflowRunMonthlyReportAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/generate-weekly-workflow-jobs-per-cluster-report">
-      <action class="edu.unc.mapseq.commands.reports.GenerateWeeklyWorkflowJobsPerClusterReportAction">
+    <command name="mapseq/generate-workflow-jobs-per-cluster-weekly-report">
+      <action class="edu.unc.mapseq.commands.reports.WorkflowJobsPerClusterWeeklyReportAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/generate-weekly-workflow-jobs-report">
-      <action class="edu.unc.mapseq.commands.reports.GenerateWeeklyWorkflowJobsReportAction">
+    <command name="mapseq/generate-workflow-jobs-weekly-report">
+      <action class="edu.unc.mapseq.commands.reports.WorkflowJobsWeeklyReportAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
