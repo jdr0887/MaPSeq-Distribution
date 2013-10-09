@@ -32,8 +32,8 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>edu.unc.mapseq</groupId>
-      <artifactId>mapseq-reporting</artifactId>
+      <groupId>org.renci</groupId>
+      <artifactId>charts</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
