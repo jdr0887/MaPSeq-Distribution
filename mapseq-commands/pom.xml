@@ -21,6 +21,10 @@
       <artifactId>mapseq-reports</artifactId>
     </dependency>
     <dependency>
+      <groupId>edu.unc.mapseq.distribution</groupId>
+      <artifactId>mapseq-tasks</artifactId>
+    </dependency>
+    <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
       <scope>provided</scope>
