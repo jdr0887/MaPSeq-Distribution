@@ -38,10 +38,20 @@
   </scm>
   <dependencyManagement>
     <dependencies>
+      <dependency> 
+	<groupId>org.apache.poi</groupId> 
+	<artifactId>com.springsource.org.apache.poi</artifactId> 
+	<version>3.9.0.FINAL</version> 
+      </dependency>
       <dependency>
       	<groupId>edu.unc.mapseq.mapseq-dao</groupId>
       	<artifactId>mapseq-dao-api</artifactId>
       	<version>${mapseq.version}</version>
+      </dependency>
+      <dependency>
+      	<groupId>edu.unc.mapseq.distribution</groupId>
+      	<artifactId>mapseq-reports</artifactId>
+      	<version>0.2.45-SNAPSHOT</version>
       </dependency>
       <dependency>
       	<groupId>edu.unc.mapseq.mapseq-dao</groupId>
@@ -130,6 +140,8 @@
   <modules>
     <module>mapseq-webapp</module>
     <module>mapseq-commands</module>
+    <module>mapseq-reports</module>
+    <module>mapseq-tasks</module>
     <module>mapseq-features</module>
     <!-- <module>mapseq-server</module> -->
     <module>mapseq-client</module>
