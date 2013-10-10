@@ -17,6 +17,10 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>edu.unc.mapseq.distribution</groupId>
+      <artifactId>mapseq-reports</artifactId>
+    </dependency>
+    <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
       <scope>provided</scope>
@@ -29,11 +33,6 @@
     <dependency>
       <groupId>edu.unc.mapseq</groupId>
       <artifactId>mapseq-pipeline-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.renci</groupId>
-      <artifactId>charts</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
