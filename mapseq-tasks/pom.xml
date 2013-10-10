@@ -36,9 +36,9 @@
       <scope>provided</scope>
     </dependency>
     <dependency> 
-      <groupId>org.apache.poi</groupId> 
-      <artifactId>com.springsource.org.apache.poi</artifactId> 
-      <scope>provided</scope>      
+      <groupId>com.itextpdf</groupId> 
+      <artifactId>itextpdf</artifactId> 
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
