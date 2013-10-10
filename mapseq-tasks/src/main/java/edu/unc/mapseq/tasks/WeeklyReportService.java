@@ -14,6 +14,8 @@ public class WeeklyReportService {
 
     private final ScheduledExecutorService scheduler;
 
+    private WeeklyReportTask task;
+
     public WeeklyReportService() {
         super();
         this.scheduler = Executors.newSingleThreadScheduledExecutor();
@@ -29,12 +31,20 @@ public class WeeklyReportService {
         c.add(Calendar.DATE, 7);
         long delay = c.getTimeInMillis() - System.currentTimeMillis();
         long period = 1000 * 60 * 60 * 24 * 7;
-        scheduler.scheduleAtFixedRate(new WeeklyReportTask(), delay, period, TimeUnit.MILLISECONDS);
+        scheduler.scheduleAtFixedRate(task, delay, period, TimeUnit.MILLISECONDS);
     }
 
     public void stop() throws Exception {
         logger.info("ENTERING stop()");
         scheduler.shutdownNow();
+    }
+
+    public WeeklyReportTask getTask() {
+        return task;
+    }
+
+    public void setTask(WeeklyReportTask task) {
+        this.task = task;
     }
 
 }
