@@ -3,6 +3,7 @@ package edu.unc.mapseq.commands.reports;
 import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.mail.EmailAttachment;
@@ -14,9 +15,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.unc.mapseq.dao.AccountDAO;
+import edu.unc.mapseq.dao.JobDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.WorkflowDAO;
 import edu.unc.mapseq.dao.model.Account;
+import edu.unc.mapseq.dao.model.Job;
 import edu.unc.mapseq.dao.model.Workflow;
 import edu.unc.mapseq.reports.ReportFactory;
 
@@ -50,9 +53,13 @@ public class WorkflowJobsWeeklyReportAction extends AbstractAction {
         AccountDAO accountDAO = maPSeqDAOBean.getAccountDAO();
         Account account = accountDAO.findByName(username);
 
-        File chartFile = ReportFactory.createWorkflowJobsReport(maPSeqDAOBean, account, workflow, startDate, endDate);
+        JobDAO jobDAO = maPSeqDAOBean.getJobDAO();
+        List<Job> jobList = jobDAO.findByCreatorAndWorkflowIdAndCreationDateRange(account.getId(), workflow.getId(),
+                startDate, endDate);
 
-        String subject = String.format("MaPSeq :: %s :: Jobs (%s - %s)", workflow.getName(),
+        File chartFile = ReportFactory.createWorkflowJobsReport(jobList, account, workflow, startDate, endDate);
+
+        String subject = String.format("MaPSeq :: Job Duration :: %s (%s - %s)", workflow.getName(),
                 DateFormatUtils.format(startDate, "MM/dd"), DateFormatUtils.format(endDate, "MM/dd"));
 
         EmailAttachment attachment = new EmailAttachment();

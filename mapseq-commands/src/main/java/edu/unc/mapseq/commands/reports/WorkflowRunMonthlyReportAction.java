@@ -3,6 +3,7 @@ package edu.unc.mapseq.commands.reports;
 import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.mail.EmailAttachment;
@@ -15,7 +16,9 @@ import org.slf4j.LoggerFactory;
 
 import edu.unc.mapseq.dao.AccountDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
+import edu.unc.mapseq.dao.WorkflowRunDAO;
 import edu.unc.mapseq.dao.model.Account;
+import edu.unc.mapseq.dao.model.WorkflowRun;
 import edu.unc.mapseq.reports.ReportFactory;
 
 @Command(scope = "mapseq", name = "generate-monthly-workflow-run-report", description = "")
@@ -41,10 +44,14 @@ public class WorkflowRunMonthlyReportAction extends AbstractAction {
         AccountDAO accountDAO = maPSeqDAOBean.getAccountDAO();
         Account account = accountDAO.findByName(username);
 
-        File chartFile = ReportFactory.createWorkflowRunReport(maPSeqDAOBean, account, startDate, endDate);
+        WorkflowRunDAO workflowRunDAO = maPSeqDAOBean.getWorkflowRunDAO();
+        List<WorkflowRun> workflowRunList = workflowRunDAO.findByCreatorAndCreationDateRange(account.getId(),
+                startDate, endDate);
 
-        String subject = String.format("MaPSeq :: Monthly WorkflowRun Report (%s - %s)",
-                DateFormatUtils.format(startDate, "MM/dd"), DateFormatUtils.format(endDate, "MM/dd"));
+        File chartFile = ReportFactory.createWorkflowRunReport(workflowRunList, account, startDate, endDate);
+
+        String subject = String.format("MaPSeq :: WorkflowRuns (%s - %s)", DateFormatUtils.format(startDate, "MM/dd"),
+                DateFormatUtils.format(endDate, "MM/dd"));
 
         EmailAttachment attachment = new EmailAttachment();
         attachment.setPath(chartFile.getAbsolutePath());
