@@ -12,14 +12,13 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
+import org.jfree.chart.JFreeChart;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 import org.renci.charts.ChartManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.unc.mapseq.dao.MaPSeqDAOBean;
-import edu.unc.mapseq.dao.WorkflowRunDAO;
 import edu.unc.mapseq.dao.model.Account;
 import edu.unc.mapseq.dao.model.EntityAttribute;
 import edu.unc.mapseq.dao.model.Job;
@@ -33,8 +32,8 @@ public class ReportFactory {
 
     private static final ChartManager chartMgr = ChartManager.getInstance();
 
-    public static File createWorkflowJobsPerClusterReport(MaPSeqDAOBean maPSeqDAOBean, Account account,
-            Workflow workflow, Date startDate, Date endDate) {
+    public static File createWorkflowJobsPerClusterReport(List<Job> jobList, Account account, Workflow workflow,
+            Date startDate, Date endDate) {
         logger.debug("ENTERING createWorkflowJobsPerClusterReport(MaPSeqDAOBean, Account, Workflow, Date, Date)");
 
         File chartFile = null;
@@ -44,8 +43,6 @@ public class ReportFactory {
             DefaultPieDataset dataset = new DefaultPieDataset();
 
             Map<String, Integer> map = new HashMap<String, Integer>();
-            List<Job> jobList = maPSeqDAOBean.getJobDAO().findByCreatorAndWorkflowIdAndCreationDateRange(
-                    account.getId(), workflow.getId(), startDate, endDate);
 
             for (Job job : jobList) {
                 Set<EntityAttribute> attributeSet = job.getAttributes();
@@ -74,10 +71,11 @@ public class ReportFactory {
             }
 
             ChartManager chartMgr = ChartManager.getInstance();
-            chartFile = chartMgr.createPieChartAsPNG(
-                    String.format("MaPSeq :: %s%nJobs Per Cluster (%s - %s)", workflow.getName(),
+            JFreeChart chart = chartMgr.createPieChart(
+                    String.format("MaPSeq :: Jobs Per Cluster%n%s (%s - %s)", workflow.getName(),
                             DateFormatUtils.format(startDate, "MM/dd"), DateFormatUtils.format(endDate, "MM/dd")),
                     dataset);
+            chartFile = chartMgr.saveAsPNG(chart, 600, 400);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -87,7 +85,7 @@ public class ReportFactory {
         return chartFile;
     }
 
-    public static File createWorkflowRunReport(MaPSeqDAOBean maPSeqDAOBean, Account account, Date startDate,
+    public static File createWorkflowRunReport(List<WorkflowRun> workflowRunList, Account account, Date startDate,
             Date endDate) {
         logger.debug("ENTERING createWorkflowRunReport(MaPSeqDAOBean, Date, Date)");
 
@@ -96,10 +94,6 @@ public class ReportFactory {
         try {
 
             DefaultPieDataset dataset = new DefaultPieDataset();
-
-            WorkflowRunDAO workflowRunDAO = maPSeqDAOBean.getWorkflowRunDAO();
-            List<WorkflowRun> workflowRunList = workflowRunDAO.findByCreatorAndCreationDateRange(account.getId(),
-                    startDate, endDate);
 
             Map<String, Integer> map = new HashMap<String, Integer>();
 
@@ -126,8 +120,9 @@ public class ReportFactory {
             }
 
             ChartManager chartMgr = ChartManager.getInstance();
-            chartFile = chartMgr.createPieChartAsPNG(String.format("MaPSeq%nWorkflow Runs (%s - %s)",
+            JFreeChart chart = chartMgr.createPieChart(String.format("MaPSeq :: WorkflowRuns (%s - %s)",
                     DateFormatUtils.format(startDate, "MM/dd"), DateFormatUtils.format(endDate, "MM/dd")), dataset);
+            chartFile = chartMgr.saveAsPNG(chart, 800, 600);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -137,17 +132,15 @@ public class ReportFactory {
 
     }
 
-    public static File createWorkflowJobsReport(MaPSeqDAOBean maPSeqDAOBean, Account account, Workflow workflow,
-            Date startDate, Date endDate) {
-        logger.debug("ENTERING createWorkflowJobsReport(MaPSeqDAOBean, Account, Workflow, Date, Date)");
+    public static File createWorkflowJobsReport(List<Job> jobList, Account account, Workflow workflow, Date startDate,
+            Date endDate) {
+        logger.debug("ENTERING createWorkflowJobsReport(List<Job>, Account, Workflow, Date, Date)");
 
         File chartFile = null;
         try {
             DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
             Map<String, List<Long>> map = new HashMap<String, List<Long>>();
-            List<Job> jobList = maPSeqDAOBean.getJobDAO().findByCreatorAndWorkflowIdAndCreationDateRange(
-                    account.getId(), workflow.getId(), startDate, endDate);
 
             for (Job job : jobList) {
                 String jobName = job.getName();
@@ -201,10 +194,10 @@ public class ReportFactory {
                 dataset.setValue(jobDurationList.get(0), series2, key);
             }
 
-            String title = String.format("MaPSeq :: %s :: Jobs (%s - %s)", workflow.getName(),
+            String title = String.format("MaPSeq :: Job Duration :: %s (%s - %s)", workflow.getName(),
                     DateFormatUtils.format(startDate, "MM/dd"), DateFormatUtils.format(endDate, "MM/dd"));
-            chartFile = chartMgr.saveAsPNG(chartMgr.createLayeredBarChart(title, "Job", "Duration (Min)", dataset),
-                    800, 400);
+            JFreeChart chart = chartMgr.createLayeredBarChart(title, "Job", "Duration (Min)", dataset);
+            chartFile = chartMgr.saveAsPNG(chart, 800, 400);
         } catch (Exception e) {
             e.printStackTrace();
         }
