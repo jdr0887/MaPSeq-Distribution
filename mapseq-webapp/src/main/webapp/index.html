@@ -91,8 +91,8 @@ $(window).load(function(){
     console.log(status);
     		
     $.ajax({
-      url:"/cxf/WorkflowRun/WorkflowRunService/findByCreatorAndCreationDateRangeAndStatus/"
-      + userId + "/" + startDate + "/" + endDate + "/" + status,
+      url:"/cxf/WorkflowRun/WorkflowRunService/findByCreatorAndStatusAndCreationDateRange/"
+      + userId + "/" + status + "/" + startDate + "/" + endDate,
       <!--url:"test/workflowRun.json.txt",-->
       dataType: "json",
       type:"GET",
