@@ -2,6 +2,16 @@
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" default-activation="lazy">
 
   <command-bundle xmlns="http://karaf.apache.org/xmlns/shell/v1.1.0">
+    <command name="mapseq/list-modules">
+      <action class="edu.unc.mapseq.commands.ListModulesAction">
+        <property name="context" ref="blueprintBundleContext" />
+      </action>
+    </command>
+    <command name="mapseq/generate-job-per-cluster-report">
+      <action class="edu.unc.mapseq.commands.reports.JobPerClusterReportAction">
+        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
+      </action>
+    </command>
     <command name="mapseq/generate-weekly-report">
       <action class="edu.unc.mapseq.commands.reports.WeeklyReportAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
