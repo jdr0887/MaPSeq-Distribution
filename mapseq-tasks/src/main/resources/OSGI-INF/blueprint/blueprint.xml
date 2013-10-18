@@ -3,6 +3,7 @@
   xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0" default-activation="eager">
 
   <bean id="task" class="edu.unc.mapseq.tasks.WeeklyReportTask">
+    <property name="toEmailAddress" value="seqware-users@code.renci.org" />
     <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
   </bean>
 
