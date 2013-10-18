@@ -40,6 +40,8 @@ public class WeeklyReportTask implements Runnable {
 
     private MaPSeqDAOBean maPSeqDAOBean;
 
+    private String toEmailAddress;
+
     public WeeklyReportTask() {
         super();
     }
@@ -127,7 +129,7 @@ public class WeeklyReportTask implements Runnable {
 
             MultiPartEmail email = new MultiPartEmail();
             email.setHostName("localhost");
-            email.addTo("seqware-users@code.renci.org");
+            email.addTo(toEmailAddress);
             email.setFrom(String.format("%s@unc.edu", System.getProperty("user.name")));
             email.setSubject("MaPSeq Weekly Report");
             email.setMsg("See Attached");
@@ -140,6 +142,14 @@ public class WeeklyReportTask implements Runnable {
             e.printStackTrace();
         }
 
+    }
+
+    public String getToEmailAddress() {
+        return toEmailAddress;
+    }
+
+    public void setToEmailAddress(String toEmailAddress) {
+        this.toEmailAddress = toEmailAddress;
     }
 
     public MaPSeqDAOBean getMaPSeqDAOBean() {
