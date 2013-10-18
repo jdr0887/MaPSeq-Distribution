@@ -2,6 +2,7 @@ package edu.unc.mapseq.commands.reports;
 
 import java.util.concurrent.Executors;
 
+import org.apache.felix.gogo.commands.Argument;
 import org.apache.felix.gogo.commands.Command;
 import org.apache.karaf.shell.console.AbstractAction;
 import org.slf4j.Logger;
@@ -15,6 +16,9 @@ public class WeeklyReportAction extends AbstractAction {
 
     private final Logger logger = LoggerFactory.getLogger(WeeklyReportAction.class);
 
+    @Argument(index = 0, name = "toEmailAddress", description = "To Email Address", required = true, multiValued = false)
+    private String toEmailAddress;
+
     private MaPSeqDAOBean maPSeqDAOBean;
 
     @Override
@@ -22,6 +26,7 @@ public class WeeklyReportAction extends AbstractAction {
         logger.debug("ENTERING doExecute()");
         WeeklyReportTask task = new WeeklyReportTask();
         task.setMaPSeqDAOBean(maPSeqDAOBean);
+        task.setToEmailAddress(toEmailAddress);
         Executors.newSingleThreadExecutor().execute(task);
         return null;
     }
