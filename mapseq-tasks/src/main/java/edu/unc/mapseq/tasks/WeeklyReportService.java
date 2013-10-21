@@ -24,8 +24,8 @@ public class WeeklyReportService {
     public void start() throws Exception {
         logger.info("ENTERING start()");
         Calendar c = Calendar.getInstance();
-        c.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
+        c.set(Calendar.HOUR_OF_DAY, 1);
         c.set(Calendar.MINUTE, 0);
         c.set(Calendar.SECOND, 0);
         c.add(Calendar.DATE, 7);
