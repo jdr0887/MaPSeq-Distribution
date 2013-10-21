@@ -17,18 +17,18 @@
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/generate-workflow-run-weekly-report">
-      <action class="edu.unc.mapseq.commands.reports.WorkflowRunWeeklyReportAction">
+    <command name="mapseq/generate-workflow-run-count-weekly-report">
+      <action class="edu.unc.mapseq.commands.reports.WorkflowRunCountWeeklyReportAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/generate-workflow-run-monthly-report">
-      <action class="edu.unc.mapseq.commands.reports.WorkflowRunMonthlyReportAction">
+    <command name="mapseq/generate-workflow-run-count-monthly-report">
+      <action class="edu.unc.mapseq.commands.reports.WorkflowRunCountMonthlyReportAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/generate-workflow-jobs-per-cluster-weekly-report">
-      <action class="edu.unc.mapseq.commands.reports.WorkflowJobsPerClusterWeeklyReportAction">
+    <command name="mapseq/generate-workflow-job-count-per-cluster-weekly-report">
+      <action class="edu.unc.mapseq.commands.reports.WorkflowJobCountPerClusterWeeklyReportAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
