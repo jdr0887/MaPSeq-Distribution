@@ -67,8 +67,8 @@ public class WeeklyReportTask implements Runnable {
             document.open();
             document.setMargins(5, 5, 5, 5);
 
-            // String username = System.getProperty("user.name");
-            String username = "rc_renci.svc";
+            String username = System.getProperty("user.name");
+            // String username = "rc_renci.svc";
             AccountDAO accountDAO = maPSeqDAOBean.getAccountDAO();
             Account account = accountDAO.findByName(username);
 
