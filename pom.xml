@@ -8,7 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.unc.mapseq</groupId>
   <artifactId>distribution</artifactId>
-  <version>0.2.49-SNAPSHOT</version>
+  <version>0.2.49</version>
   <packaging>pom</packaging>
   <properties>
     <karaf.version>2.3.3</karaf.version>
@@ -34,7 +34,7 @@
   <scm>
     <developerConnection>scm:git:ssh://${user.name}@code.renci.org/gitroot/mps_dist</developerConnection>
     <connection>scm:git:ssh://developername@code.renci.org/gitroot/mps_dist</connection>
-    <tag>HEAD</tag>
+    <tag>distribution-0.2.49</tag>
   </scm>
   <dependencyManagement>
     <dependencies>
@@ -51,12 +51,12 @@
       <dependency>
       	<groupId>edu.unc.mapseq.distribution</groupId>
       	<artifactId>mapseq-reports</artifactId>
-      	<version>0.2.49-SNAPSHOT</version>
+      	<version>0.2.49</version>
       </dependency>
       <dependency>
       	<groupId>edu.unc.mapseq.distribution</groupId>
       	<artifactId>mapseq-tasks</artifactId>
-      	<version>0.2.49-SNAPSHOT</version>
+      	<version>0.2.49</version>
       </dependency>
       <dependency>
       	<groupId>edu.unc.mapseq.mapseq-dao</groupId>
