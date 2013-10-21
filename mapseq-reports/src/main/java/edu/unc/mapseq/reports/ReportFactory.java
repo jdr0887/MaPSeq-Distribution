@@ -1,5 +1,6 @@
 package edu.unc.mapseq.reports;
 
+import java.awt.Font;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,6 +14,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.title.TextTitle;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 import org.renci.charts.ChartManager;
@@ -32,9 +34,9 @@ public class ReportFactory {
 
     private static final ChartManager chartMgr = ChartManager.getInstance();
 
-    public static File createWorkflowJobsPerClusterReport(List<Job> jobList, Account account, Workflow workflow,
+    public static File createWorkflowJobCountPerClusterReport(List<Job> jobList, Account account, Workflow workflow,
             Date startDate, Date endDate) {
-        logger.debug("ENTERING createWorkflowJobsPerClusterReport(List<Job>, Account, Workflow, Date, Date)");
+        logger.debug("ENTERING createWorkflowJobCountPerClusterReport(List<Job>, Account, Workflow, Date, Date)");
 
         File chartFile = null;
 
@@ -71,10 +73,12 @@ public class ReportFactory {
             }
 
             ChartManager chartMgr = ChartManager.getInstance();
+            
             JFreeChart chart = chartMgr.createPieChart(
-                    String.format("MaPSeq :: Jobs Per Cluster%n%s (%s - %s)", workflow.getName(),
-                            DateFormatUtils.format(startDate, "MM/dd"), DateFormatUtils.format(endDate, "MM/dd")),
-                    dataset);
+                    String.format("MaPSeq :: Job Count Per Cluster :: %s", workflow.getName()), dataset);
+            Font font = new Font("Dialog", Font.PLAIN, 12);
+            chart.addSubtitle(new TextTitle(String.format("(%s - %s)", DateFormatUtils.format(startDate, "MM/dd"),
+                    DateFormatUtils.format(endDate, "MM/dd")), font));
             chartFile = chartMgr.saveAsPNG(chart, 600, 400);
 
         } catch (Exception e) {
@@ -157,9 +161,11 @@ public class ReportFactory {
                 dataset.setValue(jobDurationList.get(0), series2, jobSiteDurationBean.getSiteName());
             }
 
-            String title = String.format("MaPSeq :: Job Duration :: %s (%s - %s)", jobName,
-                    DateFormatUtils.format(startDate, "MM/dd"), DateFormatUtils.format(endDate, "MM/dd"));
+            String title = String.format("MaPSeq :: Job Duration :: %s", jobName);
             JFreeChart chart = chartMgr.createLayeredBarChart(title, "Site", "Duration (Min)", dataset);
+            Font font = new Font("Dialog", Font.PLAIN, 12);
+            chart.addSubtitle(new TextTitle(String.format("(%s - %s)", DateFormatUtils.format(startDate, "MM/dd"),
+                    DateFormatUtils.format(endDate, "MM/dd")), font));
             chartFile = chartMgr.saveAsPNG(chart, 800, 400);
         } catch (Exception e) {
             e.printStackTrace();
@@ -169,9 +175,9 @@ public class ReportFactory {
         return chartFile;
     }
 
-    public static File createWorkflowRunReport(List<WorkflowRun> workflowRunList, Account account, Date startDate,
+    public static File createWorkflowRunCountReport(List<WorkflowRun> workflowRunList, Account account, Date startDate,
             Date endDate) {
-        logger.debug("ENTERING createWorkflowRunReport(MaPSeqDAOBean, Date, Date)");
+        logger.debug("ENTERING createWorkflowRunCountReport(MaPSeqDAOBean, Date, Date)");
 
         File chartFile = null;
 
@@ -204,9 +210,70 @@ public class ReportFactory {
             }
 
             ChartManager chartMgr = ChartManager.getInstance();
-            JFreeChart chart = chartMgr.createPieChart(String.format("MaPSeq :: WorkflowRuns (%s - %s)",
-                    DateFormatUtils.format(startDate, "MM/dd"), DateFormatUtils.format(endDate, "MM/dd")), dataset);
-            chartFile = chartMgr.saveAsPNG(chart, 800, 600);
+            JFreeChart chart = chartMgr.createPieChart("MaPSeq :: WorkflowRun Count", dataset);
+            Font font = new Font("Dialog", Font.PLAIN, 12);
+            chart.addSubtitle(new TextTitle(String.format("(%s - %s)", DateFormatUtils.format(startDate, "MM/dd"),
+                    DateFormatUtils.format(endDate, "MM/dd")), font));
+            chartFile = chartMgr.saveAsPNG(chart, 600, 400);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        logger.info("report.getAbsolutePath(): {}", chartFile.getAbsolutePath());
+        return chartFile;
+
+    }
+
+    public static File createWorkflowRunDurationReport(List<WorkflowRun> workflowRunList, Account account,
+            Date startDate, Date endDate) {
+        logger.debug("ENTERING createWorkflowRunDurationReport(MaPSeqDAOBean, Date, Date)");
+
+        File chartFile = null;
+
+        try {
+
+            DefaultPieDataset dataset = new DefaultPieDataset();
+
+            Map<String, List<Long>> map = new HashMap<String, List<Long>>();
+
+            for (WorkflowRun workflowRun : workflowRunList) {
+                if (workflowRun.getStatus().equals(WorkflowRunStatusType.DONE)) {
+                    String workflowName = workflowRun.getWorkflow().getName();
+                    if (!map.containsKey(workflowName)) {
+                        map.put(workflowName, new ArrayList<Long>());
+                    }
+                }
+            }
+
+            for (WorkflowRun workflowRun : workflowRunList) {
+                if (workflowRun.getStatus().equals(WorkflowRunStatusType.DONE)) {
+                    String workflowName = workflowRun.getWorkflow().getName();
+                    if (map.containsKey(workflowName)) {
+                        Date sDate = workflowRun.getStartDate();
+                        Date eDate = workflowRun.getEndDate();
+                        map.get(workflowName).add(((eDate.getTime() - sDate.getTime()) / 1000) / 60);
+                    }
+                }
+            }
+
+            for (String key : map.keySet()) {
+
+                List<Long> jobDurationList = map.get(key);
+                Long total = 0L;
+                for (Long duration : jobDurationList) {
+                    total += duration;
+                }
+
+                dataset.setValue(key, total);
+
+            }
+
+            ChartManager chartMgr = ChartManager.getInstance();
+            JFreeChart chart = chartMgr.createPieChart("MaPSeq :: WorkflowRun Duration", dataset);
+            Font font = new Font("Dialog", Font.PLAIN, 12);
+            chart.addSubtitle(new TextTitle(String.format("(%s - %s)", DateFormatUtils.format(startDate, "MM/dd"),
+                    DateFormatUtils.format(endDate, "MM/dd")), font));
+            chartFile = chartMgr.saveAsPNG(chart, 600, 400);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -240,8 +307,11 @@ public class ReportFactory {
                 String jobName = job.getName();
                 if (StringUtils.isNotEmpty(jobName)) {
                     jobName = jobName.substring(jobName.lastIndexOf(".") + 1, jobName.length());
-                    if (map.containsKey(jobName) && job.getStartDate() != null && job.getEndDate() != null) {
-                        map.get(jobName).add(((job.getEndDate().getTime() - job.getStartDate().getTime()) / 1000) / 60);
+                    Date sDate = job.getStartDate();
+                    Date eDate = job.getEndDate();
+
+                    if (map.containsKey(jobName) && sDate != null && eDate != null) {
+                        map.get(jobName).add(((eDate.getTime() - sDate.getTime()) / 1000) / 60);
                     }
                 }
             }
@@ -278,9 +348,12 @@ public class ReportFactory {
                 dataset.setValue(jobDurationList.get(0), series2, key);
             }
 
-            String title = String.format("MaPSeq :: Job Duration :: %s (%s - %s)", workflow.getName(),
-                    DateFormatUtils.format(startDate, "MM/dd"), DateFormatUtils.format(endDate, "MM/dd"));
+            String title = String.format("MaPSeq :: Job Duration :: %s", workflow.getName());
             JFreeChart chart = chartMgr.createLayeredBarChart(title, "Job", "Duration (Min)", dataset);
+            Font font = new Font("Dialog", Font.PLAIN, 12);
+            chart.addSubtitle(new TextTitle(String.format("(%s - %s)", DateFormatUtils.format(startDate, "MM/dd"),
+                    DateFormatUtils.format(endDate, "MM/dd")), font));
+
             chartFile = chartMgr.saveAsPNG(chart, 800, 400);
         } catch (Exception e) {
             e.printStackTrace();
