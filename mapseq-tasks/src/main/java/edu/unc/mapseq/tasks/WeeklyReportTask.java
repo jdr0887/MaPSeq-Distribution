@@ -25,6 +25,7 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import edu.unc.mapseq.dao.AccountDAO;
+import edu.unc.mapseq.dao.JobDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowRunDAO;
@@ -62,13 +63,14 @@ public class WeeklyReportTask implements Runnable {
             File pdfFile = File.createTempFile("weeklyReport-", ".pdf");
 
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(pdfFile));
-            writer.setCompressionLevel(0);
+            writer.setCompressionLevel(4);
 
             document.open();
-            document.setMargins(5, 5, 5, 5);
+            document.setMargins(10, 10, 10, 10);
 
             String username = System.getProperty("user.name");
             // String username = "rc_renci.svc";
+
             AccountDAO accountDAO = maPSeqDAOBean.getAccountDAO();
             Account account = accountDAO.findByName(username);
 
@@ -77,46 +79,61 @@ public class WeeklyReportTask implements Runnable {
                     startDate, endDate);
 
             document.add(new Paragraph());
-            File workflowRunReportFile = ReportFactory.createWorkflowRunReport(workflowRunList, account, startDate,
-                    endDate);
-            Image img = Image.getInstance(workflowRunReportFile.getAbsolutePath());
+            File workflowRunCountReportFile = ReportFactory.createWorkflowRunCountReport(workflowRunList, account,
+                    startDate, endDate);
+            Image img = Image.getInstance(workflowRunCountReportFile.getAbsolutePath());
             img.setAlignment(Element.ALIGN_CENTER);
-            img.scalePercent(80, 80);
+            img.scalePercent(60, 60);
             document.add(img);
+            workflowRunCountReportFile.delete();
 
-            workflowRunReportFile.delete();
+            document.add(new Paragraph());
+            File workflowRunDurationReportFile = ReportFactory.createWorkflowRunDurationReport(workflowRunList,
+                    account, startDate, endDate);
+            img = Image.getInstance(workflowRunDurationReportFile.getAbsolutePath());
+            img.setAlignment(Element.ALIGN_CENTER);
+            img.scalePercent(60, 60);
+            document.add(img);
+            workflowRunDurationReportFile.delete();
 
             Set<Workflow> workflowSet = new HashSet<Workflow>();
             for (WorkflowRun workflowRun : workflowRunList) {
                 workflowSet.add(workflowRun.getWorkflow());
             }
 
+            JobDAO jobDAO = maPSeqDAOBean.getJobDAO();
+
             Set<Workflow> synchronizedWorkflowSet = Collections.synchronizedSet(workflowSet);
+
             for (Workflow workflow : synchronizedWorkflowSet) {
+
+                logger.debug(workflow.toString());
 
                 document.newPage();
 
-                List<Job> jobList = maPSeqDAOBean.getJobDAO().findByCreatorAndWorkflowIdAndCreationDateRange(
-                        account.getId(), workflow.getId(), startDate, endDate);
+                List<Job> jobList = jobDAO.findByCreatorAndWorkflowIdAndCreationDateRange(account.getId(),
+                        workflow.getId(), startDate, endDate);
 
                 document.add(new Paragraph());
-                File workflowJobsPerClusterReportFile = ReportFactory.createWorkflowJobsPerClusterReport(jobList,
+                File workflowJobsPerClusterReportFile = ReportFactory.createWorkflowJobCountPerClusterReport(jobList,
                         account, workflow, startDate, endDate);
                 img = Image.getInstance(workflowJobsPerClusterReportFile.getAbsolutePath());
                 img.setAlignment(Element.ALIGN_CENTER);
-                img.scalePercent(60, 60);
+                img.scalePercent(65, 65);
                 document.add(img);
+
+                workflowJobsPerClusterReportFile.delete();
 
                 document.add(new Paragraph());
                 File workflowJobsReportFile = ReportFactory.createWorkflowJobsReport(jobList, account, workflow,
                         startDate, endDate);
                 img = Image.getInstance(workflowJobsReportFile.getAbsolutePath());
-                img.scalePercent(80, 80);
+                img.scalePercent(70, 70);
                 img.setAlignment(Element.ALIGN_CENTER);
                 document.add(img);
 
-                workflowJobsPerClusterReportFile.delete();
                 workflowJobsReportFile.delete();
+
             }
 
             document.close();
@@ -139,7 +156,9 @@ public class WeeklyReportTask implements Runnable {
 
             pdfFile.delete();
         } catch (IOException | DocumentException | MaPSeqDAOException | EmailException e) {
-            e.printStackTrace();
+            logger.error("Error", e);
+        } catch (Exception e) {
+            logger.error("Error", e);
         }
 
     }
