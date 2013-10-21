@@ -23,7 +23,7 @@ import edu.unc.mapseq.dao.model.Job;
 import edu.unc.mapseq.dao.model.Workflow;
 import edu.unc.mapseq.reports.ReportFactory;
 
-@Command(scope = "mapseq", name = "generate-weekly-workflow-run-report", description = "")
+@Command(scope = "mapseq", name = "generate-workflow-jobs-weekly-report", description = "")
 public class WorkflowJobsWeeklyReportAction extends AbstractAction {
 
     private final Logger logger = LoggerFactory.getLogger(WorkflowJobsWeeklyReportAction.class);
