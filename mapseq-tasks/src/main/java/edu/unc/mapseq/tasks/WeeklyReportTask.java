@@ -58,12 +58,14 @@ public class WeeklyReportTask implements Runnable {
         Date startDate = c.getTime();
 
         Document document = new Document(PageSize.LETTER.rotate());
+        File pdfFile = null;
 
         try {
-            File pdfFile = File.createTempFile("weeklyReport-", ".pdf");
+
+            pdfFile = File.createTempFile("weeklyReport-", ".pdf");
 
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(pdfFile));
-            writer.setCompressionLevel(4);
+            writer.setCompressionLevel(9);
 
             document.open();
             document.setMargins(10, 10, 10, 10);
@@ -138,27 +140,37 @@ public class WeeklyReportTask implements Runnable {
 
             document.close();
 
-            EmailAttachment attachment = new EmailAttachment();
-            attachment.setPath(pdfFile.getAbsolutePath());
-            attachment.setDisposition(EmailAttachment.ATTACHMENT);
-            attachment.setDescription("MaPSeq Weekly Report");
-            attachment.setName(pdfFile.getName());
-
-            MultiPartEmail email = new MultiPartEmail();
-            email.setHostName("localhost");
-            email.addTo(toEmailAddress);
-            email.setFrom(String.format("%s@unc.edu", System.getProperty("user.name")));
-            email.setSubject("MaPSeq Weekly Report");
-            email.setMsg("See Attached");
-            email.attach(attachment);
-
-            email.send();
-
-            pdfFile.delete();
-        } catch (IOException | DocumentException | MaPSeqDAOException | EmailException e) {
+        } catch (IOException | DocumentException | MaPSeqDAOException e) {
             logger.error("Error", e);
         } catch (Exception e) {
             logger.error("Error", e);
+        }
+
+        if (pdfFile != null) {
+
+            try {
+                EmailAttachment attachment = new EmailAttachment();
+                attachment.setPath(pdfFile.getAbsolutePath());
+                attachment.setDisposition(EmailAttachment.ATTACHMENT);
+                attachment.setDescription("MaPSeq Weekly Report");
+                attachment.setName(pdfFile.getName());
+
+                MultiPartEmail email = new MultiPartEmail();
+                email.setHostName("localhost");
+                email.addTo(toEmailAddress);
+                email.setFrom(String.format("%s@unc.edu", System.getProperty("user.name")));
+                email.setSubject("MaPSeq Weekly Report");
+                email.setMsg("See Attached");
+                email.attach(attachment);
+
+                email.send();
+
+            } catch (EmailException e) {
+                e.printStackTrace();
+            }
+
+            pdfFile.delete();
+
         }
 
     }
