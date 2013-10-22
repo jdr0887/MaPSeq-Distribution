@@ -14,6 +14,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PiePlot;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
@@ -73,7 +74,7 @@ public class ReportFactory {
             }
 
             ChartManager chartMgr = ChartManager.getInstance();
-            
+
             JFreeChart chart = chartMgr.createPieChart(
                     String.format("MaPSeq :: Job Count Per Cluster :: %s", workflow.getName()), dataset);
             Font font = new Font("Dialog", Font.PLAIN, 12);
@@ -251,7 +252,7 @@ public class ReportFactory {
                     if (map.containsKey(workflowName)) {
                         Date sDate = workflowRun.getStartDate();
                         Date eDate = workflowRun.getEndDate();
-                        map.get(workflowName).add(((eDate.getTime() - sDate.getTime()) / 1000) / 60);
+                        map.get(workflowName).add(eDate.getTime() - sDate.getTime());
                     }
                 }
             }
@@ -264,12 +265,14 @@ public class ReportFactory {
                     total += duration;
                 }
 
-                dataset.setValue(key, total);
+                dataset.setValue(key, total.intValue());
 
             }
 
             ChartManager chartMgr = ChartManager.getInstance();
             JFreeChart chart = chartMgr.createPieChart("MaPSeq :: WorkflowRun Duration", dataset);
+            PiePlot piePlot = (PiePlot) chart.getPlot();
+            piePlot.setLabelGenerator(new CustomLabelGenerator());
             Font font = new Font("Dialog", Font.PLAIN, 12);
             chart.addSubtitle(new TextTitle(String.format("(%s - %s)", DateFormatUtils.format(startDate, "MM/dd"),
                     DateFormatUtils.format(endDate, "MM/dd")), font));
