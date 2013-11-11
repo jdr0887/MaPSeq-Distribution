@@ -21,7 +21,7 @@
 	  <Property name="jetty.port" default="8181"/>
 	</Set>
 	<Set name="maxIdleTime">3000000</Set>
-	<Set name="Acceptors">80</Set>
+	<Set name="Acceptors">12</Set>
 	<Set name="statsOn">false</Set>
 	<Set name="confidentialPort">8443</Set>
 	<Set name="statsOn">false</Set>
