@@ -83,8 +83,8 @@
     <bundle>mvn:edu.unc.mapseq/modules/${mapseq.modules.version}</bundle>
   </feature>
 
-  <feature name="mapseq-pipeline-api" version="${project.version}" resolver="(obr)">
-    <bundle>mvn:edu.unc.mapseq/mapseq-pipeline-api/${mapseq.version}</bundle>
+  <feature name="mapseq-workflow-api" version="${project.version}" resolver="(obr)">
+    <bundle>mvn:edu.unc.mapseq/mapseq-workflow-api/${mapseq.version}</bundle>
   </feature>
 
   <feature name="mapseq-web-app" version="${project.version}" resolver="(obr)">
@@ -103,7 +103,7 @@
     <feature version="${project.version}">mapseq-commands</feature>
     <feature version="${project.version}">mapseq-web-services</feature>
     <feature version="${project.version}">mapseq-modules</feature>
-    <feature version="${project.version}">mapseq-pipeline-api</feature>
+    <feature version="${project.version}">mapseq-workflow-api</feature>
     <feature version="${project.version}">mapseq-web-app</feature>
   </feature>
 
