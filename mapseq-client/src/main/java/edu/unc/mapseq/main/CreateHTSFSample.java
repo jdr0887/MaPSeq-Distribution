@@ -2,7 +2,6 @@ package edu.unc.mapseq.main;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -209,9 +208,6 @@ public class CreateHTSFSample implements Callable<Long> {
             HTSFSample htsfSample = new HTSFSample();
             htsfSample.setName(getName());
             htsfSample.setCreator(mapseqDAOBean.getAccountDAO().findByName(System.getProperty("user.name")));
-            Date creationDate = new Date();
-            htsfSample.setCreationDate(creationDate);
-            htsfSample.setModificationDate(creationDate);
             htsfSample.setBarcode(barcode);
             htsfSample.setStudy(mapseqDAOBean.getStudyDAO().findById(this.studyId));
             htsfSample.setLaneIndex(laneIndex);

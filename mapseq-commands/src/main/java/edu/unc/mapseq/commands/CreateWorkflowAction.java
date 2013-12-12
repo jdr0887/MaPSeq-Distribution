@@ -1,7 +1,5 @@
 package edu.unc.mapseq.commands;
 
-import java.util.Date;
-
 import org.apache.felix.gogo.commands.Argument;
 import org.apache.felix.gogo.commands.Command;
 import org.apache.karaf.shell.console.AbstractAction;
@@ -24,11 +22,8 @@ public class CreateWorkflowAction extends AbstractAction {
 
     @Override
     public Object doExecute() {
-        Date d = new Date();
         try {
             Workflow workflow = new Workflow();
-            workflow.setCreationDate(d);
-            workflow.setModificationDate(d);
             workflow.setCreator(maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name")));
             workflow.setName(name);
             Long workflowId = maPSeqDAOBean.getWorkflowDAO().save(workflow);

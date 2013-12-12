@@ -1,6 +1,5 @@
 package edu.unc.mapseq.main;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -57,9 +56,6 @@ public class RegisterAccount implements Callable<Long> {
         MaPSeqDAOBean mapseqDAOBean = daoMgr.getMaPSeqDAOBean();
         try {
             Account account = new Account();
-            Date creationDate = new Date();
-            account.setCreationDate(creationDate);
-            account.setModificationDate(creationDate);
             Set<AccountGroup> accountGroupSet = new HashSet<AccountGroup>();
             AccountGroup accountGroup = mapseqDAOBean.getAccountGroupDAO().findByName("public");
             accountGroupSet.add(accountGroup);

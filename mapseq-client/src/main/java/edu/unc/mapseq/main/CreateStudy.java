@@ -1,6 +1,5 @@
 package edu.unc.mapseq.main;
 
-import java.util.Date;
 import java.util.concurrent.Callable;
 
 import org.apache.commons.cli.CommandLine;
@@ -41,11 +40,8 @@ public class CreateStudy implements Callable<Long> {
         WSDAOManager daoMgr = WSDAOManager.getInstance();
         // RSDAOManager daoMgr = RSDAOManager.getInstance();
         MaPSeqDAOBean mapseqDAOBean = daoMgr.getMaPSeqDAOBean();
-        Date d = new Date();
         try {
             Study study = new Study();
-            study.setCreationDate(d);
-            study.setModificationDate(d);
             study.setApproved(approved);
             study.setCreator(mapseqDAOBean.getAccountDAO().findByName(System.getProperty("user.name")));
             study.setGrant(grant);

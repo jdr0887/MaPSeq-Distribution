@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.StringReader;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -67,7 +66,6 @@ public class CreateSequencerRunFromSampleSheet implements Runnable {
             return;
         }
 
-        Date creationDate = new Date();
         Platform platform = null;
         try {
             PlatformDAO platformDAO = mapseqDAOBean.getPlatformDAO();
@@ -80,8 +78,6 @@ public class CreateSequencerRunFromSampleSheet implements Runnable {
         sequencerRun.setCreator(account);
         sequencerRun.setStatus(SequencerRunStatusType.COMPLETED);
         sequencerRun.setBaseDirectory(baseDirectory);
-        sequencerRun.setCreationDate(creationDate);
-        sequencerRun.setModificationDate(creationDate);
         sequencerRun.setName(runName);
         sequencerRun.setPlatform(platform);
 
@@ -119,8 +115,6 @@ public class CreateSequencerRunFromSampleSheet implements Runnable {
                 }
                 if (study == null) {
                     study = new Study();
-                    study.setCreationDate(creationDate);
-                    study.setModificationDate(creationDate);
                     study.setCreator(account);
                     study.setName(sampleProject);
                     Long studyId = mapseqDAOBean.getStudyDAO().save(study);
@@ -131,8 +125,6 @@ public class CreateSequencerRunFromSampleSheet implements Runnable {
 
                     HTSFSample htsfSample = new HTSFSample();
                     htsfSample.setBarcode(index);
-                    htsfSample.setCreationDate(creationDate);
-                    htsfSample.setModificationDate(creationDate);
                     htsfSample.setCreator(account);
                     htsfSample.setLaneIndex(Integer.valueOf(laneIndex));
                     htsfSample.setName(sampleId);

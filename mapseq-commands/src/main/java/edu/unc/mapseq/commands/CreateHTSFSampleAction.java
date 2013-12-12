@@ -2,7 +2,6 @@ package edu.unc.mapseq.commands;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -196,9 +195,6 @@ public class CreateHTSFSampleAction extends AbstractAction {
             HTSFSample htsfSample = new HTSFSample();
             htsfSample.setName(name);
             htsfSample.setCreator(maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name")));
-            Date creationDate = new Date();
-            htsfSample.setCreationDate(creationDate);
-            htsfSample.setModificationDate(creationDate);
             htsfSample.setBarcode(barcode);
             htsfSample.setStudy(maPSeqDAOBean.getStudyDAO().findById(this.studyId));
             htsfSample.setLaneIndex(laneIndex);

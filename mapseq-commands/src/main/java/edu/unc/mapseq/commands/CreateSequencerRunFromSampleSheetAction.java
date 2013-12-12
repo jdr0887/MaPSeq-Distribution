@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.StringReader;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -61,7 +60,6 @@ public class CreateSequencerRunFromSampleSheetAction extends AbstractAction {
             return null;
         }
 
-        Date creationDate = new Date();
         Platform platform = null;
         try {
             PlatformDAO platformDAO = maPSeqDAOBean.getPlatformDAO();
@@ -74,8 +72,6 @@ public class CreateSequencerRunFromSampleSheetAction extends AbstractAction {
         sequencerRun.setCreator(account);
         sequencerRun.setStatus(SequencerRunStatusType.COMPLETED);
         sequencerRun.setBaseDirectory(baseRunFolder);
-        sequencerRun.setCreationDate(creationDate);
-        sequencerRun.setModificationDate(creationDate);
         sequencerRun.setName(name);
         sequencerRun.setPlatform(platform);
 
@@ -113,8 +109,6 @@ public class CreateSequencerRunFromSampleSheetAction extends AbstractAction {
                 }
                 if (study == null) {
                     study = new Study();
-                    study.setCreationDate(creationDate);
-                    study.setModificationDate(creationDate);
                     study.setCreator(account);
                     study.setName(sampleProject);
                     Long studyId = maPSeqDAOBean.getStudyDAO().save(study);
@@ -125,8 +119,6 @@ public class CreateSequencerRunFromSampleSheetAction extends AbstractAction {
 
                     HTSFSample htsfSample = new HTSFSample();
                     htsfSample.setBarcode(index);
-                    htsfSample.setCreationDate(creationDate);
-                    htsfSample.setModificationDate(creationDate);
                     htsfSample.setCreator(account);
                     htsfSample.setLaneIndex(Integer.valueOf(laneIndex));
                     htsfSample.setName(sampleId);

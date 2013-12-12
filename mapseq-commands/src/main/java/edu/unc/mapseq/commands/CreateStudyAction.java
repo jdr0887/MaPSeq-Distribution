@@ -1,7 +1,5 @@
 package edu.unc.mapseq.commands;
 
-import java.util.Date;
-
 import org.apache.felix.gogo.commands.Argument;
 import org.apache.felix.gogo.commands.Command;
 import org.apache.karaf.shell.console.AbstractAction;
@@ -36,11 +34,8 @@ public class CreateStudyAction extends AbstractAction {
 
     @Override
     public Object doExecute() {
-        Date d = new Date();
         try {
             Study study = new Study();
-            study.setCreationDate(d);
-            study.setModificationDate(d);
             study.setApproved(approved);
             study.setCreator(maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name")));
             study.setGrant(grant);

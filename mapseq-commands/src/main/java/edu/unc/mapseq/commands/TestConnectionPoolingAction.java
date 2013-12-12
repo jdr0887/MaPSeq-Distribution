@@ -1,6 +1,5 @@
 package edu.unc.mapseq.commands;
 
-import java.util.Date;
 import java.util.UUID;
 
 import org.apache.felix.gogo.commands.Command;
@@ -17,17 +16,13 @@ public class TestConnectionPoolingAction extends AbstractAction {
 
     @Override
     protected Object doExecute() throws Exception {
-
         SequencerRunDAO sequencerRunDAO = maPSeqDAOBean.getSequencerRunDAO();
-        Date d = new Date();
         for (int i = 0; i < 10000; ++i) {
             SequencerRun entity = new SequencerRun();
             String uuid = UUID.randomUUID().toString();
             entity.setName(uuid);
             entity.setBaseDirectory(uuid);
             entity.setDescription(uuid);
-            entity.setCreationDate(d);
-            entity.setModificationDate(d);
             sequencerRunDAO.save(entity);
         }
 

@@ -1,6 +1,5 @@
 package edu.unc.mapseq.commands;
 
-import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -60,14 +59,11 @@ public class CreateSequencerRunAction extends AbstractAction {
             return null;
         }
 
-        Date creationDate = new Date();
         SequencerRun sequencerRun = new SequencerRun();
         try {
             sequencerRun.setCreator(account);
             sequencerRun.setName(name);
             sequencerRun.setBaseDirectory(baseRunFolder);
-            sequencerRun.setCreationDate(creationDate);
-            sequencerRun.setModificationDate(creationDate);
             sequencerRun.setPlatform(maPSeqDAOBean.getPlatformDAO().findById(this.platformId));
             try {
                 SequencerRunStatusType statusType = SequencerRunStatusType.valueOf(status);

@@ -1,6 +1,5 @@
 package edu.unc.mapseq.main;
 
-import java.util.Date;
 import java.util.concurrent.Callable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -67,14 +66,11 @@ public class CreateSequencerRun implements Callable<Long> {
             return null;
         }
 
-        Date creationDate = new Date();
         SequencerRun sequencerRun = new SequencerRun();
         try {
             sequencerRun.setCreator(account);
             sequencerRun.setName(this.getName());
             sequencerRun.setBaseDirectory(this.getBaseRunFolder());
-            sequencerRun.setCreationDate(creationDate);
-            sequencerRun.setModificationDate(creationDate);
             sequencerRun.setPlatform(mapseqDAOBean.getPlatformDAO().findById(this.platformId));
             sequencerRun.setStatus(status);
             SequencerRunDAO sequencerRunDAO = mapseqDAOBean.getSequencerRunDAO();
