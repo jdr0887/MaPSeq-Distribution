@@ -19,7 +19,7 @@ public class CreateSequencerRunAction extends AbstractAction {
 
     private MaPSeqDAOBean maPSeqDAOBean;
 
-    @Argument(index = 0, name = "Platform Identifier", description = "Platform Id", required = true, multiValued = false)
+    @Argument(index = 0, name = "platform", description = "Platform Id", required = true, multiValued = false)
     private Long platformId;
 
     @Argument(index = 1, name = "baseRunFolder", description = "The folder parent to the flowcell directory", required = true, multiValued = false)

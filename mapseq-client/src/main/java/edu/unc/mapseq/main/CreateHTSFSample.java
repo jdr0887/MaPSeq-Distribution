@@ -145,7 +145,7 @@ public class CreateHTSFSample implements Callable<Long> {
 
         File sequencerRunOutputDir = new File(mapseqOutputDirectory, sequencerRun.getName());
         File workflowOutputDir = new File(sequencerRunOutputDir, "CASAVA");
-        File htsfSampleOutputDir = new File(workflowOutputDir, this.name);
+        File htsfSampleOutputDir = new File(workflowOutputDir, String.format("L%03d_%s", laneIndex, barcode));
 
         htsfSampleOutputDir.mkdirs();
 

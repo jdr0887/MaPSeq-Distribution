@@ -9,6 +9,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.lang3.StringUtils;
 
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
@@ -29,7 +30,7 @@ public class CreateStudy implements Callable<Long> {
 
     private Long principalInvestigatorId;
 
-    private Boolean approved;
+    private Boolean approved = Boolean.TRUE;
 
     public CreateStudy() {
         super();
@@ -42,10 +43,12 @@ public class CreateStudy implements Callable<Long> {
         MaPSeqDAOBean mapseqDAOBean = daoMgr.getMaPSeqDAOBean();
         try {
             Study study = new Study();
+            study.setName(name);
             study.setApproved(approved);
             study.setCreator(mapseqDAOBean.getAccountDAO().findByName(System.getProperty("user.name")));
-            study.setGrant(grant);
-            study.setName(name);
+            if (StringUtils.isNotEmpty(grant)) {
+                study.setGrant(grant);
+            }
             if (primaryContactId != null) {
                 study.setPrimaryContact(mapseqDAOBean.getAccountDAO().findById(primaryContactId));
             }
@@ -103,12 +106,13 @@ public class CreateStudy implements Callable<Long> {
     @SuppressWarnings("static-access")
     public static void main(String[] args) {
 
-        cliOptions.addOption(OptionBuilder.withArgName("grant").isRequired().hasArg().create("grant"));
-        cliOptions.addOption(OptionBuilder.withArgName("name").isRequired().hasArg().create("name"));
-        cliOptions.addOption(OptionBuilder.withArgName("primaryContactId").hasArg().create("primaryContactId"));
-        cliOptions.addOption(OptionBuilder.withArgName("principalInvestigatorId").hasArg()
-                .create("principalInvestigatorId"));
-        cliOptions.addOption(OptionBuilder.withArgName("approved").isRequired().hasArg().create("approved"));
+        cliOptions.addOption(OptionBuilder.withArgName("grant").withLongOpt("grant").hasArg().create());
+        cliOptions.addOption(OptionBuilder.withArgName("name").withLongOpt("name").isRequired().hasArg().create());
+        cliOptions.addOption(OptionBuilder.withArgName("primaryContactId").withLongOpt("primaryContactId").hasArg()
+                .create());
+        cliOptions.addOption(OptionBuilder.withArgName("principalInvestigatorId")
+                .withLongOpt("principalInvestigatorId").hasArg().create());
+        cliOptions.addOption(OptionBuilder.withArgName("approved").withLongOpt("approved").hasArg().create());
         cliOptions.addOption(OptionBuilder.withArgName("help").withDescription("print this help message")
                 .withLongOpt("help").create("?"));
 

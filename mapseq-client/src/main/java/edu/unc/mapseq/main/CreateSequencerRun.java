@@ -11,6 +11,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.lang3.StringUtils;
 
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
@@ -26,13 +27,13 @@ public class CreateSequencerRun implements Callable<Long> {
 
     private final static Options cliOptions = new Options();
 
-    private Long platformId;
+    private Long platformId = 66L;
 
     private String baseRunFolder;
 
     private String name;
 
-    private SequencerRunStatusType status;
+    private SequencerRunStatusType status = SequencerRunStatusType.COMPLETED;
 
     public CreateSequencerRun() {
         super();
@@ -41,7 +42,7 @@ public class CreateSequencerRun implements Callable<Long> {
     @Override
     public Long call() {
         WSDAOManager daoMgr = WSDAOManager.getInstance();
-        //RSDAOManager daoMgr = RSDAOManager.getInstance();
+        // RSDAOManager daoMgr = RSDAOManager.getInstance();
 
         MaPSeqDAOBean mapseqDAOBean = daoMgr.getMaPSeqDAOBean();
 
@@ -70,7 +71,9 @@ public class CreateSequencerRun implements Callable<Long> {
         try {
             sequencerRun.setCreator(account);
             sequencerRun.setName(this.getName());
-            sequencerRun.setBaseDirectory(this.getBaseRunFolder());
+            if (StringUtils.isNotEmpty(this.baseRunFolder)) {
+                sequencerRun.setBaseDirectory(this.baseRunFolder);
+            }
             sequencerRun.setPlatform(mapseqDAOBean.getPlatformDAO().findById(this.platformId));
             sequencerRun.setStatus(status);
             SequencerRunDAO sequencerRunDAO = mapseqDAOBean.getSequencerRunDAO();
@@ -122,13 +125,11 @@ public class CreateSequencerRun implements Callable<Long> {
     public static void main(String[] args) {
         cliOptions.addOption(OptionBuilder.withArgName("name").withLongOpt("name")
                 .withDescription("The flowcell...format should be: <date>_<sequencerID>_<technicianID>_<flowcell>")
-                .isRequired().hasArg().create("name"));
+                .isRequired().hasArg().create());
 
-        cliOptions.addOption(OptionBuilder.withArgName("platformId").withLongOpt("platformId").isRequired().hasArg()
-                .create("platformId"));
+        cliOptions.addOption(OptionBuilder.withArgName("platformId").withLongOpt("platformId").hasArg().create());
 
-        cliOptions.addOption(OptionBuilder.withArgName("baseRunFolder").withLongOpt("baseRunFolder").isRequired()
-                .hasArg().create("baseRunFolder"));
+        cliOptions.addOption(OptionBuilder.withArgName("baseRunFolder").withLongOpt("baseRunFolder").hasArg().create());
 
         StringBuilder sb = new StringBuilder();
         for (SequencerRunStatusType type : SequencerRunStatusType.values()) {
