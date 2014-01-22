@@ -328,7 +328,7 @@ public class CreateHTSFSample implements Callable<Long> {
             if (id == null) {
                 System.exit(-1);
             }
-            System.out.println("HTSFSample ID: " + main.call());
+            System.out.println("HTSFSample ID: " + id);
         } catch (ParseException e) {
             System.err.println(("Parsing Failed: " + e.getMessage()));
             helpFormatter.printHelp(main.getClass().getSimpleName(), cliOptions);
