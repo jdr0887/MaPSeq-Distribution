@@ -42,6 +42,11 @@
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
+    <command name="mapseq/delete-htsf-sample">
+      <action class="edu.unc.mapseq.commands.DeleteHTSFSampleAction">
+        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
+      </action>
+    </command>
     <command name="mapseq/synchronize-condor-with-workflow-run">
       <action class="edu.unc.mapseq.commands.SynchronizeCondorWithWorkflowRunAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
