@@ -164,7 +164,7 @@ public class CreateHTSFSampleAction extends AbstractAction {
             FileData read1FastqFD = new FileData();
             read1FastqFD.setMimeType(MimeType.FASTQ);
             read1FastqFD.setName(read1FastqFile.getName());
-            read1FastqFD.setPath(read1FastqFile.getParentFile().getAbsolutePath());
+            read1FastqFD.setPath(htsfSampleOutputDir.getAbsolutePath());
 
             List<FileData> fileDataList = maPSeqDAOBean.getFileDataDAO().findByExample(read1FastqFD);
             if (fileDataList != null && fileDataList.size() > 0) {
@@ -179,7 +179,7 @@ public class CreateHTSFSampleAction extends AbstractAction {
                 FileData read2FastqFD = new FileData();
                 read2FastqFD.setMimeType(MimeType.FASTQ);
                 read2FastqFD.setName(read2FastqFile.getName());
-                read2FastqFD.setPath(read2FastqFile.getParentFile().getAbsolutePath());
+                read2FastqFD.setPath(htsfSampleOutputDir.getAbsolutePath());
                 fileDataList = maPSeqDAOBean.getFileDataDAO().findByExample(read2FastqFD);
                 if (fileDataList != null && fileDataList.size() > 0) {
                     read2FastqFD = fileDataList.get(0);
