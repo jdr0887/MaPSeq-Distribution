@@ -7,6 +7,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +19,10 @@ import com.jcraft.jsch.Session;
 public abstract class AbstractSFTP implements Callable<Integer> {
 
     private final Logger logger = LoggerFactory.getLogger(AbstractSFTP.class);
+
+    protected final static HelpFormatter helpFormatter = new HelpFormatter();
+
+    protected final static Options cliOptions = new Options();
 
     static enum DIRECTION {
         PUT, GET
