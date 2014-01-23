@@ -7,16 +7,10 @@ import java.util.List;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
-import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.OptionBuilder;
-import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 public class TransferOutputFiles extends AbstractSFTP {
-
-    private final static HelpFormatter helpFormatter = new HelpFormatter();
-
-    private final static Options cliOptions = new Options();
 
     public TransferOutputFiles() {
         super();
