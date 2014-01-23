@@ -57,7 +57,7 @@ public class CreateHTSFSample implements Callable<Long> {
     public Long call() {
 
         WSDAOManager daoMgr = WSDAOManager.getInstance();
-        //RSDAOManager daoMgr = RSDAOManager.getInstance();
+        // RSDAOManager daoMgr = RSDAOManager.getInstance();
 
         MaPSeqDAOBean mapseqDAOBean = daoMgr.getMaPSeqDAOBean();
 
@@ -156,7 +156,9 @@ public class CreateHTSFSample implements Callable<Long> {
 
         try {
             File newR1FastqFile = new File(htsfSampleOutputDir, read1Fastq.getName());
-            FileUtils.copyFile(read1Fastq, newR1FastqFile);
+            if (!read1Fastq.getAbsolutePath().equals(newR1FastqFile.getAbsolutePath())) {
+                FileUtils.copyFile(read1Fastq, newR1FastqFile);
+            }
         } catch (IOException e1) {
             e1.printStackTrace();
         }
@@ -164,7 +166,9 @@ public class CreateHTSFSample implements Callable<Long> {
         if (read2Fastq != null) {
             try {
                 File newR2FastqFile = new File(htsfSampleOutputDir, read2Fastq.getName());
-                FileUtils.copyFile(read2Fastq, newR2FastqFile);
+                if (!read2Fastq.getAbsolutePath().equals(newR2FastqFile.getAbsolutePath())) {
+                    FileUtils.copyFile(read2Fastq, newR2FastqFile);
+                }
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
