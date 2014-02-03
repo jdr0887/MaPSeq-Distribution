@@ -2,7 +2,7 @@
   <parent>
     <groupId>edu.unc.mapseq</groupId>
     <artifactId>mapseq</artifactId>
-    <version>0.0.8</version>
+    <version>0.0.10</version>
   </parent>
   <name>MaPSeq :: Distribution</name>
   <modelVersion>4.0.0</modelVersion>
@@ -17,9 +17,7 @@
     <mapseq.modules.version>0.0.44</mapseq.modules.version>
     <mapseq.version>0.2.45</mapseq.version>
     <renci.jlrm.version>0.3.25</renci.jlrm.version>
-    <renci.commons.version>0.2.0</renci.commons.version>
     <renci.charts.version>0.0.5</renci.charts.version>
-    <openjpa.version>2.2.2</openjpa.version>
   </properties>
   <issueManagement>
     <system>gForge</system>
@@ -39,11 +37,6 @@
   </scm>
   <dependencyManagement>
     <dependencies>
-      <dependency>
-	<groupId>org.apache.openjpa</groupId>
-	<artifactId>openjpa</artifactId>
-	<version>${openjpa.version}</version>
-      </dependency>
       <dependency>
 	<groupId>org.bouncycastle</groupId>
 	<artifactId>bcprov-jdk16</artifactId>
@@ -93,11 +86,6 @@
       	<groupId>edu.unc.mapseq.mapseq-dao</groupId>
       	<artifactId>mapseq-dao-rs</artifactId>
       	<version>${mapseq.version}</version>
-      </dependency>
-      <dependency>
-      	<groupId>org.renci.commons</groupId>
-      	<artifactId>commons-exec</artifactId>
-      	<version>${renci.commons.version}</version>
       </dependency>
       <dependency>
       	<groupId>org.apache.commons</groupId>
