@@ -7,7 +7,7 @@ import java.util.Formatter;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.felix.gogo.commands.Argument;
+import org.apache.commons.lang.StringUtils;
 import org.apache.felix.gogo.commands.Command;
 import org.apache.felix.gogo.commands.Option;
 import org.apache.karaf.shell.console.AbstractAction;
@@ -24,11 +24,14 @@ public class ListHTSFSamplesAction extends AbstractAction {
 
     private MaPSeqDAOBean maPSeqDAOBean;
 
-    @Argument(index = 0, name = "sequencerRunId", description = "Sequencer Run Identifier", required = true, multiValued = true)
-    private List<Long> sequencerRunIdList;
-
     @Option(name = "-l", description = "long format", required = false, multiValued = false)
     private Boolean longFormat;
+
+    @Option(name = "--sequencerRunId", description = "Sequencer Run Identifier", required = false, multiValued = false)
+    private Long sequencerRunId;
+
+    @Option(name = "--name", description = "like search by name", required = false, multiValued = false)
+    private String name;
 
     public ListHTSFSamplesAction() {
         super();
@@ -37,68 +40,61 @@ public class ListHTSFSamplesAction extends AbstractAction {
     @Override
     public Object doExecute() {
 
-        List<SequencerRun> srList = new ArrayList<SequencerRun>();
         SequencerRunDAO sequencerRunDAO = maPSeqDAOBean.getSequencerRunDAO();
-        for (Long sequencerRunId : sequencerRunIdList) {
-            SequencerRun sequencerRun = null;
+        HTSFSampleDAO htsfSampleDAO = maPSeqDAOBean.getHTSFSampleDAO();
+
+        if (sequencerRunId == null && StringUtils.isEmpty(name)) {
+            System.out.println("sequencerRunId & name can't both be null/empty");
+            return null;
+        }
+
+        List<HTSFSample> htsfSampleList = new ArrayList<HTSFSample>();
+
+        if (sequencerRunId != null) {
             try {
-                sequencerRun = sequencerRunDAO.findById(sequencerRunId);
+                SequencerRun sequencerRun = sequencerRunDAO.findById(sequencerRunId);
+                htsfSampleList.addAll(htsfSampleDAO.findBySequencerRunId(sequencerRun.getId()));
             } catch (MaPSeqDAOException e) {
-            }
-            if (sequencerRun != null) {
-                srList.add(sequencerRun);
             }
         }
 
-        if (srList.size() > 0) {
+        if (StringUtils.isNotEmpty(name)) {
+            try {
+                htsfSampleList.addAll(htsfSampleDAO.findByName(name));
+            } catch (MaPSeqDAOException e) {
+            }
+        }
 
-            Collections.sort(srList, new Comparator<SequencerRun>() {
+        if (htsfSampleList != null && htsfSampleList.size() > 0) {
+            StringBuilder sb = new StringBuilder();
+            Formatter formatter = new Formatter(sb, Locale.US);
+            if (longFormat != null && longFormat) {
+                formatter.format("%1$-12s %2$-40s %3$-6s %4$-16s %5$s%n", "Sample ID", "Sample Name", "Lane",
+                        "Barcode", "Output Directory");
+            } else {
+                formatter.format("%1$-12s %2$-40s %3$-6s %4$s%n", "Sample ID", "Sample Name", "Lane", "Barcode");
+            }
+            Collections.sort(htsfSampleList, new Comparator<HTSFSample>() {
                 @Override
-                public int compare(SequencerRun sr1, SequencerRun sr2) {
+                public int compare(HTSFSample sr1, HTSFSample sr2) {
                     return sr1.getId().compareTo(sr2.getId());
                 }
             });
 
-            List<HTSFSample> htsfSampleList = new ArrayList<HTSFSample>();
-            for (SequencerRun sequencerRun : srList) {
-                HTSFSampleDAO htsfSampleDAO = maPSeqDAOBean.getHTSFSampleDAO();
-                try {
-                    htsfSampleList.addAll(htsfSampleDAO.findBySequencerRunId(sequencerRun.getId()));
-                } catch (MaPSeqDAOException e) {
-                }
-            }
-
-            if (htsfSampleList != null && htsfSampleList.size() > 0) {
-                StringBuilder sb = new StringBuilder();
-                Formatter formatter = new Formatter(sb, Locale.US);
+            for (HTSFSample sample : htsfSampleList) {
                 if (longFormat != null && longFormat) {
-                    formatter.format("%1$-12s %2$-40s %3$-6s %4$-16s %5$s%n", "Sample ID", "Sample Name", "Lane",
-                            "Barcode", "Output Directory");
+                    formatter.format("%1$-12s %2$-40s %3$-6s %4$-16s %5$s%n", sample.getId(), sample.getName(),
+                            sample.getLaneIndex(), sample.getBarcode(), sample.getOutputDirectory());
                 } else {
-                    formatter.format("%1$-12s %2$-40s %3$-6s %4$s%n", "Sample ID", "Sample Name", "Lane", "Barcode");
+                    formatter.format("%1$-12s %2$-40s %3$-6s %4$s%n", sample.getId(), sample.getName(),
+                            sample.getLaneIndex(), sample.getBarcode());
                 }
-                Collections.sort(htsfSampleList, new Comparator<HTSFSample>() {
-                    @Override
-                    public int compare(HTSFSample sr1, HTSFSample sr2) {
-                        return sr1.getId().compareTo(sr2.getId());
-                    }
-                });
-
-                for (HTSFSample sample : htsfSampleList) {
-                    if (longFormat != null && longFormat) {
-                        formatter.format("%1$-12s %2$-40s %3$-6s %4$-16s %5$s%n", sample.getId(), sample.getName(),
-                                sample.getLaneIndex(), sample.getBarcode(), sample.getOutputDirectory());
-                    } else {
-                        formatter.format("%1$-12s %2$-40s %3$-6s %4$s%n", sample.getId(), sample.getName(),
-                                sample.getLaneIndex(), sample.getBarcode());
-                    }
-                    formatter.flush();
-                }
-                System.out.println(formatter.toString());
-                formatter.close();
+                formatter.flush();
             }
-
+            System.out.println(formatter.toString());
+            formatter.close();
         }
+
         return null;
     }
 
@@ -110,12 +106,20 @@ public class ListHTSFSamplesAction extends AbstractAction {
         this.maPSeqDAOBean = maPSeqDAOBean;
     }
 
-    public List<Long> getSequencerRunIdList() {
-        return sequencerRunIdList;
+    public Long getSequencerRunId() {
+        return sequencerRunId;
     }
 
-    public void setSequencerRunIdList(List<Long> sequencerRunIdList) {
-        this.sequencerRunIdList = sequencerRunIdList;
+    public void setSequencerRunId(Long sequencerRunId) {
+        this.sequencerRunId = sequencerRunId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Boolean getLongFormat() {
