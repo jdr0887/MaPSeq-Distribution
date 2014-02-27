@@ -14,7 +14,9 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.lang.StringUtils;
 
+import edu.unc.mapseq.dao.AccountDAO;
 import edu.unc.mapseq.dao.HTSFSampleDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
@@ -30,7 +32,9 @@ public class ListHTSFSamples implements Runnable {
 
     private final static Options cliOptions = new Options();
 
-    private List<Long> sequencerRunIdList;
+    private Long sequencerRunId;
+
+    private String name;
 
     public ListHTSFSamples() {
         super();
@@ -38,14 +42,17 @@ public class ListHTSFSamples implements Runnable {
 
     @Override
     public void run() {
-        //WSDAOManager daoMgr = WSDAOManager.getInstance();
+        // WSDAOManager daoMgr = WSDAOManager.getInstance();
         RSDAOManager daoMgr = RSDAOManager.getInstance();
 
-        MaPSeqDAOBean mapseqDAOBean = daoMgr.getMaPSeqDAOBean();
+        MaPSeqDAOBean maPSeqDAOBean = daoMgr.getMaPSeqDAOBean();
+        SequencerRunDAO sequencerRunDAO = maPSeqDAOBean.getSequencerRunDAO();
+        HTSFSampleDAO htsfSampleDAO = maPSeqDAOBean.getHTSFSampleDAO();
+        AccountDAO accountDAO = maPSeqDAOBean.getAccountDAO();
 
         Account account = null;
         try {
-            account = mapseqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
+            account = accountDAO.findByName(System.getProperty("user.name"));
         } catch (MaPSeqDAOException e) {
         }
 
@@ -54,55 +61,43 @@ public class ListHTSFSamples implements Runnable {
             return;
         }
 
-        List<SequencerRun> srList = new ArrayList<SequencerRun>();
-        SequencerRunDAO sequencerRunDAO = mapseqDAOBean.getSequencerRunDAO();
-        for (Long sequencerRunId : sequencerRunIdList) {
-            SequencerRun sequencerRun = null;
-            try {
-                sequencerRun = sequencerRunDAO.findById(sequencerRunId);
+        if (sequencerRunId == null && StringUtils.isEmpty(name)) {
+            System.out.println("sequencerRunId & name can't both be null/empty");
+            return;
+        }
 
+        List<HTSFSample> htsfSampleList = new ArrayList<HTSFSample>();
+
+        if (sequencerRunId != null) {
+            try {
+                SequencerRun sequencerRun = sequencerRunDAO.findById(sequencerRunId);
+                htsfSampleList.addAll(htsfSampleDAO.findBySequencerRunId(sequencerRun.getId()));
             } catch (MaPSeqDAOException e) {
-            }
-            if (sequencerRun != null) {
-                srList.add(sequencerRun);
             }
         }
 
-        if (srList.size() > 0) {
+        if (StringUtils.isNotEmpty(name)) {
+            try {
+                htsfSampleList.addAll(htsfSampleDAO.findByName(name));
+            } catch (MaPSeqDAOException e) {
+            }
+        }
 
-            Collections.sort(srList, new Comparator<SequencerRun>() {
+        if (htsfSampleList != null && htsfSampleList.size() > 0) {
+            StringBuilder sb = new StringBuilder();
+            Formatter formatter = new Formatter(sb, Locale.US);
+            formatter.format("%1$-12s %2$-40s %3$-6s %4$s%n", "Sample ID", "Sample Name", "Lane", "Barcode");
+            Collections.sort(htsfSampleList, new Comparator<HTSFSample>() {
                 @Override
-                public int compare(SequencerRun sr1, SequencerRun sr2) {
-                    if (sr1.getCreationDate().before(sr2.getCreationDate())) {
-                        return -1;
-                    }
-                    if (sr1.getCreationDate().after(sr2.getCreationDate())) {
-                        return 1;
-                    }
-                    if (sr1.getCreationDate().equals(sr2.getCreationDate())) {
-                        return 0;
-                    }
-                    return 0;
+                public int compare(HTSFSample sr1, HTSFSample sr2) {
+                    return sr1.getId().compareTo(sr2.getId());
                 }
             });
 
-            StringBuilder sb = new StringBuilder();
-            Formatter formatter = new Formatter(sb, Locale.US);
-            formatter.format("%1$-18s %2$-18s %3$-36s %4$s%n", "HTSF Sample ID", "Sample Name", "Lane", "Barcode");
-            for (SequencerRun sequencerRun : srList) {
-                HTSFSampleDAO htsfSampleDAO = mapseqDAOBean.getHTSFSampleDAO();
-                try {
-                    List<HTSFSample> htsfSampleList = htsfSampleDAO.findBySequencerRunId(sequencerRun.getId());
-                    for (HTSFSample sample : htsfSampleList) {
-                        if ("Undetermined".equals(sample.getBarcode())) {
-                            continue;
-                        }
-                        formatter.format("%1$-18s %2$-18s %3$-36s %4$s%n", sample.getId(), sample.getName(),
-                                sample.getLaneIndex(), sample.getBarcode());
-                        formatter.flush();
-                    }
-                } catch (MaPSeqDAOException e) {
-                }
+            for (HTSFSample sample : htsfSampleList) {
+                formatter.format("%1$-12s %2$-40s %3$-6s %4$s%n", sample.getId(), sample.getName(),
+                        sample.getLaneIndex(), sample.getBarcode());
+                formatter.flush();
             }
             System.out.println(formatter.toString());
             formatter.close();
@@ -110,12 +105,20 @@ public class ListHTSFSamples implements Runnable {
 
     }
 
-    public List<Long> getSequencerRunIdList() {
-        return sequencerRunIdList;
+    public Long getSequencerRunId() {
+        return sequencerRunId;
     }
 
-    public void setSequencerRunIdList(List<Long> sequencerRunIdList) {
-        this.sequencerRunIdList = sequencerRunIdList;
+    public void setSequencerRunId(Long sequencerRunId) {
+        this.sequencerRunId = sequencerRunId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @SuppressWarnings("static-access")
@@ -135,22 +138,16 @@ public class ListHTSFSamples implements Runnable {
                 return;
             }
 
-            List<Long> sequencerRunIdList = new ArrayList<Long>();
             if (commandLine.hasOption("sequencerRunId")) {
-                String[] sequencerRunIdArray = commandLine.getOptionValues("sequencerRunId");
-                for (String sequencerRunId : sequencerRunIdArray) {
-                    Long id = null;
-                    try {
-                        id = Long.valueOf(sequencerRunId);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    if (id != null) {
-                        sequencerRunIdList.add(id);
-                    }
-                }
-                main.setSequencerRunIdList(sequencerRunIdList);
+                String sequencerRunIdValue = commandLine.getOptionValue("sequencerRunId");
+                main.setSequencerRunId(Long.valueOf(sequencerRunIdValue));
             }
+
+            if (commandLine.hasOption("name")) {
+                String name = commandLine.getOptionValue("name");
+                main.setName(name);
+            }
+
             main.run();
         } catch (ParseException e) {
             System.err.println(("Parsing Failed: " + e.getMessage()));
