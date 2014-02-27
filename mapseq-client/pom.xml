@@ -96,9 +96,9 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>edu.unc.mapseq.maven-plugins</groupId>
-        <artifactId>scripts-plugin</artifactId>
-        <version>0.0.10</version>
+        <groupId>edu.unc.mapseq.mapseq-maven-plugins</groupId>
+        <artifactId>mapseq-scripts-plugin</artifactId>
+        <version>${mapseq.version}</version>
         <executions>
           <execution>
 	    <id>mapseq-transfer-inputs</id>
