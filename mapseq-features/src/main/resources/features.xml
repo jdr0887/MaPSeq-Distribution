@@ -29,6 +29,9 @@
     <bundle>mvn:net.sourceforge.jopt-simple/com.springsource.joptsimple/3.0.0</bundle>
     <bundle>mvn:org.jaxen/com.springsource.org.jaxen/1.1.1</bundle>    
     <bundle>mvn:org.codehaus.jettison/jettison/1.3.1</bundle>
+    <bundle>mvn:org.codehaus.jackson/jackson-jaxrs/1.9.13</bundle>
+    <bundle>mvn:org.codehaus.jackson/jackson-core-asl/1.9.13</bundle>
+    <bundle>mvn:org.codehaus.jackson/jackson-mapper-asl/1.9.13</bundle>
     <bundle>mvn:org.renci.commons/commons-exec/${renci.commons.version}</bundle>
     <bundle>mvn:org.renci.jlrm/jlrm-api/${renci.jlrm.version}</bundle>
     <bundle>mvn:org.renci.jlrm.jlrm-condor/jlrm-condor-api/${renci.jlrm.version}</bundle>
