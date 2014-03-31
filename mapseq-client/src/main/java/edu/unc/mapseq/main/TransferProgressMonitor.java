@@ -33,12 +33,11 @@ public class TransferProgressMonitor implements SftpProgressMonitor {
     public void end() {
         this.endTime = System.currentTimeMillis();
         Long duration = (endTime - startTime);
-        if (duration == 0) {
-            duration = 1L;
+        if (totalBytes > 0 && duration > 0) {
+            logger.info(String.format("rate: %d bytes per second", totalBytes / (duration / 1000)));
+            logger.info(String.format("duration: %d, totalBytes: %d", duration, totalBytes));
+            logger.debug("\nFINISHED!");
         }
-        logger.info(String.format("rate: %d bytes per second", totalBytes / (duration / 1000)));
-        logger.info(String.format("duration: %d, totalBytes: %d", duration, totalBytes));
-        logger.debug("\nFINISHED!");
     }
 
 }
