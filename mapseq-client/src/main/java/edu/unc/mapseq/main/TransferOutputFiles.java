@@ -3,22 +3,52 @@ package edu.unc.mapseq.main;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class TransferOutputFiles extends AbstractSFTP {
+public class TransferOutputFiles extends AbstractTransferFiles {
+
+    private final Logger logger = LoggerFactory.getLogger(TransferOutputFiles.class);
 
     public TransferOutputFiles() {
         super();
     }
 
     @Override
-    public DIRECTION getDirection() {
-        return DIRECTION.PUT;
+    public Integer call() {
+        logger.debug("ENTERING call()");
+
+        int exitCode = 0;
+
+        try {
+
+            ExecutorService executorService = Executors.newSingleThreadExecutor();
+            try {
+                // SFTPTransferOutputTask task = new SFTPTransferOutputTask(getUsername(), getHost(), getFileList(),
+                // getRemoteDirectory());
+                RSyncTransferOutputTask task = new RSyncTransferOutputTask(getUsername(), getHost(), getFileList(),
+                        getRemoteDirectory());
+                exitCode = executorService.submit(task).get();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            executorService.shutdown();
+            executorService.awaitTermination(20, TimeUnit.MINUTES);
+
+        } catch (InterruptedException e) {
+            logger.error("InterruptedException", e);
+            exitCode = -1;
+        }
+        return exitCode;
     }
 
     @SuppressWarnings("static-access")
