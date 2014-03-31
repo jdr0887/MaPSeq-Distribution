@@ -38,38 +38,57 @@ public class SynchronizeFileDataWithFSAction extends AbstractAction {
             if (sequencerRunList != null) {
 
                 for (SequencerRun sequencerRun : sequencerRunList) {
+
                     List<HTSFSample> htsfSampleList = htsfSampleDAO.findBySequencerRunId(sequencerRun.getId());
 
                     if (htsfSampleList != null) {
 
                         for (HTSFSample sample : htsfSampleList) {
+
                             Set<FileData> sampleFileDataSet = sample.getFileDatas();
+
                             if (sampleFileDataSet != null) {
+
                                 Iterator<FileData> sampleFileDataIter = sampleFileDataSet.iterator();
+
                                 while (sampleFileDataIter.hasNext()) {
+
                                     FileData fileData = sampleFileDataIter.next();
                                     File f = new File(fileData.getPath(), fileData.getName());
+
                                     if (!f.exists()) {
                                         sampleFileDataIter.remove();
                                     }
+
                                 }
+
                                 htsfSampleDAO.save(sample);
+
                             }
+
                         }
 
                     }
 
                     Set<FileData> sequencerRunFileDataSet = sequencerRun.getFileDatas();
+
                     if (sequencerRunFileDataSet != null) {
+
                         Iterator<FileData> sequencerRunFileDataIter = sequencerRunFileDataSet.iterator();
+
                         while (sequencerRunFileDataIter.hasNext()) {
+
                             FileData fileData = sequencerRunFileDataIter.next();
                             File f = new File(fileData.getPath(), fileData.getName());
+
                             if (!f.exists()) {
                                 sequencerRunFileDataIter.remove();
                             }
+
                         }
+
                         sequencerRunDAO.save(sequencerRun);
+
                     }
 
                 }
