@@ -14,8 +14,8 @@
     <karaf.version>2.3.4</karaf.version>
     <cxf.version>2.7.10</cxf.version>
     <activemq.version>5.8.0</activemq.version>
-    <mapseq.modules.version>0.0.48</mapseq.modules.version>
-    <mapseq.version>0.3.7</mapseq.version>
+    <mapseq.modules.version>0.0.49</mapseq.modules.version>
+    <mapseq.version>0.3.8</mapseq.version>
     <renci.jlrm.version>0.3.26</renci.jlrm.version>
     <renci.charts.version>0.0.5</renci.charts.version>
     <jackson.version>2.3.0</jackson.version>
