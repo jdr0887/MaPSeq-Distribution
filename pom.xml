@@ -14,8 +14,8 @@
     <karaf.version>2.3.5</karaf.version>
     <cxf.version>2.7.10</cxf.version>
     <activemq.version>5.8.0</activemq.version>
-    <mapseq.modules.version>0.0.51</mapseq.modules.version>
-    <mapseq.version>0.3.10</mapseq.version>
+    <mapseq.modules.version>0.0.52</mapseq.modules.version>
+    <mapseq.version>0.3.11</mapseq.version>
     <renci.jlrm.version>0.3.30</renci.jlrm.version>
     <renci.charts.version>0.0.5</renci.charts.version>
     <jackson.version>2.3.0</jackson.version>
@@ -26,7 +26,7 @@
   </issueManagement>
   <licenses>    
     <license>
-      <name>RENCI Open Source Software License</name>
+      <name>UNC Open Source Public License</name>
       <url>LICENSE</url>
       <distribution>repo</distribution>
     </license>
