@@ -1,14 +1,17 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+			     http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
     <groupId>edu.unc.mapseq</groupId>
     <artifactId>distribution</artifactId>
-    <version>0.4.1-SNAPSHOT</version>
+    <version>0.3.9-SNAPSHOT</version>
   </parent>
   <name>MaPSeq :: Distribution :: Client</name>
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.unc.mapseq.distribution</groupId>
   <artifactId>mapseq-client</artifactId>
-  <version>0.4.1-SNAPSHOT</version>
+  <version>0.3.9-SNAPSHOT</version>
   <packaging>jar</packaging>
   <dependencies>
     <dependency>
@@ -98,7 +101,7 @@
       <plugin>
         <groupId>edu.unc.mapseq.distribution.mapseq-maven-plugins</groupId>
         <artifactId>mapseq-scripts-plugin</artifactId>
-        <version>0.4.1-SNAPSHOT</version>
+        <version>0.3.9-SNAPSHOT</version>
         <executions>
           <execution>
 	    <id>mapseq-transfer-inputs</id>
