@@ -1,4 +1,7 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+			     http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
     <groupId>edu.unc.mapseq</groupId>
     <artifactId>distribution</artifactId>
@@ -32,16 +35,16 @@
       <artifactId>log4j</artifactId>
     </dependency>
     <dependency>
-      <groupId>edu.unc.mapseq.mapseq-dao</groupId>
-      <artifactId>mapseq-dao-ws</artifactId>
+      <groupId>edu.unc.mapseq.distribution.mapseq-dao</groupId>
+      <artifactId>mapseq-dao-soap</artifactId>
     </dependency>
     <dependency>
-      <groupId>edu.unc.mapseq.mapseq-dao</groupId>
-      <artifactId>mapseq-dao-rs</artifactId>
+      <groupId>edu.unc.mapseq.distribution.mapseq-dao</groupId>
+      <artifactId>mapseq-dao-rest</artifactId>
     </dependency>
     <dependency>
-      <groupId>edu.unc.mapseq</groupId>
-      <artifactId>modules</artifactId>
+      <groupId>edu.unc.mapseq.distribution</groupId>
+      <artifactId>mapseq-modules</artifactId>
     </dependency>
     <dependency>
       <groupId>commons-cli</groupId>
@@ -96,9 +99,9 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>edu.unc.mapseq.mapseq-maven-plugins</groupId>
+        <groupId>edu.unc.mapseq.distribution.mapseq-maven-plugins</groupId>
         <artifactId>mapseq-scripts-plugin</artifactId>
-        <version>${mapseq.version}</version>
+        <version>0.3.9-SNAPSHOT</version>
         <executions>
           <execution>
 	    <id>mapseq-transfer-inputs</id>
