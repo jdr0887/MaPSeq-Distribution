@@ -52,13 +52,16 @@
     <bundle>mvn:org.renci.osgi.bundles/jbzip2-0.9-bundle/0.0.1</bundle>
     <bundle>mvn:org.renci.osgi.bundles/fastqc-0.10.1-bundle/0.0.1</bundle>
     <bundle>mvn:org.renci.osgi.bundles/ubu-1.2-bundle/0.0.1</bundle>
-    <bundle>mvn:edu.unc.mapseq/mapseq-config/${mapseq.version}</bundle>
   </feature>
 
-  <feature name="mapseq-dao" version="${project.version}" resolver="(obr)">
+  <feature name="mapseq-api" version="${project.version}" resolver="(obr)">
+    <bundle>mvn:edu.unc.mapseq/mapseq-config/${mapseq.version}</bundle>
     <bundle>mvn:edu.unc.mapseq/mapseq-datasource/${mapseq.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.mapseq-dao/mapseq-dao-api/${mapseq.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.mapseq-dao/mapseq-dao-jpa/${mapseq.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq/mapseq-web-service-api/${mapseq.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq/mapseq-module-api/${mapseq.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq/mapseq-workflow-api/${mapseq.version}</bundle>
   </feature>
 
   <feature name="mapseq-commands" version="${project.version}" resolver="(obr)">
@@ -68,28 +71,22 @@
   </feature>
 
   <feature name="mapseq-web-services" version="${project.version}" resolver="(obr)">
-    <bundle>mvn:edu.unc.mapseq.mapseq-web/mapseq-web-service-api/${mapseq.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.mapseq-web.mapseq-web-services/mapseq-web-service-account/${mapseq.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.mapseq-web.mapseq-web-services/mapseq-web-service-account-group/${mapseq.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.mapseq-web.mapseq-web-services/mapseq-web-service-file-data/${mapseq.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.mapseq-web.mapseq-web-services/mapseq-web-service-platform/${mapseq.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.mapseq-web.mapseq-web-services/mapseq-web-service-job/${mapseq.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.mapseq-web.mapseq-web-services/mapseq-web-service-htsf-sample/${mapseq.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.mapseq-web.mapseq-web-services/mapseq-web-service-study/${mapseq.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.mapseq-web.mapseq-web-services/mapseq-web-service-sequencer-run/${mapseq.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.mapseq-web.mapseq-web-services/mapseq-web-service-workflow/${mapseq.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.mapseq-web.mapseq-web-services/mapseq-web-service-workflow-plan/${mapseq.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.mapseq-web.mapseq-web-services/mapseq-web-service-workflow-run/${mapseq.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.mapseq-dao/mapseq-dao-ws/${mapseq.version}</bundle>
-  </feature>
-
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-account/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-account-group/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-file-data/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-platform/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-job/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-htsf-sample/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-study/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-sequencer-run/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-workflow/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-workflow-plan/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-workflow-run/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-dao/mapseq-dao-soap/${project.version}</bundle>
+  </feature>		      
+			      
   <feature name="mapseq-modules" version="${project.version}" resolver="(obr)">
-    <bundle>mvn:edu.unc.mapseq/mapseq-module-api/${mapseq.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq/modules/${mapseq.modules.version}</bundle>
-  </feature>
-
-  <feature name="mapseq-workflow-api" version="${project.version}" resolver="(obr)">
-    <bundle>mvn:edu.unc.mapseq/mapseq-workflow-api/${mapseq.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution/mapseq-modules/${project.version}</bundle>
   </feature>
 
   <feature name="mapseq-web-app" version="${project.version}" resolver="(obr)">
@@ -104,11 +101,10 @@
     <feature>activemq-broker</feature>
     <feature version="${project.version}">mapseq-common</feature>
     <feature>cxf</feature>
-    <feature version="${project.version}">mapseq-dao</feature>
+    <feature version="${project.version}">mapseq-api</feature>
     <feature version="${project.version}">mapseq-commands</feature>
     <feature version="${project.version}">mapseq-web-services</feature>
     <feature version="${project.version}">mapseq-modules</feature>
-    <feature version="${project.version}">mapseq-workflow-api</feature>
     <feature version="${project.version}">mapseq-web-app</feature>
   </feature>
 
