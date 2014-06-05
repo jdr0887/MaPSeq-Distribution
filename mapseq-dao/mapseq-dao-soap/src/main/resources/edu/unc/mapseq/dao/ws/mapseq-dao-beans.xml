@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+  <bean id="configurationService" class="edu.unc.mapseq.config.MaPSeqConfigurationServiceImpl" singleton="true" />
+
+  <bean id="accountDAO" class="edu.unc.mapseq.dao.ws.AccountDAOImpl" init-method="init" singleton="true">
+    <property name="configurationService" ref="configurationService" />
+  </bean>
+
+  <bean id="accountGroupDAO" class="edu.unc.mapseq.dao.ws.AccountGroupDAOImpl" init-method="init" singleton="true">
+    <property name="configurationService" ref="configurationService" />
+  </bean>
+
+  <bean id="fileDataDAO" class="edu.unc.mapseq.dao.ws.FileDataDAOImpl" init-method="init" singleton="true">
+    <property name="configurationService" ref="configurationService" />
+  </bean>
+
+  <bean id="HTSFSampleDAO" class="edu.unc.mapseq.dao.ws.HTSFSampleDAOImpl" init-method="init" singleton="true">
+    <property name="configurationService" ref="configurationService" />
+  </bean>
+
+  <bean id="platformDAO" class="edu.unc.mapseq.dao.ws.PlatformDAOImpl" init-method="init" singleton="true">
+    <property name="configurationService" ref="configurationService" />
+  </bean>
+
+  <bean id="jobDAO" class="edu.unc.mapseq.dao.ws.JobDAOImpl" init-method="init" singleton="true">
+    <property name="configurationService" ref="configurationService" />
+  </bean>
+
+  <bean id="studyDAO" class="edu.unc.mapseq.dao.ws.StudyDAOImpl" init-method="init" singleton="true">
+    <property name="configurationService" ref="configurationService" />
+  </bean>
+
+  <bean id="sequencerRunDAO" class="edu.unc.mapseq.dao.ws.SequencerRunDAOImpl" init-method="init" singleton="true">
+    <property name="configurationService" ref="configurationService" />
+  </bean>
+
+  <bean id="workflowDAO" class="edu.unc.mapseq.dao.ws.WorkflowDAOImpl" init-method="init" singleton="true">
+    <property name="configurationService" ref="configurationService" />
+  </bean>
+
+  <bean id="workflowPlanDAO" class="edu.unc.mapseq.dao.ws.WorkflowPlanDAOImpl" init-method="init" singleton="true">
+    <property name="configurationService" ref="configurationService" />
+  </bean>
+
+  <bean id="workflowRunDAO" class="edu.unc.mapseq.dao.ws.WorkflowRunDAOImpl" init-method="init" singleton="true">
+    <property name="configurationService" ref="configurationService" />
+  </bean>
+
+  <bean id="mapseqBean" class="edu.unc.mapseq.dao.MaPSeqDAOBean">
+    <property name="accountDAO" ref="accountDAO" />
+    <property name="accountGroupDAO" ref="accountGroupDAO" />
+    <property name="fileDataDAO" ref="fileDataDAO" />
+    <property name="HTSFSampleDAO" ref="HTSFSampleDAO" />
+    <property name="platformDAO" ref="platformDAO" />
+    <property name="jobDAO" ref="jobDAO" />
+    <property name="studyDAO" ref="studyDAO" />
+    <property name="sequencerRunDAO" ref="sequencerRunDAO" />
+    <property name="workflowDAO" ref="workflowDAO" />
+    <property name="workflowPlanDAO" ref="workflowPlanDAO" />
+    <property name="workflowRunDAO" ref="workflowRunDAO" />
+  </bean>
+
+</beans>

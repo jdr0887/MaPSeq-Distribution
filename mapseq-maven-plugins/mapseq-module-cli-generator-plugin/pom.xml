@@ -1,0 +1,39 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <groupId>edu.unc.mapseq.distribution</groupId>
+    <artifactId>mapseq-maven-plugins</artifactId>
+    <version>0.3.9-SNAPSHOT</version>
+  </parent>
+  <name>MaPSeq :: Distribution :: Maven Plugins :: Module CLI Generator Plugin</name>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>edu.unc.mapseq.distribution.mapseq-maven-plugins</groupId>
+  <artifactId>mapseq-module-cli-generator-plugin</artifactId>
+  <version>0.3.9-SNAPSHOT</version>
+  <packaging>maven-plugin</packaging>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-plugin-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-project</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.openjpa</groupId>
+      <artifactId>openjpa</artifactId>
+    </dependency>
+    <dependency>   
+      <groupId>edu.unc.mapseq.distribution</groupId>
+      <artifactId>mapseq-module-cli-generator</artifactId>
+    </dependency> 
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-validation_1.0_spec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>edu.unc.mapseq</groupId>
+      <artifactId>mapseq-module-api</artifactId>
+    </dependency> 
+  </dependencies>
+</project>
