@@ -3,7 +3,7 @@
   <repository>mvn:org.apache.activemq/activemq-karaf/${activemq.version}/xml/features</repository>  
   <repository>mvn:org.apache.cxf.karaf/apache-cxf/${cxf.version}/xml/features</repository>
   
-  <feature name="mapseq-common" version="${project.version}" resolver="(obr)">
+  <feature name="mapseq-shared" version="${project.version}" resolver="(obr)">
     <bundle>mvn:commons-io/commons-io/${commons.io.version}</bundle>
     <bundle>mvn:commons-cli/commons-cli/${commons.cli.version}</bundle>
     <bundle>mvn:commons-pool/commons-pool/${commons.pool.version}</bundle>
@@ -64,13 +64,11 @@
     <bundle>mvn:edu.unc.mapseq/mapseq-workflow-api/${mapseq.version}</bundle>
   </feature>
 
-  <feature name="mapseq-commands" version="${project.version}" resolver="(obr)">
+  <feature name="mapseq-impl" version="${project.version}" resolver="(obr)">
+    <bundle>mvn:edu.unc.mapseq.distribution/mapseq-workflow-impl/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution/mapseq-reports/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution/mapseq-tasks/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution/mapseq-commands/${project.version}</bundle>
-  </feature>
-
-  <feature name="mapseq-web-services" version="${project.version}" resolver="(obr)">
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-account/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-account-group/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-file-data/${project.version}</bundle>
@@ -83,15 +81,9 @@
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-workflow-plan/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-workflow-run/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-dao/mapseq-dao-soap/${project.version}</bundle>
-  </feature>		      
-			      
-  <feature name="mapseq-modules" version="${project.version}" resolver="(obr)">
     <bundle>mvn:edu.unc.mapseq.distribution/mapseq-modules/${project.version}</bundle>
-  </feature>
-
-  <feature name="mapseq-web-app" version="${project.version}" resolver="(obr)">
     <bundle>mvn:edu.unc.mapseq.distribution/mapseq-webapp/${project.version}/war</bundle>
-  </feature>
+  </feature>		      
 
   <feature name="mapseq" version="${project.version}" resolver="(obr)">
     <feature>eventadmin</feature>
@@ -99,13 +91,10 @@
     <feature>jndi</feature>
     <feature>jpa</feature>
     <feature>activemq-broker</feature>
-    <feature version="${project.version}">mapseq-common</feature>
+    <feature version="${project.version}">mapseq-shared</feature>
     <feature>cxf</feature>
     <feature version="${project.version}">mapseq-api</feature>
-    <feature version="${project.version}">mapseq-commands</feature>
-    <feature version="${project.version}">mapseq-web-services</feature>
-    <feature version="${project.version}">mapseq-modules</feature>
-    <feature version="${project.version}">mapseq-web-app</feature>
+    <feature version="${project.version}">mapseq-impl</feature>
   </feature>
 
 </features>
