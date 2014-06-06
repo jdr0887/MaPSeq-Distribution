@@ -24,4 +24,20 @@
       <artifactId>jlrm-condor-api</artifactId>
     </dependency>
   </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+	<extensions>true</extensions>
+        <configuration>
+          <instructions>
+	    <Import-Package>*</Import-Package>
+	    <Export-Package>edu.unc.mapseq.workflow.impl*</Export-Package>
+            <Private-Package>edu.unc.mapseq.workflow.impl</Private-Package>
+          </instructions>
+        </configuration>
+      </plugin>      
+    </plugins>
+  </build>
 </project>
