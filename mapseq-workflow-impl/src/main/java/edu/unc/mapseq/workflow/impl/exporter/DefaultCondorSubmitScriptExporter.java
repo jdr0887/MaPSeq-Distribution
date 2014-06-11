@@ -223,13 +223,9 @@ public class DefaultCondorSubmitScriptExporter extends CondorSubmitScriptExporte
 
         String command = null;
 
-        if (job.getClassAdvertisments() != null) {
-            for (ClassAdvertisement classAd : job.getClassAdvertisments()) {
-                if (classAd.getKey().equals(ClassAdvertisementFactory.CLASS_AD_KEY_ARGUMENTS)) {
-                    command = String.format("%s %s", job.getExecutable().getPath(), classAd.getValue());
-                    break;
-                }
-            }
+        ClassAdvertisement argumentsClassAd = job.getArgumentsClassAd();
+        if (argumentsClassAd != null && StringUtils.isNotEmpty(argumentsClassAd.getValue())) {
+            command = String.format("%s %s", job.getExecutable().getPath(), argumentsClassAd.getValue());
         } else {
             command = String.format("%s", job.getExecutable().getPath());
         }
