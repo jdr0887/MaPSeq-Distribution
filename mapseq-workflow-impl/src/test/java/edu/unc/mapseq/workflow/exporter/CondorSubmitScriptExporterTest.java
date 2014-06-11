@@ -16,7 +16,7 @@ public class CondorSubmitScriptExporterTest {
     public void testRsyncCreateScript() {
 
         CondorJobBuilder builder = new CondorJobBuilder().name("PicardAddOrReplaceReadGroupsCLI")
-                .initialDirectory("/home/jdr0887/tmp").executable(new File("/bin/echo"));
+                .initialDirectory("/home/jdr0887/tmp").executable(new File("/bin/echo")).addArgument("foo");
         // builder.siteName("Kure");
         builder.addTransferInput("asdf").addTransferInput("asdfasdf").addTransferOutput("zxcv")
                 .addTransferOutput("zxcvzxcv");
@@ -57,14 +57,11 @@ public class CondorSubmitScriptExporterTest {
                     "echo \"Successfully transferred input files\""));
         }
 
-        Set<ClassAdvertisement> classAdSet = job.getClassAdvertisments();
-
         String command = String.format("%s", job.getExecutable().getPath());
 
-        for (ClassAdvertisement classAd : classAdSet) {
-            if (classAd.getKey().equals(ClassAdvertisementFactory.CLASS_AD_KEY_ARGUMENTS)) {
-                command += String.format(" %s", classAd.getValue());
-            }
+        ClassAdvertisement argumentsClassAd = job.getArgumentsClassAd();
+        if (argumentsClassAd != null && StringUtils.isNotEmpty(argumentsClassAd.getValue())) {
+            command = String.format("%s %s", job.getExecutable().getPath(), argumentsClassAd.getValue());
         }
 
         scriptSB.append(String.format("CMD=\"%s\"%necho $CMD", command));
