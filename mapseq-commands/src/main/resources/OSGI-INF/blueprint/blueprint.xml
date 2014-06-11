@@ -42,6 +42,11 @@
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
+    <command name="mapseq/edit-workflow-run-attribute">
+      <action class="edu.unc.mapseq.commands.EditWorkflowRunAttributeAction">
+        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
+      </action>
+    </command>
     <command name="mapseq/delete-htsf-sample">
       <action class="edu.unc.mapseq.commands.DeleteHTSFSampleAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
@@ -87,6 +92,16 @@
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
+    <command name="mapseq/create-htsf-sample-attribute">
+      <action class="edu.unc.mapseq.commands.CreateHTSFSampleAttributeAction">
+        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
+      </action>
+    </command>
+    <command name="mapseq/create-workflow-run-attribute">
+      <action class="edu.unc.mapseq.commands.CreateWorkflowRunAttributeAction">
+        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
+      </action>
+    </command>
     <command name="mapseq/delete-sequencer-run">
       <action class="edu.unc.mapseq.commands.DeleteSequencerRunAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
@@ -104,6 +119,11 @@
     </command>
     <command name="mapseq/list-htsf-sample-attributes">
       <action class="edu.unc.mapseq.commands.ListHTSFSampleAttributesAction">
+        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
+      </action>
+    </command>
+    <command name="mapseq/list-workflow-run-attributes">
+      <action class="edu.unc.mapseq.commands.ListWorkflowRunAttributesAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
