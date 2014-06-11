@@ -14,7 +14,7 @@ import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.model.EntityAttribute;
 import edu.unc.mapseq.dao.model.HTSFSample;
 
-@Command(scope = "mapseq", name = "edit-htsf-sample-attribute", description = "List HTSFSample Attributes")
+@Command(scope = "mapseq", name = "edit-htsf-sample-attribute", description = "Edit HTSFSample Attributes")
 public class EditHTSFSampleAttributeAction extends AbstractAction {
 
     private final Logger logger = LoggerFactory.getLogger(EditHTSFSampleAttributeAction.class);
