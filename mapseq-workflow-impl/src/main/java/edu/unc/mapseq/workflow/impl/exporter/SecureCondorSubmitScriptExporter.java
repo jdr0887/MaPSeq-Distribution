@@ -15,7 +15,6 @@ import static org.renci.jlrm.condor.ClassAdvertisementFactory.CLASS_AD_KEY_TRANS
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -199,14 +198,11 @@ public class SecureCondorSubmitScriptExporter extends DefaultCondorSubmitScriptE
             scriptSB.append(String.format(commandFormat, transferInputCommandSB.toString(), ""));
         }
 
-        Set<ClassAdvertisement> classAdSet = job.getClassAdvertisments();
-
         String command = String.format("%s", job.getExecutable().getPath());
 
-        for (ClassAdvertisement classAd : classAdSet) {
-            if (classAd.getKey().equals(ClassAdvertisementFactory.CLASS_AD_KEY_ARGUMENTS)) {
-                command += String.format(" %s", classAd.getValue());
-            }
+        ClassAdvertisement argumentsClassAd = job.getArgumentsClassAd();
+        if (argumentsClassAd != null && StringUtils.isNotEmpty(argumentsClassAd.getValue())) {
+            command = String.format("%s %s", job.getExecutable().getPath(), argumentsClassAd.getValue());
         }
 
         scriptSB.append(String.format("CMD=\"%s\"%necho $CMD", command));
