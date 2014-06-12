@@ -44,12 +44,12 @@ public class CreateWorkflowRunAttributeAction extends AbstractAction {
         } catch (MaPSeqDAOException e) {
         }
         if (entity == null) {
-            System.out.println("HTSFSample was not found");
+            System.out.println("WorkflowRun was not found");
             return null;
         }
 
         Set<EntityAttribute> attributeSet = entity.getAttributes();
-        if (attributeSet != null && attributeSet.size() > 0) {
+        if (attributeSet != null) {
             attributeSet.add(new EntityAttribute(name, value));
             try {
                 workflowRunDAO.save(entity);

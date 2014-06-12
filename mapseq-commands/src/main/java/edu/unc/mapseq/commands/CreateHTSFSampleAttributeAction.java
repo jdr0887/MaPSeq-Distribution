@@ -49,7 +49,7 @@ public class CreateHTSFSampleAttributeAction extends AbstractAction {
         }
 
         Set<EntityAttribute> attributeSet = entity.getAttributes();
-        if (attributeSet != null && attributeSet.size() > 0) {
+        if (attributeSet != null) {
             attributeSet.add(new EntityAttribute(name, value));
             try {
                 htsfSampleDAO.save(entity);
