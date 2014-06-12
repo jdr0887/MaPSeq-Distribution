@@ -2,13 +2,13 @@
   <parent>
     <groupId>edu.unc.mapseq.distribution</groupId>
     <artifactId>mapseq-web-services</artifactId>
-    <version>0.4.7</version>
+    <version>0.4.8-SNAPSHOT</version>
   </parent>
   <name>MaPSeq :: Distribution :: Web Services :: Account Group</name>
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.unc.mapseq.distribution.mapseq-web-services</groupId>
   <artifactId>mapseq-web-service-account-group</artifactId>
-  <version>0.4.7</version>
+  <version>0.4.8-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <build>
     <plugins>
