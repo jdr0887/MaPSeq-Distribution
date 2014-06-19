@@ -8,7 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.unc.mapseq</groupId>
   <artifactId>distribution</artifactId>
-  <version>0.4.8-SNAPSHOT</version>
+  <version>0.4.8</version>
   <packaging>pom</packaging>
   <properties>
     <mapseq.version>0.4.6</mapseq.version>
@@ -30,7 +30,7 @@
   <scm>
     <developerConnection>scm:git:ssh://${user.name}@code.renci.org/gitroot/mps_dist</developerConnection>
     <connection>scm:git:ssh://developername@code.renci.org/gitroot/mps_dist</connection>
-    <tag>HEAD</tag>
+    <tag>distribution-0.4.8</tag>
   </scm>
   <dependencyManagement>
     <dependencies>
@@ -127,12 +127,12 @@
       <dependency>
       	<groupId>edu.unc.mapseq.distribution</groupId>
       	<artifactId>mapseq-reports</artifactId>
-      	<version>0.4.8-SNAPSHOT</version>
+      	<version>0.4.8</version>
       </dependency>
       <dependency>
       	<groupId>edu.unc.mapseq.distribution</groupId>
       	<artifactId>mapseq-tasks</artifactId>
-      	<version>0.4.8-SNAPSHOT</version>
+      	<version>0.4.8</version>
       </dependency>
       <dependency>
       	<groupId>edu.unc.mapseq.mapseq-dao</groupId>
@@ -157,17 +157,17 @@
       <dependency>
       	<groupId>edu.unc.mapseq.distribution</groupId>
       	<artifactId>mapseq-modules</artifactId>
-      	<version>0.4.8-SNAPSHOT</version>
+      	<version>0.4.8</version>
       </dependency>
       <dependency>
 	<groupId>edu.unc.mapseq.distribution.mapseq-dao</groupId>
 	<artifactId>mapseq-dao-soap</artifactId>
-      	<version>0.4.8-SNAPSHOT</version>
+      	<version>0.4.8</version>
       </dependency>
       <dependency>
 	<groupId>edu.unc.mapseq.distribution.mapseq-dao</groupId>
 	<artifactId>mapseq-dao-rest</artifactId>
-      	<version>0.4.8-SNAPSHOT</version>
+      	<version>0.4.8</version>
       </dependency>
       <dependency>
       	<groupId>org.apache.felix</groupId>
@@ -279,7 +279,7 @@
       <dependency>
 	<groupId>edu.unc.mapseq.distribution</groupId>
 	<artifactId>mapseq-module-cli-generator</artifactId>
-	<version>0.4.8-SNAPSHOT</version>
+	<version>0.4.8</version>
       </dependency> 
     </dependencies>
   </dependencyManagement>
