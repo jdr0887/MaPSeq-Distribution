@@ -66,7 +66,7 @@ public class WorkflowJobFactory {
             }
 
             SequencerRun sequencerRun = workflowPlan.getSequencerRun();
-            
+
             if (sequencerRun != null) {
                 logger.debug("sequencerRun.getId().toString(): {}", sequencerRun.getId().toString());
                 builder.addArgument("--sequencerRunId", sequencerRun.getId().toString());
@@ -85,6 +85,31 @@ public class WorkflowJobFactory {
         if (htsfSample != null) {
             logger.debug("htsfSample.getId().toString(): {}", htsfSample.getId().toString());
             builder.addArgument("--htsfSampleId", htsfSample.getId().toString());
+        }
+
+        return builder;
+    }
+
+    public static CondorJobBuilder createDryRunJob(int count, Class<?> moduleClass) {
+        logger.debug("ENTERING createDryRunJob(int, Class<?>)");
+        logger.debug("moduleClass.getSimpleName(): {}", moduleClass.getSimpleName());
+
+        File executable = new File("$MAPSEQ_HOME/bin/mapseq-run-module.sh");
+        String jobName = String.format("%s_%d", moduleClass.getSimpleName(), count);
+        CondorJobBuilder builder = new CondorJobBuilder().name(jobName).executable(executable);
+
+        if (count > 0) {
+            builder.priority(count * 10);
+        }
+
+        builder.addArgument(moduleClass.getName()).addArgument("--dryRun");
+
+        for (ClassAdvertisement classAd : ClassAdvertisementFactory.getDefaultClassAds()) {
+            try {
+                builder.classAdvertisments().add(classAd.clone());
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
         }
 
         return builder;
