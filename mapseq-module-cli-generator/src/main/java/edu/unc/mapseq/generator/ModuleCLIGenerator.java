@@ -193,7 +193,7 @@ public class ModuleCLIGenerator extends AbstractGenerator {
                 .init(validatorVar.invoke("validate").arg(appFieldVar).arg(inputChecksJClass.dotclass()));
 
         JConditional constraintViolationsVarSizeConditional = tryBlockBody._if(constraintViolationsVar.invoke("size")
-                .gt(JExpr.lit(0)));
+                .gt(JExpr.lit(0)).cand(appFieldVar.invoke("getDryRun").not()));
         JBlock constraintViolationsVarSizeConditionalThenBlock = constraintViolationsVarSizeConditional._then();
 
         JForEach paramForEach = constraintViolationsVarSizeConditionalThenBlock.forEach(
@@ -212,21 +212,21 @@ public class ModuleCLIGenerator extends AbstractGenerator {
                 .arg(clazz.getSimpleName() + "CLI").arg(cliOptionsFieldVar));
         constraintViolationsVarSizeConditionalThenBlock.add(systemJClass.staticInvoke("exit").arg(JExpr.lit(-1)));
 
-        JVar wsDAOManagerVar = tryBlockBody.decl(wsDAOManagerJClass, "daoMgr");
-        wsDAOManagerVar.init(wsDAOManagerJClass.staticInvoke("getInstance"));
-
-        JVar mapseqDAOBeanVar = tryBlockBody.decl(mapseqDAOBeanJClass, "daoBean", wsDAOManagerVar.invoke("getMaPSeqDAOBean"));
-
         JVar moduleExecutorVar = tryBlockBody.decl(moduleExecutorJClass, "executor");
         moduleExecutorVar.init(JExpr._new(moduleExecutorJClass));
 
         tryBlockBody.add(moduleExecutorVar.invoke("setModule").arg(appFieldVar));
-        tryBlockBody.add(moduleExecutorVar.invoke("setDaoBean").arg(mapseqDAOBeanVar));
 
         JConditional dryRunConditional = tryBlockBody._if(appFieldVar.invoke("getDryRun"));
         JBlock dryRunConditionalBlock = dryRunConditional._then();
         dryRunConditionalBlock.add(moduleExecutorVar.invoke("addObserver").arg(JExpr._new(dryRunObserverJClass)));
         JBlock dryRunConditionalElseBlock = dryRunConditional._else();
+        JVar wsDAOManagerVar = dryRunConditionalElseBlock.decl(wsDAOManagerJClass, "daoMgr");
+        wsDAOManagerVar.init(wsDAOManagerJClass.staticInvoke("getInstance"));
+
+        JVar mapseqDAOBeanVar = dryRunConditionalElseBlock.decl(mapseqDAOBeanJClass, "daoBean",
+                wsDAOManagerVar.invoke("getMaPSeqDAOBean"));
+        dryRunConditionalElseBlock.add(moduleExecutorVar.invoke("setDaoBean").arg(mapseqDAOBeanVar));
         dryRunConditionalElseBlock.add(moduleExecutorVar.invoke("addObserver").arg(
                 JExpr._new(updateJobObserverJClass).arg(mapseqDAOBeanVar)));
 
@@ -242,7 +242,7 @@ public class ModuleCLIGenerator extends AbstractGenerator {
                 validatorVar.invoke("validate").arg(appFieldVar).arg(outputChecksJClass.dotclass()));
 
         constraintViolationsVarSizeConditional = tryBlockBody._if(constraintViolationsVar.invoke("size").gt(
-                JExpr.lit(0)));
+                JExpr.lit(0)).cand(appFieldVar.invoke("getDryRun").not()));
         constraintViolationsVarSizeConditionalThenBlock = constraintViolationsVarSizeConditional._then();
 
         paramForEach = constraintViolationsVarSizeConditionalThenBlock.forEach(
@@ -333,8 +333,8 @@ public class ModuleCLIGenerator extends AbstractGenerator {
 
         mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption").arg(
                 optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit("dryRun")).invoke("withDescription")
-                        .arg(JExpr.lit("dry run...no web service calls")).invoke("withLongOpt")
-                        .arg(JExpr.lit("dryRun")).invoke("create")));
+                        .arg(JExpr.lit("no web service calls & echo command line without running"))
+                        .invoke("withLongOpt").arg(JExpr.lit("dryRun")).invoke("create")));
 
         mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption").arg(
                 optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit("persistFileData"))
