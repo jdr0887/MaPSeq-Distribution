@@ -82,8 +82,8 @@ public class RegexRemove extends Module {
     public static void main(String[] args) {
         RegexRemove module = new RegexRemove();
         module.setDirectory(new File("/tmp"));
-        //module.setRegex("^.*\\.txt");
-        //module.setRegex("^.*\\.sam\\.[0-9]");
+        // module.setRegex("^.*\\.txt");
+        // module.setRegex("^.*\\.sam\\.[0-9]");
         module.setRegex("^.*\\.sam\\.");
         try {
             module.call();

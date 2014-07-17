@@ -37,7 +37,7 @@ public class CreateStudyAction extends AbstractAction {
 
     @Override
     public Object doExecute() {
-        
+
         List<Account> accountList = null;
         try {
             accountList = maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));

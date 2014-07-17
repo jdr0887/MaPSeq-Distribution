@@ -36,7 +36,7 @@ public class DownloadFile implements Runnable {
 
     public DownloadFile() {
         super();
-    }   
+    }
 
     @Override
     public void run() {

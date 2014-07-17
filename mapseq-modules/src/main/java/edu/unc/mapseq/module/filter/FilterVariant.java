@@ -13,8 +13,8 @@ import java.util.Map;
 
 import javax.validation.constraints.NotNull;
 
-import org.apache.commons.lang.math.IntRange;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.IntRange;
 
 import edu.unc.mapseq.dao.model.FileData;
 import edu.unc.mapseq.dao.model.MimeType;

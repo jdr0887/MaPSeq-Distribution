@@ -117,7 +117,7 @@ public class CreateSequencerRunFromSampleSheet implements Runnable {
                     return;
                 }
                 Study study = studyList.get(0);
-                
+
                 HTSFSample htsfSample = new HTSFSample();
                 htsfSample.setBarcode(index);
                 htsfSample.setCreator(account);

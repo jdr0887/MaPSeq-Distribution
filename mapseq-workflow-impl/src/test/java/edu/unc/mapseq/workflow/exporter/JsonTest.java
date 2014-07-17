@@ -28,9 +28,9 @@ public class JsonTest {
                         System.out.println(attribute.toString());
                     }
                 }
-                
+
             }
-            
+
         } catch (IOException e) {
             e.printStackTrace();
         }

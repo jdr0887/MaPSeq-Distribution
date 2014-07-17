@@ -37,7 +37,7 @@ public class ListPlatforms implements Runnable {
     @Override
     public void run() {
 
-        //WSDAOManager daoMgr = WSDAOManager.getInstance();
+        // WSDAOManager daoMgr = WSDAOManager.getInstance();
         RSDAOManager daoMgr = RSDAOManager.getInstance();
         MaPSeqDAOBean mapseqDAOBean = daoMgr.getMaPSeqDAOBean();
 

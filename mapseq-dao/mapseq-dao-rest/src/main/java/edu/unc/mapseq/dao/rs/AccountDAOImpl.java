@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import edu.unc.mapseq.dao.AccountDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.model.Account;
-import edu.unc.mapseq.dao.model.Job;
 
 /**
  * 

@@ -37,7 +37,7 @@ public class Scratch {
         writer.setCompressionLevel(0);
         document.open();
         document.setMargins(10, 10, 10, 10);
-        
+
         document.add(new Paragraph());
         File workflowRunReportFile = new File("/home/jdr0887/tmp/png/chart-6268670401298662495.png");
         Image img = Image.getInstance(workflowRunReportFile.getAbsolutePath());
@@ -45,7 +45,7 @@ public class Scratch {
         document.add(img);
 
         document.newPage();
-        
+
         document.add(new Paragraph());
         File workflowJobsPerClusterReportFile = new File("/home/jdr0887/tmp/png/chart-3736966714272996099.png");
         img = Image.getInstance(workflowJobsPerClusterReportFile.getAbsolutePath());

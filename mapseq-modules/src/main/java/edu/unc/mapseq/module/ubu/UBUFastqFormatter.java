@@ -7,8 +7,6 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 
 import edu.unc.bioinf.ubu.fastq.FastqFormatter;
-import edu.unc.mapseq.dao.model.FileData;
-import edu.unc.mapseq.dao.model.MimeType;
 import edu.unc.mapseq.module.DefaultModuleOutput;
 import edu.unc.mapseq.module.Module;
 import edu.unc.mapseq.module.ModuleOutput;

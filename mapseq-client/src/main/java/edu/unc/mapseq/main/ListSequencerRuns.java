@@ -35,7 +35,7 @@ public class ListSequencerRuns implements Runnable {
     @Override
     public void run() {
 
-        //WSDAOManager daoMgr = WSDAOManager.getInstance();
+        // WSDAOManager daoMgr = WSDAOManager.getInstance();
         RSDAOManager daoMgr = RSDAOManager.getInstance();
         MaPSeqDAOBean maPSeqDAOBean = daoMgr.getMaPSeqDAOBean();
 

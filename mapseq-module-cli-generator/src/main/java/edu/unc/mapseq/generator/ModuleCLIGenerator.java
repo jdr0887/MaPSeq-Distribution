@@ -241,8 +241,8 @@ public class ModuleCLIGenerator extends AbstractGenerator {
         tryBlockBody.assign(constraintViolationsVar,
                 validatorVar.invoke("validate").arg(appFieldVar).arg(outputChecksJClass.dotclass()));
 
-        constraintViolationsVarSizeConditional = tryBlockBody._if(constraintViolationsVar.invoke("size").gt(
-                JExpr.lit(0)).cand(appFieldVar.invoke("getDryRun").not()));
+        constraintViolationsVarSizeConditional = tryBlockBody._if(constraintViolationsVar.invoke("size")
+                .gt(JExpr.lit(0)).cand(appFieldVar.invoke("getDryRun").not()));
         constraintViolationsVarSizeConditionalThenBlock = constraintViolationsVarSizeConditional._then();
 
         paramForEach = constraintViolationsVarSizeConditionalThenBlock.forEach(
