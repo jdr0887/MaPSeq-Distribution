@@ -38,16 +38,16 @@ public class ListMyWorkflowRunsAction extends AbstractAction {
     @Override
     public Object doExecute() {
 
-        Account account = null;
+        List<Account> accountList = null;
         try {
-            account = maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
+            accountList = maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
+            if (accountList == null || (accountList != null && accountList.isEmpty())) {
+                System.err.printf("Account doesn't exist: %s%n", System.getProperty("user.name"));
+                System.err.println("Must register account first");
+                return null;
+            }
         } catch (MaPSeqDAOException e) {
             e.printStackTrace();
-        }
-
-        if (account == null) {
-            System.err.println("No account found");
-            return null;
         }
 
         List<WorkflowRun> workflowRunList = new ArrayList<WorkflowRun>();
@@ -56,7 +56,7 @@ public class ListMyWorkflowRunsAction extends AbstractAction {
             if (workflowId != null) {
                 workflowRunList.addAll(workflowRunDAO.findByWorkflowId(workflowId));
             } else {
-                workflowRunList.addAll(workflowRunDAO.findByCreator(account.getId()));
+                workflowRunList.addAll(workflowRunDAO.findByCreator(accountList.get(0).getId()));
             }
         } catch (MaPSeqDAOException e) {
         }
@@ -82,7 +82,7 @@ public class ListMyWorkflowRunsAction extends AbstractAction {
 
                 for (WorkflowRun workflowRun : workflowRunList) {
 
-                    if (!account.equals(workflowRun.getCreator())) {
+                    if (!accountList.get(0).equals(workflowRun.getCreator())) {
                         continue;
                     }
 
