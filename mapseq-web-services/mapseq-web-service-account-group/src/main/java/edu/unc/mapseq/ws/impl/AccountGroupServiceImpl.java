@@ -1,5 +1,8 @@
 package edu.unc.mapseq.ws.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,14 +22,15 @@ public class AccountGroupServiceImpl implements AccountGroupService {
     }
 
     @Override
-    public AccountGroup findByName(String name) {
+    public List<AccountGroup> findByName(String name) {
         logger.info("ENTERING findByName(String)");
+        List<AccountGroup> ret = new ArrayList<>();
         try {
-            return accountGroupDAO.findByName(name);
+            ret.addAll(accountGroupDAO.findByName(name));
         } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
+            logger.error("Error", e);
         }
-        return null;
+        return ret;
     }
 
     public AccountGroupDAO getAccountGroupDAO() {

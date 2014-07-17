@@ -1,5 +1,6 @@
 package edu.unc.mapseq.ws.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.cxf.common.util.StringUtils;
@@ -24,7 +25,7 @@ public class WorkflowServiceImpl implements WorkflowService {
         try {
             workflow = workflowDAO.findAll();
         } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
+            logger.error("Error", e);
         }
         return workflow;
     }
@@ -40,25 +41,25 @@ public class WorkflowServiceImpl implements WorkflowService {
         try {
             workflow = workflowDAO.findById(id);
         } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
+            logger.error("Error", e);
         }
         return workflow;
     }
 
     @Override
-    public Workflow findByName(String name) {
+    public List<Workflow> findByName(String name) {
         logger.debug("ENTERING findByName(String)");
-        Workflow workflow = null;
+        List<Workflow> ret = new ArrayList<>();
         if (StringUtils.isEmpty(name)) {
             logger.warn("name is emtpy");
-            return workflow;
+            return ret;
         }
         try {
-            workflow = workflowDAO.findByName(name);
+            ret.addAll(workflowDAO.findByName(name));
         } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
+            logger.error("Error", e);
         }
-        return workflow;
+        return ret;
     }
 
     @Override
@@ -68,7 +69,7 @@ public class WorkflowServiceImpl implements WorkflowService {
         try {
             ret = workflowDAO.save(entity);
         } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
+            logger.error("Error", e);
         }
         return ret;
     }

@@ -1,5 +1,6 @@
 package edu.unc.mapseq.ws.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.cxf.common.util.StringUtils;
@@ -28,7 +29,7 @@ public class StudyServiceImpl implements StudyService {
         try {
             study = studyDAO.findById(id);
         } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
+            logger.error("Error", e);
         }
         return study;
     }
@@ -40,7 +41,7 @@ public class StudyServiceImpl implements StudyService {
         try {
             id = studyDAO.save(study);
         } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
+            logger.error("Error", e);
         }
         return id;
     }
@@ -48,29 +49,29 @@ public class StudyServiceImpl implements StudyService {
     @Override
     public List<Study> findAll() {
         logger.debug("ENTERING findAll()");
-        List<Study> ret = null;
+        List<Study> ret = new ArrayList<>();
         try {
-            ret = studyDAO.findAll();
+            ret.addAll(studyDAO.findAll());
         } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
+            logger.error("Error", e);
         }
         return ret;
     }
 
     @Override
-    public Study findByName(String name) {
+    public List<Study> findByName(String name) {
         logger.debug("ENTERING findByName(String)");
-        Study study = null;
+        List<Study> ret = new ArrayList<>();
         if (StringUtils.isEmpty(name)) {
             logger.warn("name is emtpy");
-            return study;
+            return ret;
         }
         try {
-            study = studyDAO.findByName(name);
+            ret.addAll(studyDAO.findByName(name));
         } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
+            logger.error("Error", e);
         }
-        return study;
+        return ret;
     }
 
     @Override
@@ -84,7 +85,7 @@ public class StudyServiceImpl implements StudyService {
         try {
             study = studyDAO.findByHTSFSampleId(htsfSampleId);
         } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
+            logger.error("Error", e);
         }
         return study;
     }

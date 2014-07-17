@@ -33,7 +33,7 @@ public class JobServiceImpl implements JobService {
         try {
             job = jobDAO.findById(id);
         } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
+            logger.error("Error", e);
         }
         return job;
     }
@@ -62,7 +62,7 @@ public class JobServiceImpl implements JobService {
         try {
             ret.addAll(jobDAO.findByWorkflowRunId(workflowRunId));
         } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
+            logger.error("Error", e);
         }
         return ret;
     }
@@ -96,7 +96,7 @@ public class JobServiceImpl implements JobService {
             ret.addAll(jobDAO.findByCreatorAndWorkflowIdAndCreationDateRange(accountId, workflowId, parsedStartDate,
                     parsedEndDate));
         } catch (ParseException | MaPSeqDAOException e) {
-            e.printStackTrace();
+            logger.error("Error", e);
         }
         return ret;
     }

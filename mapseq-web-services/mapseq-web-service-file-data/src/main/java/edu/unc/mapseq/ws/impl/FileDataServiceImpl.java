@@ -36,7 +36,7 @@ public class FileDataServiceImpl implements FileDataService {
         try {
             entity = fileDataDAO.findById(id);
         } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
+            logger.error("Error", e);
         }
         return entity;
     }
@@ -47,7 +47,7 @@ public class FileDataServiceImpl implements FileDataService {
         try {
             fileDataDAO.save(entity);
         } catch (MaPSeqDAOException e) {
-            logger.warn(e.getMessage(), e);
+            logger.error("Error", e);
         }
         return entity.getId();
     }
@@ -63,7 +63,7 @@ public class FileDataServiceImpl implements FileDataService {
         try {
             fileData = fileDataDAO.findById(id);
         } catch (MaPSeqDAOException e) {
-            logger.warn(e.getMessage(), e);
+            logger.error("Error", e);
         }
         File file = new File(fileData.getPath(), fileData.getName());
         DataHandler dataHandler = new DataHandler(new FileDataSource(file));
@@ -101,7 +101,7 @@ public class FileDataServiceImpl implements FileDataService {
             Long id = fileDataDAO.save(fileData);
             fileData.setId(id);
         } catch (MaPSeqDAOException e) {
-            logger.warn(e.getMessage(), e);
+            logger.error("Error", e);
         }
 
         return fileData.getId();
@@ -114,7 +114,7 @@ public class FileDataServiceImpl implements FileDataService {
         try {
             ret = fileDataDAO.findByExample(fileData);
         } catch (MaPSeqDAOException e) {
-            logger.warn(e.getMessage(), e);
+            logger.error("Error", e);
         }
         return ret;
     }

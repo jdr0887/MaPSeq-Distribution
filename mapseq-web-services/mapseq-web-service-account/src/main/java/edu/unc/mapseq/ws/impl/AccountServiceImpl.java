@@ -1,5 +1,8 @@
 package edu.unc.mapseq.ws.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,20 +23,21 @@ public class AccountServiceImpl implements AccountService {
         try {
             return accountDAO.findById(id);
         } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
+            logger.error("Error", e);
         }
         return null;
     }
 
     @Override
-    public Account findByName(String name) {
+    public List<Account> findByName(String name) {
         logger.info("ENTERING findByName(String)");
+        List<Account> ret = new ArrayList<>();
         try {
-            return accountDAO.findByName(name);
+            ret.addAll(accountDAO.findByName(name));
         } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
+            logger.error("Error", e);
         }
-        return null;
+        return ret;
     }
 
     @Override
@@ -42,7 +46,7 @@ public class AccountServiceImpl implements AccountService {
         try {
             return accountDAO.save(account);
         } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
+            logger.error("Error", e);
         }
         return null;
     }

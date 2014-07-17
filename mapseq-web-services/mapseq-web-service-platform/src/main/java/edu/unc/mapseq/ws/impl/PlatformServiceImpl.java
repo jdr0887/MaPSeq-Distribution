@@ -17,18 +17,13 @@ public class PlatformServiceImpl implements PlatformService {
 
     private PlatformDAO platformDAO;
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see edu.unc.mapseq.ws.PlatformService#findById(java.lang.Long)
-     */
     @Override
     public Platform findById(Long id) {
         logger.debug("ENTERING findById(Long)");
         try {
             return this.platformDAO.findById(id);
         } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
+            logger.error("Error", e);
         }
         return null;
     }
@@ -40,7 +35,7 @@ public class PlatformServiceImpl implements PlatformService {
         try {
             results.addAll(this.platformDAO.findAll());
         } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
+            logger.error("Error", e);
         }
         return results;
     }
@@ -51,7 +46,7 @@ public class PlatformServiceImpl implements PlatformService {
         try {
             return this.platformDAO.findByInstrumentAndModel(instrument, model);
         } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
+            logger.error("Error", e);
         }
         return null;
     }

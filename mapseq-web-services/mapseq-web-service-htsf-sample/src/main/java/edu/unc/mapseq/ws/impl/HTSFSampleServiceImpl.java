@@ -36,7 +36,7 @@ public class HTSFSampleServiceImpl implements HTSFSampleService {
                 logger.debug(htsfSample.toString());
             }
         } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
+            logger.error("Error", e);
         }
         return htsfSample;
     }
@@ -90,7 +90,7 @@ public class HTSFSampleServiceImpl implements HTSFSampleService {
         try {
             ret.addAll(htsfSampleDAO.findBySequencerRunId(sequencerRunId));
         } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
+            logger.error("Error", e);
         }
         return ret;
     }
@@ -106,7 +106,7 @@ public class HTSFSampleServiceImpl implements HTSFSampleService {
         try {
             ret.addAll(htsfSampleDAO.findByName(name));
         } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
+            logger.error("Error", e);
         }
         return ret;
     }
@@ -127,7 +127,7 @@ public class HTSFSampleServiceImpl implements HTSFSampleService {
                 }
             }
         } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
+            logger.error("Error", e);
         }
         return ret;
     }
@@ -147,7 +147,7 @@ public class HTSFSampleServiceImpl implements HTSFSampleService {
         try {
             ret.addAll(htsfSampleDAO.findBySequencerRunIdAndSampleName(sequencerRunId, sampleName));
         } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
+            logger.error("Error", e);
         }
         return ret;
     }

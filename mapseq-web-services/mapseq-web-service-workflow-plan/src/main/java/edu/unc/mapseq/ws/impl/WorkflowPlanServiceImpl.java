@@ -37,7 +37,7 @@ public class WorkflowPlanServiceImpl implements WorkflowPlanService {
         try {
             ret = workflowPlanDAO.findBySequencerRunAndWorkflowName(sequencerRunId, workflowName);
         } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
+            logger.error("Error", e);
         }
         return ret;
     }
@@ -49,7 +49,7 @@ public class WorkflowPlanServiceImpl implements WorkflowPlanService {
         try {
             id = workflowPlanDAO.save(workflowPlan);
         } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
+            logger.error("Error", e);
         }
         return id;
     }
@@ -81,7 +81,7 @@ public class WorkflowPlanServiceImpl implements WorkflowPlanService {
         try {
             ret.addAll(workflowPlanDAO.findByHTSFSampleId(htsfSampleId));
         } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
+            logger.error("Error", e);
         }
         return ret;
     }
@@ -97,7 +97,7 @@ public class WorkflowPlanServiceImpl implements WorkflowPlanService {
         try {
             ret.addAll(workflowPlanDAO.findByWorkflowRunId(workflowRunId));
         } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
+            logger.error("Error", e);
         }
         return ret;
     }
@@ -113,7 +113,7 @@ public class WorkflowPlanServiceImpl implements WorkflowPlanService {
         try {
             ret.addAll(workflowPlanDAO.findByStudyName(studyName));
         } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
+            logger.error("Error", e);
         }
         return ret;
     }
@@ -140,6 +140,7 @@ public class WorkflowPlanServiceImpl implements WorkflowPlanService {
         try {
             ret.addAll(workflowPlanDAO.findByStudyNameAndSampleNameAndWorkflowName(studyName, sampleName, workflowName));
         } catch (Exception e) {
+            logger.error("Error", e);
         }
         return ret;
     }
