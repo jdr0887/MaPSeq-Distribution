@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import edu.unc.mapseq.dao.AccountDAO;
 import edu.unc.mapseq.dao.JobDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
+import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowDAO;
 import edu.unc.mapseq.dao.model.Account;
 import edu.unc.mapseq.dao.model.Job;
@@ -39,19 +40,29 @@ public class WorkflowJobsWeeklyReportAction extends AbstractAction {
     @Override
     protected Object doExecute() throws Exception {
         logger.debug("ENTERING doExecute()");
+
+        List<Account> accountList = null;
+        try {
+            accountList = maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
+            if (accountList == null || (accountList != null && accountList.isEmpty())) {
+                System.err.printf("Account doesn't exist: %s%n", System.getProperty("user.name"));
+                System.err.println("Must register account first");
+                return null;
+            }
+        } catch (MaPSeqDAOException e) {
+            e.printStackTrace();
+        }
+
+        Account account = accountList.get(0);
+
+        WorkflowDAO workflowDAO = maPSeqDAOBean.getWorkflowDAO();
+        Workflow workflow = workflowDAO.findById(workflowId);
+
         Date endDate = new Date();
         Calendar c = Calendar.getInstance();
         c.setTime(endDate);
         c.add(Calendar.WEEK_OF_YEAR, -1);
         Date startDate = c.getTime();
-
-        WorkflowDAO workflowDAO = maPSeqDAOBean.getWorkflowDAO();
-        Workflow workflow = workflowDAO.findById(workflowId);
-
-        // String username = "rc_renci.svc";
-        String username = System.getProperty("user.name");
-        AccountDAO accountDAO = maPSeqDAOBean.getAccountDAO();
-        Account account = accountDAO.findByName(username);
 
         JobDAO jobDAO = maPSeqDAOBean.getJobDAO();
         List<Job> jobList = jobDAO.findByCreatorAndWorkflowIdAndCreationDateRange(account.getId(), workflow.getId(),
@@ -71,7 +82,7 @@ public class WorkflowJobsWeeklyReportAction extends AbstractAction {
         MultiPartEmail email = new MultiPartEmail();
         email.setHostName("localhost");
         email.addTo(toEmailAddress);
-        email.setFrom(String.format("%s@unc.edu", username));
+        email.setFrom(String.format("%s@unc.edu", System.getProperty("user.name")));
         email.setSubject(subject);
         email.setMsg("See Attached");
         email.attach(attachment);
