@@ -70,12 +70,14 @@ public class WeeklyReportTask implements Runnable {
             document.open();
             document.setMargins(10, 10, 10, 10);
 
-            String username = System.getProperty("user.name");
-            // String username = "rc_renci.svc";
-
             AccountDAO accountDAO = maPSeqDAOBean.getAccountDAO();
-            Account account = accountDAO.findByName(username);
+            List<Account> accountList = accountDAO.findByName(System.getProperty("user.name"));
 
+            if (accountList == null || (accountList != null && accountList.isEmpty())) {
+                logger.warn("Account doesn't exist for: {}", System.getProperty("user.name"));
+            }
+
+            Account account = accountList.get(0);
             WorkflowRunDAO workflowRunDAO = maPSeqDAOBean.getWorkflowRunDAO();
             List<WorkflowRun> workflowRunList = workflowRunDAO.findByCreatorAndCreationDateRange(account.getId(),
                     startDate, endDate);
