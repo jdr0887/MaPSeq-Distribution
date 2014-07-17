@@ -1,5 +1,9 @@
 package edu.unc.mapseq.dao.rs;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -10,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import edu.unc.mapseq.dao.AccountDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.model.Account;
+import edu.unc.mapseq.dao.model.Job;
 
 /**
  * 
@@ -42,11 +47,12 @@ public class AccountDAOImpl extends BaseEntityDAOImpl<Account, Long> implements 
     }
 
     @Override
-    public Account findByName(String name) throws MaPSeqDAOException {
+    public List<Account> findByName(String name) throws MaPSeqDAOException {
         logger.debug("ENTERING findByName(String)");
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
-        Account ret = client.path("findByName/{name}", name).accept(MediaType.APPLICATION_JSON).get(Account.class);
-        return ret;
+        Collection<? extends Account> ret = client.path("findByName/{name}", name).accept(MediaType.APPLICATION_JSON)
+                .getCollection(Account.class);
+        return new ArrayList<Account>(ret);
     }
 
 }

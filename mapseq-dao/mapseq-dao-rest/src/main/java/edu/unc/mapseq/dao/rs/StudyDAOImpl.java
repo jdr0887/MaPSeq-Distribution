@@ -38,11 +38,12 @@ public class StudyDAOImpl extends BaseEntityDAOImpl<Study, Long> implements Stud
     }
 
     @Override
-    public Study findByName(String name) throws MaPSeqDAOException {
+    public List<Study> findByName(String name) throws MaPSeqDAOException {
         logger.debug("ENTERING findByName(String)");
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
-        Study study = client.path("findByName/{name}", name).accept(MediaType.APPLICATION_JSON).get(Study.class);
-        return study;
+        Collection<? extends Study> ret = client.path("findByName/{name}", name).accept(MediaType.APPLICATION_JSON)
+                .getCollection(Study.class);
+        return new ArrayList<Study>(ret);
     }
 
     @Override

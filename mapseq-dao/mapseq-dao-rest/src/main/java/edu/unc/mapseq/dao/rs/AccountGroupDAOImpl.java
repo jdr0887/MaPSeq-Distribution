@@ -1,5 +1,9 @@
 package edu.unc.mapseq.dao.rs;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import javax.ws.rs.core.MediaType;
 
 import org.apache.cxf.jaxrs.client.WebClient;
@@ -35,11 +39,11 @@ public class AccountGroupDAOImpl extends BaseEntityDAOImpl<AccountGroup, Long> i
     }
 
     @Override
-    public AccountGroup findByName(String name) throws MaPSeqDAOException {
+    public List<AccountGroup> findByName(String name) throws MaPSeqDAOException {
         logger.debug("ENTERING findById(Long)");
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
-        AccountGroup ret = client.path("findByName/{name}", name).accept(MediaType.APPLICATION_JSON)
-                .get(AccountGroup.class);
-        return ret;
+        Collection<? extends AccountGroup> ret = client.path("findByName/{name}", name)
+                .accept(MediaType.APPLICATION_JSON).getCollection(AccountGroup.class);
+        return new ArrayList<AccountGroup>(ret);
     }
 }

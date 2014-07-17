@@ -84,7 +84,6 @@ public class SequencerRunDAOImpl extends BaseEntityDAOImpl<SequencerRun, Long> i
         logger.debug("ENTERING findByCreationDateRange(Date, Date)");
         String formattedStartDate = DateFormatUtils.ISO_DATE_FORMAT.format(startDate);
         String formattedEndDate = DateFormatUtils.ISO_DATE_FORMAT.format(endDate);
-
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
         Collection<? extends SequencerRun> ret = client
                 .path("findByCreationDateRange/{startDate}/{endDate}", formattedStartDate, formattedEndDate)
