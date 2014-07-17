@@ -1,5 +1,7 @@
 package edu.unc.mapseq.dao.ws;
 
+import java.util.List;
+
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.transport.http.HTTPConduit;
@@ -46,10 +48,10 @@ public class AccountGroupDAOImpl extends BaseEntityDAOImpl<AccountGroup, Long> i
     }
 
     @Override
-    public AccountGroup findByName(String name) throws MaPSeqDAOException {
+    public List<AccountGroup> findByName(String name) throws MaPSeqDAOException {
         logger.debug("ENTERING findById(Long)");
-        AccountGroup accountGroup = accountGroupService.findByName(name);
-        return accountGroup;
+        List<AccountGroup> ret = accountGroupService.findByName(name);
+        return ret;
     }
 
 }

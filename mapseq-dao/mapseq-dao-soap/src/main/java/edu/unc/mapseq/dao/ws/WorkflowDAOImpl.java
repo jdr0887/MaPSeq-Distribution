@@ -56,8 +56,8 @@ public class WorkflowDAOImpl extends BaseEntityDAOImpl<Workflow, Long> implement
     }
 
     @Override
-    public Workflow findByName(String name) throws MaPSeqDAOException {
-        Workflow ret = workflowService.findByName(name);
+    public List<Workflow> findByName(String name) throws MaPSeqDAOException {
+        List<Workflow> ret = workflowService.findByName(name);
         return ret;
     }
 

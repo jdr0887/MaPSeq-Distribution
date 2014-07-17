@@ -74,21 +74,27 @@ public class WorkflowPlanDAOTest {
         try {
             long startTime = System.currentTimeMillis();
             workflowPlanList.addAll(workflowPlanService.findByStudyNameAndSampleNameAndWorkflowName("NC_GENES",
-                    "NCG_00002%", "CASAVA"));
+                    "NCG_00517%", "CASAVA"));
             long endTime = System.currentTimeMillis();
             System.out.println((endTime - startTime) / 1000);
 
-            startTime = System.currentTimeMillis();
-            workflowPlanList.addAll(workflowPlanService.findByStudyNameAndSampleNameAndWorkflowName("NC_GENES",
-                    "NCG_00065%", "CASAVA"));
-            endTime = System.currentTimeMillis();
-            System.out.println((endTime - startTime) / 1000);
-
-            startTime = System.currentTimeMillis();
-            workflowPlanList.addAll(workflowPlanService.findByStudyNameAndSampleNameAndWorkflowName("NC_GENES",
-                    "NCG_00065%", "NCGenes"));
-            endTime = System.currentTimeMillis();
-            System.out.println((endTime - startTime) / 1000);
+            // long startTime = System.currentTimeMillis();
+            // workflowPlanList.addAll(workflowPlanService.findByStudyNameAndSampleNameAndWorkflowName("NC_GENES",
+            // "NCG_00002%", "CASAVA"));
+            // long endTime = System.currentTimeMillis();
+            // System.out.println((endTime - startTime) / 1000);
+            //
+            // startTime = System.currentTimeMillis();
+            // workflowPlanList.addAll(workflowPlanService.findByStudyNameAndSampleNameAndWorkflowName("NC_GENES",
+            // "NCG_00065%", "CASAVA"));
+            // endTime = System.currentTimeMillis();
+            // System.out.println((endTime - startTime) / 1000);
+            //
+            // startTime = System.currentTimeMillis();
+            // workflowPlanList.addAll(workflowPlanService.findByStudyNameAndSampleNameAndWorkflowName("NC_GENES",
+            // "NCG_00065%", "NCGenes"));
+            // endTime = System.currentTimeMillis();
+            // System.out.println((endTime - startTime) / 1000);
 
             for (WorkflowPlan workflowPlan : workflowPlanList) {
                 System.out.println(workflowPlan.getWorkflowRun().getStatus().toString());

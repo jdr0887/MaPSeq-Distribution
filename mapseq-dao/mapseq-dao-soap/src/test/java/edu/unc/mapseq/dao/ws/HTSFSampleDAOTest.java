@@ -80,8 +80,8 @@ public class HTSFSampleDAOTest {
 
             HTSFSample htsfSample = new HTSFSample();
             htsfSample.setName("asdf");
-            htsfSample
-                    .setCreator(daoMgr.getMaPSeqDAOBean().getAccountDAO().findByName(System.getProperty("user.name")));
+            htsfSample.setCreator(daoMgr.getMaPSeqDAOBean().getAccountDAO().findByName(System.getProperty("user.name"))
+                    .get(0));
             htsfSample.setBarcode("ATTCGA");
             htsfSample.setStudy(daoMgr.getMaPSeqDAOBean().getStudyDAO().findById(45823L));
             htsfSample.setLaneIndex(1);

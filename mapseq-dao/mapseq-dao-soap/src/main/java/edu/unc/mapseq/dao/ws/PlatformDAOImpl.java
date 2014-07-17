@@ -57,6 +57,11 @@ public class PlatformDAOImpl extends BaseEntityDAOImpl<Platform, Long> implement
     }
 
     @Override
+    public List<Platform> findByName(String arg0) throws MaPSeqDAOException {
+        return null;
+    }
+
+    @Override
     public Platform findByInstrumentAndModel(String instrument, String model) throws MaPSeqDAOException {
         logger.debug("ENTERING findByInstrumentAndModel(String, String)");
         Platform result = platformService.findByInstrumentAndModel(instrument, model);

@@ -45,10 +45,10 @@ public class StudyDAOImpl extends BaseEntityDAOImpl<Study, Long> implements Stud
     }
 
     @Override
-    public Study findByName(String name) throws MaPSeqDAOException {
+    public List<Study> findByName(String name) throws MaPSeqDAOException {
         logger.debug("ENTERING findByName(String)");
-        Study study = studyService.findByName(name);
-        return study;
+        List<Study> ret = studyService.findByName(name);
+        return ret;
     }
 
     @Override

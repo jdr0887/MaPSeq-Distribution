@@ -103,6 +103,11 @@ public class JobDAOImpl extends BaseEntityDAOImpl<Job, Long> implements JobDAO {
     }
 
     @Override
+    public List<Job> findByName(String arg0) throws MaPSeqDAOException {
+        return null;
+    }
+
+    @Override
     public Job findById(Long id) throws MaPSeqDAOException {
         logger.debug("ENTERING findById(Long)");
         Job job = jobService.findById(id);
