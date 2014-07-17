@@ -1,5 +1,6 @@
 package edu.unc.mapseq.main;
 
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import org.apache.commons.cli.CommandLine;
@@ -13,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
+import edu.unc.mapseq.dao.model.Account;
 import edu.unc.mapseq.dao.model.Study;
 import edu.unc.mapseq.dao.ws.WSDAOManager;
 
@@ -40,22 +42,37 @@ public class CreateStudy implements Callable<Long> {
     public Long call() {
         WSDAOManager daoMgr = WSDAOManager.getInstance();
         // RSDAOManager daoMgr = RSDAOManager.getInstance();
-        MaPSeqDAOBean mapseqDAOBean = daoMgr.getMaPSeqDAOBean();
+        MaPSeqDAOBean maPSeqDAOBean = daoMgr.getMaPSeqDAOBean();
+
+        List<Account> accountList = null;
+        try {
+            accountList = maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
+            if (accountList == null || (accountList != null && accountList.isEmpty())) {
+                System.err.printf("Account doesn't exist: %s%n", System.getProperty("user.name"));
+                System.err.println("Must register account first");
+                return null;
+            }
+        } catch (MaPSeqDAOException e) {
+            e.printStackTrace();
+        }
+
+        Account account = accountList.get(0);
+
         try {
             Study study = new Study();
             study.setName(name);
             study.setApproved(approved);
-            study.setCreator(mapseqDAOBean.getAccountDAO().findByName(System.getProperty("user.name")));
+            study.setCreator(account);
             if (StringUtils.isNotEmpty(grant)) {
                 study.setGrant(grant);
             }
             if (primaryContactId != null) {
-                study.setPrimaryContact(mapseqDAOBean.getAccountDAO().findById(primaryContactId));
+                study.setPrimaryContact(maPSeqDAOBean.getAccountDAO().findById(primaryContactId));
             }
             if (principalInvestigatorId != null) {
-                study.setPrincipalInvestigator(mapseqDAOBean.getAccountDAO().findById(principalInvestigatorId));
+                study.setPrincipalInvestigator(maPSeqDAOBean.getAccountDAO().findById(principalInvestigatorId));
             }
-            Long studyId = mapseqDAOBean.getStudyDAO().save(study);
+            Long studyId = maPSeqDAOBean.getStudyDAO().save(study);
             return studyId;
         } catch (MaPSeqDAOException e1) {
             e1.printStackTrace();

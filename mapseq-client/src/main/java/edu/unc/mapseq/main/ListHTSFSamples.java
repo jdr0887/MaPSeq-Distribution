@@ -48,17 +48,17 @@ public class ListHTSFSamples implements Runnable {
         MaPSeqDAOBean maPSeqDAOBean = daoMgr.getMaPSeqDAOBean();
         SequencerRunDAO sequencerRunDAO = maPSeqDAOBean.getSequencerRunDAO();
         HTSFSampleDAO htsfSampleDAO = maPSeqDAOBean.getHTSFSampleDAO();
-        AccountDAO accountDAO = maPSeqDAOBean.getAccountDAO();
 
-        Account account = null;
+        List<Account> accountList = null;
         try {
-            account = accountDAO.findByName(System.getProperty("user.name"));
+            accountList = maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
+            if (accountList == null || (accountList != null && accountList.isEmpty())) {
+                System.err.printf("Account doesn't exist: %s%n", System.getProperty("user.name"));
+                System.err.println("Must register account first");
+                return;
+            }
         } catch (MaPSeqDAOException e) {
-        }
-
-        if (account == null) {
-            System.out.println("Must register account first");
-            return;
+            e.printStackTrace();
         }
 
         if (sequencerRunId == null && StringUtils.isEmpty(name)) {

@@ -1,6 +1,7 @@
 package edu.unc.mapseq.main;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
@@ -35,19 +36,22 @@ public class RegisterAccount implements Callable<Long> {
 
         MaPSeqDAOBean mapseqDAOBean = daoMgr.getMaPSeqDAOBean();
 
-        Account account = null;
         try {
-            account = mapseqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
-            if (account != null) {
-                System.out.println("Account already exists for: " + System.getProperty("user.name"));
-                return account.getId();
-            }
-        } catch (Exception e) {
-            if (e.getMessage().contains("no result")) {
+            List<Account> accountList = mapseqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
+
+            if (accountList == null || (accountList != null && accountList.isEmpty())) {
                 return createAccount();
             }
+
+            if (accountList != null && !accountList.isEmpty()) {
+                System.out.println("Account already exists for: " + System.getProperty("user.name"));
+                return accountList.get(0).getId();
+            }
+        } catch (MaPSeqDAOException e) {
+            e.printStackTrace();
         }
-        return createAccount();
+
+        return null;
     }
 
     private Long createAccount() {
@@ -57,8 +61,8 @@ public class RegisterAccount implements Callable<Long> {
         try {
             Account account = new Account();
             Set<AccountGroup> accountGroupSet = new HashSet<AccountGroup>();
-            AccountGroup accountGroup = mapseqDAOBean.getAccountGroupDAO().findByName("public");
-            accountGroupSet.add(accountGroup);
+            List<AccountGroup> accountGroupList = mapseqDAOBean.getAccountGroupDAO().findByName("public");
+            accountGroupSet.addAll(accountGroupList);
             account.setAccountGroups(accountGroupSet);
             account.setName(System.getProperty("user.name"));
             Long accountId = mapseqDAOBean.getAccountDAO().save(account);

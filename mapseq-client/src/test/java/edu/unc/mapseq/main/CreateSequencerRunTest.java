@@ -47,7 +47,8 @@ public class CreateSequencerRunTest {
             lnr.readLine();
             String line;
 
-            Account account = daoMgr.getMaPSeqDAOBean().getAccountDAO().findByName(System.getProperty("user.name"));
+            Account account = daoMgr.getMaPSeqDAOBean().getAccountDAO().findByName(System.getProperty("user.name"))
+                    .get(0);
 
             if (account == null) {
                 System.out.println("Must register account first");
@@ -88,7 +89,7 @@ public class CreateSequencerRunTest {
                 String operator = st[8];
                 String sampleProject = st[9];
 
-                Study study = daoMgr.getMaPSeqDAOBean().getStudyDAO().findByName(sampleProject);
+                Study study = daoMgr.getMaPSeqDAOBean().getStudyDAO().findByName(sampleProject).get(0);
                 if (study == null) {
                     study = new Study();
                     study.setApproved(Boolean.TRUE);

@@ -45,20 +45,22 @@ public class CheckWorkflowStatus implements Runnable {
         // WSDAOManager daoMgr = WSDAOManager.getInstance();
         RSDAOManager daoMgr = RSDAOManager.getInstance();
 
-        MaPSeqDAOBean mapseqDAOBean = daoMgr.getMaPSeqDAOBean();
-        Account account = null;
-        try {
-            account = mapseqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
-        } catch (MaPSeqDAOException e) {
-        }
+        MaPSeqDAOBean maPSeqDAOBean = daoMgr.getMaPSeqDAOBean();
 
-        if (account == null) {
-            System.out.println("Must register account first");
-            return;
+        List<Account> accountList = null;
+        try {
+            accountList = maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
+            if (accountList == null || (accountList != null && accountList.isEmpty())) {
+                System.err.printf("Account doesn't exist: %s%n", System.getProperty("user.name"));
+                System.err.println("Must register account first");
+                return;
+            }
+        } catch (MaPSeqDAOException e) {
+            e.printStackTrace();
         }
 
         List<WorkflowPlan> wpList = new ArrayList<WorkflowPlan>();
-        WorkflowPlanDAO workflowPlanDAO = mapseqDAOBean.getWorkflowPlanDAO();
+        WorkflowPlanDAO workflowPlanDAO = maPSeqDAOBean.getWorkflowPlanDAO();
         try {
             List<WorkflowPlan> wfPlanList = workflowPlanDAO.findByStudyName(this.studyName);
             if (wfPlanList != null) {
@@ -66,7 +68,7 @@ public class CheckWorkflowStatus implements Runnable {
             }
         } catch (MaPSeqDAOException e) {
         }
-        HTSFSampleDAO hTSFSampleDAO = mapseqDAOBean.getHTSFSampleDAO();
+        HTSFSampleDAO hTSFSampleDAO = maPSeqDAOBean.getHTSFSampleDAO();
 
         try {
 

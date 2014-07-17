@@ -39,21 +39,24 @@ public class ListMyWorkflowRuns implements Runnable {
         // WSDAOManager daoMgr = WSDAOManager.getInstance();
         RSDAOManager daoMgr = RSDAOManager.getInstance();
 
-        MaPSeqDAOBean mapseqDAOBean = daoMgr.getMaPSeqDAOBean();
+        MaPSeqDAOBean maPSeqDAOBean = daoMgr.getMaPSeqDAOBean();
 
-        Account account = null;
+        List<Account> accountList = null;
         try {
-            account = mapseqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
+            accountList = maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
+            if (accountList == null || (accountList != null && accountList.isEmpty())) {
+                System.err.printf("Account doesn't exist: %s%n", System.getProperty("user.name"));
+                System.err.println("Must register account first");
+                return;
+            }
         } catch (MaPSeqDAOException e) {
+            e.printStackTrace();
         }
 
-        if (account == null) {
-            System.out.println("Must register account first");
-            return;
-        }
+        Account account = accountList.get(0);
 
         List<WorkflowRun> workflowRunList = null;
-        WorkflowRunDAO workflowRunDAO = mapseqDAOBean.getWorkflowRunDAO();
+        WorkflowRunDAO workflowRunDAO = maPSeqDAOBean.getWorkflowRunDAO();
         try {
             workflowRunList = workflowRunDAO.findByCreator(account.getId());
         } catch (MaPSeqDAOException e) {

@@ -1,5 +1,6 @@
 package edu.unc.mapseq.main;
 
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -44,19 +45,21 @@ public class CreateSequencerRun implements Callable<Long> {
         WSDAOManager daoMgr = WSDAOManager.getInstance();
         // RSDAOManager daoMgr = RSDAOManager.getInstance();
 
-        MaPSeqDAOBean mapseqDAOBean = daoMgr.getMaPSeqDAOBean();
+        MaPSeqDAOBean maPSeqDAOBean = daoMgr.getMaPSeqDAOBean();
 
-        Account account = null;
+        List<Account> accountList = null;
         try {
-            account = mapseqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
+            accountList = maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
+            if (accountList == null || (accountList != null && accountList.isEmpty())) {
+                System.err.printf("Account doesn't exist: %s%n", System.getProperty("user.name"));
+                System.err.println("Must register account first");
+                return null;
+            }
         } catch (MaPSeqDAOException e) {
             e.printStackTrace();
         }
 
-        if (account == null) {
-            System.out.println("Must register account first");
-            return null;
-        }
+        Account account = accountList.get(0);
 
         Pattern pattern = Pattern.compile("^\\d+_.+_\\d+_.+$");
         Matcher matcher = pattern.matcher(name);
@@ -74,9 +77,9 @@ public class CreateSequencerRun implements Callable<Long> {
             if (StringUtils.isNotEmpty(this.baseRunFolder)) {
                 sequencerRun.setBaseDirectory(this.baseRunFolder);
             }
-            sequencerRun.setPlatform(mapseqDAOBean.getPlatformDAO().findById(this.platformId));
+            sequencerRun.setPlatform(maPSeqDAOBean.getPlatformDAO().findById(this.platformId));
             sequencerRun.setStatus(status);
-            SequencerRunDAO sequencerRunDAO = mapseqDAOBean.getSequencerRunDAO();
+            SequencerRunDAO sequencerRunDAO = maPSeqDAOBean.getSequencerRunDAO();
             Long sequencerRunId = sequencerRunDAO.save(sequencerRun);
             return sequencerRunId;
         } catch (MaPSeqDAOException e1) {

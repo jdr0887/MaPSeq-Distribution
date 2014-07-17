@@ -59,23 +59,24 @@ public class CreateHTSFSample implements Callable<Long> {
         WSDAOManager daoMgr = WSDAOManager.getInstance();
         // RSDAOManager daoMgr = RSDAOManager.getInstance();
 
-        MaPSeqDAOBean mapseqDAOBean = daoMgr.getMaPSeqDAOBean();
+        MaPSeqDAOBean maPSeqDAOBean = daoMgr.getMaPSeqDAOBean();
 
-        Account account = null;
+        List<Account> accountList = null;
         try {
-            account = mapseqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
+            accountList = maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
+            if (accountList == null || (accountList != null && accountList.isEmpty())) {
+                System.err.printf("Account doesn't exist: %s%n", System.getProperty("user.name"));
+                System.err.println("Must register account first");
+                return null;
+            }
         } catch (MaPSeqDAOException e) {
             e.printStackTrace();
         }
-
-        if (account == null) {
-            System.err.println("Must register account first");
-            return null;
-        }
+        Account account = accountList.get(0);
 
         SequencerRun sequencerRun = null;
         try {
-            sequencerRun = mapseqDAOBean.getSequencerRunDAO().findById(this.sequencerRunId);
+            sequencerRun = maPSeqDAOBean.getSequencerRunDAO().findById(this.sequencerRunId);
         } catch (Exception e1) {
         }
 
@@ -183,11 +184,11 @@ public class CreateHTSFSample implements Callable<Long> {
             read1FastqFD.setName(read1Fastq.getName());
             read1FastqFD.setPath(read1Fastq.getParentFile().getAbsolutePath());
 
-            List<FileData> fileDataList = mapseqDAOBean.getFileDataDAO().findByExample(read1FastqFD);
+            List<FileData> fileDataList = maPSeqDAOBean.getFileDataDAO().findByExample(read1FastqFD);
             if (fileDataList != null && fileDataList.size() > 0) {
                 read1FastqFD = fileDataList.get(0);
             } else {
-                Long id = mapseqDAOBean.getFileDataDAO().save(read1FastqFD);
+                Long id = maPSeqDAOBean.getFileDataDAO().save(read1FastqFD);
                 read1FastqFD.setId(id);
             }
             fileDataSet.add(read1FastqFD);
@@ -197,23 +198,23 @@ public class CreateHTSFSample implements Callable<Long> {
                 read2FastqFD.setMimeType(MimeType.FASTQ);
                 read2FastqFD.setName(read2Fastq.getName());
                 read2FastqFD.setPath(read2Fastq.getParentFile().getAbsolutePath());
-                fileDataList = mapseqDAOBean.getFileDataDAO().findByExample(read2FastqFD);
+                fileDataList = maPSeqDAOBean.getFileDataDAO().findByExample(read2FastqFD);
                 if (fileDataList != null && fileDataList.size() > 0) {
                     read2FastqFD = fileDataList.get(0);
                 } else {
-                    Long id = mapseqDAOBean.getFileDataDAO().save(read2FastqFD);
+                    Long id = maPSeqDAOBean.getFileDataDAO().save(read2FastqFD);
                     read2FastqFD.setId(id);
                 }
                 fileDataSet.add(read2FastqFD);
             }
 
-            HTSFSampleDAO htsfSampleDAO = mapseqDAOBean.getHTSFSampleDAO();
+            HTSFSampleDAO htsfSampleDAO = maPSeqDAOBean.getHTSFSampleDAO();
 
             HTSFSample htsfSample = new HTSFSample();
             htsfSample.setName(getName());
-            htsfSample.setCreator(mapseqDAOBean.getAccountDAO().findByName(System.getProperty("user.name")));
+            htsfSample.setCreator(account);
             htsfSample.setBarcode(barcode);
-            htsfSample.setStudy(mapseqDAOBean.getStudyDAO().findById(this.studyId));
+            htsfSample.setStudy(maPSeqDAOBean.getStudyDAO().findById(this.studyId));
             htsfSample.setLaneIndex(laneIndex);
             htsfSample.setSequencerRun(sequencerRun);
             htsfSample.setFileDatas(fileDataSet);

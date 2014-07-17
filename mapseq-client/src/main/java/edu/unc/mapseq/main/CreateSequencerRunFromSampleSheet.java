@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.StringReader;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.cli.CommandLine;
@@ -51,24 +52,27 @@ public class CreateSequencerRunFromSampleSheet implements Runnable {
     public void run() {
 
         WSDAOManager daoMgr = WSDAOManager.getInstance();
-        //RSDAOManager daoMgr = RSDAOManager.getInstance();
+        // RSDAOManager daoMgr = RSDAOManager.getInstance();
 
-        MaPSeqDAOBean mapseqDAOBean = daoMgr.getMaPSeqDAOBean();
+        MaPSeqDAOBean maPSeqDAOBean = daoMgr.getMaPSeqDAOBean();
 
-        Account account = null;
+        List<Account> accountList = null;
         try {
-            account = mapseqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
+            accountList = maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
+            if (accountList == null || (accountList != null && accountList.isEmpty())) {
+                System.err.printf("Account doesn't exist: %s%n", System.getProperty("user.name"));
+                System.err.println("Must register account first");
+                return;
+            }
         } catch (MaPSeqDAOException e) {
+            e.printStackTrace();
         }
 
-        if (account == null) {
-            System.out.println("Must register account first");
-            return;
-        }
+        Account account = accountList.get(0);
 
         Platform platform = null;
         try {
-            PlatformDAO platformDAO = mapseqDAOBean.getPlatformDAO();
+            PlatformDAO platformDAO = maPSeqDAOBean.getPlatformDAO();
             platform = platformDAO.findById(platformId);
         } catch (MaPSeqDAOException e) {
             e.printStackTrace();
@@ -82,7 +86,7 @@ public class CreateSequencerRunFromSampleSheet implements Runnable {
         sequencerRun.setPlatform(platform);
 
         try {
-            Long sequencerRunId = mapseqDAOBean.getSequencerRunDAO().save(sequencerRun);
+            Long sequencerRunId = maPSeqDAOBean.getSequencerRunDAO().save(sequencerRun);
             sequencerRun.setId(sequencerRunId);
         } catch (MaPSeqDAOException e1) {
             e1.printStackTrace();
@@ -107,44 +111,33 @@ public class CreateSequencerRunFromSampleSheet implements Runnable {
                 String operator = st[8];
                 String sampleProject = st[9];
 
-                Study study = null;
-                try {
-                    study = mapseqDAOBean.getStudyDAO().findByName(sampleProject);
-                } catch (Exception e) {
-                    // swallow exceptions
+                List<Study> studyList = maPSeqDAOBean.getStudyDAO().findByName(sampleProject);
+                if (studyList == null || (studyList != null && studyList.isEmpty())) {
+                    System.err.printf("Study doesn't exist...fix your sample sheet for column 9 (sampleProject)");
+                    return;
                 }
-                if (study == null) {
-                    study = new Study();
-                    study.setCreator(account);
-                    study.setName(sampleProject);
-                    Long studyId = mapseqDAOBean.getStudyDAO().save(study);
-                    study.setId(studyId);
+                Study study = studyList.get(0);
+                
+                HTSFSample htsfSample = new HTSFSample();
+                htsfSample.setBarcode(index);
+                htsfSample.setCreator(account);
+                htsfSample.setLaneIndex(Integer.valueOf(laneIndex));
+                htsfSample.setName(sampleId);
+                htsfSample.setSequencerRun(sequencerRun);
+                htsfSample.setStudy(study);
+
+                Set<EntityAttribute> attributes = htsfSample.getAttributes();
+                if (attributes == null) {
+                    attributes = new HashSet<EntityAttribute>();
                 }
+                EntityAttribute descAttribute = new EntityAttribute();
+                descAttribute.setName("production.id.description");
+                descAttribute.setValue(description);
+                attributes.add(descAttribute);
+                htsfSample.setAttributes(attributes);
 
-                if (study != null) {
-
-                    HTSFSample htsfSample = new HTSFSample();
-                    htsfSample.setBarcode(index);
-                    htsfSample.setCreator(account);
-                    htsfSample.setLaneIndex(Integer.valueOf(laneIndex));
-                    htsfSample.setName(sampleId);
-                    htsfSample.setSequencerRun(sequencerRun);
-                    htsfSample.setStudy(study);
-
-                    Set<EntityAttribute> attributes = htsfSample.getAttributes();
-                    if (attributes == null) {
-                        attributes = new HashSet<EntityAttribute>();
-                    }
-                    EntityAttribute descAttribute = new EntityAttribute();
-                    descAttribute.setName("production.id.description");
-                    descAttribute.setValue(description);
-                    attributes.add(descAttribute);
-                    htsfSample.setAttributes(attributes);
-
-                    Long htsfSampleId = mapseqDAOBean.getHTSFSampleDAO().save(htsfSample);
-                    htsfSample.setId(htsfSampleId);
-
-                }
+                Long htsfSampleId = maPSeqDAOBean.getHTSFSampleDAO().save(htsfSample);
+                htsfSample.setId(htsfSampleId);
 
             }
 
