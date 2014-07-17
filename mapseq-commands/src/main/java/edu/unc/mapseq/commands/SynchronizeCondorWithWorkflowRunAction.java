@@ -44,16 +44,16 @@ public class SynchronizeCondorWithWorkflowRunAction extends AbstractAction {
     @Override
     public Object doExecute() {
         logger.info("ENTERING doExecute()");
-        Account account = null;
+        List<Account> accountList = null;
         try {
-            account = maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
+            accountList = maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
+            if (accountList == null || (accountList != null && accountList.isEmpty())) {
+                System.err.printf("Account doesn't exist: %s%n", System.getProperty("user.name"));
+                System.err.println("Must register account first");
+                return null;
+            }
         } catch (MaPSeqDAOException e) {
             e.printStackTrace();
-        }
-
-        if (account == null) {
-            logger.error("No account found");
-            return null;
         }
 
         List<WorkflowRun> workflowRunList = new ArrayList<WorkflowRun>();
