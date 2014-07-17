@@ -1,5 +1,6 @@
 package edu.unc.mapseq.commands;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,16 +39,16 @@ public class CreateSequencerRunAction extends AbstractAction {
     @Override
     public Object doExecute() {
 
-        Account account = null;
+        List<Account> accountList = null;
         try {
-            account = maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
+            accountList = maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
+            if (accountList == null || (accountList != null && accountList.isEmpty())) {
+                System.err.printf("Account doesn't exist: %s%n", System.getProperty("user.name"));
+                System.err.println("Must register account first");
+                return null;
+            }
         } catch (MaPSeqDAOException e) {
             e.printStackTrace();
-        }
-
-        if (account == null) {
-            System.err.println("Must register account first");
-            return null;
         }
 
         Pattern pattern = Pattern.compile("^\\d+_.+_\\d+_.+$");
@@ -61,7 +62,7 @@ public class CreateSequencerRunAction extends AbstractAction {
 
         SequencerRun sequencerRun = new SequencerRun();
         try {
-            sequencerRun.setCreator(account);
+            sequencerRun.setCreator(accountList.get(0));
             sequencerRun.setName(name);
             sequencerRun.setBaseDirectory(baseRunFolder);
             sequencerRun.setPlatform(maPSeqDAOBean.getPlatformDAO().findById(this.platformId));

@@ -17,6 +17,7 @@ import org.apache.karaf.shell.console.AbstractAction;
 import edu.unc.mapseq.dao.HTSFSampleDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
+import edu.unc.mapseq.dao.model.Account;
 import edu.unc.mapseq.dao.model.FileData;
 import edu.unc.mapseq.dao.model.HTSFSample;
 import edu.unc.mapseq.dao.model.MimeType;
@@ -54,6 +55,18 @@ public class CreateHTSFSampleAction extends AbstractAction {
 
     @Override
     public Object doExecute() {
+
+        List<Account> accountList = null;
+        try {
+            accountList = maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
+            if (accountList == null || (accountList != null && accountList.isEmpty())) {
+                System.err.printf("Account doesn't exist: %s%n", System.getProperty("user.name"));
+                System.err.println("Must register account first");
+                return null;
+            }
+        } catch (MaPSeqDAOException e) {
+            e.printStackTrace();
+        }
 
         SequencerRun sequencerRun = null;
         try {
@@ -194,7 +207,7 @@ public class CreateHTSFSampleAction extends AbstractAction {
 
             HTSFSample htsfSample = new HTSFSample();
             htsfSample.setName(name);
-            htsfSample.setCreator(maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name")));
+            htsfSample.setCreator(accountList.get(0));
             htsfSample.setBarcode(barcode);
             htsfSample.setStudy(maPSeqDAOBean.getStudyDAO().findById(this.studyId));
             htsfSample.setLaneIndex(laneIndex);

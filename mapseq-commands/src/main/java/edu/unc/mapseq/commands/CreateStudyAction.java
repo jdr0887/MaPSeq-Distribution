@@ -1,11 +1,14 @@
 package edu.unc.mapseq.commands;
 
+import java.util.List;
+
 import org.apache.felix.gogo.commands.Argument;
 import org.apache.felix.gogo.commands.Command;
 import org.apache.karaf.shell.console.AbstractAction;
 
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
+import edu.unc.mapseq.dao.model.Account;
 import edu.unc.mapseq.dao.model.Study;
 
 @Command(scope = "mapseq", name = "create-study", description = "Create Study")
@@ -34,10 +37,23 @@ public class CreateStudyAction extends AbstractAction {
 
     @Override
     public Object doExecute() {
+        
+        List<Account> accountList = null;
+        try {
+            accountList = maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
+            if (accountList == null || (accountList != null && accountList.isEmpty())) {
+                System.err.printf("Account doesn't exist: %s%n", System.getProperty("user.name"));
+                System.err.println("Must register account first");
+                return null;
+            }
+        } catch (MaPSeqDAOException e) {
+            e.printStackTrace();
+        }
+
         try {
             Study study = new Study();
             study.setApproved(approved);
-            study.setCreator(maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name")));
+            study.setCreator(accountList.get(0));
             study.setGrant(grant);
             study.setName(name);
             if (primaryContactId != null) {

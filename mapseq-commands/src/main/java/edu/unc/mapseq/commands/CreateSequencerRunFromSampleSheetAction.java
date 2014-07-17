@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.StringReader;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
@@ -48,16 +49,16 @@ public class CreateSequencerRunFromSampleSheetAction extends AbstractAction {
     @Override
     public Object doExecute() {
 
-        Account account = null;
+        List<Account> accountList = null;
         try {
-            account = maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
+            accountList = maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
+            if (accountList == null || (accountList != null && accountList.isEmpty())) {
+                System.err.printf("Account doesn't exist: %s%n", System.getProperty("user.name"));
+                System.err.println("Must register account first");
+                return null;
+            }
         } catch (MaPSeqDAOException e) {
             e.printStackTrace();
-        }
-
-        if (account == null) {
-            System.err.println("Must register account first");
-            return null;
         }
 
         Platform platform = null;
@@ -69,7 +70,7 @@ public class CreateSequencerRunFromSampleSheetAction extends AbstractAction {
         }
 
         SequencerRun sequencerRun = new SequencerRun();
-        sequencerRun.setCreator(account);
+        sequencerRun.setCreator(accountList.get(0));
         sequencerRun.setStatus(SequencerRunStatusType.COMPLETED);
         sequencerRun.setBaseDirectory(baseRunFolder);
         sequencerRun.setName(name);
@@ -101,44 +102,34 @@ public class CreateSequencerRunFromSampleSheetAction extends AbstractAction {
                 String operator = st[8];
                 String sampleProject = st[9];
 
-                Study study = null;
-                try {
-                    study = maPSeqDAOBean.getStudyDAO().findByName(sampleProject);
-                } catch (Exception e) {
-                    // swallow exceptions
-                }
-                if (study == null) {
-                    study = new Study();
-                    study.setCreator(account);
-                    study.setName(sampleProject);
-                    Long studyId = maPSeqDAOBean.getStudyDAO().save(study);
-                    study.setId(studyId);
+                List<Study> studyList = maPSeqDAOBean.getStudyDAO().findByName(sampleProject);
+                if (studyList == null || (studyList != null && studyList.isEmpty())) {
+                    System.err.printf("Study doesn't exist...fix your sample sheet for column 9 (sampleProject)");
+                    return null;
                 }
 
-                if (study != null) {
+                Study study = studyList.get(0);
 
-                    HTSFSample htsfSample = new HTSFSample();
-                    htsfSample.setBarcode(index);
-                    htsfSample.setCreator(account);
-                    htsfSample.setLaneIndex(Integer.valueOf(laneIndex));
-                    htsfSample.setName(sampleId);
-                    htsfSample.setSequencerRun(sequencerRun);
-                    htsfSample.setStudy(study);
+                HTSFSample htsfSample = new HTSFSample();
+                htsfSample.setBarcode(index);
+                htsfSample.setCreator(accountList.get(0));
+                htsfSample.setLaneIndex(Integer.valueOf(laneIndex));
+                htsfSample.setName(sampleId);
+                htsfSample.setSequencerRun(sequencerRun);
+                htsfSample.setStudy(study);
 
-                    Set<EntityAttribute> attributes = htsfSample.getAttributes();
-                    if (attributes == null) {
-                        attributes = new HashSet<EntityAttribute>();
-                    }
-                    EntityAttribute descAttribute = new EntityAttribute();
-                    descAttribute.setName("production.id.description");
-                    descAttribute.setValue(description);
-                    attributes.add(descAttribute);
-                    htsfSample.setAttributes(attributes);
-
-                    Long htsfSampleId = maPSeqDAOBean.getHTSFSampleDAO().save(htsfSample);
-                    htsfSample.setId(htsfSampleId);
-
+                Set<EntityAttribute> attributes = htsfSample.getAttributes();
+                if (attributes == null) {
+                    attributes = new HashSet<EntityAttribute>();
                 }
+                EntityAttribute descAttribute = new EntityAttribute();
+                descAttribute.setName("production.id.description");
+                descAttribute.setValue(description);
+                attributes.add(descAttribute);
+                htsfSample.setAttributes(attributes);
+
+                Long htsfSampleId = maPSeqDAOBean.getHTSFSampleDAO().save(htsfSample);
+                htsfSample.setId(htsfSampleId);
 
             }
 
