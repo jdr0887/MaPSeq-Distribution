@@ -19,7 +19,7 @@ import edu.unc.mapseq.dao.model.Workflow;
  * 
  * @author jdr0887
  */
-public class WorkflowDAOImpl extends BaseEntityDAOImpl<Workflow, Long> implements WorkflowDAO {
+public class WorkflowDAOImpl extends NamedEntityDAOImpl<Workflow, Long> implements WorkflowDAO {
 
     private final Logger logger = LoggerFactory.getLogger(WorkflowDAOImpl.class);
 

@@ -6,64 +6,66 @@ import org.apache.felix.gogo.commands.Argument;
 import org.apache.felix.gogo.commands.Command;
 import org.apache.karaf.shell.console.AbstractAction;
 
-import edu.unc.mapseq.dao.HTSFSampleDAO;
 import edu.unc.mapseq.dao.JobDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
-import edu.unc.mapseq.dao.WorkflowPlanDAO;
+import edu.unc.mapseq.dao.SampleDAO;
+import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
 import edu.unc.mapseq.dao.WorkflowRunDAO;
-import edu.unc.mapseq.dao.model.HTSFSample;
 import edu.unc.mapseq.dao.model.Job;
-import edu.unc.mapseq.dao.model.WorkflowPlan;
+import edu.unc.mapseq.dao.model.Sample;
 import edu.unc.mapseq.dao.model.WorkflowRun;
+import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
 
-@Command(scope = "mapseq", name = "delete-htsf-sample", description = "Delete HTSFSample")
-public class DeleteHTSFSampleAction extends AbstractAction {
+@Command(scope = "mapseq", name = "delete-sample", description = "Delete Sample")
+public class DeleteSampleAction extends AbstractAction {
 
     private MaPSeqDAOBean maPSeqDAOBean;
 
-    @Argument(index = 0, name = "htsfSampleId", description = "HTSFSample Identifier", required = true, multiValued = true)
-    private List<Long> htsfSampleIdList;
+    @Argument(index = 0, name = "sampleId", description = "Sample Identifier", required = true, multiValued = true)
+    private List<Long> sampleIdList;
 
-    public DeleteHTSFSampleAction() {
+    public DeleteSampleAction() {
         super();
     }
 
     @Override
     public Object doExecute() {
 
-        if (this.htsfSampleIdList != null && this.htsfSampleIdList.size() > 0) {
+        if (this.sampleIdList != null && this.sampleIdList.size() > 0) {
 
-            HTSFSampleDAO htsfSampleDAO = maPSeqDAOBean.getHTSFSampleDAO();
-            WorkflowPlanDAO workflowPlanDAO = maPSeqDAOBean.getWorkflowPlanDAO();
+            SampleDAO sampleDAO = maPSeqDAOBean.getSampleDAO();
+            WorkflowRunAttemptDAO workflowRunAttemptDAO = maPSeqDAOBean.getWorkflowRunAttemptDAO();
             WorkflowRunDAO workflowRunDAO = maPSeqDAOBean.getWorkflowRunDAO();
             JobDAO jobDAO = maPSeqDAOBean.getJobDAO();
 
-            for (Long id : this.htsfSampleIdList) {
+            for (Long id : this.sampleIdList) {
                 try {
-                    HTSFSample sample = htsfSampleDAO.findById(id);
-                    List<WorkflowPlan> workflowPlanList = workflowPlanDAO.findByHTSFSampleId(sample.getId());
+                    Sample sample = sampleDAO.findById(id);
+                    List<WorkflowRun> workflowRunList = workflowRunDAO.findBySampleId(sample.getId());
 
-                    if (workflowPlanList != null && workflowPlanList.size() > 0) {
+                    if (workflowRunList != null && workflowRunList.size() > 0) {
 
-                        for (WorkflowPlan workflowPlan : workflowPlanList) {
+                        for (WorkflowRun workflowRun : workflowRunList) {
 
-                            WorkflowRun workflowRun = workflowPlan.getWorkflowRun();
-                            List<Job> jobList = jobDAO.findByWorkflowRunId(workflowRun.getId());
-                            if (jobList != null && jobList.size() > 0) {
-                                jobDAO.delete(jobList);
-                                System.out.printf("%d Job entities deleted", jobList.size());
+                            for (WorkflowRunAttempt attempt : workflowRun.getAttempts()) {
+                                List<Job> jobList = jobDAO.findByWorkflowRunAttemptId(attempt.getId());
+                                if (jobList != null && jobList.size() > 0) {
+                                    jobDAO.delete(jobList);
+                                    System.out.printf("%d Job entities deleted", jobList.size());
+                                }
+                                workflowRunAttemptDAO.delete(attempt);
+                                System.out.println("Deleted WorkflowRunAttempt: " + attempt.getId());
                             }
                             workflowRunDAO.delete(workflowRun);
+                            System.out.println("Deleted WorkflowRun: " + workflowRun.getId());
 
-                            workflowPlanDAO.delete(workflowPlan);
-                            System.out.println("Deleted WorkflowPlan: " + workflowPlan.getId());
                         }
 
                     }
 
-                    htsfSampleDAO.delete(sample);
-                    System.out.printf("Deleted HTSFSample: %s", id);
+                    sampleDAO.delete(sample);
+                    System.out.printf("Deleted Sample: %s", id);
 
                 } catch (MaPSeqDAOException e) {
                     e.printStackTrace();
@@ -84,11 +86,11 @@ public class DeleteHTSFSampleAction extends AbstractAction {
     }
 
     public List<Long> getHtsfSampleIdList() {
-        return htsfSampleIdList;
+        return sampleIdList;
     }
 
     public void setHtsfSampleIdList(List<Long> htsfSampleIdList) {
-        this.htsfSampleIdList = htsfSampleIdList;
+        this.sampleIdList = htsfSampleIdList;
     }
 
 }

@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
@@ -24,7 +23,6 @@ import edu.unc.mapseq.config.RunModeType;
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowRunDAO;
-import edu.unc.mapseq.dao.model.HTSFSample;
 import edu.unc.mapseq.dao.model.WorkflowPlan;
 import edu.unc.mapseq.dao.model.WorkflowRun;
 import edu.unc.mapseq.workflow.Workflow;
@@ -42,7 +40,7 @@ public abstract class AbstractWorkflow implements Workflow {
 
     private File homeDirectory;
 
-    private File outputDirectory;
+    private File workDirectory;
 
     private File submitDirectory;
 
@@ -115,8 +113,8 @@ public abstract class AbstractWorkflow implements Workflow {
             throw new WorkflowException("MAPSEQ_OUTPUT_DIRECTORY not set in env");
         }
 
-        this.outputDirectory = new File(outputDir);
-        if (!outputDirectory.exists()) {
+        this.workDirectory = new File(outputDir);
+        if (!workDirectory.exists()) {
             logger.error("MAPSEQ_OUTPUT_DIRECTORY does not exist: {}", outputDir);
             throw new WorkflowException("MAPSEQ_OUTPUT_DIRECTORY does not exist");
         }
@@ -224,69 +222,6 @@ public abstract class AbstractWorkflow implements Workflow {
         return jobNode;
     }
 
-    public Set<HTSFSample> getAggregateHTSFSampleSet() throws WorkflowException {
-
-        Set<HTSFSample> htsfSampleSet = new HashSet<HTSFSample>();
-
-        if (getWorkflowPlan().getSequencerRun() == null && getWorkflowPlan().getHTSFSamples() == null) {
-            logger.error("Don't have either sequencerRun and htsfSample");
-            throw new WorkflowException("Don't have either sequencerRun and htsfSample");
-        }
-
-        if (getWorkflowPlan().getSequencerRun() != null) {
-            logger.info("sequencerRun: {}", getWorkflowPlan().getSequencerRun().toString());
-            try {
-                htsfSampleSet.addAll(getWorkflowBeanService().getMaPSeqDAOBean().getHTSFSampleDAO()
-                        .findBySequencerRunId(getWorkflowPlan().getSequencerRun().getId()));
-            } catch (MaPSeqDAOException e) {
-                logger.error("problem getting HTSFSamples");
-            }
-        }
-
-        if (getWorkflowPlan().getHTSFSamples() != null) {
-            htsfSampleSet.addAll(getWorkflowPlan().getHTSFSamples());
-        }
-
-        return htsfSampleSet;
-    }
-
-    public File createOutputDirectory(String sequencerRunName, HTSFSample htsfSample, String workflowName,
-            String version) throws WorkflowException {
-        File baseDir;
-
-        RunModeType runMode = RunModeType.PROD;
-        if (StringUtils.isEmpty(version) || (StringUtils.isNotEmpty(version) && version.contains("SNAPSHOT"))) {
-            runMode = RunModeType.DEV;
-        }
-
-        switch (runMode) {
-            case DEV:
-            case STAGING:
-                baseDir = new File(getOutputDirectory(), runMode.toString().toLowerCase());
-                break;
-            case PROD:
-            default:
-                baseDir = getOutputDirectory();
-                break;
-        }
-        File sequencerRunOutputDirectory = new File(baseDir, sequencerRunName);
-        File workflowDir = new File(sequencerRunOutputDirectory, workflowName);
-        File htsfSampleOutputDir = new File(workflowDir, String.format("L%03d_%s", htsfSample.getLaneIndex(),
-                htsfSample.getBarcode()));
-        File tmpDir = new File(htsfSampleOutputDir, "tmp");
-        tmpDir.mkdirs();
-
-        try {
-            htsfSample.setOutputDirectory(htsfSampleOutputDir.getAbsolutePath());
-            getWorkflowBeanService().getMaPSeqDAOBean().getHTSFSampleDAO().save(htsfSample);
-        } catch (MaPSeqDAOException e1) {
-            logger.error("Could not persist HTSFSample");
-            throw new WorkflowException("Could not persist HTSFSample");
-        }
-
-        return htsfSampleOutputDir;
-    }
-
     public Graph<CondorJob, CondorJobEdge> getGraph() {
         return graph;
     }
@@ -311,12 +246,12 @@ public abstract class AbstractWorkflow implements Workflow {
         this.homeDirectory = homeDirectory;
     }
 
-    public File getOutputDirectory() {
-        return outputDirectory;
+    public File getWorkDirectory() {
+        return workDirectory;
     }
 
-    public void setOutputDirectory(File outputDirectory) {
-        this.outputDirectory = outputDirectory;
+    public void setWorkDirectory(File workDirectory) {
+        this.workDirectory = workDirectory;
     }
 
     public File getSubmitDirectory() {

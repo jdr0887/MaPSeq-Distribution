@@ -11,28 +11,28 @@ import org.apache.cxf.transports.http.configuration.ConnectionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.unc.mapseq.dao.HTSFSampleDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
-import edu.unc.mapseq.dao.model.HTSFSample;
-import edu.unc.mapseq.ws.HTSFSampleService;
+import edu.unc.mapseq.dao.SampleDAO;
+import edu.unc.mapseq.dao.model.Sample;
+import edu.unc.mapseq.ws.SampleService;
 
 /**
  * 
  * @author jdr0887
  */
-public class HTSFSampleDAOImpl extends BaseEntityDAOImpl<HTSFSample, Long> implements HTSFSampleDAO {
+public class SampleDAOImpl extends NamedEntityDAOImpl<Sample, Long> implements SampleDAO {
 
-    private final Logger logger = LoggerFactory.getLogger(HTSFSampleDAOImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(SampleDAOImpl.class);
 
-    private HTSFSampleService htsfSampleService;
+    private SampleService sampleService;
 
-    public HTSFSampleDAOImpl() {
-        super(HTSFSample.class);
+    public SampleDAOImpl() {
+        super(Sample.class);
     }
 
     public void init() {
-        htsfSampleService = getService().getPort(HTSFSampleService.class);
-        Client cl = ClientProxy.getClient(htsfSampleService);
+        sampleService = getService().getPort(SampleService.class);
+        Client cl = ClientProxy.getClient(sampleService);
         HTTPConduit httpConduit = (HTTPConduit) cl.getConduit();
         httpConduit.getClient().setReceiveTimeout(getConfigurationService().getWebServiceTimeout());
         httpConduit.getClient().setConnectionTimeout(0);
@@ -40,58 +40,47 @@ public class HTSFSampleDAOImpl extends BaseEntityDAOImpl<HTSFSample, Long> imple
     }
 
     @Override
-    public HTSFSample findById(Long id) throws MaPSeqDAOException {
+    public Sample findById(Long id) throws MaPSeqDAOException {
         logger.debug("ENTERING findById(Long)");
-        HTSFSample sample = htsfSampleService.findById(id);
+        Sample sample = sampleService.findById(id);
         return sample;
     }
 
     @Override
-    public Long save(HTSFSample entity) throws MaPSeqDAOException {
-        logger.debug("ENTERING save(HTSFSample)");
-        Long id = htsfSampleService.save(entity);
+    public Long save(Sample entity) throws MaPSeqDAOException {
+        logger.debug("ENTERING save(Sample)");
+        Long id = sampleService.save(entity);
         return id;
     }
 
     @Override
-    public List<HTSFSample> findBySequencerRunId(Long sequencerRunId) throws MaPSeqDAOException {
-        logger.debug("ENTERING findBySequencerRunId(Long)");
-        List<HTSFSample> htsfSampleList = htsfSampleService.findBySequencerRunId(sequencerRunId);
-        return htsfSampleList;
+    public List<Sample> findByFlowcellId(Long flowcellId) throws MaPSeqDAOException {
+        logger.debug("ENTERING findByFlowcellId(Long)");
+        List<Sample> sampleList = sampleService.findByFlowcellId(flowcellId);
+        return sampleList;
     }
 
     @Override
-    public List<HTSFSample> findBySequencerRunIdAndSampleName(Long sequencerRunId, String sampleName)
-            throws MaPSeqDAOException {
-        logger.debug("ENTERING findBySequencerRunIdAndSampleName(Long, String)");
-        List<HTSFSample> htsfSampleList = htsfSampleService.findBySequencerRunIdAndSampleName(sequencerRunId,
-                sampleName);
-        return htsfSampleList;
+    public List<Sample> findByNameAndFlowcellId(String name, Long flowcellId) throws MaPSeqDAOException {
+        logger.debug("ENTERING findByNameAndFlowcellId(String, Long)");
+        List<Sample> ret = sampleService.findByNameAndFlowcellId(name, flowcellId);
+        return ret;
     }
 
     @Override
-    public List<HTSFSample> findByCreationDateRange(Date startDate, Date endDate) throws MaPSeqDAOException {
-        logger.debug("ENTERING findByCreationDateRange(Date, Date)");
-        HTSFSampleService htsfSampleService = getService().getPort(HTSFSampleService.class);
-        Client cl = ClientProxy.getClient(htsfSampleService);
-        HTTPConduit httpConduit = (HTTPConduit) cl.getConduit();
-        httpConduit.getClient().setReceiveTimeout(getConfigurationService().getWebServiceTimeout());
+    public List<Sample> findByCreatedDateRange(Date startDate, Date endDate) throws MaPSeqDAOException {
+        logger.debug("ENTERING findByCreatedDateRange(Date, Date)");
         String formattedStartDate = DateFormatUtils.ISO_DATE_FORMAT.format(startDate);
         String formattedEndDate = DateFormatUtils.ISO_DATE_FORMAT.format(endDate);
-        List<HTSFSample> htsfSampleList = htsfSampleService.findByCreationDateRange(formattedStartDate,
-                formattedEndDate);
+        List<Sample> htsfSampleList = sampleService.findByCreatedDateRange(formattedStartDate, formattedEndDate);
         return htsfSampleList;
     }
 
     @Override
-    public List<HTSFSample> findByName(String name) throws MaPSeqDAOException {
+    public List<Sample> findByName(String name) throws MaPSeqDAOException {
         logger.debug("ENTERING findByName(String)");
-        HTSFSampleService htsfSampleService = getService().getPort(HTSFSampleService.class);
-        Client cl = ClientProxy.getClient(htsfSampleService);
-        HTTPConduit httpConduit = (HTTPConduit) cl.getConduit();
-        httpConduit.getClient().setReceiveTimeout(getConfigurationService().getWebServiceTimeout());
-        List<HTSFSample> htsfSampleList = htsfSampleService.findByName(name);
-        return htsfSampleList;
+        List<Sample> sampleList = sampleService.findByName(name);
+        return sampleList;
     }
 
 }

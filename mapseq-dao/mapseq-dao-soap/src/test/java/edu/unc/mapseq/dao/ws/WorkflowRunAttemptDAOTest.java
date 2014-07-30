@@ -19,32 +19,33 @@ import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.junit.Test;
 
-import edu.unc.mapseq.dao.model.WorkflowPlan;
-import edu.unc.mapseq.ws.WorkflowPlanService;
+import edu.unc.mapseq.dao.model.WorkflowRun;
+import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
+import edu.unc.mapseq.ws.WorkflowRunService;
 
-public class WorkflowPlanDAOTest {
+public class WorkflowRunAttemptDAOTest {
 
     @Test
     public void testFindBySequencerRunAndWorkflowName() {
-        QName serviceQName = new QName("http://ws.mapseq.unc.edu", "WorkflowPlanService");
-        QName portQName = new QName("http://ws.mapseq.unc.edu", "WorkflowPlanPort");
+        QName serviceQName = new QName("http://ws.mapseq.unc.edu", "WorkflowRunService");
+        QName portQName = new QName("http://ws.mapseq.unc.edu", "WorkflowRunPort");
         Service service = Service.create(serviceQName);
         String host = "biodev2.its.unc.edu";
         service.addPort(portQName, SOAPBinding.SOAP11HTTP_BINDING,
-                String.format("http://%s:%d/cxf/WorkflowPlanService", host, 8181));
-        WorkflowPlanService workflowPlanService = service.getPort(WorkflowPlanService.class);
+                String.format("http://%s:%d/cxf/WorkflowRunService", host, 8181));
+        WorkflowRunService workflowRunService = service.getPort(WorkflowRunService.class);
 
-        List<WorkflowPlan> workflowPlanList = workflowPlanService.findBySequencerRunAndWorkflowName(55852L, "CASAVA");
+        List<WorkflowRun> workflowRunList = workflowRunService.findByFlowcellIdAndWorkflowId(55852L, 81L);
 
-        for (WorkflowPlan workflowPlan : workflowPlanList) {
+        for (WorkflowRun workflowRun : workflowRunList) {
             try {
-                JAXBContext context = JAXBContext.newInstance(WorkflowPlan.class);
+                JAXBContext context = JAXBContext.newInstance(WorkflowRun.class);
                 Marshaller m = context.createMarshaller();
                 m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
                 File moduleClassXMLFile = new File("/tmp", String.format("%s-%d.xml", "WorkflowPlan",
-                        workflowPlan.getId()));
+                        workflowRun.getId()));
                 FileWriter fw = new FileWriter(moduleClassXMLFile);
-                m.marshal(workflowPlan, fw);
+                m.marshal(workflowRun, fw);
             } catch (IOException e1) {
                 e1.printStackTrace();
             } catch (PropertyException e1) {
@@ -58,22 +59,22 @@ public class WorkflowPlanDAOTest {
 
     @Test
     public void testFindByStudyNameAndSampleNameAndWorkflowName() {
-        QName serviceQName = new QName("http://ws.mapseq.unc.edu", "WorkflowPlanService");
-        QName portQName = new QName("http://ws.mapseq.unc.edu", "WorkflowPlanPort");
+        QName serviceQName = new QName("http://ws.mapseq.unc.edu", "WorkflowRunService");
+        QName portQName = new QName("http://ws.mapseq.unc.edu", "WorkflowRunPort");
         Service service = Service.create(serviceQName);
         String host = "biodev2.its.unc.edu";
         service.addPort(portQName, SOAPBinding.SOAP11HTTP_BINDING,
-                String.format("http://%s:%d/cxf/WorkflowPlanService", host, 8181));
-        WorkflowPlanService workflowPlanService = service.getPort(WorkflowPlanService.class);
-        Client cl = ClientProxy.getClient(workflowPlanService);
+                String.format("http://%s:%d/cxf/WorkflowRunService", host, 8181));
+        WorkflowRunService workflowRunService = service.getPort(WorkflowRunService.class);
+        Client cl = ClientProxy.getClient(workflowRunService);
         HTTPConduit httpConduit = (HTTPConduit) cl.getConduit();
         httpConduit.getClient().setReceiveTimeout(5 * 60 * 1000);
 
-        List<WorkflowPlan> workflowPlanList = new ArrayList<WorkflowPlan>();
+        List<WorkflowRun> workflowRunList = new ArrayList<WorkflowRun>();
 
         try {
             long startTime = System.currentTimeMillis();
-            workflowPlanList.addAll(workflowPlanService.findByStudyNameAndSampleNameAndWorkflowName("NC_GENES",
+            workflowRunList.addAll(workflowRunService.findByStudyNameAndSampleNameAndWorkflowName("NC_GENES",
                     "NCG_00517%", "CASAVA"));
             long endTime = System.currentTimeMillis();
             System.out.println((endTime - startTime) / 1000);
@@ -96,8 +97,10 @@ public class WorkflowPlanDAOTest {
             // endTime = System.currentTimeMillis();
             // System.out.println((endTime - startTime) / 1000);
 
-            for (WorkflowPlan workflowPlan : workflowPlanList) {
-                System.out.println(workflowPlan.getWorkflowRun().getStatus().toString());
+            for (WorkflowRun workflowRun : workflowRunList) {
+                for (WorkflowRunAttempt workflowRunAttempt : workflowRun.getAttempts()) {
+                    System.out.println(workflowRunAttempt.getStatus().toString());
+                }
             }
 
         } catch (Exception e) {

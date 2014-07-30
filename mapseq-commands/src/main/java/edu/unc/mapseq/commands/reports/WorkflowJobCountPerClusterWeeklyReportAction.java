@@ -15,9 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
-import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowDAO;
-import edu.unc.mapseq.dao.model.Account;
 import edu.unc.mapseq.dao.model.Job;
 import edu.unc.mapseq.dao.model.Workflow;
 import edu.unc.mapseq.reports.ReportFactory;
@@ -39,20 +37,6 @@ public class WorkflowJobCountPerClusterWeeklyReportAction extends AbstractAction
     protected Object doExecute() throws Exception {
         logger.debug("ENTERING doExecute()");
 
-        List<Account> accountList = null;
-        try {
-            accountList = maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
-            if (accountList == null || (accountList != null && accountList.isEmpty())) {
-                System.err.printf("Account doesn't exist: %s%n", System.getProperty("user.name"));
-                System.err.println("Must register account first");
-                return null;
-            }
-        } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
-        }
-
-        Account account = accountList.get(0);
-
         WorkflowDAO workflowDAO = maPSeqDAOBean.getWorkflowDAO();
         Workflow workflow = workflowDAO.findById(workflowId);
 
@@ -62,11 +46,10 @@ public class WorkflowJobCountPerClusterWeeklyReportAction extends AbstractAction
         c.add(Calendar.WEEK_OF_YEAR, -1);
         Date startDate = c.getTime();
 
-        List<Job> jobList = maPSeqDAOBean.getJobDAO().findByCreatorAndWorkflowIdAndCreationDateRange(account.getId(),
-                workflow.getId(), startDate, endDate);
-
-        File chartFile = ReportFactory.createWorkflowJobCountPerClusterReport(jobList, account, workflow, startDate,
+        List<Job> jobList = maPSeqDAOBean.getJobDAO().findByWorkflowIdAndCreatedDateRange(workflow.getId(), startDate,
                 endDate);
+
+        File chartFile = ReportFactory.createWorkflowJobCountPerClusterReport(jobList, workflow, startDate, endDate);
 
         String subject = String.format("MaPSeq :: Jobs Per Cluster Report :: %s (%s - %s)", workflow.getName(),
                 DateFormatUtils.format(startDate, "MM/dd"), DateFormatUtils.format(endDate, "MM/dd"));

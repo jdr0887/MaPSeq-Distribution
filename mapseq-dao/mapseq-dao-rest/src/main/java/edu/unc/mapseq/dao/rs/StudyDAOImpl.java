@@ -19,7 +19,7 @@ import edu.unc.mapseq.dao.model.Study;
  * 
  * @author jdr0887
  */
-public class StudyDAOImpl extends BaseEntityDAOImpl<Study, Long> implements StudyDAO {
+public class StudyDAOImpl extends NamedEntityDAOImpl<Study, Long> implements StudyDAO {
 
     private final Logger logger = LoggerFactory.getLogger(StudyDAOImpl.class);
 
@@ -63,11 +63,10 @@ public class StudyDAOImpl extends BaseEntityDAOImpl<Study, Long> implements Stud
     }
 
     @Override
-    public Study findByHTSFSampleId(Long htsfSampleId) throws MaPSeqDAOException {
-        logger.debug("ENTERING findByHTSFSampleId(Long)");
+    public Study findBySampleId(Long sampleId) throws MaPSeqDAOException {
+        logger.debug("ENTERING findBySampleId(Long)");
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
-        Study study = client.path("findByHTSFSampleId/{id}", htsfSampleId).accept(MediaType.APPLICATION_JSON)
-                .get(Study.class);
+        Study study = client.path("findBySampleId/{id}", sampleId).accept(MediaType.APPLICATION_JSON).get(Study.class);
         return study;
     }
 

@@ -5,45 +5,50 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.felix.gogo.commands.Argument;
 import org.apache.felix.gogo.commands.Command;
+import org.apache.felix.gogo.commands.Option;
 import org.apache.karaf.shell.console.AbstractAction;
 
-import edu.unc.mapseq.dao.HTSFSampleDAO;
+import edu.unc.mapseq.dao.FlowcellDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
-import edu.unc.mapseq.dao.SequencerRunDAO;
+import edu.unc.mapseq.dao.SampleDAO;
 import edu.unc.mapseq.dao.model.FileData;
-import edu.unc.mapseq.dao.model.HTSFSample;
-import edu.unc.mapseq.dao.model.SequencerRun;
+import edu.unc.mapseq.dao.model.Flowcell;
+import edu.unc.mapseq.dao.model.Sample;
 
 @Command(scope = "mapseq", name = "synchronize-file-data-with-file-system", description = "Synchronize File Data entries with FS")
 public class SynchronizeFileDataWithFSAction extends AbstractAction {
 
     private MaPSeqDAOBean maPSeqDAOBean;
 
-    @Argument(index = 0, name = "sequencerRunId", description = "Sequencer Run Identifier", required = true, multiValued = true)
-    private List<Long> sequencerRunIdList;
+    @Option(name = "-d", description = "Do not remove file", required = false, multiValued = false)
+    private Boolean dryRun = Boolean.FALSE;
+
+    public SynchronizeFileDataWithFSAction() {
+        super();
+    }
 
     @Override
     protected Object doExecute() throws Exception {
 
-        SequencerRunDAO sequencerRunDAO = maPSeqDAOBean.getSequencerRunDAO();
+        FlowcellDAO flowcellDAO = maPSeqDAOBean.getFlowcellDAO();
 
-        HTSFSampleDAO htsfSampleDAO = maPSeqDAOBean.getHTSFSampleDAO();
+        SampleDAO sampleDAO = maPSeqDAOBean.getSampleDAO();
 
         try {
-            List<SequencerRun> sequencerRunList = sequencerRunDAO.findAll();
 
-            if (sequencerRunList != null) {
+            List<Flowcell> flowcellList = flowcellDAO.findAll();
 
-                for (SequencerRun sequencerRun : sequencerRunList) {
+            if (flowcellList != null) {
 
-                    List<HTSFSample> htsfSampleList = htsfSampleDAO.findBySequencerRunId(sequencerRun.getId());
+                for (Flowcell flowcell : flowcellList) {
 
-                    if (htsfSampleList != null) {
+                    List<Sample> sampleList = sampleDAO.findByFlowcellId(flowcell.getId());
 
-                        for (HTSFSample sample : htsfSampleList) {
+                    if (sampleList != null) {
+
+                        for (Sample sample : sampleList) {
 
                             Set<FileData> sampleFileDataSet = sample.getFileDatas();
 
@@ -56,13 +61,17 @@ public class SynchronizeFileDataWithFSAction extends AbstractAction {
                                     FileData fileData = sampleFileDataIter.next();
                                     File f = new File(fileData.getPath(), fileData.getName());
 
-                                    if (!f.exists()) {
+                                    if (!f.exists() && !dryRun) {
                                         sampleFileDataIter.remove();
+                                    } else {
+                                        System.out.println(f.getAbsolutePath());
                                     }
 
                                 }
 
-                                htsfSampleDAO.save(sample);
+                                if (!dryRun) {
+                                    sampleDAO.save(sample);
+                                }
 
                             }
 
@@ -70,7 +79,7 @@ public class SynchronizeFileDataWithFSAction extends AbstractAction {
 
                     }
 
-                    Set<FileData> sequencerRunFileDataSet = sequencerRun.getFileDatas();
+                    Set<FileData> sequencerRunFileDataSet = flowcell.getFileDatas();
 
                     if (sequencerRunFileDataSet != null) {
 
@@ -81,13 +90,17 @@ public class SynchronizeFileDataWithFSAction extends AbstractAction {
                             FileData fileData = sequencerRunFileDataIter.next();
                             File f = new File(fileData.getPath(), fileData.getName());
 
-                            if (!f.exists()) {
+                            if (!f.exists() && !dryRun) {
                                 sequencerRunFileDataIter.remove();
+                            } else {
+                                System.out.println(f.getAbsolutePath());
                             }
 
                         }
 
-                        sequencerRunDAO.save(sequencerRun);
+                        if (!dryRun) {
+                            flowcellDAO.save(flowcell);
+                        }
 
                     }
 
@@ -109,12 +122,12 @@ public class SynchronizeFileDataWithFSAction extends AbstractAction {
         this.maPSeqDAOBean = maPSeqDAOBean;
     }
 
-    public List<Long> getSequencerRunIdList() {
-        return sequencerRunIdList;
+    public Boolean getDryRun() {
+        return dryRun;
     }
 
-    public void setSequencerRunIdList(List<Long> sequencerRunIdList) {
-        this.sequencerRunIdList = sequencerRunIdList;
+    public void setDryRun(Boolean dryRun) {
+        this.dryRun = dryRun;
     }
 
 }

@@ -16,13 +16,12 @@ import org.slf4j.LoggerFactory;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowRunDAO;
 import edu.unc.mapseq.dao.model.WorkflowRun;
-import edu.unc.mapseq.dao.model.WorkflowRunStatusType;
 
 /**
  * 
  * @author jdr0887
  */
-public class WorkflowRunDAOImpl extends BaseEntityDAOImpl<WorkflowRun, Long> implements WorkflowRunDAO {
+public class WorkflowRunDAOImpl extends NamedEntityDAOImpl<WorkflowRun, Long> implements WorkflowRunDAO {
 
     private final Logger logger = LoggerFactory.getLogger(WorkflowRunDAOImpl.class);
 
@@ -38,11 +37,6 @@ public class WorkflowRunDAOImpl extends BaseEntityDAOImpl<WorkflowRun, Long> imp
         Response response = client.path("/").post(entity);
         Long id = response.readEntity(Long.class);
         return id;
-    }
-
-    @Override
-    public List<WorkflowRun> findByExample(WorkflowRun workflowRun) throws MaPSeqDAOException {
-        return null;
     }
 
     @Override
@@ -64,18 +58,16 @@ public class WorkflowRunDAOImpl extends BaseEntityDAOImpl<WorkflowRun, Long> imp
     }
 
     @Override
-    public List<WorkflowRun> findByCreatorAndCreationDateRange(Long accountId, Date startDate, Date endDate)
-            throws MaPSeqDAOException {
-        logger.debug("ENTERING findByName(String)");
+    public List<WorkflowRun> findByCreatedDateRange(Date startDate, Date endDate) throws MaPSeqDAOException {
+        logger.debug("ENTERING findByCreatedDateRange(String)");
 
         String formattedStartDate = DateFormatUtils.ISO_DATE_FORMAT.format(startDate);
         String formattedEndDate = DateFormatUtils.ISO_DATE_FORMAT.format(endDate);
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
 
         Collection<? extends WorkflowRun> ret = client
-                .path("findByCreatorAndCreationDateRange/{accountId}/{startDate}/{endDate}", accountId,
-                        formattedStartDate, formattedEndDate).accept(MediaType.APPLICATION_JSON)
-                .getCollection(WorkflowRun.class);
+                .path("findByCreatorAndCreationDateRange/{accountId}/{startDate}/{endDate}", formattedStartDate,
+                        formattedEndDate).accept(MediaType.APPLICATION_JSON).getCollection(WorkflowRun.class);
         return new ArrayList<WorkflowRun>(ret);
     }
 
@@ -100,18 +92,39 @@ public class WorkflowRunDAOImpl extends BaseEntityDAOImpl<WorkflowRun, Long> imp
     }
 
     @Override
-    public List<WorkflowRun> findByCreatorAndStatusAndCreationDateRange(Long accountId, WorkflowRunStatusType status,
-            Date startDate, Date endDate) {
-        logger.debug("ENTERING findByCreatorAndStatusAndCreationDateRange(Long, WorkflowRunStatusType, Date, Date)");
-
-        String formattedStartDate = DateFormatUtils.ISO_DATE_FORMAT.format(startDate);
-        String formattedEndDate = DateFormatUtils.ISO_DATE_FORMAT.format(endDate);
+    public List<WorkflowRun> findByFlowcellId(Long flowcellId) throws MaPSeqDAOException {
+        logger.debug("ENTERING findByFlowcellId(Long)");
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
+        Collection<? extends WorkflowRun> ret = client.path("findByFlowcellId/{flowcellId}", flowcellId)
+                .accept(MediaType.APPLICATION_JSON).getCollection(WorkflowRun.class);
+        return new ArrayList<WorkflowRun>(ret);
+    }
 
+    @Override
+    public List<WorkflowRun> findByFlowcellIdAndWorkflowId(Long flowcellId, Long workflowId) throws MaPSeqDAOException {
+        logger.debug("ENTERING findByFlowcellIdAndWorkflowId(Long, Long)");
+        WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
         Collection<? extends WorkflowRun> ret = client
-                .path("findByCreatorAndStatusAndCreationDateRange/{accountId}/{status}/{startDate}/{endDate}",
-                        accountId, formattedStartDate, formattedEndDate).accept(MediaType.APPLICATION_JSON)
-                .getCollection(WorkflowRun.class);
+                .path("findByFlowcellIdAndWorkflowId/{flowcellId}/{workflowId}", flowcellId, workflowId)
+                .accept(MediaType.APPLICATION_JSON).getCollection(WorkflowRun.class);
+        return new ArrayList<WorkflowRun>(ret);
+    }
+
+    @Override
+    public List<WorkflowRun> findBySampleId(Long sampleId) throws MaPSeqDAOException {
+        logger.debug("ENTERING findBySampleId(Long)");
+        WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
+        Collection<? extends WorkflowRun> ret = client.path("findBySampleId/{sampleId}", sampleId)
+                .accept(MediaType.APPLICATION_JSON).getCollection(WorkflowRun.class);
+        return new ArrayList<WorkflowRun>(ret);
+    }
+
+    @Override
+    public List<WorkflowRun> findByStudyId(Long studyId) throws MaPSeqDAOException {
+        logger.debug("ENTERING findByStudyId(Long)");
+        WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
+        Collection<? extends WorkflowRun> ret = client.path("findByStudyId/{studyId}", studyId)
+                .accept(MediaType.APPLICATION_JSON).getCollection(WorkflowRun.class);
         return new ArrayList<WorkflowRun>(ret);
     }
 

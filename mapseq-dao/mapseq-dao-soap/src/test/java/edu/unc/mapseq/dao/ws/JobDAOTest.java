@@ -8,10 +8,10 @@ import org.junit.Test;
 
 import edu.unc.mapseq.dao.JobDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
-import edu.unc.mapseq.dao.WorkflowRunDAO;
+import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
 import edu.unc.mapseq.dao.model.Job;
 import edu.unc.mapseq.dao.model.JobStatusType;
-import edu.unc.mapseq.dao.model.WorkflowRun;
+import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
 
 public class JobDAOTest {
 
@@ -30,11 +30,10 @@ public class JobDAOTest {
     public void testSave() {
 
         Job job = new Job();
-        job.setDescription("asdf");
-        job.setEndDate(new Date());
+        job.setFinished(new Date());
         job.setExitCode(0);
         job.setName("asdfasdqwer");
-        job.setStartDate(new Date());
+        job.setStarted(new Date());
         job.setStatus(JobStatusType.RUNNING);
 
         WSDAOManager wsDAOMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
@@ -52,16 +51,15 @@ public class JobDAOTest {
     @Test
     public void testSaveWithWorkflowRun() throws MaPSeqDAOException {
         WSDAOManager wsDAOMgr = WSDAOManager.getInstance();
-        WorkflowRunDAO workflowRunDAO = wsDAOMgr.getMaPSeqDAOBean().getWorkflowRunDAO();
-        WorkflowRun workflowRun = workflowRunDAO.findById(1267L);
+        WorkflowRunAttemptDAO workflowRunAttemptDAO = wsDAOMgr.getMaPSeqDAOBean().getWorkflowRunAttemptDAO();
+        WorkflowRunAttempt workflowRunAttempt = workflowRunAttemptDAO.findById(1267L);
 
         Job job = new Job();
-        job.setWorkflowRun(workflowRun);
-        job.setDescription("asdf");
-        job.setEndDate(new Date());
+        job.setWorkflowRunAttempt(workflowRunAttempt);
+        job.setFinished(new Date());
         job.setExitCode(0);
         job.setName("asdfasd");
-        job.setStartDate(new Date());
+        job.setStarted(new Date());
         job.setStatus(JobStatusType.RUNNING);
 
         JobDAO jobDAO = wsDAOMgr.getMaPSeqDAOBean().getJobDAO();
@@ -81,11 +79,10 @@ public class JobDAOTest {
         Job job = new Job();
         job.setStdout("\u0007a");
         job.setStderr("\u0001b");
-        job.setDescription("asdf");
-        job.setEndDate(new Date());
+        job.setFinished(new Date());
         job.setExitCode(0);
         job.setName("asdfasd");
-        job.setStartDate(new Date());
+        job.setStarted(new Date());
         job.setStatus(JobStatusType.RUNNING);
 
         JobDAO jobDAO = wsDAOMgr.getMaPSeqDAOBean().getJobDAO();

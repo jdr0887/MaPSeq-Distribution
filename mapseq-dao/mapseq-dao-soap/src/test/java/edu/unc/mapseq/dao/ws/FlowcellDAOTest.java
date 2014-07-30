@@ -11,11 +11,11 @@ import org.apache.commons.lang.time.DateUtils;
 import org.junit.Test;
 
 import edu.unc.mapseq.dao.MaPSeqDAOException;
-import edu.unc.mapseq.dao.model.EntityAttribute;
-import edu.unc.mapseq.dao.model.HTSFSample;
-import edu.unc.mapseq.dao.model.SequencerRun;
+import edu.unc.mapseq.dao.model.Attribute;
+import edu.unc.mapseq.dao.model.Flowcell;
+import edu.unc.mapseq.dao.model.Sample;
 
-public class SequencerRunDAOTest {
+public class FlowcellDAOTest {
 
     @Test
     public void testFindByCreationDateRange() {
@@ -27,26 +27,26 @@ public class SequencerRunDAOTest {
             Date parsedEndDate = DateUtils.parseDate("2014-07-11",
                     new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
 
-            List<SequencerRun> entityList = daoMgr.getMaPSeqDAOBean().getSequencerRunDAO()
-                    .findByCreationDateRange(parsedStartDate, parsedEndDate);
+            List<Flowcell> entityList = daoMgr.getMaPSeqDAOBean().getFlowcellDAO()
+                    .findByCreatedDateRange(parsedStartDate, parsedEndDate);
             if (entityList != null && entityList.size() > 0) {
-                for (SequencerRun sequencerRun : entityList) {
+                for (Flowcell flowcell : entityList) {
                     // System.out.println(sequencerRun.toString());
                     Set<String> attributeNameSet = new HashSet<String>();
 
-                    List<HTSFSample> htsfSampleList = daoMgr.getMaPSeqDAOBean().getHTSFSampleDAO()
-                            .findBySequencerRunId(sequencerRun.getId());
-                    for (HTSFSample htsfSample : htsfSampleList) {
+                    List<Sample> sampleList = daoMgr.getMaPSeqDAOBean().getSampleDAO()
+                            .findByFlowcellId(flowcell.getId());
+                    for (Sample sample : sampleList) {
                         // System.out.println(htsfSample.toString());
-                        Set<EntityAttribute> attributeSet = htsfSample.getAttributes();
-                        for (EntityAttribute attribute : attributeSet) {
+                        Set<Attribute> attributeSet = sample.getAttributes();
+                        for (Attribute attribute : attributeSet) {
                             // System.out.printf("%s:%s%n", attribute.getName(), attribute.getValue());
                             attributeNameSet.add(attribute.getName());
                         }
                     }
 
                     if (!attributeNameSet.contains("q30YieldPassingFiltering")) {
-                        System.out.println(sequencerRun.toString());
+                        System.out.println(flowcell.toString());
                     }
                 }
             }

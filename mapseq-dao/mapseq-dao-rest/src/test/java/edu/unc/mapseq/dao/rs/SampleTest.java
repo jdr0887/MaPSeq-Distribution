@@ -5,17 +5,17 @@ import java.util.List;
 import org.junit.Test;
 
 import edu.unc.mapseq.dao.MaPSeqDAOException;
-import edu.unc.mapseq.dao.model.HTSFSample;
+import edu.unc.mapseq.dao.model.Sample;
 
-public class HTSFSampleTest {
+public class SampleTest {
 
     @Test
     public void testFindBySequencerRunId() {
         RSDAOManager daoMgr = RSDAOManager.getInstance("edu/unc/mapseq/dao/rs/mapseq-dao-beans-test.xml");
         try {
-            List<HTSFSample> entityList = daoMgr.getMaPSeqDAOBean().getHTSFSampleDAO().findBySequencerRunId(108078L);
+            List<Sample> entityList = daoMgr.getMaPSeqDAOBean().getSampleDAO().findByFlowcellId(108078L);
             if (entityList != null && entityList.size() > 0) {
-                for (HTSFSample entity : entityList) {
+                for (Sample entity : entityList) {
                     System.out.println(entity.toString());
                 }
             }

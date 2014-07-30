@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowRunDAO;
-import edu.unc.mapseq.dao.model.EntityAttribute;
+import edu.unc.mapseq.dao.model.Attribute;
 import edu.unc.mapseq.dao.model.WorkflowRun;
 
 @Command(scope = "mapseq", name = "create-workflow-run-attribute", description = "Create WorkflowRun Attributes")
@@ -48,9 +48,9 @@ public class CreateWorkflowRunAttributeAction extends AbstractAction {
             return null;
         }
 
-        Set<EntityAttribute> attributeSet = entity.getAttributes();
+        Set<Attribute> attributeSet = entity.getAttributes();
         if (attributeSet != null) {
-            attributeSet.add(new EntityAttribute(name, value));
+            attributeSet.add(new Attribute(name, value));
             try {
                 workflowRunDAO.save(entity);
             } catch (MaPSeqDAOException e) {

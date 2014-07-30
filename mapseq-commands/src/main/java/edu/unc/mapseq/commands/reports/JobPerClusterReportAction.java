@@ -19,8 +19,6 @@ import org.slf4j.LoggerFactory;
 
 import edu.unc.mapseq.dao.JobDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
-import edu.unc.mapseq.dao.MaPSeqDAOException;
-import edu.unc.mapseq.dao.model.Account;
 import edu.unc.mapseq.dao.model.Job;
 import edu.unc.mapseq.reports.ReportFactory;
 
@@ -41,20 +39,6 @@ public class JobPerClusterReportAction extends AbstractAction {
     protected Object doExecute() throws Exception {
         logger.debug("ENTERING doExecute()");
 
-        List<Account> accountList = null;
-        try {
-            accountList = maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
-            if (accountList == null || (accountList != null && accountList.isEmpty())) {
-                System.err.printf("Account doesn't exist: %s%n", System.getProperty("user.name"));
-                System.err.println("Must register account first");
-                return null;
-            }
-        } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
-        }
-
-        Account account = accountList.get(0);
-
         Date endDate = new Date();
         Calendar c = Calendar.getInstance();
         c.setTime(endDate);
@@ -62,7 +46,7 @@ public class JobPerClusterReportAction extends AbstractAction {
         Date startDate = c.getTime();
 
         JobDAO jobDAO = maPSeqDAOBean.getJobDAO();
-        List<Job> jobList = jobDAO.findByCreatorAndCreationDateRange(account.getId(), startDate, endDate);
+        List<Job> jobList = jobDAO.findByCreatedDateRange(startDate, endDate);
         Set<String> jobNameSet = new HashSet<String>();
         for (Job job : jobList) {
             if (name.equals(job.getName())) {
@@ -79,7 +63,7 @@ public class JobPerClusterReportAction extends AbstractAction {
             return null;
         }
 
-        File chartFile = ReportFactory.createJobPerClusterReport(jobList, name, account, startDate, endDate);
+        File chartFile = ReportFactory.createJobPerClusterReport(jobList, name, startDate, endDate);
 
         String subject = String.format("MaPSeq :: Job Per Cluster Report :: %s (%s - %s)", name,
                 DateFormatUtils.format(startDate, "MM/dd"), DateFormatUtils.format(endDate, "MM/dd"));

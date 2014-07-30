@@ -14,7 +14,6 @@ public class WorkflowDAOTest {
     public void testSave() {
 
         Workflow workflow = new Workflow();
-        workflow.setDescription("test");
         workflow.setName("test");
 
         WSDAOManager wsDAOMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");

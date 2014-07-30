@@ -13,32 +13,32 @@ import org.apache.cxf.jaxrs.client.WebClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.unc.mapseq.dao.HTSFSampleDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
-import edu.unc.mapseq.dao.model.HTSFSample;
+import edu.unc.mapseq.dao.SampleDAO;
+import edu.unc.mapseq.dao.model.Sample;
 
 /**
  * 
  * @author jdr0887
  */
-public class HTSFSampleDAOImpl extends BaseEntityDAOImpl<HTSFSample, Long> implements HTSFSampleDAO {
+public class SampleDAOImpl extends NamedEntityDAOImpl<Sample, Long> implements SampleDAO {
 
-    private final Logger logger = LoggerFactory.getLogger(HTSFSampleDAOImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(SampleDAOImpl.class);
 
-    public HTSFSampleDAOImpl() {
-        super(HTSFSample.class);
+    public SampleDAOImpl() {
+        super(Sample.class);
     }
 
     @Override
-    public HTSFSample findById(Long id) throws MaPSeqDAOException {
+    public Sample findById(Long id) throws MaPSeqDAOException {
         logger.debug("ENTERING findById(Long)");
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
-        HTSFSample sample = client.path("findById/{id}", id).accept(MediaType.APPLICATION_JSON).get(HTSFSample.class);
+        Sample sample = client.path("findById/{id}", id).accept(MediaType.APPLICATION_JSON).get(Sample.class);
         return sample;
     }
 
     @Override
-    public Long save(HTSFSample entity) throws MaPSeqDAOException {
+    public Long save(Sample entity) throws MaPSeqDAOException {
         logger.debug("ENTERING save(HTSFSample)");
         WebClient client = WebClient.create(getRestServiceURL()).type(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON);
@@ -48,42 +48,40 @@ public class HTSFSampleDAOImpl extends BaseEntityDAOImpl<HTSFSample, Long> imple
     }
 
     @Override
-    public List<HTSFSample> findBySequencerRunId(Long sequencerRunId) throws MaPSeqDAOException {
+    public List<Sample> findByFlowcellId(Long flowcellId) throws MaPSeqDAOException {
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
-        Collection<? extends HTSFSample> results = client.path("findBySequencerRunId/{id}", sequencerRunId)
-                .accept(MediaType.APPLICATION_JSON).getCollection(HTSFSample.class);
-        return new ArrayList<HTSFSample>(results);
+        Collection<? extends Sample> results = client.path("findByFlowcellId/{id}", flowcellId)
+                .accept(MediaType.APPLICATION_JSON).getCollection(Sample.class);
+        return new ArrayList<Sample>(results);
     }
 
     @Override
-    public List<HTSFSample> findBySequencerRunIdAndSampleName(Long sequencerRunId, String sampleName)
-            throws MaPSeqDAOException {
+    public List<Sample> findByNameAndFlowcellId(String name, Long flowcellId) throws MaPSeqDAOException {
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
-        Collection<? extends HTSFSample> results = client
-                .path("findBySequencerRunIdAndSampleName/{sequencerRunId}/{sampleName}", sequencerRunId, sampleName)
-                .accept(MediaType.APPLICATION_JSON).getCollection(HTSFSample.class);
-        return new ArrayList<HTSFSample>(results);
+        Collection<? extends Sample> results = client
+                .path("findByNameAndFlowcellId/{flowcellId}/{sampleName}", flowcellId, name)
+                .accept(MediaType.APPLICATION_JSON).getCollection(Sample.class);
+        return new ArrayList<Sample>(results);
     }
 
     @Override
-    public List<HTSFSample> findByCreationDateRange(Date startDate, Date endDate) throws MaPSeqDAOException {
-        logger.debug("ENTERING findByCreationDateRange(Date, Date)");
+    public List<Sample> findByCreatedDateRange(Date startDate, Date endDate) throws MaPSeqDAOException {
+        logger.debug("ENTERING findByCreatedDateRange(Date, Date)");
         String formattedStartDate = DateFormatUtils.ISO_DATE_FORMAT.format(startDate);
         String formattedEndDate = DateFormatUtils.ISO_DATE_FORMAT.format(endDate);
-
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
-        Collection<? extends HTSFSample> ret = client
-                .path("findByCreationDateRange/{startDate}/{endDate}", formattedStartDate, formattedEndDate)
-                .accept(MediaType.APPLICATION_JSON).getCollection(HTSFSample.class);
-        return new ArrayList<HTSFSample>(ret);
+        Collection<? extends Sample> ret = client
+                .path("findByCreatedDateRange/{startDate}/{endDate}", formattedStartDate, formattedEndDate)
+                .accept(MediaType.APPLICATION_JSON).getCollection(Sample.class);
+        return new ArrayList<Sample>(ret);
     }
 
     @Override
-    public List<HTSFSample> findByName(String name) throws MaPSeqDAOException {
+    public List<Sample> findByName(String name) throws MaPSeqDAOException {
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
-        Collection<? extends HTSFSample> results = client.path("findByName/{name}", name)
-                .accept(MediaType.APPLICATION_JSON).getCollection(HTSFSample.class);
-        return new ArrayList<HTSFSample>(results);
+        Collection<? extends Sample> results = client.path("findByName/{name}", name)
+                .accept(MediaType.APPLICATION_JSON).getCollection(Sample.class);
+        return new ArrayList<Sample>(results);
     }
 
 }

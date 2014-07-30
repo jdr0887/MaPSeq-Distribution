@@ -24,12 +24,10 @@ import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 
-import edu.unc.mapseq.dao.AccountDAO;
 import edu.unc.mapseq.dao.JobDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowRunDAO;
-import edu.unc.mapseq.dao.model.Account;
 import edu.unc.mapseq.dao.model.Job;
 import edu.unc.mapseq.dao.model.Workflow;
 import edu.unc.mapseq.dao.model.WorkflowRun;
@@ -70,21 +68,12 @@ public class WeeklyReportTask implements Runnable {
             document.open();
             document.setMargins(10, 10, 10, 10);
 
-            AccountDAO accountDAO = maPSeqDAOBean.getAccountDAO();
-            List<Account> accountList = accountDAO.findByName(System.getProperty("user.name"));
-
-            if (accountList == null || (accountList != null && accountList.isEmpty())) {
-                logger.warn("Account doesn't exist for: {}", System.getProperty("user.name"));
-            }
-
-            Account account = accountList.get(0);
             WorkflowRunDAO workflowRunDAO = maPSeqDAOBean.getWorkflowRunDAO();
-            List<WorkflowRun> workflowRunList = workflowRunDAO.findByCreatorAndCreationDateRange(account.getId(),
-                    startDate, endDate);
+            List<WorkflowRun> workflowRunList = workflowRunDAO.findByCreatedDateRange(startDate, endDate);
 
             document.add(new Paragraph());
-            File workflowRunCountReportFile = ReportFactory.createWorkflowRunCountReport(workflowRunList, account,
-                    startDate, endDate);
+            File workflowRunCountReportFile = ReportFactory.createWorkflowRunCountReport(workflowRunList, startDate,
+                    endDate);
             Image img = Image.getInstance(workflowRunCountReportFile.getAbsolutePath());
             img.setAlignment(Element.ALIGN_CENTER);
             img.scalePercent(60, 60);
@@ -93,7 +82,7 @@ public class WeeklyReportTask implements Runnable {
 
             document.add(new Paragraph());
             File workflowRunDurationReportFile = ReportFactory.createWorkflowRunDurationReport(workflowRunList,
-                    account, startDate, endDate);
+                    startDate, endDate);
             img = Image.getInstance(workflowRunDurationReportFile.getAbsolutePath());
             img.setAlignment(Element.ALIGN_CENTER);
             img.scalePercent(60, 60);
@@ -115,12 +104,11 @@ public class WeeklyReportTask implements Runnable {
 
                 document.newPage();
 
-                List<Job> jobList = jobDAO.findByCreatorAndWorkflowIdAndCreationDateRange(account.getId(),
-                        workflow.getId(), startDate, endDate);
+                List<Job> jobList = jobDAO.findByWorkflowIdAndCreatedDateRange(workflow.getId(), startDate, endDate);
 
                 document.add(new Paragraph());
                 File workflowJobsPerClusterReportFile = ReportFactory.createWorkflowJobCountPerClusterReport(jobList,
-                        account, workflow, startDate, endDate);
+                        workflow, startDate, endDate);
                 img = Image.getInstance(workflowJobsPerClusterReportFile.getAbsolutePath());
                 img.setAlignment(Element.ALIGN_CENTER);
                 img.scalePercent(65, 65);
@@ -129,8 +117,8 @@ public class WeeklyReportTask implements Runnable {
                 workflowJobsPerClusterReportFile.delete();
 
                 document.add(new Paragraph());
-                File workflowJobsReportFile = ReportFactory.createWorkflowJobsReport(jobList, account, workflow,
-                        startDate, endDate);
+                File workflowJobsReportFile = ReportFactory.createWorkflowJobsReport(jobList, workflow, startDate,
+                        endDate);
                 img = Image.getInstance(workflowJobsReportFile.getAbsolutePath());
                 img.scalePercent(70, 70);
                 img.setAlignment(Element.ALIGN_CENTER);

@@ -1,7 +1,9 @@
 package edu.unc.mapseq.dao.ws;
 
+import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.transport.http.HTTPConduit;
@@ -11,14 +13,16 @@ import org.slf4j.LoggerFactory;
 
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.StudyDAO;
+import edu.unc.mapseq.dao.model.Sample;
 import edu.unc.mapseq.dao.model.Study;
+import edu.unc.mapseq.ws.SampleService;
 import edu.unc.mapseq.ws.StudyService;
 
 /**
  * 
  * @author jdr0887
  */
-public class StudyDAOImpl extends BaseEntityDAOImpl<Study, Long> implements StudyDAO {
+public class StudyDAOImpl extends NamedEntityDAOImpl<Study, Long> implements StudyDAO {
 
     private final Logger logger = LoggerFactory.getLogger(StudyDAOImpl.class);
 
@@ -66,10 +70,19 @@ public class StudyDAOImpl extends BaseEntityDAOImpl<Study, Long> implements Stud
     }
 
     @Override
-    public Study findByHTSFSampleId(Long htsfSampleId) throws MaPSeqDAOException {
-        logger.debug("ENTERING findByHTSFSampleId(Long)");
-        Study study = studyService.findByHTSFSampleId(htsfSampleId);
+    public Study findBySampleId(Long sampleId) throws MaPSeqDAOException {
+        logger.debug("ENTERING findBySampleId(Long)");
+        Study study = studyService.findBySampleId(sampleId);
         return study;
+    }
+
+    @Override
+    public List<Study> findByCreatedDateRange(Date startDate, Date endDate) throws MaPSeqDAOException {
+        logger.debug("ENTERING findByCreatedDateRange(Date, Date)");
+        String formattedStartDate = DateFormatUtils.ISO_DATE_FORMAT.format(startDate);
+        String formattedEndDate = DateFormatUtils.ISO_DATE_FORMAT.format(endDate);
+        List<Study> ret = studyService.findByCreatedDateRange(formattedStartDate, formattedEndDate);
+        return ret;
     }
 
 }

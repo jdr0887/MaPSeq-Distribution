@@ -6,76 +6,79 @@ import org.apache.felix.gogo.commands.Argument;
 import org.apache.felix.gogo.commands.Command;
 import org.apache.karaf.shell.console.AbstractAction;
 
-import edu.unc.mapseq.dao.HTSFSampleDAO;
+import edu.unc.mapseq.dao.FlowcellDAO;
 import edu.unc.mapseq.dao.JobDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
-import edu.unc.mapseq.dao.SequencerRunDAO;
-import edu.unc.mapseq.dao.WorkflowPlanDAO;
+import edu.unc.mapseq.dao.SampleDAO;
+import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
 import edu.unc.mapseq.dao.WorkflowRunDAO;
-import edu.unc.mapseq.dao.model.HTSFSample;
+import edu.unc.mapseq.dao.model.Flowcell;
 import edu.unc.mapseq.dao.model.Job;
-import edu.unc.mapseq.dao.model.SequencerRun;
-import edu.unc.mapseq.dao.model.WorkflowPlan;
+import edu.unc.mapseq.dao.model.Sample;
 import edu.unc.mapseq.dao.model.WorkflowRun;
+import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
 
-@Command(scope = "mapseq", name = "delete-sequencer-run", description = "Delete SequencerRun")
-public class DeleteSequencerRunAction extends AbstractAction {
+@Command(scope = "mapseq", name = "delete-flowcell", description = "Delete Flowcell")
+public class DeleteFlowcellAction extends AbstractAction {
 
     private MaPSeqDAOBean maPSeqDAOBean;
 
-    @Argument(index = 0, name = "sequencerRunId", description = "Sequencer Run Identifier", required = true, multiValued = true)
-    private List<Long> sequencerRunIdList;
+    @Argument(index = 0, name = "flowcellId", description = "Flowcell Identifier", required = true, multiValued = true)
+    private List<Long> flowcellIdList;
 
-    public DeleteSequencerRunAction() {
+    public DeleteFlowcellAction() {
         super();
     }
 
     @Override
     public Object doExecute() {
 
-        if (this.sequencerRunIdList != null && this.sequencerRunIdList.size() > 0) {
+        if (this.flowcellIdList != null && !this.flowcellIdList.isEmpty()) {
 
-            SequencerRunDAO sequencerRunDAO = maPSeqDAOBean.getSequencerRunDAO();
-            HTSFSampleDAO htsfSampleDAO = maPSeqDAOBean.getHTSFSampleDAO();
-            WorkflowPlanDAO workflowPlanDAO = maPSeqDAOBean.getWorkflowPlanDAO();
+            FlowcellDAO flowcellDAO = maPSeqDAOBean.getFlowcellDAO();
+            SampleDAO sampleDAO = maPSeqDAOBean.getSampleDAO();
             WorkflowRunDAO workflowRunDAO = maPSeqDAOBean.getWorkflowRunDAO();
+            WorkflowRunAttemptDAO workflowRunAttemptDAO = maPSeqDAOBean.getWorkflowRunAttemptDAO();
             JobDAO jobDAO = maPSeqDAOBean.getJobDAO();
 
-            for (Long sequencerRunId : this.sequencerRunIdList) {
+            for (Long sequencerRunId : this.flowcellIdList) {
                 try {
-                    SequencerRun sr = sequencerRunDAO.findById(sequencerRunId);
-                    List<WorkflowPlan> workflowPlanList = workflowPlanDAO.findBySequencerRunId(sr.getId());
+                    Flowcell flowcell = flowcellDAO.findById(sequencerRunId);
+                    List<WorkflowRun> workflowRunList = workflowRunDAO.findByFlowcellId(flowcell.getId());
 
-                    if (workflowPlanList != null && workflowPlanList.size() > 0) {
+                    if (workflowRunList != null && !workflowRunList.isEmpty()) {
 
-                        for (WorkflowPlan workflowPlan : workflowPlanList) {
+                        for (WorkflowRun workflowRun : workflowRunList) {
 
-                            WorkflowRun workflowRun = workflowPlan.getWorkflowRun();
-                            List<Job> jobList = jobDAO.findByWorkflowRunId(workflowRun.getId());
-                            if (jobList != null && jobList.size() > 0) {
-                                jobDAO.delete(jobList);
-                                System.out.printf("%d Job entities deleted", jobList.size());
+                            for (WorkflowRunAttempt attempt : workflowRun.getAttempts()) {
+
+                                List<Job> jobList = jobDAO.findByWorkflowRunAttemptId(attempt.getId());
+                                if (jobList != null && jobList.size() > 0) {
+                                    jobDAO.delete(jobList);
+                                    System.out.printf("%d Job entities deleted", jobList.size());
+                                }
+                                workflowRunAttemptDAO.delete(attempt);
+                                System.out.printf("Deleted WorkflowRunAttempt: ", attempt.getId());
                             }
                             workflowRunDAO.delete(workflowRun);
+                            System.out.println("Deleted WorkflowRun: " + workflowRun.getId());
 
-                            workflowPlanDAO.delete(workflowPlan);
-                            System.out.println("Deleted WorkflowPlan: " + workflowPlan.getId());
                         }
 
                     }
 
-                    List<HTSFSample> sampleList = htsfSampleDAO.findBySequencerRunId(sr.getId());
+                    List<Sample> sampleList = sampleDAO.findByFlowcellId(flowcell.getId());
 
                     if (sampleList != null && sampleList.size() > 0) {
-                        for (HTSFSample entity : sampleList) {
-                            htsfSampleDAO.delete(entity);
+                        for (Sample entity : sampleList) {
+                            sampleDAO.delete(entity);
                         }
-                        System.out.printf("%d HTSFSample entities deleted", workflowPlanList.size());
+                        System.out.printf("%d Sample entities deleted", sampleList.size());
                     }
 
-                    sequencerRunDAO.delete(sr);
-                    System.out.println("Deleted SequencerRun: " + sr.getId());
+                    flowcellDAO.delete(flowcell);
+                    System.out.println("Deleted SequencerRun: " + flowcell.getId());
 
                 } catch (MaPSeqDAOException e) {
                     e.printStackTrace();
@@ -95,12 +98,12 @@ public class DeleteSequencerRunAction extends AbstractAction {
         this.maPSeqDAOBean = maPSeqDAOBean;
     }
 
-    public List<Long> getSequencerRunIdList() {
-        return sequencerRunIdList;
+    public List<Long> getFlowcellIdList() {
+        return flowcellIdList;
     }
 
-    public void setSequencerRunIdList(List<Long> sequencerRunIdList) {
-        this.sequencerRunIdList = sequencerRunIdList;
+    public void setFlowcellIdList(List<Long> flowcellIdList) {
+        this.flowcellIdList = flowcellIdList;
     }
 
 }

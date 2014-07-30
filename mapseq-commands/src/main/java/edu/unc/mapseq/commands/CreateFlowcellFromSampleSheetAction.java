@@ -15,33 +15,27 @@ import org.apache.karaf.shell.console.AbstractAction;
 
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
-import edu.unc.mapseq.dao.PlatformDAO;
-import edu.unc.mapseq.dao.model.Account;
-import edu.unc.mapseq.dao.model.EntityAttribute;
-import edu.unc.mapseq.dao.model.HTSFSample;
-import edu.unc.mapseq.dao.model.Platform;
-import edu.unc.mapseq.dao.model.SequencerRun;
-import edu.unc.mapseq.dao.model.SequencerRunStatusType;
+import edu.unc.mapseq.dao.model.Attribute;
+import edu.unc.mapseq.dao.model.Flowcell;
+import edu.unc.mapseq.dao.model.FlowcellStatusType;
+import edu.unc.mapseq.dao.model.Sample;
 import edu.unc.mapseq.dao.model.Study;
 
-@Command(scope = "mapseq", name = "create-sequencer-run-from-samplesheet", description = "Create SequencerRun from SampleSheet")
-public class CreateSequencerRunFromSampleSheetAction extends AbstractAction {
+@Command(scope = "mapseq", name = "create-flowcell-from-samplesheet", description = "Create Flowcell from SampleSheet")
+public class CreateFlowcellFromSampleSheetAction extends AbstractAction {
 
     private MaPSeqDAOBean maPSeqDAOBean;
 
-    @Argument(index = 0, name = "platformId", description = "Platform Id", required = true, multiValued = false)
-    private Long platformId;
-
-    @Argument(index = 1, name = "baseRunFolder", description = "The folder parent to the flowcell directory", required = true, multiValued = false)
+    @Argument(index = 0, name = "baseRunFolder", description = "The folder parent to the flowcell directory", required = true, multiValued = false)
     private String baseRunFolder;
 
-    @Argument(index = 2, name = "name", description = "Name", required = true, multiValued = false)
+    @Argument(index = 1, name = "name", description = "Name", required = true, multiValued = false)
     private String name;
 
-    @Argument(index = 3, name = "sampleSheet", description = "Sample Sheet", required = true, multiValued = false)
+    @Argument(index = 2, name = "sampleSheet", description = "Sample Sheet", required = true, multiValued = false)
     private File sampleSheet;
 
-    public CreateSequencerRunFromSampleSheetAction() {
+    public CreateFlowcellFromSampleSheetAction() {
         super();
     }
 
@@ -49,36 +43,14 @@ public class CreateSequencerRunFromSampleSheetAction extends AbstractAction {
     @Override
     public Object doExecute() {
 
-        List<Account> accountList = null;
-        try {
-            accountList = maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
-            if (accountList == null || (accountList != null && accountList.isEmpty())) {
-                System.err.printf("Account doesn't exist: %s%n", System.getProperty("user.name"));
-                System.err.println("Must register account first");
-                return null;
-            }
-        } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
-        }
-
-        Platform platform = null;
-        try {
-            PlatformDAO platformDAO = maPSeqDAOBean.getPlatformDAO();
-            platform = platformDAO.findById(platformId);
-        } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
-        }
-
-        SequencerRun sequencerRun = new SequencerRun();
-        sequencerRun.setCreator(accountList.get(0));
-        sequencerRun.setStatus(SequencerRunStatusType.COMPLETED);
-        sequencerRun.setBaseDirectory(baseRunFolder);
-        sequencerRun.setName(name);
-        sequencerRun.setPlatform(platform);
+        Flowcell flowcell = new Flowcell();
+        flowcell.setStatus(FlowcellStatusType.COMPLETED);
+        flowcell.setBaseDirectory(baseRunFolder);
+        flowcell.setName(name);
 
         try {
-            Long sequencerRunId = maPSeqDAOBean.getSequencerRunDAO().save(sequencerRun);
-            sequencerRun.setId(sequencerRunId);
+            Long flowcellId = maPSeqDAOBean.getFlowcellDAO().save(flowcell);
+            flowcell.setId(flowcellId);
         } catch (MaPSeqDAOException e1) {
             e1.printStackTrace();
         }
@@ -91,7 +63,7 @@ public class CreateSequencerRunFromSampleSheetAction extends AbstractAction {
             while ((line = lnr.readLine()) != null) {
 
                 String[] st = line.split(",");
-                String flowcell = st[0];
+                String flowcellProper = st[0];
                 String laneIndex = st[1];
                 String sampleId = st[2];
                 String sampleRef = st[3];
@@ -110,26 +82,25 @@ public class CreateSequencerRunFromSampleSheetAction extends AbstractAction {
 
                 Study study = studyList.get(0);
 
-                HTSFSample htsfSample = new HTSFSample();
-                htsfSample.setBarcode(index);
-                htsfSample.setCreator(accountList.get(0));
-                htsfSample.setLaneIndex(Integer.valueOf(laneIndex));
-                htsfSample.setName(sampleId);
-                htsfSample.setSequencerRun(sequencerRun);
-                htsfSample.setStudy(study);
+                Sample sample = new Sample();
+                sample.setBarcode(index);
+                sample.setLaneIndex(Integer.valueOf(laneIndex));
+                sample.setName(sampleId);
+                sample.setFlowcell(flowcell);
+                sample.setStudy(study);
 
-                Set<EntityAttribute> attributes = htsfSample.getAttributes();
+                Set<Attribute> attributes = sample.getAttributes();
                 if (attributes == null) {
-                    attributes = new HashSet<EntityAttribute>();
+                    attributes = new HashSet<Attribute>();
                 }
-                EntityAttribute descAttribute = new EntityAttribute();
+                Attribute descAttribute = new Attribute();
                 descAttribute.setName("production.id.description");
                 descAttribute.setValue(description);
                 attributes.add(descAttribute);
-                htsfSample.setAttributes(attributes);
+                sample.setAttributes(attributes);
 
-                Long htsfSampleId = maPSeqDAOBean.getHTSFSampleDAO().save(htsfSample);
-                htsfSample.setId(htsfSampleId);
+                Long id = maPSeqDAOBean.getSampleDAO().save(sample);
+                sample.setId(id);
 
             }
 
@@ -139,7 +110,7 @@ public class CreateSequencerRunFromSampleSheetAction extends AbstractAction {
             e.printStackTrace();
         }
 
-        System.out.println("SequencerRun ID: " + sequencerRun.getId());
+        System.out.println("SequencerRun ID: " + flowcell.getId());
         return null;
     }
 
@@ -149,14 +120,6 @@ public class CreateSequencerRunFromSampleSheetAction extends AbstractAction {
 
     public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
         this.maPSeqDAOBean = maPSeqDAOBean;
-    }
-
-    public Long getPlatformId() {
-        return platformId;
-    }
-
-    public void setPlatformId(Long platformId) {
-        this.platformId = platformId;
     }
 
     public String getBaseRunFolder() {

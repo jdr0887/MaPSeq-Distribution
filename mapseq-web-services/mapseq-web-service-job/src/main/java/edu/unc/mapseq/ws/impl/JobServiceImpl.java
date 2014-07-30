@@ -52,15 +52,15 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public List<Job> findByWorkflowRunId(Long workflowRunId) {
-        logger.debug("ENTERING findByWorkflowRunId(Long)");
+    public List<Job> findByWorkflowRunAttemptId(Long workflowRunAttemptId) {
+        logger.debug("ENTERING findByWorkflowRunAttemptId(Long)");
         List<Job> ret = new ArrayList<Job>();
-        if (workflowRunId == null) {
-            logger.warn("workflowRunId is null");
+        if (workflowRunAttemptId == null) {
+            logger.warn("workflowRunAttemptId is null");
             return ret;
         }
         try {
-            ret.addAll(jobDAO.findByWorkflowRunId(workflowRunId));
+            ret.addAll(jobDAO.findByWorkflowRunAttemptId(workflowRunAttemptId));
         } catch (MaPSeqDAOException e) {
             logger.error("Error", e);
         }
@@ -68,14 +68,9 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public List<Job> findByCreatorAndWorkflowIdAndCreationDateRange(Long accountId, Long workflowId, String startDate,
-            String endDate) {
-        logger.debug("ENTERING findByCreatorAndWorkflowIdAndCreationDateRange(Long, Long, String, String)");
+    public List<Job> findByWorkflowIdAndCreatedDateRange(Long workflowId, String startDate, String endDate) {
+        logger.debug("ENTERING findByWorkflowIdAndCreatedDateRange(Long, String, String)");
         List<Job> ret = new ArrayList<Job>();
-        if (accountId == null) {
-            logger.warn("accountId is null");
-            return ret;
-        }
         if (workflowId == null) {
             logger.warn("workflowId is null");
             return ret;
@@ -93,8 +88,31 @@ public class JobServiceImpl implements JobService {
                     new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
             Date parsedEndDate = DateUtils.parseDate(endDate,
                     new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
-            ret.addAll(jobDAO.findByCreatorAndWorkflowIdAndCreationDateRange(accountId, workflowId, parsedStartDate,
-                    parsedEndDate));
+            ret.addAll(jobDAO.findByWorkflowIdAndCreatedDateRange(workflowId, parsedStartDate, parsedEndDate));
+        } catch (ParseException | MaPSeqDAOException e) {
+            logger.error("Error", e);
+        }
+        return ret;
+    }
+
+    @Override
+    public List<Job> findByCreatedDateRange(String startDate, String endDate) {
+        logger.debug("ENTERING findByCreatedDateRange(String, String)");
+        List<Job> ret = new ArrayList<Job>();
+        if (StringUtils.isEmpty(startDate)) {
+            logger.warn("startDate is empty");
+            return ret;
+        }
+        if (StringUtils.isEmpty(endDate)) {
+            logger.warn("endDate is empty");
+            return ret;
+        }
+        try {
+            Date parsedStartDate = DateUtils.parseDate(startDate,
+                    new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
+            Date parsedEndDate = DateUtils.parseDate(endDate,
+                    new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
+            ret.addAll(jobDAO.findByCreatedDateRange(parsedStartDate, parsedEndDate));
         } catch (ParseException | MaPSeqDAOException e) {
             logger.error("Error", e);
         }

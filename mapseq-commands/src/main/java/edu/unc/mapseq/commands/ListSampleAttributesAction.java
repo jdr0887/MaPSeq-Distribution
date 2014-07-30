@@ -8,31 +8,31 @@ import org.apache.felix.gogo.commands.Argument;
 import org.apache.felix.gogo.commands.Command;
 import org.apache.karaf.shell.console.AbstractAction;
 
-import edu.unc.mapseq.dao.HTSFSampleDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
-import edu.unc.mapseq.dao.model.EntityAttribute;
-import edu.unc.mapseq.dao.model.HTSFSample;
+import edu.unc.mapseq.dao.SampleDAO;
+import edu.unc.mapseq.dao.model.Attribute;
+import edu.unc.mapseq.dao.model.Sample;
 
-@Command(scope = "mapseq", name = "list-htsf-sample-attributes", description = "List HTSFSample Attributes")
-public class ListHTSFSampleAttributesAction extends AbstractAction {
+@Command(scope = "mapseq", name = "list-sample-attributes", description = "List Sample Attributes")
+public class ListSampleAttributesAction extends AbstractAction {
 
     private MaPSeqDAOBean maPSeqDAOBean;
 
-    @Argument(index = 0, name = "htsfSampleId", description = "HTSFSample Identifier", required = true, multiValued = false)
-    private Long htsfSampleId;
+    @Argument(index = 0, name = "sampleId", description = "Sample Identifier", required = true, multiValued = false)
+    private Long sampleId;
 
-    public ListHTSFSampleAttributesAction() {
+    public ListSampleAttributesAction() {
         super();
     }
 
     @Override
     public Object doExecute() {
 
-        HTSFSampleDAO htsfSampleDAO = maPSeqDAOBean.getHTSFSampleDAO();
-        HTSFSample entity = null;
+        SampleDAO sampleDAO = maPSeqDAOBean.getSampleDAO();
+        Sample entity = null;
         try {
-            entity = htsfSampleDAO.findById(htsfSampleId);
+            entity = sampleDAO.findById(sampleId);
         } catch (MaPSeqDAOException e) {
         }
         if (entity == null) {
@@ -44,9 +44,9 @@ public class ListHTSFSampleAttributesAction extends AbstractAction {
         Formatter formatter = new Formatter(sb, Locale.US);
         formatter.format("%1$-12s %2$-40s %3$s%n", "Attribute ID", "Name", "Value");
 
-        Set<EntityAttribute> attributeSet = entity.getAttributes();
-        if (attributeSet != null && attributeSet.size() > 0) {
-            for (EntityAttribute attribute : attributeSet) {
+        Set<Attribute> attributeSet = entity.getAttributes();
+        if (attributeSet != null && !attributeSet.isEmpty()) {
+            for (Attribute attribute : attributeSet) {
                 formatter
                         .format("%1$-12s %2$-40s %3$s%n", attribute.getId(), attribute.getName(), attribute.getValue());
                 formatter.flush();
@@ -67,11 +67,11 @@ public class ListHTSFSampleAttributesAction extends AbstractAction {
     }
 
     public Long getHtsfSampleId() {
-        return htsfSampleId;
+        return sampleId;
     }
 
     public void setHtsfSampleId(Long htsfSampleId) {
-        this.htsfSampleId = htsfSampleId;
+        this.sampleId = htsfSampleId;
     }
 
 }

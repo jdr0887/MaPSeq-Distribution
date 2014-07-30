@@ -13,24 +13,24 @@ import org.apache.cxf.jaxrs.client.WebClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.unc.mapseq.dao.FlowcellDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
-import edu.unc.mapseq.dao.SequencerRunDAO;
-import edu.unc.mapseq.dao.model.SequencerRun;
+import edu.unc.mapseq.dao.model.Flowcell;
 
 /**
  * 
  * @author jdr0887
  */
-public class SequencerRunDAOImpl extends BaseEntityDAOImpl<SequencerRun, Long> implements SequencerRunDAO {
+public class FlowcellDAOImpl extends NamedEntityDAOImpl<Flowcell, Long> implements FlowcellDAO {
 
-    private final Logger logger = LoggerFactory.getLogger(SequencerRunDAOImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(FlowcellDAOImpl.class);
 
-    public SequencerRunDAOImpl() {
-        super(SequencerRun.class);
+    public FlowcellDAOImpl() {
+        super(Flowcell.class);
     }
 
     @Override
-    public Long save(SequencerRun entity) throws MaPSeqDAOException {
+    public Long save(Flowcell entity) throws MaPSeqDAOException {
         logger.debug("ENTERING save(Long)");
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true).type(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON);
@@ -40,63 +40,48 @@ public class SequencerRunDAOImpl extends BaseEntityDAOImpl<SequencerRun, Long> i
     }
 
     @Override
-    public List<SequencerRun> findByAccountId(Long id) throws MaPSeqDAOException {
-        logger.debug("ENTERING findByAccountId(Long)");
+    public List<Flowcell> findByName(String name) throws MaPSeqDAOException {
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
-        Collection<? extends SequencerRun> ret = client.path("findByName/{accountId}", id)
-                .accept(MediaType.APPLICATION_JSON).getCollection(SequencerRun.class);
-        return new ArrayList<SequencerRun>(ret);
+        Collection<? extends Flowcell> ret = client.path("findByName/{name}", name).accept(MediaType.APPLICATION_JSON)
+                .getCollection(Flowcell.class);
+        return new ArrayList<Flowcell>(ret);
     }
 
     @Override
-    public List<SequencerRun> findByName(String name) throws MaPSeqDAOException {
-        WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
-        Collection<? extends SequencerRun> ret = client.path("findByName/{name}", name)
-                .accept(MediaType.APPLICATION_JSON).getCollection(SequencerRun.class);
-        return new ArrayList<SequencerRun>(ret);
-    }
-
-    @Override
-    public SequencerRun findById(Long id) throws MaPSeqDAOException {
+    public Flowcell findById(Long id) throws MaPSeqDAOException {
         logger.debug("ENTERING findById(Long)");
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
-        SequencerRun sequencerRun = client.path("findById/{id}", id).accept(MediaType.APPLICATION_JSON)
-                .get(SequencerRun.class);
-        return sequencerRun;
+        Flowcell flowcell = client.path("findById/{id}", id).accept(MediaType.APPLICATION_JSON).get(Flowcell.class);
+        return flowcell;
     }
 
     @Override
-    public List<SequencerRun> findByStudyName(String name) throws MaPSeqDAOException {
+    public List<Flowcell> findByStudyName(String name) throws MaPSeqDAOException {
         logger.debug("ENTERING findByStudyName(String)");
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
-        Collection<? extends SequencerRun> ret = client.path("findByStudyName/{name}", name)
-                .accept(MediaType.APPLICATION_JSON).getCollection(SequencerRun.class);
-        return new ArrayList<SequencerRun>(ret);
+        Collection<? extends Flowcell> ret = client.path("findByStudyName/{name}", name)
+                .accept(MediaType.APPLICATION_JSON).getCollection(Flowcell.class);
+        return new ArrayList<Flowcell>(ret);
     }
 
     @Override
-    public List<SequencerRun> findByExample(SequencerRun sequencerRun) throws MaPSeqDAOException {
-        return null;
-    }
-
-    @Override
-    public List<SequencerRun> findByCreationDateRange(Date startDate, Date endDate) throws MaPSeqDAOException {
-        logger.debug("ENTERING findByCreationDateRange(Date, Date)");
+    public List<Flowcell> findByCreatedDateRange(Date startDate, Date endDate) throws MaPSeqDAOException {
+        logger.debug("ENTERING findByCreatedDateRange(Date, Date)");
         String formattedStartDate = DateFormatUtils.ISO_DATE_FORMAT.format(startDate);
         String formattedEndDate = DateFormatUtils.ISO_DATE_FORMAT.format(endDate);
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
-        Collection<? extends SequencerRun> ret = client
-                .path("findByCreationDateRange/{startDate}/{endDate}", formattedStartDate, formattedEndDate)
-                .accept(MediaType.APPLICATION_JSON).getCollection(SequencerRun.class);
-        return new ArrayList<SequencerRun>(ret);
+        Collection<? extends Flowcell> ret = client
+                .path("findByCreatedDateRange/{startDate}/{endDate}", formattedStartDate, formattedEndDate)
+                .accept(MediaType.APPLICATION_JSON).getCollection(Flowcell.class);
+        return new ArrayList<Flowcell>(ret);
     }
 
     @Override
-    public List<SequencerRun> findAll() throws MaPSeqDAOException {
+    public List<Flowcell> findAll() throws MaPSeqDAOException {
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
-        Collection<? extends SequencerRun> ret = client.path("findAll").accept(MediaType.APPLICATION_JSON)
-                .getCollection(SequencerRun.class);
-        return new ArrayList<SequencerRun>(ret);
+        Collection<? extends Flowcell> ret = client.path("findAll").accept(MediaType.APPLICATION_JSON)
+                .getCollection(Flowcell.class);
+        return new ArrayList<Flowcell>(ret);
     }
 
 }

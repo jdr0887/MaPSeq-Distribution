@@ -21,7 +21,7 @@ import edu.unc.mapseq.dao.model.Job;
  * 
  * @author jdr0887
  */
-public class JobDAOImpl extends BaseEntityDAOImpl<Job, Long> implements JobDAO {
+public class JobDAOImpl extends NamedEntityDAOImpl<Job, Long> implements JobDAO {
 
     private final Logger logger = LoggerFactory.getLogger(JobDAOImpl.class);
 
@@ -30,7 +30,7 @@ public class JobDAOImpl extends BaseEntityDAOImpl<Job, Long> implements JobDAO {
     }
 
     @Override
-    public List<Job> findFileDataByIdAndWorkflowId(Long fileDataId, String clazzName, Long workflowId)
+    public List<Job> findByFileDataIdAndWorkflowId(Long fileDataId, String clazzName, Long workflowId)
             throws MaPSeqDAOException {
         return null;
     }
@@ -68,24 +68,23 @@ public class JobDAOImpl extends BaseEntityDAOImpl<Job, Long> implements JobDAO {
     }
 
     @Override
-    public List<Job> findByCreatorAndWorkflowIdAndCreationDateRange(Long accountId, Long workflowId, Date startDate,
-            Date endDate) throws MaPSeqDAOException {
-        logger.debug("ENTERING findByCreatorAndWorkflowIdAndCreationDateRange(Long, Long, Date, Date)");
+    public List<Job> findByWorkflowIdAndCreatedDateRange(Long workflowId, Date startDate, Date endDate)
+            throws MaPSeqDAOException {
+        logger.debug("ENTERING findByWorkflowIdAndCreatedDateRange(Long, Date, Date)");
         WebClient client = WebClient.create(getRestServiceURL(), getProviders());
         Collection<? extends Job> ret = client
-                .path("findByCreatorAndWorkflowIdAndCreationDateRange/{accountId}/{workflowId}/{startDate}/{endDate}",
-                        accountId, startDate, endDate, workflowId).accept(MediaType.APPLICATION_JSON)
-                .getCollection(Job.class);
+                .path("findByWorkflowIdAndCreatedDateRange/{workflowId}/{startDate}/{endDate}", workflowId, startDate,
+                        endDate).accept(MediaType.APPLICATION_JSON).getCollection(Job.class);
         return new ArrayList<Job>(ret);
     }
 
     @Override
-    public List<Job> findFileDataById(Long fileDataId, String clazzName) throws MaPSeqDAOException {
+    public List<Job> findByFileDataId(Long fileDataId, String clazzName) throws MaPSeqDAOException {
         return null;
     }
 
     @Override
-    public List<Job> findByWorkflowRunId(Long id) throws MaPSeqDAOException {
+    public List<Job> findByWorkflowRunAttemptId(Long id) throws MaPSeqDAOException {
         return null;
     }
 

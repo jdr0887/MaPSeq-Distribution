@@ -15,9 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
-import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowRunDAO;
-import edu.unc.mapseq.dao.model.Account;
 import edu.unc.mapseq.dao.model.WorkflowRun;
 import edu.unc.mapseq.reports.ReportFactory;
 
@@ -35,20 +33,6 @@ public class WorkflowRunCountWeeklyReportAction extends AbstractAction {
     protected Object doExecute() throws Exception {
         logger.debug("ENTERING doExecute()");
 
-        List<Account> accountList = null;
-        try {
-            accountList = maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
-            if (accountList == null || (accountList != null && accountList.isEmpty())) {
-                System.err.printf("Account doesn't exist: %s%n", System.getProperty("user.name"));
-                System.err.println("Must register account first");
-                return null;
-            }
-        } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
-        }
-
-        Account account = accountList.get(0);
-
         Date endDate = new Date();
         Calendar c = Calendar.getInstance();
         c.setTime(endDate);
@@ -56,10 +40,9 @@ public class WorkflowRunCountWeeklyReportAction extends AbstractAction {
         Date startDate = c.getTime();
 
         WorkflowRunDAO workflowRunDAO = maPSeqDAOBean.getWorkflowRunDAO();
-        List<WorkflowRun> workflowRunList = workflowRunDAO.findByCreatorAndCreationDateRange(account.getId(),
-                startDate, endDate);
+        List<WorkflowRun> workflowRunList = workflowRunDAO.findByCreatedDateRange(startDate, endDate);
 
-        File chartFile = ReportFactory.createWorkflowRunCountReport(workflowRunList, account, startDate, endDate);
+        File chartFile = ReportFactory.createWorkflowRunCountReport(workflowRunList, startDate, endDate);
 
         String subject = String.format("MaPSeq :: WorkflowRuns (%s - %s)", DateFormatUtils.format(startDate, "MM/dd"),
                 DateFormatUtils.format(endDate, "MM/dd"));

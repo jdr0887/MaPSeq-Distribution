@@ -15,14 +15,14 @@ import org.slf4j.LoggerFactory;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowRunDAO;
 import edu.unc.mapseq.dao.model.WorkflowRun;
-import edu.unc.mapseq.dao.model.WorkflowRunStatusType;
+import edu.unc.mapseq.dao.model.WorkflowRunAttemptStatusType;
 import edu.unc.mapseq.ws.WorkflowRunService;
 
 /**
  * 
  * @author jdr0887
  */
-public class WorkflowRunDAOImpl extends BaseEntityDAOImpl<WorkflowRun, Long> implements WorkflowRunDAO {
+public class WorkflowRunDAOImpl extends NamedEntityDAOImpl<WorkflowRun, Long> implements WorkflowRunDAO {
 
     private final Logger logger = LoggerFactory.getLogger(WorkflowRunDAOImpl.class);
 
@@ -49,11 +49,6 @@ public class WorkflowRunDAOImpl extends BaseEntityDAOImpl<WorkflowRun, Long> imp
     }
 
     @Override
-    public List<WorkflowRun> findByExample(WorkflowRun workflowRun) throws MaPSeqDAOException {
-        return null;
-    }
-
-    @Override
     public WorkflowRun findById(Long id) throws MaPSeqDAOException {
         logger.debug("ENTERING findById(Long)");
         WorkflowRun workflowRun = workflowRunService.findById(id);
@@ -73,31 +68,13 @@ public class WorkflowRunDAOImpl extends BaseEntityDAOImpl<WorkflowRun, Long> imp
     }
 
     @Override
-    public List<WorkflowRun> findByCreatorAndStatusAndCreationDateRange(Long accountId, WorkflowRunStatusType status,
-            Date startDate, Date endDate) {
-        logger.debug("ENTERING findByCreatorAndCreationDateRange(Long, Date, Date)");
+    public List<WorkflowRun> findByCreatedDateRange(Date startDate, Date endDate) throws MaPSeqDAOException {
+        logger.debug("ENTERING findByCreatedDateRange(Date, Date)");
         String formattedStartDate = DateFormatUtils.ISO_DATE_FORMAT.format(startDate);
         String formattedEndDate = DateFormatUtils.ISO_DATE_FORMAT.format(endDate);
         List<WorkflowRun> ret = new ArrayList<WorkflowRun>();
         try {
-            ret.addAll(workflowRunService.findByCreatorAndStatusAndCreationDateRange(accountId, status.toString(),
-                    formattedStartDate, formattedEndDate));
-        } catch (Exception e) {
-            logger.error("Exception", e);
-        }
-        return ret;
-    }
-
-    @Override
-    public List<WorkflowRun> findByCreatorAndCreationDateRange(Long accountId, Date startDate, Date endDate)
-            throws MaPSeqDAOException {
-        logger.debug("ENTERING findByCreatorAndCreationDateRange(Long, Date, Date)");
-        String formattedStartDate = DateFormatUtils.ISO_DATE_FORMAT.format(startDate);
-        String formattedEndDate = DateFormatUtils.ISO_DATE_FORMAT.format(endDate);
-        List<WorkflowRun> ret = new ArrayList<WorkflowRun>();
-        try {
-            ret.addAll(workflowRunService.findByCreatorAndCreationDateRange(accountId, formattedStartDate,
-                    formattedEndDate));
+            ret.addAll(workflowRunService.findByCreatedDateRange(formattedStartDate, formattedEndDate));
         } catch (Exception e) {
             logger.error("Exception", e);
         }
@@ -119,8 +96,63 @@ public class WorkflowRunDAOImpl extends BaseEntityDAOImpl<WorkflowRun, Long> imp
     }
 
     @Override
-    public List<WorkflowRun> findByWorkflowId(Long id) throws MaPSeqDAOException {
-        return null;
+    public List<WorkflowRun> findByWorkflowId(Long workflowId) throws MaPSeqDAOException {
+        logger.debug("ENTERING findByWorkflowId(Long)");
+        List<WorkflowRun> ret = new ArrayList<WorkflowRun>();
+        try {
+            ret.addAll(workflowRunService.findByWorkflowId(workflowId));
+        } catch (Exception e) {
+            logger.error("Exception", e);
+        }
+        return ret;
+    }
+
+    @Override
+    public List<WorkflowRun> findByFlowcellId(Long flowcellId) throws MaPSeqDAOException {
+        logger.debug("ENTERING findByFlowcellId(Long)");
+        List<WorkflowRun> ret = new ArrayList<WorkflowRun>();
+        try {
+            ret.addAll(workflowRunService.findByWorkflowId(flowcellId));
+        } catch (Exception e) {
+            logger.error("Exception", e);
+        }
+        return ret;
+    }
+
+    @Override
+    public List<WorkflowRun> findByFlowcellIdAndWorkflowId(Long flowcellId, Long workflowId) throws MaPSeqDAOException {
+        logger.debug("ENTERING findByFlowcellIdAndWorkflowId(Long)");
+        List<WorkflowRun> ret = new ArrayList<WorkflowRun>();
+        try {
+            ret.addAll(workflowRunService.findByFlowcellIdAndWorkflowId(flowcellId, workflowId));
+        } catch (Exception e) {
+            logger.error("Exception", e);
+        }
+        return ret;
+    }
+
+    @Override
+    public List<WorkflowRun> findBySampleId(Long sampleId) throws MaPSeqDAOException {
+        logger.debug("ENTERING findBySampleId(Long)");
+        List<WorkflowRun> ret = new ArrayList<WorkflowRun>();
+        try {
+            ret.addAll(workflowRunService.findBySampleId(sampleId));
+        } catch (Exception e) {
+            logger.error("Exception", e);
+        }
+        return ret;
+    }
+
+    @Override
+    public List<WorkflowRun> findByStudyId(Long studyId) throws MaPSeqDAOException {
+        logger.debug("ENTERING findByStudyId(Long)");
+        List<WorkflowRun> ret = new ArrayList<WorkflowRun>();
+        try {
+            ret.addAll(workflowRunService.findByStudyId(studyId));
+        } catch (Exception e) {
+            logger.error("Exception", e);
+        }
+        return ret;
     }
 
 }

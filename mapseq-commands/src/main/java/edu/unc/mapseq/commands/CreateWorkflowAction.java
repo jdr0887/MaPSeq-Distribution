@@ -1,14 +1,11 @@
 package edu.unc.mapseq.commands;
 
-import java.util.List;
-
 import org.apache.felix.gogo.commands.Argument;
 import org.apache.felix.gogo.commands.Command;
 import org.apache.karaf.shell.console.AbstractAction;
 
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
-import edu.unc.mapseq.dao.model.Account;
 import edu.unc.mapseq.dao.model.Workflow;
 
 @Command(scope = "mapseq", name = "create-workflow", description = "Create Workflow")
@@ -25,21 +22,8 @@ public class CreateWorkflowAction extends AbstractAction {
 
     @Override
     public Object doExecute() {
-        List<Account> accountList = null;
-        try {
-            accountList = maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
-            if (accountList == null || (accountList != null && accountList.isEmpty())) {
-                System.err.printf("Account doesn't exist: %s%n", System.getProperty("user.name"));
-                System.err.println("Must register account first");
-                return null;
-            }
-        } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
-        }
-
         try {
             Workflow workflow = new Workflow();
-            workflow.setCreator(accountList.get(0));
             workflow.setName(name);
             Long workflowId = maPSeqDAOBean.getWorkflowDAO().save(workflow);
             return workflowId;

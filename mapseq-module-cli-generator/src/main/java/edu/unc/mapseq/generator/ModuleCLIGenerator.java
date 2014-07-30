@@ -307,24 +307,14 @@ public class ModuleCLIGenerator extends AbstractGenerator {
         Field[] fieldArray = clazz.getDeclaredFields();
 
         mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption").arg(
-                optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit("sequencerRunId")).invoke("hasArg")
-                        .invoke("withDescription").arg(JExpr.lit("SequencerRun identifier")).invoke("withLongOpt")
-                        .arg(JExpr.lit("sequencerRunId")).invoke("create")));
+                optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit("workflowRunAttemptId")).invoke("hasArg")
+                        .invoke("withDescription").arg(JExpr.lit("WorkflowRunAttempt identifier"))
+                        .invoke("withLongOpt").arg(JExpr.lit("workflowRunAttemptId")).invoke("create")));
 
         mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption").arg(
-                optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit("workflowRunId")).invoke("hasArg")
-                        .invoke("withDescription").arg(JExpr.lit("WorkflowRun identifier")).invoke("withLongOpt")
-                        .arg(JExpr.lit("workflowRunId")).invoke("create")));
-
-        mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption").arg(
-                optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit("htsfSampleId")).invoke("hasArg")
-                        .invoke("withDescription").arg(JExpr.lit("HTSF Sample Identifier")).invoke("withLongOpt")
-                        .arg(JExpr.lit("htsfSampleId")).invoke("create")));
-
-        mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption").arg(
-                optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit("accountId")).invoke("hasArg")
-                        .invoke("withDescription").arg(JExpr.lit("Account Identifier")).invoke("withLongOpt")
-                        .arg(JExpr.lit("accountId")).invoke("create")));
+                optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit("sampleId")).invoke("hasArg")
+                        .invoke("withDescription").arg(JExpr.lit("Sample Identifier")).invoke("withLongOpt")
+                        .arg(JExpr.lit("sampleId")).invoke("create")));
 
         mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption").arg(
                 optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit("propertyFile")).invoke("hasArg")
@@ -465,35 +455,21 @@ public class ModuleCLIGenerator extends AbstractGenerator {
                 .arg(cliOptionsFieldVar));
         conditionalThenBlock._return();
 
-        JConditional hasOptionConditional = tryBlockBody._if(commandLineVar.invoke("hasOption").arg("workflowRunId"));
+        JConditional hasOptionConditional = tryBlockBody._if(commandLineVar.invoke("hasOption").arg(
+                "workflowRunAttemptId"));
         JBlock hasOptionConditionalThenBlock = hasOptionConditional._then();
 
-        JVar paramVar = hasOptionConditionalThenBlock.decl(longJClass, "workflowRunId");
+        JVar paramVar = hasOptionConditionalThenBlock.decl(longJClass, "workflowRunAttemptId");
         paramVar.init(longJClass.staticInvoke("valueOf").arg(
-                commandLineVar.invoke("getOptionValue").arg("workflowRunId")));
-        hasOptionConditionalThenBlock.add(applicationVar.invoke("set" + StringUtils.capitalize("workflowRunId")).arg(
-                paramVar));
+                commandLineVar.invoke("getOptionValue").arg("workflowRunAttemptId")));
+        hasOptionConditionalThenBlock.add(applicationVar.invoke("set" + StringUtils.capitalize("workflowRunAttemptId"))
+                .arg(paramVar));
 
-        hasOptionConditional = tryBlockBody._if(commandLineVar.invoke("hasOption").arg("sequencerRunId"));
+        hasOptionConditional = tryBlockBody._if(commandLineVar.invoke("hasOption").arg("sampleId"));
         hasOptionConditionalThenBlock = hasOptionConditional._then();
-        paramVar = hasOptionConditionalThenBlock.decl(longJClass, "sequencerRunId");
-        paramVar.init(longJClass.staticInvoke("valueOf").arg(
-                commandLineVar.invoke("getOptionValue").arg("sequencerRunId")));
-        hasOptionConditionalThenBlock.add(applicationVar.invoke("set" + StringUtils.capitalize("sequencerRunId")).arg(
-                paramVar));
-
-        hasOptionConditional = tryBlockBody._if(commandLineVar.invoke("hasOption").arg("htsfSampleId"));
-        hasOptionConditionalThenBlock = hasOptionConditional._then();
-        paramVar = hasOptionConditionalThenBlock.decl(longJClass, "htsfSampleId");
-        paramVar.init(longJClass.staticInvoke("valueOf").arg(
-                commandLineVar.invoke("getOptionValue").arg("htsfSampleId")));
-        hasOptionConditionalThenBlock.add(applicationVar.invoke("setHTSFSampleId").arg(paramVar));
-
-        hasOptionConditional = tryBlockBody._if(commandLineVar.invoke("hasOption").arg("accountId"));
-        hasOptionConditionalThenBlock = hasOptionConditional._then();
-        paramVar = hasOptionConditionalThenBlock.decl(longJClass, "accountId");
-        paramVar.init(longJClass.staticInvoke("valueOf").arg(commandLineVar.invoke("getOptionValue").arg("accountId")));
-        hasOptionConditionalThenBlock.add(applicationVar.invoke("setAccountId").arg(paramVar));
+        paramVar = hasOptionConditionalThenBlock.decl(longJClass, "sampleId");
+        paramVar.init(longJClass.staticInvoke("valueOf").arg(commandLineVar.invoke("getOptionValue").arg("sampleId")));
+        hasOptionConditionalThenBlock.add(applicationVar.invoke("setSampleId").arg(paramVar));
 
         hasOptionConditional = tryBlockBody._if(commandLineVar.invoke("hasOption").arg("serializeFile"));
         hasOptionConditionalThenBlock = hasOptionConditional._then();

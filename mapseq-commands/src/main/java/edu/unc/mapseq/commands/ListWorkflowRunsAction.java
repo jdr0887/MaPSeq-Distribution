@@ -17,13 +17,13 @@ import org.apache.karaf.shell.console.AbstractAction;
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowRunDAO;
-import edu.unc.mapseq.dao.model.Account;
 import edu.unc.mapseq.dao.model.WorkflowRun;
+import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
 
-@Command(scope = "mapseq", name = "list-my-workflow-runs", description = "List my WorkflowRun instances")
-public class ListMyWorkflowRunsAction extends AbstractAction {
+@Command(scope = "mapseq", name = "list-workflow-runs", description = "List WorkflowRun instances")
+public class ListWorkflowRunsAction extends AbstractAction {
 
-    @Argument(index = 0, name = "workflowId", description = "Workflow identifier", required = false, multiValued = false)
+    @Argument(index = 0, name = "workflowId", description = "Workflow identifier", required = true, multiValued = false)
     private Long workflowId;
 
     @Option(name = "-l", description = "long format", required = false, multiValued = false)
@@ -31,33 +31,17 @@ public class ListMyWorkflowRunsAction extends AbstractAction {
 
     private MaPSeqDAOBean maPSeqDAOBean;
 
-    public ListMyWorkflowRunsAction() {
+    public ListWorkflowRunsAction() {
         super();
     }
 
     @Override
     public Object doExecute() {
 
-        List<Account> accountList = null;
-        try {
-            accountList = maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
-            if (accountList == null || (accountList != null && accountList.isEmpty())) {
-                System.err.printf("Account doesn't exist: %s%n", System.getProperty("user.name"));
-                System.err.println("Must register account first");
-                return null;
-            }
-        } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
-        }
-
         List<WorkflowRun> workflowRunList = new ArrayList<WorkflowRun>();
         WorkflowRunDAO workflowRunDAO = maPSeqDAOBean.getWorkflowRunDAO();
         try {
-            if (workflowId != null) {
-                workflowRunList.addAll(workflowRunDAO.findByWorkflowId(workflowId));
-            } else {
-                workflowRunList.addAll(workflowRunDAO.findByCreator(accountList.get(0).getId()));
-            }
+            workflowRunList.addAll(workflowRunDAO.findByWorkflowId(workflowId));
         } catch (MaPSeqDAOException e) {
         }
         try {
@@ -82,41 +66,42 @@ public class ListMyWorkflowRunsAction extends AbstractAction {
 
                 for (WorkflowRun workflowRun : workflowRunList) {
 
-                    if (!accountList.get(0).equals(workflowRun.getCreator())) {
-                        continue;
-                    }
-
-                    Date createdDate = workflowRun.getCreationDate();
+                    Date createdDate = workflowRun.getCreated();
                     String formattedCreatedDate = "";
                     if (createdDate != null) {
                         formattedCreatedDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
                                 .format(createdDate);
                     }
-                    Date startDate = workflowRun.getStartDate();
-                    String formattedStartDate = "";
-                    if (startDate != null) {
-                        formattedStartDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(
-                                startDate);
-                    }
-                    Date endDate = workflowRun.getEndDate();
-                    String formattedEndDate = "";
-                    if (endDate != null) {
-                        formattedEndDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(
-                                endDate);
-                    }
-                    if (longFormat != null && longFormat) {
-                        formatter.format("%1$-8s %2$-25s %3$-54s %4$-18s %5$-18s %6$-18s %7$-18s %8$-18s %9$s%n",
-                                workflowRun.getId(), workflowRun.getWorkflow().getName(), workflowRun.getName(),
-                                formattedCreatedDate, formattedStartDate, formattedEndDate, workflowRun.getStatus()
-                                        .getState(), workflowRun.getSubmitDirectory(), workflowRun
-                                        .getCondorDAGClusterId());
-                    } else {
-                        formatter.format("%1$-8s %2$-25s %3$-54s %4$-18s %5$-18s %6$-18s %7$s%n", workflowRun.getId(),
-                                workflowRun.getWorkflow().getName(), workflowRun.getName(), formattedCreatedDate,
-                                formattedStartDate, formattedEndDate, workflowRun.getStatus().getState());
+
+                    for (WorkflowRunAttempt attempt : workflowRun.getAttempts()) {
+
+                        Date startDate = attempt.getStarted();
+                        String formattedStartDate = "";
+                        if (startDate != null) {
+                            formattedStartDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
+                                    .format(startDate);
+                        }
+                        Date endDate = attempt.getFinished();
+                        String formattedEndDate = "";
+                        if (endDate != null) {
+                            formattedEndDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
+                                    .format(endDate);
+                        }
+                        if (longFormat != null && longFormat) {
+                            formatter.format("%1$-8s %2$-25s %3$-54s %4$-18s %5$-18s %6$-18s %7$-18s %8$-18s %9$s%n",
+                                    workflowRun.getId(), workflowRun.getWorkflow().getName(), workflowRun.getName(),
+                                    formattedCreatedDate, formattedStartDate, formattedEndDate, attempt.getStatus()
+                                            .getState(), attempt.getSubmitDirectory(), attempt.getCondorDAGClusterId());
+                        } else {
+                            formatter.format("%1$-8s %2$-25s %3$-54s %4$-18s %5$-18s %6$-18s %7$s%n", workflowRun
+                                    .getId(), workflowRun.getWorkflow().getName(), workflowRun.getName(),
+                                    formattedCreatedDate, formattedStartDate, formattedEndDate, attempt.getStatus()
+                                            .getState());
+
+                        }
+                        formatter.flush();
 
                     }
-                    formatter.flush();
 
                 }
                 System.out.println(formatter.toString());

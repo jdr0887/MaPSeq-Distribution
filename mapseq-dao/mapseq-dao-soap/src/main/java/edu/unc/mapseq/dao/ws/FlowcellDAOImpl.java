@@ -11,28 +11,28 @@ import org.apache.cxf.transports.http.configuration.ConnectionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.unc.mapseq.dao.FlowcellDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
-import edu.unc.mapseq.dao.SequencerRunDAO;
-import edu.unc.mapseq.dao.model.SequencerRun;
-import edu.unc.mapseq.ws.SequencerRunService;
+import edu.unc.mapseq.dao.model.Flowcell;
+import edu.unc.mapseq.ws.FlowcellService;
 
 /**
  * 
  * @author jdr0887
  */
-public class SequencerRunDAOImpl extends BaseEntityDAOImpl<SequencerRun, Long> implements SequencerRunDAO {
+public class FlowcellDAOImpl extends NamedEntityDAOImpl<Flowcell, Long> implements FlowcellDAO {
 
-    private final Logger logger = LoggerFactory.getLogger(SequencerRunDAOImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(FlowcellDAOImpl.class);
 
-    private SequencerRunService sequencerRunService;
+    private FlowcellService flowcellService;
 
-    public SequencerRunDAOImpl() {
-        super(SequencerRun.class);
+    public FlowcellDAOImpl() {
+        super(Flowcell.class);
     }
 
     public void init() {
-        sequencerRunService = getService().getPort(SequencerRunService.class);
-        Client cl = ClientProxy.getClient(sequencerRunService);
+        flowcellService = getService().getPort(FlowcellService.class);
+        Client cl = ClientProxy.getClient(flowcellService);
         HTTPConduit httpConduit = (HTTPConduit) cl.getConduit();
         httpConduit.getClient().setReceiveTimeout(getConfigurationService().getWebServiceTimeout());
         httpConduit.getClient().setConnectionTimeout(0);
@@ -40,60 +40,47 @@ public class SequencerRunDAOImpl extends BaseEntityDAOImpl<SequencerRun, Long> i
     }
 
     @Override
-    public Long save(SequencerRun entity) throws MaPSeqDAOException {
-        logger.debug("ENTERING save(SequencerRun)");
-        Long id = sequencerRunService.save(entity);
+    public Long save(Flowcell entity) throws MaPSeqDAOException {
+        logger.debug("ENTERING save(Flowcell)");
+        Long id = flowcellService.save(entity);
         return id;
     }
 
     @Override
-    public List<SequencerRun> findByAccountId(Long id) throws MaPSeqDAOException {
-        logger.debug("ENTERING findByAccountId(Long)");
-        List<SequencerRun> sequencerRunList = sequencerRunService.findByAccountId(id);
-        return sequencerRunList;
-    }
-
-    @Override
-    public List<SequencerRun> findByName(String flowcellName) throws MaPSeqDAOException {
+    public List<Flowcell> findByName(String flowcellName) throws MaPSeqDAOException {
         logger.debug("ENTERING findByName(String)");
-        List<SequencerRun> ret = sequencerRunService.findByName(flowcellName);
+        List<Flowcell> ret = flowcellService.findByName(flowcellName);
         return ret;
     }
 
     @Override
-    public SequencerRun findById(Long id) throws MaPSeqDAOException {
+    public Flowcell findById(Long id) throws MaPSeqDAOException {
         logger.debug("ENTERING findById(Long)");
-        SequencerRun sequencerRun = sequencerRunService.findById(id);
+        Flowcell sequencerRun = flowcellService.findById(id);
         return sequencerRun;
     }
 
     @Override
-    public List<SequencerRun> findByStudyName(String name) throws MaPSeqDAOException {
+    public List<Flowcell> findByStudyName(String name) throws MaPSeqDAOException {
         logger.debug("ENTERING findByStudyName(String)");
-        List<SequencerRun> sequencerRunList = sequencerRunService.findByStudyName(name);
+        List<Flowcell> sequencerRunList = flowcellService.findByStudyName(name);
         return sequencerRunList;
     }
 
     @Override
-    public List<SequencerRun> findByCreationDateRange(Date startDate, Date endDate) throws MaPSeqDAOException {
-        logger.debug("ENTERING findByCreationDateRange(Date, Date)");
+    public List<Flowcell> findByCreatedDateRange(Date startDate, Date endDate) throws MaPSeqDAOException {
+        logger.debug("ENTERING findByCreatedDateRange(Date, Date)");
         String formattedStartDate = DateFormatUtils.ISO_DATE_FORMAT.format(startDate);
         String formattedEndDate = DateFormatUtils.ISO_DATE_FORMAT.format(endDate);
-        List<SequencerRun> sequencerRunList = sequencerRunService.findByCreationDateRange(formattedStartDate,
-                formattedEndDate);
+        List<Flowcell> sequencerRunList = flowcellService.findByCreatedDateRange(formattedStartDate, formattedEndDate);
         return sequencerRunList;
     }
 
     @Override
-    public List<SequencerRun> findByExample(SequencerRun sequencerRun) throws MaPSeqDAOException {
-        return null;
-    }
-
-    @Override
-    public List<SequencerRun> findAll() throws MaPSeqDAOException {
+    public List<Flowcell> findAll() throws MaPSeqDAOException {
         logger.debug("ENTERING findAll()");
-        List<SequencerRun> sequencerRunList = sequencerRunService.findAll();
-        return sequencerRunList;
+        List<Flowcell> flowcellList = flowcellService.findAll();
+        return flowcellList;
     }
 
 }

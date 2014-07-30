@@ -12,60 +12,60 @@ import org.apache.felix.gogo.commands.Command;
 import org.apache.felix.gogo.commands.Option;
 import org.apache.karaf.shell.console.AbstractAction;
 
-import edu.unc.mapseq.dao.HTSFSampleDAO;
+import edu.unc.mapseq.dao.FlowcellDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
-import edu.unc.mapseq.dao.SequencerRunDAO;
-import edu.unc.mapseq.dao.model.HTSFSample;
-import edu.unc.mapseq.dao.model.SequencerRun;
+import edu.unc.mapseq.dao.SampleDAO;
+import edu.unc.mapseq.dao.model.Flowcell;
+import edu.unc.mapseq.dao.model.Sample;
 
-@Command(scope = "mapseq", name = "list-htsf-samples", description = "List HTSFSamples")
-public class ListHTSFSamplesAction extends AbstractAction {
+@Command(scope = "mapseq", name = "list-samples", description = "List Samples")
+public class ListSamplesAction extends AbstractAction {
 
     private MaPSeqDAOBean maPSeqDAOBean;
 
     @Option(name = "-l", description = "long format", required = false, multiValued = false)
     private Boolean longFormat;
 
-    @Option(name = "--sequencerRunId", description = "Sequencer Run Identifier", required = false, multiValued = false)
-    private Long sequencerRunId;
+    @Option(name = "--flowcellId", description = "Flowcell Identifier", required = false, multiValued = false)
+    private Long flowcellId;
 
     @Option(name = "--name", description = "like search by name", required = false, multiValued = false)
     private String name;
 
-    public ListHTSFSamplesAction() {
+    public ListSamplesAction() {
         super();
     }
 
     @Override
     public Object doExecute() {
 
-        SequencerRunDAO sequencerRunDAO = maPSeqDAOBean.getSequencerRunDAO();
-        HTSFSampleDAO htsfSampleDAO = maPSeqDAOBean.getHTSFSampleDAO();
+        FlowcellDAO flowcellDAO = maPSeqDAOBean.getFlowcellDAO();
+        SampleDAO sampleDAO = maPSeqDAOBean.getSampleDAO();
 
-        if (sequencerRunId == null && StringUtils.isEmpty(name)) {
-            System.out.println("sequencerRunId & name can't both be null/empty");
+        if (flowcellId == null && StringUtils.isEmpty(name)) {
+            System.out.println("flowcellId & name can't both be null/empty");
             return null;
         }
 
-        List<HTSFSample> htsfSampleList = new ArrayList<HTSFSample>();
+        List<Sample> sampleList = new ArrayList<Sample>();
 
-        if (sequencerRunId != null) {
+        if (flowcellId != null) {
             try {
-                SequencerRun sequencerRun = sequencerRunDAO.findById(sequencerRunId);
-                htsfSampleList.addAll(htsfSampleDAO.findBySequencerRunId(sequencerRun.getId()));
+                Flowcell flowcell = flowcellDAO.findById(flowcellId);
+                sampleList.addAll(sampleDAO.findByFlowcellId(flowcell.getId()));
             } catch (MaPSeqDAOException e) {
             }
         }
 
         if (StringUtils.isNotEmpty(name)) {
             try {
-                htsfSampleList.addAll(htsfSampleDAO.findByName(name));
+                sampleList.addAll(sampleDAO.findByName(name));
             } catch (MaPSeqDAOException e) {
             }
         }
 
-        if (htsfSampleList != null && htsfSampleList.size() > 0) {
+        if (sampleList != null && !sampleList.isEmpty()) {
             StringBuilder sb = new StringBuilder();
             Formatter formatter = new Formatter(sb, Locale.US);
             if (longFormat != null && longFormat) {
@@ -74,17 +74,17 @@ public class ListHTSFSamplesAction extends AbstractAction {
             } else {
                 formatter.format("%1$-12s %2$-40s %3$-6s %4$s%n", "Sample ID", "Sample Name", "Lane", "Barcode");
             }
-            Collections.sort(htsfSampleList, new Comparator<HTSFSample>() {
+            Collections.sort(sampleList, new Comparator<Sample>() {
                 @Override
-                public int compare(HTSFSample sr1, HTSFSample sr2) {
+                public int compare(Sample sr1, Sample sr2) {
                     return sr1.getId().compareTo(sr2.getId());
                 }
             });
 
-            for (HTSFSample sample : htsfSampleList) {
+            for (Sample sample : sampleList) {
                 if (longFormat != null && longFormat) {
-                    formatter.format("%1$-12s %2$-40s %3$-6s %4$-16s %5$s%n", sample.getId(), sample.getName(),
-                            sample.getLaneIndex(), sample.getBarcode(), sample.getOutputDirectory());
+                    formatter.format("%1$-12s %2$-40s %3$-6s %4$-16s%n", sample.getId(), sample.getName(),
+                            sample.getLaneIndex(), sample.getBarcode());
                 } else {
                     formatter.format("%1$-12s %2$-40s %3$-6s %4$s%n", sample.getId(), sample.getName(),
                             sample.getLaneIndex(), sample.getBarcode());
@@ -106,12 +106,12 @@ public class ListHTSFSamplesAction extends AbstractAction {
         this.maPSeqDAOBean = maPSeqDAOBean;
     }
 
-    public Long getSequencerRunId() {
-        return sequencerRunId;
+    public Long getFlowcellId() {
+        return flowcellId;
     }
 
-    public void setSequencerRunId(Long sequencerRunId) {
-        this.sequencerRunId = sequencerRunId;
+    public void setFlowcellId(Long flowcellId) {
+        this.flowcellId = flowcellId;
     }
 
     public String getName() {

@@ -21,18 +21,18 @@ import javax.xml.bind.PropertyException;
 
 import org.junit.Test;
 
-import edu.unc.mapseq.dao.HTSFSampleDAO;
+import edu.unc.mapseq.dao.FlowcellDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
-import edu.unc.mapseq.dao.SequencerRunDAO;
-import edu.unc.mapseq.dao.WorkflowPlanDAO;
+import edu.unc.mapseq.dao.SampleDAO;
+import edu.unc.mapseq.dao.WorkflowRunDAO;
 import edu.unc.mapseq.dao.model.FileData;
-import edu.unc.mapseq.dao.model.HTSFSample;
+import edu.unc.mapseq.dao.model.Flowcell;
 import edu.unc.mapseq.dao.model.MimeType;
-import edu.unc.mapseq.dao.model.SequencerRun;
-import edu.unc.mapseq.dao.model.WorkflowPlan;
+import edu.unc.mapseq.dao.model.Sample;
 import edu.unc.mapseq.dao.model.WorkflowRun;
+import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
 
-public class HTSFSampleDAOTest {
+public class SampleDAOTest {
 
     @Test
     public void testSave() {
@@ -76,20 +76,18 @@ public class HTSFSampleDAOTest {
                 fileDataSet.add(read2FastqFD);
             }
 
-            HTSFSampleDAO htsfSampleDAO = daoMgr.getMaPSeqDAOBean().getHTSFSampleDAO();
+            SampleDAO htsfSampleDAO = daoMgr.getMaPSeqDAOBean().getSampleDAO();
 
-            HTSFSample htsfSample = new HTSFSample();
+            Sample htsfSample = new Sample();
             htsfSample.setName("asdf");
-            htsfSample.setCreator(daoMgr.getMaPSeqDAOBean().getAccountDAO().findByName(System.getProperty("user.name"))
-                    .get(0));
             htsfSample.setBarcode("ATTCGA");
             htsfSample.setStudy(daoMgr.getMaPSeqDAOBean().getStudyDAO().findById(45823L));
             htsfSample.setLaneIndex(1);
-            htsfSample.setSequencerRun(daoMgr.getMaPSeqDAOBean().getSequencerRunDAO().findById(48432L));
+            htsfSample.setFlowcell(daoMgr.getMaPSeqDAOBean().getFlowcellDAO().findById(48432L));
             htsfSample.setFileDatas(fileDataSet);
 
             try {
-                JAXBContext context = JAXBContext.newInstance(HTSFSample.class);
+                JAXBContext context = JAXBContext.newInstance(Sample.class);
                 Marshaller m = context.createMarshaller();
                 m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
                 File moduleClassXMLFile = new File("/tmp/sample.xml");
@@ -116,13 +114,13 @@ public class HTSFSampleDAOTest {
     public void testFindBySequencerRunIdAndSampleName() throws Exception {
 
         WSDAOManager daoMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
-        HTSFSampleDAO hTSFSampleDAO = daoMgr.getMaPSeqDAOBean().getHTSFSampleDAO();
+        SampleDAO hTSFSampleDAO = daoMgr.getMaPSeqDAOBean().getSampleDAO();
         // List<HTSFSample> htsfSampleList = hTSFSampleDAO.findBySequencerRunIdAndSampleName(27352L, "NCG_00007%");
-        List<HTSFSample> htsfSampleList = hTSFSampleDAO.findBySequencerRunId(56470L);
-        if (htsfSampleList != null && htsfSampleList.size() > 0) {
-            for (HTSFSample sample : htsfSampleList) {
+        List<Sample> sampleList = hTSFSampleDAO.findByFlowcellId(56470L);
+        if (sampleList != null && sampleList.size() > 0) {
+            for (Sample sample : sampleList) {
                 try {
-                    JAXBContext context = JAXBContext.newInstance(HTSFSample.class);
+                    JAXBContext context = JAXBContext.newInstance(Sample.class);
                     Marshaller m = context.createMarshaller();
                     m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
                     File moduleClassXMLFile = new File("/tmp", String.format("%s.xml", sample.getName()));
@@ -144,16 +142,16 @@ public class HTSFSampleDAOTest {
 
         WSDAOManager daoMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
 
-        SequencerRunDAO sequencerRunDAO = daoMgr.getMaPSeqDAOBean().getSequencerRunDAO();
+        FlowcellDAO flowcellDAO = daoMgr.getMaPSeqDAOBean().getFlowcellDAO();
 
-        Long sequencerRunId = 27352L;
-        SequencerRun sequencerRun = sequencerRunDAO.findById(sequencerRunId);
-        HTSFSampleDAO hTSFSampleDAO = daoMgr.getMaPSeqDAOBean().getHTSFSampleDAO();
+        Long flowcellId = 27352L;
+        Flowcell flowcell = flowcellDAO.findById(flowcellId);
+        SampleDAO sampleDAO = daoMgr.getMaPSeqDAOBean().getSampleDAO();
 
-        List<HTSFSample> htsfSampleList = hTSFSampleDAO.findBySequencerRunIdAndSampleName(sequencerRunId, "NCG_00142%");
+        List<Sample> sampleList = sampleDAO.findByNameAndFlowcellId("NCG_00142%", flowcellId);
 
-        if (htsfSampleList != null && htsfSampleList.size() > 0) {
-            for (HTSFSample sample : htsfSampleList) {
+        if (sampleList != null && sampleList.size() > 0) {
+            for (Sample sample : sampleList) {
 
                 Set<FileData> fileDataSet = sample.getFileDatas();
                 List<String> readPairList = new ArrayList<String>();
@@ -162,7 +160,7 @@ public class HTSFSampleDAOTest {
                     for (FileData fileData : sample.getFileDatas()) {
                         MimeType mimeType = fileData.getMimeType();
                         if (mimeType != null && mimeType.equals(MimeType.FASTQ)) {
-                            Pattern patternR1 = Pattern.compile("^" + sequencerRun.getName() + ".*_L00"
+                            Pattern patternR1 = Pattern.compile("^" + flowcell.getName() + ".*_L00"
                                     + sample.getLaneIndex() + "_R1\\.fastq\\.gz$");
                             Matcher matcherR1 = patternR1.matcher(fileData.getName());
                             File file = new File(fileData.getPath(), fileData.getName());
@@ -170,7 +168,7 @@ public class HTSFSampleDAOTest {
                                 readPairList.add(file.getAbsolutePath());
                             }
 
-                            Pattern patternR2 = Pattern.compile("^" + sequencerRun.getName() + ".*_L00"
+                            Pattern patternR2 = Pattern.compile("^" + flowcell.getName() + ".*_L00"
                                     + sample.getLaneIndex() + "_R2\\.fastq\\.gz$");
                             Matcher matcherR2 = patternR2.matcher(fileData.getName());
                             if (matcherR2.matches()) {
@@ -190,17 +188,17 @@ public class HTSFSampleDAOTest {
     @Test
     public void testWorkflowPlan() {
         WSDAOManager daoMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
-        List<WorkflowPlan> wpList = new ArrayList<WorkflowPlan>();
-        WorkflowPlanDAO workflowPlanDAO = daoMgr.getMaPSeqDAOBean().getWorkflowPlanDAO();
+        List<WorkflowRun> wpList = new ArrayList<WorkflowRun>();
+        WorkflowRunDAO workflowRunDAO = daoMgr.getMaPSeqDAOBean().getWorkflowRunDAO();
         String sampleName = "NCG_00142%";
 
         try {
-            List<WorkflowPlan> wfPlanList = workflowPlanDAO.findByStudyNameAndSampleNameAndWorkflowName("NC_GENES",
+            List<WorkflowRun> wfRunList = workflowRunDAO.findByStudyNameAndSampleNameAndWorkflowName("NC_GENES",
                     sampleName, "NCGenes");
             // List<WorkflowPlan> wfPlanList = workflowPlanDAO.findByStudyNameAndSampleNameAndWorkflowName("NC_GENES",
             // sampleName, "NCGenes");
-            if (wfPlanList != null) {
-                wpList.addAll(wfPlanList);
+            if (wfRunList != null) {
+                wpList.addAll(wfRunList);
             }
         } catch (MaPSeqDAOException e) {
         }
@@ -210,15 +208,15 @@ public class HTSFSampleDAOTest {
             Formatter formatter = new Formatter(sb, Locale.US);
             formatter.format("%1$-35s %2$-18s %3$-20s %4$-24s %5$s%n", "Sample Name", "Workflow Name",
                     "Workflow Run Status", "Start Date", "End Date");
-            for (WorkflowPlan wp : wpList) {
+            for (WorkflowRun wr : wpList) {
 
                 try {
-                    JAXBContext context = JAXBContext.newInstance(WorkflowPlan.class);
+                    JAXBContext context = JAXBContext.newInstance(WorkflowRun.class);
                     Marshaller m = context.createMarshaller();
                     m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-                    File moduleClassXMLFile = new File("/tmp", String.format("%s-%d.xml", "WorkflowPlan", wp.getId()));
+                    File moduleClassXMLFile = new File("/tmp", String.format("%s-%d.xml", "WorkflowRun", wr.getId()));
                     FileWriter fw = new FileWriter(moduleClassXMLFile);
-                    m.marshal(wp, fw);
+                    m.marshal(wr, fw);
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 } catch (PropertyException e1) {
@@ -227,12 +225,10 @@ public class HTSFSampleDAOTest {
                     e1.printStackTrace();
                 }
 
-                WorkflowRun wr = wp.getWorkflowRun();
-
-                for (HTSFSample sample : wp.getHTSFSamples()) {
+                for (Sample sample : wr.getSamples()) {
 
                     try {
-                        JAXBContext context = JAXBContext.newInstance(HTSFSample.class);
+                        JAXBContext context = JAXBContext.newInstance(Sample.class);
                         Marshaller m = context.createMarshaller();
                         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
                         File moduleClassXMLFile = new File("/tmp", String.format("%s.xml", sample.getName()));
@@ -245,21 +241,24 @@ public class HTSFSampleDAOTest {
                     } catch (JAXBException e1) {
                         e1.printStackTrace();
                     }
+                }
 
-                    Date startDate = wr.getStartDate();
+                for (WorkflowRunAttempt workflowRunAttempt : wr.getAttempts()) {
+
+                    Date startDate = workflowRunAttempt.getStarted();
                     String formattedStartDate = "";
                     if (startDate != null) {
                         formattedStartDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(
-                                wr.getStartDate());
+                                workflowRunAttempt.getStarted());
                     }
-                    Date endDate = wr.getEndDate();
+                    Date endDate = workflowRunAttempt.getFinished();
                     String formattedEndDate = "";
                     if (endDate != null) {
                         formattedEndDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(
-                                wr.getEndDate());
+                                workflowRunAttempt.getFinished());
                     }
-                    formatter.format("%1$-35s %2$-18s %3$-20s %4$-24s %5$s%n", sample.getName(), wr.getWorkflow()
-                            .getName(), wr.getStatus().getState(), formattedStartDate, formattedEndDate);
+                    formatter.format("%1$-18s %2$-20s %3$-24s %4$s%n", wr.getWorkflow().getName(), workflowRunAttempt
+                            .getStatus().getState(), formattedStartDate, formattedEndDate);
                 }
                 formatter.flush();
             }

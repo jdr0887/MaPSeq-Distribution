@@ -11,25 +11,23 @@ import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.Test;
 
-import edu.unc.mapseq.dao.AccountDAO;
+import edu.unc.mapseq.dao.FlowcellDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
-import edu.unc.mapseq.dao.PlatformDAO;
-import edu.unc.mapseq.dao.SequencerRunDAO;
-import edu.unc.mapseq.dao.model.EntityAttribute;
-import edu.unc.mapseq.dao.model.SequencerRun;
-import edu.unc.mapseq.dao.model.SequencerRunStatusType;
+import edu.unc.mapseq.dao.model.Attribute;
+import edu.unc.mapseq.dao.model.Flowcell;
+import edu.unc.mapseq.dao.model.FlowcellStatusType;
 
-public class SequencerRunTest {
+public class FlowcellTest {
 
     @Test
     public void testFindAll() {
         RSDAOManager daoMgr = RSDAOManager.getInstance("edu/unc/mapseq/dao/rs/mapseq-dao-beans-test.xml");
         try {
-            List<SequencerRun> entityList = daoMgr.getMaPSeqDAOBean().getSequencerRunDAO().findAll();
+            List<Flowcell> entityList = daoMgr.getMaPSeqDAOBean().getFlowcellDAO().findAll();
             if (entityList != null && entityList.size() > 0) {
-                for (SequencerRun entity : entityList) {
+                for (Flowcell entity : entityList) {
                     System.out.println(entity.toString());
-                    assertTrue(entity.getHTSFSamples() == null);
+                    assertTrue(entity.getSamples() == null);
                 }
             }
         } catch (MaPSeqDAOException e) {
@@ -48,13 +46,13 @@ public class SequencerRunTest {
             Date parsedEndDate = DateUtils.parseDate("2014-07-11",
                     new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
 
-            List<SequencerRun> entityList = daoMgr.getMaPSeqDAOBean().getSequencerRunDAO()
-                    .findByCreationDateRange(parsedStartDate, parsedEndDate);
+            List<Flowcell> entityList = daoMgr.getMaPSeqDAOBean().getFlowcellDAO()
+                    .findByCreatedDateRange(parsedStartDate, parsedEndDate);
             if (entityList != null && entityList.size() > 0) {
-                for (SequencerRun entity : entityList) {
+                for (Flowcell entity : entityList) {
                     System.out.println(entity.toString());
-                    Set<EntityAttribute> attributeSet = entity.getAttributes();
-                    for (EntityAttribute attribute : attributeSet) {
+                    Set<Attribute> attributeSet = entity.getAttributes();
+                    for (Attribute attribute : attributeSet) {
                         System.out.printf("%s:%s%n", attribute.getName(), attribute.getValue());
                     }
                 }
@@ -71,7 +69,7 @@ public class SequencerRunTest {
     public void testFindById() {
         RSDAOManager daoMgr = RSDAOManager.getInstance("edu/unc/mapseq/dao/rs/mapseq-dao-beans-test.xml");
         try {
-            SequencerRun entity = daoMgr.getMaPSeqDAOBean().getSequencerRunDAO().findById(108078L);
+            Flowcell entity = daoMgr.getMaPSeqDAOBean().getFlowcellDAO().findById(108078L);
             System.out.println(entity.toString());
         } catch (MaPSeqDAOException e) {
             e.printStackTrace();
@@ -81,18 +79,13 @@ public class SequencerRunTest {
     @Test
     public void testSave() {
         RSDAOManager daoMgr = RSDAOManager.getInstance("edu/unc/mapseq/dao/rs/mapseq-dao-beans-test.xml");
-        SequencerRunDAO sequencerRunDAO = daoMgr.getMaPSeqDAOBean().getSequencerRunDAO();
-        AccountDAO accountDAO = daoMgr.getMaPSeqDAOBean().getAccountDAO();
-        PlatformDAO platformDAO = daoMgr.getMaPSeqDAOBean().getPlatformDAO();
+        FlowcellDAO flowcellDAO = daoMgr.getMaPSeqDAOBean().getFlowcellDAO();
         try {
-            SequencerRun entity = new SequencerRun();
+            Flowcell entity = new Flowcell();
             entity.setBaseDirectory("adsf");
-            entity.setCreator(accountDAO.findByName("jreilly").get(0));
             entity.setName("test");
-            entity.setDescription("test");
-            entity.setPlatform(platformDAO.findById(66L));
-            entity.setStatus(SequencerRunStatusType.COMPLETED);
-            Long id = sequencerRunDAO.save(entity);
+            entity.setStatus(FlowcellStatusType.COMPLETED);
+            Long id = flowcellDAO.save(entity);
             System.out.println(id);
         } catch (MaPSeqDAOException e) {
             e.printStackTrace();

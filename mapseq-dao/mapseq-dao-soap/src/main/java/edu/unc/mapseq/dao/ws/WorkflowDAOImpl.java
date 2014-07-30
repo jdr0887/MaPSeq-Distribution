@@ -1,7 +1,9 @@
 package edu.unc.mapseq.dao.ws;
 
+import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.transport.http.HTTPConduit;
@@ -18,7 +20,7 @@ import edu.unc.mapseq.ws.WorkflowService;
  * 
  * @author jdr0887
  */
-public class WorkflowDAOImpl extends BaseEntityDAOImpl<Workflow, Long> implements WorkflowDAO {
+public class WorkflowDAOImpl extends NamedEntityDAOImpl<Workflow, Long> implements WorkflowDAO {
 
     private final Logger logger = LoggerFactory.getLogger(WorkflowDAOImpl.class);
 
@@ -58,6 +60,14 @@ public class WorkflowDAOImpl extends BaseEntityDAOImpl<Workflow, Long> implement
     @Override
     public List<Workflow> findByName(String name) throws MaPSeqDAOException {
         List<Workflow> ret = workflowService.findByName(name);
+        return ret;
+    }
+
+    @Override
+    public List<Workflow> findByCreatedDateRange(Date started, Date finished) throws MaPSeqDAOException {
+        String formattedStartDate = DateFormatUtils.ISO_DATE_FORMAT.format(started);
+        String formattedEndDate = DateFormatUtils.ISO_DATE_FORMAT.format(finished);
+        List<Workflow> ret = workflowService.findByCreatedDateRange(formattedStartDate, formattedEndDate);
         return ret;
     }
 

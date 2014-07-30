@@ -18,9 +18,7 @@ import org.junit.Test;
 
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowRunDAO;
-import edu.unc.mapseq.dao.model.WorkflowPlan;
 import edu.unc.mapseq.dao.model.WorkflowRun;
-import edu.unc.mapseq.dao.model.WorkflowRunStatusType;
 import edu.unc.mapseq.ws.WorkflowRunService;
 
 public class WorkflowRunDAOTest {
@@ -29,10 +27,7 @@ public class WorkflowRunDAOTest {
     public void testSave() {
 
         WorkflowRun workflowRun = new WorkflowRun();
-        workflowRun.setDescription("test");
-        workflowRun.setStartDate(new Date());
         workflowRun.setName("test");
-        workflowRun.setStatus(WorkflowRunStatusType.PENDING);
 
         WSDAOManager wsDAOMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
         WorkflowRunDAO workflowRunDAO = wsDAOMgr.getMaPSeqDAOBean().getWorkflowRunDAO();
@@ -59,7 +54,7 @@ public class WorkflowRunDAOTest {
 
         for (WorkflowRun workflowRun : workflowRunList) {
             try {
-                JAXBContext context = JAXBContext.newInstance(WorkflowPlan.class);
+                JAXBContext context = JAXBContext.newInstance(WorkflowRun.class);
                 Marshaller m = context.createMarshaller();
                 m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
                 File moduleClassXMLFile = new File("/tmp", String.format("%s-%d.xml", "WorkflowRun",

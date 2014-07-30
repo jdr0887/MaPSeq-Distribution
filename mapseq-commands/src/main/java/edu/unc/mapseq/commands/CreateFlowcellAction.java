@@ -1,6 +1,5 @@
 package edu.unc.mapseq.commands;
 
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -8,48 +7,32 @@ import org.apache.felix.gogo.commands.Argument;
 import org.apache.felix.gogo.commands.Command;
 import org.apache.karaf.shell.console.AbstractAction;
 
+import edu.unc.mapseq.dao.FlowcellDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
-import edu.unc.mapseq.dao.SequencerRunDAO;
-import edu.unc.mapseq.dao.model.Account;
-import edu.unc.mapseq.dao.model.SequencerRun;
-import edu.unc.mapseq.dao.model.SequencerRunStatusType;
+import edu.unc.mapseq.dao.model.Flowcell;
+import edu.unc.mapseq.dao.model.FlowcellStatusType;
 
-@Command(scope = "mapseq", name = "create-sequencer-run", description = "Create SequencerRun")
-public class CreateSequencerRunAction extends AbstractAction {
+@Command(scope = "mapseq", name = "create-flowcell", description = "Create Flowcell")
+public class CreateFlowcellAction extends AbstractAction {
 
     private MaPSeqDAOBean maPSeqDAOBean;
 
-    @Argument(index = 0, name = "platform", description = "Platform Id", required = true, multiValued = false)
-    private Long platformId;
-
-    @Argument(index = 1, name = "baseRunFolder", description = "The folder parent to the flowcell directory", required = true, multiValued = false)
+    @Argument(index = 0, name = "baseRunFolder", description = "The folder parent to the flowcell directory", required = true, multiValued = false)
     private String baseRunFolder;
 
-    @Argument(index = 2, name = "name", description = "Name", required = true, multiValued = false)
+    @Argument(index = 1, name = "name", description = "Name", required = true, multiValued = false)
     private String name;
 
-    @Argument(index = 3, name = "status", description = "Status", required = true, multiValued = false)
+    @Argument(index = 2, name = "status", description = "Status", required = true, multiValued = false)
     private String status;
 
-    public CreateSequencerRunAction() {
+    public CreateFlowcellAction() {
         super();
     }
 
     @Override
     public Object doExecute() {
-
-        List<Account> accountList = null;
-        try {
-            accountList = maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
-            if (accountList == null || (accountList != null && accountList.isEmpty())) {
-                System.err.printf("Account doesn't exist: %s%n", System.getProperty("user.name"));
-                System.err.println("Must register account first");
-                return null;
-            }
-        } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
-        }
 
         Pattern pattern = Pattern.compile("^\\d+_.+_\\d+_.+$");
         Matcher matcher = pattern.matcher(name);
@@ -60,27 +43,25 @@ public class CreateSequencerRunAction extends AbstractAction {
             return null;
         }
 
-        SequencerRun sequencerRun = new SequencerRun();
+        Flowcell flowcell = new Flowcell();
         try {
-            sequencerRun.setCreator(accountList.get(0));
-            sequencerRun.setName(name);
-            sequencerRun.setBaseDirectory(baseRunFolder);
-            sequencerRun.setPlatform(maPSeqDAOBean.getPlatformDAO().findById(this.platformId));
+            flowcell.setName(name);
+            flowcell.setBaseDirectory(baseRunFolder);
             try {
-                SequencerRunStatusType statusType = SequencerRunStatusType.valueOf(status);
-                sequencerRun.setStatus(statusType);
+                FlowcellStatusType statusType = FlowcellStatusType.valueOf(status);
+                flowcell.setStatus(statusType);
             } catch (Exception e) {
                 System.err.println("Invalid status...Please use:");
                 StringBuilder sb = new StringBuilder();
-                for (SequencerRunStatusType type : SequencerRunStatusType.values()) {
+                for (FlowcellStatusType type : FlowcellStatusType.values()) {
                     sb.append(",").append(type.toString());
                 }
                 System.err.println(sb.toString().replaceFirst(",", ""));
                 return null;
             }
-            SequencerRunDAO sequencerRunDAO = maPSeqDAOBean.getSequencerRunDAO();
-            Long sequencerRunId = sequencerRunDAO.save(sequencerRun);
-            return sequencerRunId;
+            FlowcellDAO flowcellDAO = maPSeqDAOBean.getFlowcellDAO();
+            Long flowcellId = flowcellDAO.save(flowcell);
+            return flowcellId;
         } catch (MaPSeqDAOException e1) {
             e1.printStackTrace();
         }
@@ -93,14 +74,6 @@ public class CreateSequencerRunAction extends AbstractAction {
 
     public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
         this.maPSeqDAOBean = maPSeqDAOBean;
-    }
-
-    public Long getPlatformId() {
-        return platformId;
-    }
-
-    public void setPlatformId(Long platformId) {
-        this.platformId = platformId;
     }
 
     public String getBaseRunFolder() {

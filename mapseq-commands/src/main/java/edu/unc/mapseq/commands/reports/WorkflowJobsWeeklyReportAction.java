@@ -16,9 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import edu.unc.mapseq.dao.JobDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
-import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowDAO;
-import edu.unc.mapseq.dao.model.Account;
 import edu.unc.mapseq.dao.model.Job;
 import edu.unc.mapseq.dao.model.Workflow;
 import edu.unc.mapseq.reports.ReportFactory;
@@ -40,20 +38,6 @@ public class WorkflowJobsWeeklyReportAction extends AbstractAction {
     protected Object doExecute() throws Exception {
         logger.debug("ENTERING doExecute()");
 
-        List<Account> accountList = null;
-        try {
-            accountList = maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
-            if (accountList == null || (accountList != null && accountList.isEmpty())) {
-                System.err.printf("Account doesn't exist: %s%n", System.getProperty("user.name"));
-                System.err.println("Must register account first");
-                return null;
-            }
-        } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
-        }
-
-        Account account = accountList.get(0);
-
         WorkflowDAO workflowDAO = maPSeqDAOBean.getWorkflowDAO();
         Workflow workflow = workflowDAO.findById(workflowId);
 
@@ -64,10 +48,9 @@ public class WorkflowJobsWeeklyReportAction extends AbstractAction {
         Date startDate = c.getTime();
 
         JobDAO jobDAO = maPSeqDAOBean.getJobDAO();
-        List<Job> jobList = jobDAO.findByCreatorAndWorkflowIdAndCreationDateRange(account.getId(), workflow.getId(),
-                startDate, endDate);
+        List<Job> jobList = jobDAO.findByWorkflowIdAndCreatedDateRange(workflow.getId(), startDate, endDate);
 
-        File chartFile = ReportFactory.createWorkflowJobsReport(jobList, account, workflow, startDate, endDate);
+        File chartFile = ReportFactory.createWorkflowJobsReport(jobList, workflow, startDate, endDate);
 
         String subject = String.format("MaPSeq :: Job Duration :: %s (%s - %s)", workflow.getName(),
                 DateFormatUtils.format(startDate, "MM/dd"), DateFormatUtils.format(endDate, "MM/dd"));

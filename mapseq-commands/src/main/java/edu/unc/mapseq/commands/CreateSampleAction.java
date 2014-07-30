@@ -14,20 +14,19 @@ import org.apache.felix.gogo.commands.Argument;
 import org.apache.felix.gogo.commands.Command;
 import org.apache.karaf.shell.console.AbstractAction;
 
-import edu.unc.mapseq.dao.HTSFSampleDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
-import edu.unc.mapseq.dao.model.Account;
+import edu.unc.mapseq.dao.SampleDAO;
 import edu.unc.mapseq.dao.model.FileData;
-import edu.unc.mapseq.dao.model.HTSFSample;
+import edu.unc.mapseq.dao.model.Flowcell;
 import edu.unc.mapseq.dao.model.MimeType;
-import edu.unc.mapseq.dao.model.SequencerRun;
+import edu.unc.mapseq.dao.model.Sample;
 
-@Command(scope = "mapseq", name = "create-htsf-sample", description = "Create HTSFSample")
-public class CreateHTSFSampleAction extends AbstractAction {
+@Command(scope = "mapseq", name = "create-sample", description = "Create Sample")
+public class CreateSampleAction extends AbstractAction {
 
-    @Argument(index = 0, name = "sequencerRunId", description = "SequencerRun Identifier", required = true, multiValued = false)
-    private Long sequencerRunId;
+    @Argument(index = 0, name = "flowcellId", description = "Flowcell Identifier", required = true, multiValued = false)
+    private Long flowcellId;
 
     @Argument(index = 1, name = "laneIndex", description = "Lane Index", required = true, multiValued = false)
     private Integer laneIndex;
@@ -49,46 +48,34 @@ public class CreateHTSFSampleAction extends AbstractAction {
 
     private MaPSeqDAOBean maPSeqDAOBean;
 
-    public CreateHTSFSampleAction() {
+    public CreateSampleAction() {
         super();
     }
 
     @Override
     public Object doExecute() {
 
-        List<Account> accountList = null;
+        Flowcell flowcell = null;
         try {
-            accountList = maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
-            if (accountList == null || (accountList != null && accountList.isEmpty())) {
-                System.err.printf("Account doesn't exist: %s%n", System.getProperty("user.name"));
-                System.err.println("Must register account first");
-                return null;
-            }
-        } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
-        }
-
-        SequencerRun sequencerRun = null;
-        try {
-            sequencerRun = maPSeqDAOBean.getSequencerRunDAO().findById(this.sequencerRunId);
+            flowcell = maPSeqDAOBean.getFlowcellDAO().findById(this.flowcellId);
         } catch (Exception e1) {
         }
 
-        if (sequencerRun == null) {
-            System.err.println("SequencerRun not found: " + this.sequencerRunId);
+        if (flowcell == null) {
+            System.err.println("SequencerRun not found: " + this.flowcellId);
             System.err.println("Please run list-sequencer-runs and use a valid SequencerRun Identifier.");
             return null;
         }
 
         File read1FastqFile = new File(read1Fastq);
-        if (!read1FastqFile.getName().startsWith(sequencerRun.getName())) {
+        if (!read1FastqFile.getName().startsWith(flowcell.getName())) {
             System.err.println("Invalid fastq name: " + read1FastqFile.getName());
             System.err.println("Fastq should start with SequencerRun Name");
             return null;
         }
 
         File read2FastqFile = new File(read2Fastq);
-        if (read2FastqFile != null && !read2FastqFile.getName().startsWith(sequencerRun.getName())) {
+        if (read2FastqFile != null && !read2FastqFile.getName().startsWith(flowcell.getName())) {
             System.err.println("Invalid fastq name: " + read2FastqFile.getName());
             System.err.println("Fastq should start with SequencerRun Name");
             return null;
@@ -139,19 +126,19 @@ public class CreateHTSFSampleAction extends AbstractAction {
             return null;
         }
 
-        File sequencerRunOutputDir = new File(mapseqOutputDirectory, sequencerRun.getName());
+        File sequencerRunOutputDir = new File(mapseqOutputDirectory, flowcell.getName());
         File workflowOutputDir = new File(sequencerRunOutputDir, "CASAVA");
-        File htsfSampleOutputDir = new File(workflowOutputDir, this.name);
+        File sampleOutputDir = new File(workflowOutputDir, this.name);
 
-        htsfSampleOutputDir.mkdirs();
+        sampleOutputDir.mkdirs();
 
-        if (!htsfSampleOutputDir.canWrite()) {
-            System.err.println("You don't have permission to write to: " + htsfSampleOutputDir.getAbsolutePath());
+        if (!sampleOutputDir.canWrite()) {
+            System.err.println("You don't have permission to write to: " + sampleOutputDir.getAbsolutePath());
             return null;
         }
 
         try {
-            File newR1FastqFile = new File(htsfSampleOutputDir, read1FastqFile.getName());
+            File newR1FastqFile = new File(sampleOutputDir, read1FastqFile.getName());
             if (!read1FastqFile.getAbsolutePath().equals(newR1FastqFile.getAbsolutePath())) {
                 FileUtils.copyFile(read1FastqFile, newR1FastqFile);
             }
@@ -161,7 +148,7 @@ public class CreateHTSFSampleAction extends AbstractAction {
 
         if (read2Fastq != null) {
             try {
-                File newR2FastqFile = new File(htsfSampleOutputDir, read2FastqFile.getName());
+                File newR2FastqFile = new File(sampleOutputDir, read2FastqFile.getName());
                 if (!read2FastqFile.getAbsolutePath().equals(newR2FastqFile.getAbsolutePath())) {
                     FileUtils.copyFile(read2FastqFile, newR2FastqFile);
                 }
@@ -177,7 +164,7 @@ public class CreateHTSFSampleAction extends AbstractAction {
             FileData read1FastqFD = new FileData();
             read1FastqFD.setMimeType(MimeType.FASTQ);
             read1FastqFD.setName(read1FastqFile.getName());
-            read1FastqFD.setPath(htsfSampleOutputDir.getAbsolutePath());
+            read1FastqFD.setPath(sampleOutputDir.getAbsolutePath());
 
             List<FileData> fileDataList = maPSeqDAOBean.getFileDataDAO().findByExample(read1FastqFD);
             if (fileDataList != null && fileDataList.size() > 0) {
@@ -192,7 +179,7 @@ public class CreateHTSFSampleAction extends AbstractAction {
                 FileData read2FastqFD = new FileData();
                 read2FastqFD.setMimeType(MimeType.FASTQ);
                 read2FastqFD.setName(read2FastqFile.getName());
-                read2FastqFD.setPath(htsfSampleOutputDir.getAbsolutePath());
+                read2FastqFD.setPath(sampleOutputDir.getAbsolutePath());
                 fileDataList = maPSeqDAOBean.getFileDataDAO().findByExample(read2FastqFD);
                 if (fileDataList != null && fileDataList.size() > 0) {
                     read2FastqFD = fileDataList.get(0);
@@ -203,18 +190,17 @@ public class CreateHTSFSampleAction extends AbstractAction {
                 fileDataSet.add(read2FastqFD);
             }
 
-            HTSFSampleDAO htsfSampleDAO = maPSeqDAOBean.getHTSFSampleDAO();
+            SampleDAO htsfSampleDAO = maPSeqDAOBean.getSampleDAO();
 
-            HTSFSample htsfSample = new HTSFSample();
-            htsfSample.setName(name);
-            htsfSample.setCreator(accountList.get(0));
-            htsfSample.setBarcode(barcode);
-            htsfSample.setStudy(maPSeqDAOBean.getStudyDAO().findById(this.studyId));
-            htsfSample.setLaneIndex(laneIndex);
-            htsfSample.setSequencerRun(sequencerRun);
-            htsfSample.setFileDatas(fileDataSet);
-            Long id = htsfSampleDAO.save(htsfSample);
-            htsfSample.setId(id);
+            Sample sample = new Sample();
+            sample.setName(name);
+            sample.setBarcode(barcode);
+            sample.setStudy(maPSeqDAOBean.getStudyDAO().findById(this.studyId));
+            sample.setLaneIndex(laneIndex);
+            sample.setFlowcell(flowcell);
+            sample.setFileDatas(fileDataSet);
+            Long id = htsfSampleDAO.save(sample);
+            sample.setId(id);
             return id;
         } catch (MaPSeqDAOException e) {
             e.printStackTrace();
@@ -231,12 +217,12 @@ public class CreateHTSFSampleAction extends AbstractAction {
         this.maPSeqDAOBean = maPSeqDAOBean;
     }
 
-    public Long getSequencerRunId() {
-        return sequencerRunId;
+    public Long getFlowcellId() {
+        return flowcellId;
     }
 
-    public void setSequencerRunId(Long sequencerRunId) {
-        this.sequencerRunId = sequencerRunId;
+    public void setFlowcellId(Long flowcellId) {
+        this.flowcellId = flowcellId;
     }
 
     public Integer getLaneIndex() {

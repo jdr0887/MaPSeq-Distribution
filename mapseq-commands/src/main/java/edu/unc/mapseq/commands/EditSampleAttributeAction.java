@@ -8,21 +8,21 @@ import org.apache.karaf.shell.console.AbstractAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.unc.mapseq.dao.HTSFSampleDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
-import edu.unc.mapseq.dao.model.EntityAttribute;
-import edu.unc.mapseq.dao.model.HTSFSample;
+import edu.unc.mapseq.dao.SampleDAO;
+import edu.unc.mapseq.dao.model.Attribute;
+import edu.unc.mapseq.dao.model.Sample;
 
-@Command(scope = "mapseq", name = "edit-htsf-sample-attribute", description = "Edit HTSFSample Attributes")
-public class EditHTSFSampleAttributeAction extends AbstractAction {
+@Command(scope = "mapseq", name = "edit-sample-attribute", description = "Edit Sample Attributes")
+public class EditSampleAttributeAction extends AbstractAction {
 
-    private final Logger logger = LoggerFactory.getLogger(EditHTSFSampleAttributeAction.class);
+    private final Logger logger = LoggerFactory.getLogger(EditSampleAttributeAction.class);
 
     private MaPSeqDAOBean maPSeqDAOBean;
 
-    @Argument(index = 0, name = "htsfSampleId", description = "HTSFSample Identifier", required = true, multiValued = false)
-    private Long htsfSampleId;
+    @Argument(index = 0, name = "sampleId", description = "Sample Identifier", required = true, multiValued = false)
+    private Long sampleId;
 
     @Argument(index = 1, name = "name", description = "the attribute key", required = true, multiValued = false)
     private String name;
@@ -30,17 +30,17 @@ public class EditHTSFSampleAttributeAction extends AbstractAction {
     @Argument(index = 2, name = "value", description = "the attribute value", required = true, multiValued = false)
     private String value;
 
-    public EditHTSFSampleAttributeAction() {
+    public EditSampleAttributeAction() {
         super();
     }
 
     @Override
     public Object doExecute() {
 
-        HTSFSampleDAO htsfSampleDAO = maPSeqDAOBean.getHTSFSampleDAO();
-        HTSFSample entity = null;
+        SampleDAO htsfSampleDAO = maPSeqDAOBean.getSampleDAO();
+        Sample entity = null;
         try {
-            entity = htsfSampleDAO.findById(htsfSampleId);
+            entity = htsfSampleDAO.findById(sampleId);
         } catch (MaPSeqDAOException e) {
         }
         if (entity == null) {
@@ -48,9 +48,9 @@ public class EditHTSFSampleAttributeAction extends AbstractAction {
             return null;
         }
 
-        Set<EntityAttribute> attributeSet = entity.getAttributes();
+        Set<Attribute> attributeSet = entity.getAttributes();
         if (attributeSet != null && attributeSet.size() > 0) {
-            for (EntityAttribute attribute : attributeSet) {
+            for (Attribute attribute : attributeSet) {
                 if (attribute.getName().equals(name)) {
                     attribute.setValue(value);
                     break;
@@ -74,12 +74,12 @@ public class EditHTSFSampleAttributeAction extends AbstractAction {
         this.maPSeqDAOBean = maPSeqDAOBean;
     }
 
-    public Long getHtsfSampleId() {
-        return htsfSampleId;
+    public Long getSampleId() {
+        return sampleId;
     }
 
-    public void setHtsfSampleId(Long htsfSampleId) {
-        this.htsfSampleId = htsfSampleId;
+    public void setSampleId(Long sampleId) {
+        this.sampleId = sampleId;
     }
 
     public String getName() {

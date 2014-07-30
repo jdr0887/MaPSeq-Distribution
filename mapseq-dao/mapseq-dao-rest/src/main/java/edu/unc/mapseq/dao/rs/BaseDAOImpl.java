@@ -22,6 +22,15 @@ public abstract class BaseDAOImpl<T extends Persistable, ID extends Serializable
     public BaseDAOImpl() {
         super();
         JacksonJaxbJsonProvider provider = new JacksonJaxbJsonProvider();
+        // ObjectMapper mapper = new ObjectMapper();
+        // mapper.setAnnotationIntrospector(new JaxbAnnotationIntrospector());
+        // AnnotationIntrospector introspector = new JaxbAnnotationIntrospector();
+        // // make deserializer use JAXB annotations (only)
+        // mapper.getDeserializationConfig().setAnnotationIntrospector(introspector);
+        // // make serializer use JAXB annotations (only)
+        // mapper.getSerializationConfig().setAnnotationIntrospector(introspector);
+        // provider.setMapper(mapper);
+
         // JSONProvider<T> provider = new JSONProvider<T>();
         // provider.setDropRootElement(true);
         providers.add(provider);

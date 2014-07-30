@@ -11,7 +11,7 @@ import org.apache.karaf.shell.console.AbstractAction;
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowRunDAO;
-import edu.unc.mapseq.dao.model.EntityAttribute;
+import edu.unc.mapseq.dao.model.Attribute;
 import edu.unc.mapseq.dao.model.WorkflowRun;
 
 @Command(scope = "mapseq", name = "list-workflow-run-attributes", description = "List WorkflowRun Attributes")
@@ -44,9 +44,9 @@ public class ListWorkflowRunAttributesAction extends AbstractAction {
         Formatter formatter = new Formatter(sb, Locale.US);
         formatter.format("%1$-12s %2$-40s %3$s%n", "Attribute ID", "Name", "Value");
 
-        Set<EntityAttribute> attributeSet = entity.getAttributes();
-        if (attributeSet != null && attributeSet.size() > 0) {
-            for (EntityAttribute attribute : attributeSet) {
+        Set<Attribute> attributeSet = entity.getAttributes();
+        if (attributeSet != null && !attributeSet.isEmpty()) {
+            for (Attribute attribute : attributeSet) {
                 formatter
                         .format("%1$-12s %2$-40s %3$s%n", attribute.getId(), attribute.getName(), attribute.getValue());
                 formatter.flush();
