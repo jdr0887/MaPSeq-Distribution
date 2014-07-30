@@ -37,8 +37,8 @@
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/edit-htsf-sample-attribute">
-      <action class="edu.unc.mapseq.commands.EditHTSFSampleAttributeAction">
+    <command name="mapseq/edit-sample-attribute">
+      <action class="edu.unc.mapseq.commands.EditSampleAttributeAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
@@ -47,8 +47,8 @@
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/delete-htsf-sample">
-      <action class="edu.unc.mapseq.commands.DeleteHTSFSampleAction">
+    <command name="mapseq/delete-sample">
+      <action class="edu.unc.mapseq.commands.DeleteSampleAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
@@ -62,13 +62,13 @@
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/create-htsf-sample">
-      <action class="edu.unc.mapseq.commands.CreateHTSFSampleAction">
+    <command name="mapseq/create-sample">
+      <action class="edu.unc.mapseq.commands.CreateSampleAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/create-sequencer-run">
-      <action class="edu.unc.mapseq.commands.CreateSequencerRunAction">
+    <command name="mapseq/create-flowcell">
+      <action class="edu.unc.mapseq.commands.CreateFlowcellAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
@@ -77,8 +77,8 @@
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/create-sequencer-run-from-sample-sheet">
-      <action class="edu.unc.mapseq.commands.CreateSequencerRunFromSampleSheetAction">
+    <command name="mapseq/create-flowcell-from-sample-sheet">
+      <action class="edu.unc.mapseq.commands.CreateFlowcellFromSampleSheetAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
@@ -102,8 +102,8 @@
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/delete-sequencer-run">
-      <action class="edu.unc.mapseq.commands.DeleteSequencerRunAction">
+    <command name="mapseq/delete-flowcell">
+      <action class="edu.unc.mapseq.commands.DeleteFlowcellAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
@@ -112,13 +112,13 @@
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/list-htsf-samples">
-      <action class="edu.unc.mapseq.commands.ListHTSFSamplesAction">
+    <command name="mapseq/list-samples">
+      <action class="edu.unc.mapseq.commands.ListSamplesAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/list-htsf-sample-attributes">
-      <action class="edu.unc.mapseq.commands.ListHTSFSampleAttributesAction">
+    <command name="mapseq/list-sample-attributes">
+      <action class="edu.unc.mapseq.commands.ListSampleAttributesAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
@@ -127,18 +127,13 @@
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/list-my-workflow-runs">
-      <action class="edu.unc.mapseq.commands.ListMyWorkflowRunsAction">
+    <command name="mapseq/list-workflow-runs">
+      <action class="edu.unc.mapseq.commands.ListWorkflowRunsAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/list-platforms">
-      <action class="edu.unc.mapseq.commands.ListPlatformsAction">
-        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
-      </action>
-    </command>
-    <command name="mapseq/list-sequencer-runs">
-      <action class="edu.unc.mapseq.commands.ListSequencerRunsAction">
+    <command name="mapseq/list-flowcells">
+      <action class="edu.unc.mapseq.commands.ListFlowcellsAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
@@ -155,30 +150,25 @@
   </command-bundle>
 
   <reference id="maPSeqConfigurationService" interface="edu.unc.mapseq.config.MaPSeqConfigurationService" />
-  <reference id="accountDAO" interface="edu.unc.mapseq.dao.AccountDAO" />
-  <reference id="accountGroupDAO" interface="edu.unc.mapseq.dao.AccountGroupDAO" />
+
   <reference id="fileDataDAO" interface="edu.unc.mapseq.dao.FileDataDAO" />
-  <reference id="HTSFSampleDAO" interface="edu.unc.mapseq.dao.HTSFSampleDAO" />
-  <reference id="platformDAO" interface="edu.unc.mapseq.dao.PlatformDAO" />
+  <reference id="sampleDAO" interface="edu.unc.mapseq.dao.SampleDAO" />
   <reference id="jobDAO" interface="edu.unc.mapseq.dao.JobDAO" />
   <reference id="studyDAO" interface="edu.unc.mapseq.dao.StudyDAO" />
-  <reference id="sequencerRunDAO" interface="edu.unc.mapseq.dao.SequencerRunDAO" />
+  <reference id="flowcellDAO" interface="edu.unc.mapseq.dao.FlowcellDAO" />
   <reference id="workflowDAO" interface="edu.unc.mapseq.dao.WorkflowDAO" />
-  <reference id="workflowPlanDAO" interface="edu.unc.mapseq.dao.WorkflowPlanDAO" />
   <reference id="workflowRunDAO" interface="edu.unc.mapseq.dao.WorkflowRunDAO" />
+  <reference id="workflowRunAttemptDAO" interface="edu.unc.mapseq.dao.WorkflowRunAttemptDAO" />
 
   <bean id="maPSeqDAOBean" class="edu.unc.mapseq.dao.MaPSeqDAOBean">
-    <property name="accountDAO" ref="accountDAO" />
-    <property name="accountGroupDAO" ref="accountGroupDAO" />
     <property name="fileDataDAO" ref="fileDataDAO" />
-    <property name="HTSFSampleDAO" ref="HTSFSampleDAO" />
-    <property name="platformDAO" ref="platformDAO" />
+    <property name="sampleDAO" ref="sampleDAO" />
     <property name="jobDAO" ref="jobDAO" />
     <property name="studyDAO" ref="studyDAO" />
-    <property name="sequencerRunDAO" ref="sequencerRunDAO" />
+    <property name="flowcellDAO" ref="flowcellDAO" />
     <property name="workflowDAO" ref="workflowDAO" />
-    <property name="workflowPlanDAO" ref="workflowPlanDAO" />
     <property name="workflowRunDAO" ref="workflowRunDAO" />
+    <property name="workflowRunAttemptDAO" ref="workflowRunAttemptDAO" />
   </bean>
 
 </blueprint>

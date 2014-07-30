@@ -87,16 +87,13 @@
     </dependency>
   </dependencies>
   <modules>
-    <module>mapseq-web-service-account</module>
-    <module>mapseq-web-service-account-group</module>
     <module>mapseq-web-service-file-data</module>
-    <module>mapseq-web-service-platform</module>
+    <module>mapseq-web-service-flowcell</module>
     <module>mapseq-web-service-job</module>
-    <module>mapseq-web-service-htsf-sample</module>
+    <module>mapseq-web-service-sample</module>
     <module>mapseq-web-service-study</module>
-    <module>mapseq-web-service-sequencer-run</module>
     <module>mapseq-web-service-workflow</module>
-    <module>mapseq-web-service-workflow-plan</module>
     <module>mapseq-web-service-workflow-run</module>
+    <module>mapseq-web-service-workflow-run-attempt</module>
   </modules>
 </project>
