@@ -69,16 +69,12 @@
     <bundle>mvn:edu.unc.mapseq.distribution/mapseq-reports/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution/mapseq-tasks/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution/mapseq-commands/${project.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-account/${project.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-account-group/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-file-data/${project.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-platform/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-job/${project.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-htsf-sample/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-sample/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-study/${project.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-sequencer-run/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-flowcell/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-workflow/${project.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-workflow-plan/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-workflow-run/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-dao/mapseq-dao-soap/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution/mapseq-modules/${project.version}</bundle>
