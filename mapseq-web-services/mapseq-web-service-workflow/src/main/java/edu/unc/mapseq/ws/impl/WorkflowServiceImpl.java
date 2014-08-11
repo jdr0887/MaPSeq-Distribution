@@ -1,8 +1,12 @@
 package edu.unc.mapseq.ws.impl;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.time.DateFormatUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.cxf.common.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +48,32 @@ public class WorkflowServiceImpl implements WorkflowService {
             logger.error("Error", e);
         }
         return workflow;
+    }
+
+    @Override
+    public List<Workflow> findByCreatedDateRange(String started, String finished) {
+        logger.debug("ENTERING findByCreatedDateRange(String, String)");
+        List<Workflow> ret = new ArrayList<>();
+        if (StringUtils.isEmpty(started)) {
+            logger.warn("started is emtpy");
+            return ret;
+        }
+        if (StringUtils.isEmpty(finished)) {
+            logger.warn("finished is emtpy");
+            return ret;
+        }
+        try {
+            Date parsedStartDate = DateUtils.parseDate(started,
+                    new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
+            Date parsedEndDate = DateUtils.parseDate(finished,
+                    new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
+            ret.addAll(workflowDAO.findByCreatedDateRange(parsedStartDate, parsedEndDate));
+        } catch (ParseException e) {
+            logger.error("Error", e);
+        } catch (MaPSeqDAOException e) {
+            logger.error("Error", e);
+        }
+        return ret;
     }
 
     @Override

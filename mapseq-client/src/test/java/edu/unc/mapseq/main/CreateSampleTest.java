@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 import org.junit.Test;
 
-public class CreateHTSFSampleTest {
+public class CreateSampleTest {
 
     @Test
     public void testFileNameRegex() {

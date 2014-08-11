@@ -3,7 +3,6 @@ package edu.unc.mapseq.dao.ws;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;

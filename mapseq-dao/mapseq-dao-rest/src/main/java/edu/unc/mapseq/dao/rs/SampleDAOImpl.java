@@ -84,4 +84,9 @@ public class SampleDAOImpl extends NamedEntityDAOImpl<Sample, Long> implements S
         return new ArrayList<Sample>(results);
     }
 
+    @Override
+    public List<Sample> findByWorkflowRunId(Long arg0) throws MaPSeqDAOException {
+        return null;
+    }
+
 }

@@ -11,7 +11,6 @@ import edu.unc.mapseq.dao.FlowcellDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.model.Flowcell;
-import edu.unc.mapseq.dao.model.FlowcellStatusType;
 
 @Command(scope = "mapseq", name = "create-flowcell", description = "Create Flowcell")
 public class CreateFlowcellAction extends AbstractAction {
@@ -23,9 +22,6 @@ public class CreateFlowcellAction extends AbstractAction {
 
     @Argument(index = 1, name = "name", description = "Name", required = true, multiValued = false)
     private String name;
-
-    @Argument(index = 2, name = "status", description = "Status", required = true, multiValued = false)
-    private String status;
 
     public CreateFlowcellAction() {
         super();
@@ -47,18 +43,6 @@ public class CreateFlowcellAction extends AbstractAction {
         try {
             flowcell.setName(name);
             flowcell.setBaseDirectory(baseRunFolder);
-            try {
-                FlowcellStatusType statusType = FlowcellStatusType.valueOf(status);
-                flowcell.setStatus(statusType);
-            } catch (Exception e) {
-                System.err.println("Invalid status...Please use:");
-                StringBuilder sb = new StringBuilder();
-                for (FlowcellStatusType type : FlowcellStatusType.values()) {
-                    sb.append(",").append(type.toString());
-                }
-                System.err.println(sb.toString().replaceFirst(",", ""));
-                return null;
-            }
             FlowcellDAO flowcellDAO = maPSeqDAOBean.getFlowcellDAO();
             Long flowcellId = flowcellDAO.save(flowcell);
             return flowcellId;
@@ -90,14 +74,6 @@ public class CreateFlowcellAction extends AbstractAction {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
 }

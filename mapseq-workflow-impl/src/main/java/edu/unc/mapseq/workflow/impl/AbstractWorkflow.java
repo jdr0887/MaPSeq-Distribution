@@ -22,9 +22,8 @@ import edu.unc.mapseq.config.MaPSeqConfigurationService;
 import edu.unc.mapseq.config.RunModeType;
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
-import edu.unc.mapseq.dao.WorkflowRunDAO;
-import edu.unc.mapseq.dao.model.WorkflowPlan;
-import edu.unc.mapseq.dao.model.WorkflowRun;
+import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
+import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
 import edu.unc.mapseq.workflow.Workflow;
 import edu.unc.mapseq.workflow.WorkflowBeanService;
 import edu.unc.mapseq.workflow.WorkflowException;
@@ -32,15 +31,13 @@ import edu.unc.mapseq.workflow.impl.exporter.SecureCondorSubmitScriptExporter;
 
 public abstract class AbstractWorkflow implements Workflow {
 
-    private final Logger logger = LoggerFactory.getLogger(Workflow.class);
+    private final Logger logger = LoggerFactory.getLogger(AbstractWorkflow.class);
 
-    private WorkflowPlan workflowPlan;
+    private WorkflowRunAttempt workflowRunAttempt;
 
     private Integer backOffMultiplier = 5;
 
-    private File homeDirectory;
-
-    private File workDirectory;
+    private File baseOutputDirectory;
 
     private File submitDirectory;
 
@@ -89,9 +86,9 @@ public abstract class AbstractWorkflow implements Workflow {
     @Override
     public void init() throws WorkflowException {
         logger.debug("ENTERING init()");
-        if (this.workflowPlan == null) {
-            logger.error("workflowPlan is null");
-            throw new WorkflowException("workflowPlan is null");
+        if (this.workflowRunAttempt == null) {
+            logger.error("workflowRunAttempt is null");
+            throw new WorkflowException("workflowRunAttempt is null");
         }
 
         String mapseqHome = System.getenv("MAPSEQ_HOME");
@@ -99,13 +96,13 @@ public abstract class AbstractWorkflow implements Workflow {
             logger.error("MAPSEQ_HOME not set in env: {}", mapseqHome);
             throw new WorkflowException("MAPSEQ_HOME not set in env");
         }
-        this.homeDirectory = new File(mapseqHome);
+        File homeDirectory = new File(mapseqHome);
         if (!homeDirectory.exists()) {
             logger.error("MAPSEQ_HOME does not exist: {}", mapseqHome);
             throw new WorkflowException("MAPSEQ_HOME does not exist");
         }
 
-        logger.debug("homeDirectory = {}", this.homeDirectory.getAbsolutePath());
+        logger.debug("homeDirectory = {}", homeDirectory.getAbsolutePath());
 
         String outputDir = System.getenv("MAPSEQ_OUTPUT_DIRECTORY");
         if (StringUtils.isEmpty(outputDir)) {
@@ -113,19 +110,18 @@ public abstract class AbstractWorkflow implements Workflow {
             throw new WorkflowException("MAPSEQ_OUTPUT_DIRECTORY not set in env");
         }
 
-        this.workDirectory = new File(outputDir);
-        if (!workDirectory.exists()) {
+        this.baseOutputDirectory = new File(outputDir);
+        if (!baseOutputDirectory.exists()) {
             logger.error("MAPSEQ_OUTPUT_DIRECTORY does not exist: {}", outputDir);
             throw new WorkflowException("MAPSEQ_OUTPUT_DIRECTORY does not exist");
         }
 
-        this.submitDirectory = new File(this.homeDirectory, "submit");
+        this.submitDirectory = new File(homeDirectory, "submit");
         if (!this.submitDirectory.exists()) {
             this.submitDirectory.mkdirs();
         }
 
         logger.debug("submitDirectory = {}", this.submitDirectory.getAbsolutePath());
-
     }
 
     @Override
@@ -206,14 +202,12 @@ public abstract class AbstractWorkflow implements Workflow {
         }
 
         try {
+            workflowRunAttempt.setStarted(new Date());
+            workflowRunAttempt.setCondorDAGClusterId(jobNode.getCluster());
+            workflowRunAttempt.setSubmitDirectory(jobNode.getSubmitFile().getParentFile().getAbsolutePath());
             MaPSeqDAOBean maPSeqDAOBean = getWorkflowBeanService().getMaPSeqDAOBean();
-            WorkflowRun workflowRun = maPSeqDAOBean.getWorkflowRunDAO().findById(
-                    getWorkflowPlan().getWorkflowRun().getId());
-            workflowRun.setStartDate(new Date());
-            workflowRun.setCondorDAGClusterId(jobNode.getCluster());
-            workflowRun.setSubmitDirectory(jobNode.getSubmitFile().getParentFile().getAbsolutePath());
-            WorkflowRunDAO workflowRunDAO = maPSeqDAOBean.getWorkflowRunDAO();
-            workflowRunDAO.save(workflowRun);
+            WorkflowRunAttemptDAO workflowRunAttemptDAO = maPSeqDAOBean.getWorkflowRunAttemptDAO();
+            workflowRunAttemptDAO.save(workflowRunAttempt);
         } catch (MaPSeqDAOException e) {
             logger.error("Problem saving WorkflowRun: ", e);
             throw new WorkflowException(e);
@@ -230,28 +224,20 @@ public abstract class AbstractWorkflow implements Workflow {
         this.graph = graph;
     }
 
-    public WorkflowPlan getWorkflowPlan() {
-        return workflowPlan;
+    public WorkflowRunAttempt getWorkflowRunAttempt() {
+        return workflowRunAttempt;
     }
 
-    public void setWorkflowPlan(WorkflowPlan workflowPlan) {
-        this.workflowPlan = workflowPlan;
+    public void setWorkflowRunAttempt(WorkflowRunAttempt workflowRunAttempt) {
+        this.workflowRunAttempt = workflowRunAttempt;
     }
 
-    public File getHomeDirectory() {
-        return homeDirectory;
+    public File getBaseOutputDirectory() {
+        return baseOutputDirectory;
     }
 
-    public void setHomeDirectory(File homeDirectory) {
-        this.homeDirectory = homeDirectory;
-    }
-
-    public File getWorkDirectory() {
-        return workDirectory;
-    }
-
-    public void setWorkDirectory(File workDirectory) {
-        this.workDirectory = workDirectory;
+    public void setBaseOutputDirectory(File baseOutputDirectory) {
+        this.baseOutputDirectory = baseOutputDirectory;
     }
 
     public File getSubmitDirectory() {

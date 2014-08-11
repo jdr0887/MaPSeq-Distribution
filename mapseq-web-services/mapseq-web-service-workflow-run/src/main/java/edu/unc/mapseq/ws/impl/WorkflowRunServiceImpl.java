@@ -11,14 +11,9 @@ import org.apache.cxf.common.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.unc.mapseq.dao.JobDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
-import edu.unc.mapseq.dao.WorkflowPlanDAO;
 import edu.unc.mapseq.dao.WorkflowRunDAO;
-import edu.unc.mapseq.dao.model.Job;
-import edu.unc.mapseq.dao.model.WorkflowPlan;
 import edu.unc.mapseq.dao.model.WorkflowRun;
-import edu.unc.mapseq.dao.model.WorkflowRunStatusType;
 import edu.unc.mapseq.ws.WorkflowRunService;
 
 public class WorkflowRunServiceImpl implements WorkflowRunService {
@@ -26,10 +21,6 @@ public class WorkflowRunServiceImpl implements WorkflowRunService {
     private final Logger logger = LoggerFactory.getLogger(WorkflowRunServiceImpl.class);
 
     private WorkflowRunDAO workflowRunDAO;
-
-    private WorkflowPlanDAO workflowPlanDAO;
-
-    private JobDAO jobDAO;
 
     @Override
     public WorkflowRun findById(Long id) {
@@ -93,35 +84,6 @@ public class WorkflowRunServiceImpl implements WorkflowRunService {
     }
 
     @Override
-    public void delete(Long workflowRunId) {
-        logger.debug("ENTERING delete(Long)");
-        if (workflowRunId == null) {
-            logger.warn("workflowRunId was null");
-            return;
-        }
-        try {
-            WorkflowRun wr = workflowRunDAO.findById(workflowRunId);
-            if (wr != null) {
-                List<WorkflowPlan> workflowPlanList = workflowPlanDAO.findByWorkflowRunId(wr.getId());
-                for (WorkflowPlan entity : workflowPlanList) {
-                    logger.warn("Deleting WorkflowPlan: " + entity.getId());
-                    workflowPlanDAO.delete(entity);
-                }
-                List<Job> jobList = jobDAO.findByWorkflowRunId(wr.getId());
-                for (Job entity : jobList) {
-                    logger.warn("Deleting Job: " + entity.getId());
-                    jobDAO.delete(entity);
-                }
-                logger.warn("Deleting WorkflowRun: " + wr.getId());
-                workflowRunDAO.delete(wr);
-            }
-        } catch (MaPSeqDAOException e) {
-            logger.warn("Problem with workflowRunDAO.delete({})", workflowRunId);
-            logger.error("MaPSeqDAOException", e);
-        }
-    }
-
-    @Override
     public Long save(WorkflowRun workflowRun) {
         logger.debug("ENTERING save");
         Long workflowRunId = null;
@@ -135,15 +97,9 @@ public class WorkflowRunServiceImpl implements WorkflowRunService {
     }
 
     @Override
-    public List<WorkflowRun> findByCreatorAndStatusAndCreationDateRange(Long accountId, String status,
-            String startDate, String endDate) {
-        logger.debug("ENTERING findByCreatorAndStatusAndCreationDateRange");
+    public List<WorkflowRun> findByCreatedDateRange(String startDate, String endDate) {
+        logger.debug("ENTERING findByCreatorAndDateRange(Long, String, String)");
         List<WorkflowRun> ret = new ArrayList<WorkflowRun>();
-
-        if (accountId == null) {
-            logger.warn("accountId is null");
-            return ret;
-        }
         if (StringUtils.isEmpty(startDate)) {
             logger.warn("startDate is empty");
             return ret;
@@ -152,70 +108,102 @@ public class WorkflowRunServiceImpl implements WorkflowRunService {
             logger.warn("endDate is empty");
             return ret;
         }
-        if (StringUtils.isEmpty(status)) {
-            logger.warn("status is empty");
-            return ret;
-        }
-
         try {
             Date parsedStartDate = DateUtils.parseDate(startDate,
                     new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
             Date parsedEndDate = DateUtils.parseDate(endDate,
                     new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
-            ret.addAll(workflowRunDAO.findByCreatorAndStatusAndCreationDateRange(accountId,
-                    WorkflowRunStatusType.valueOf(status), parsedStartDate, parsedEndDate));
-        } catch (ParseException | MaPSeqDAOException e) {
-            logger.warn("Problem with workflowRunDAO.findByCreator({})", accountId);
+            ret.addAll(workflowRunDAO.findByCreatedDateRange(parsedStartDate, parsedEndDate));
+        } catch (ParseException e1) {
+            e1.printStackTrace();
+        } catch (MaPSeqDAOException e) {
             logger.error("MaPSeqDAOException", e);
         }
         return ret;
     }
 
     @Override
-    public List<WorkflowRun> findByCreatorAndCreationDateRange(Long accountId, String startDate, String endDate) {
-        logger.debug("ENTERING findByCreatorAndDateRange(Long, String, String)");
+    public List<WorkflowRun> findByFlowcellId(Long flowcellId) throws MaPSeqDAOException {
+        logger.debug("ENTERING findByFlowcellId(Long)");
         List<WorkflowRun> ret = new ArrayList<WorkflowRun>();
-        if (accountId == null) {
-            logger.warn("accountId is null");
-            return ret;
-        }
-        if (StringUtils.isEmpty(startDate)) {
-            logger.warn("startDate is empty");
-            return ret;
-        }
-        if (StringUtils.isEmpty(endDate)) {
-            logger.warn("endDate is empty");
+        if (flowcellId == null) {
+            logger.warn("flowcellId is null");
             return ret;
         }
         try {
-            Date parsedStartDate = DateUtils.parseDate(startDate,
-                    new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
-            Date parsedEndDate = DateUtils.parseDate(endDate,
-                    new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
-            ret.addAll(workflowRunDAO.findByCreatorAndCreationDateRange(accountId, parsedStartDate, parsedEndDate));
-        } catch (ParseException e1) {
-            e1.printStackTrace();
+            ret.addAll(workflowRunDAO.findByFlowcellId(flowcellId));
         } catch (MaPSeqDAOException e) {
-            logger.warn("Problem with workflowRunDAO.findByCreator({})", accountId);
             logger.error("MaPSeqDAOException", e);
         }
         return ret;
     }
 
-    public WorkflowPlanDAO getWorkflowPlanDAO() {
-        return workflowPlanDAO;
+    @Override
+    public List<WorkflowRun> findByFlowcellIdAndWorkflowId(Long flowcellId, Long workflowId) {
+        logger.debug("ENTERING findByFlowcellIdAndWorkflowId(Long, Long)");
+        List<WorkflowRun> ret = new ArrayList<WorkflowRun>();
+        if (flowcellId == null) {
+            logger.warn("flowcellId is null");
+            return ret;
+        }
+        if (workflowId == null) {
+            logger.warn("workflowId is null");
+            return ret;
+        }
+        try {
+            ret.addAll(workflowRunDAO.findByFlowcellIdAndWorkflowId(flowcellId, workflowId));
+        } catch (MaPSeqDAOException e) {
+            logger.error("MaPSeqDAOException", e);
+        }
+        return ret;
     }
 
-    public void setWorkflowPlanDAO(WorkflowPlanDAO workflowPlanDAO) {
-        this.workflowPlanDAO = workflowPlanDAO;
+    @Override
+    public List<WorkflowRun> findBySampleId(Long sampleId) throws MaPSeqDAOException {
+        logger.debug("ENTERING findBySampleId(Long)");
+        List<WorkflowRun> ret = new ArrayList<WorkflowRun>();
+        if (sampleId == null) {
+            logger.warn("sampleId is null");
+            return ret;
+        }
+        try {
+            ret.addAll(workflowRunDAO.findBySampleId(sampleId));
+        } catch (MaPSeqDAOException e) {
+            logger.error("MaPSeqDAOException", e);
+        }
+        return ret;
     }
 
-    public JobDAO getJobDAO() {
-        return jobDAO;
+    @Override
+    public List<WorkflowRun> findByStudyId(Long studyId) throws MaPSeqDAOException {
+        logger.debug("ENTERING findByStudyId(Long)");
+        List<WorkflowRun> ret = new ArrayList<WorkflowRun>();
+        if (studyId == null) {
+            logger.warn("studyId is null");
+            return ret;
+        }
+        try {
+            ret.addAll(workflowRunDAO.findByStudyId(studyId));
+        } catch (MaPSeqDAOException e) {
+            logger.error("MaPSeqDAOException", e);
+        }
+        return ret;
     }
 
-    public void setJobDAO(JobDAO jobDAO) {
-        this.jobDAO = jobDAO;
+    @Override
+    public List<WorkflowRun> findByWorkflowId(Long workflowId) throws MaPSeqDAOException {
+        logger.debug("ENTERING findByWorkflowId(Long)");
+        List<WorkflowRun> ret = new ArrayList<WorkflowRun>();
+        if (workflowId == null) {
+            logger.warn("workflowId is null");
+            return ret;
+        }
+        try {
+            ret.addAll(workflowRunDAO.findByWorkflowId(workflowId));
+        } catch (MaPSeqDAOException e) {
+            logger.error("MaPSeqDAOException", e);
+        }
+        return ret;
     }
 
     public WorkflowRunDAO getWorkflowRunDAO() {

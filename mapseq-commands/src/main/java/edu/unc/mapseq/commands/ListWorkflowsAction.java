@@ -1,8 +1,6 @@
 package edu.unc.mapseq.commands;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Formatter;
 import java.util.List;
 import java.util.Locale;
@@ -37,15 +35,6 @@ public class ListWorkflowsAction extends AbstractAction {
             workflowList.addAll(workflowDAO.findAll());
         } catch (Exception e) {
         }
-
-        Collections.sort(workflowList, new Comparator<Workflow>() {
-
-            @Override
-            public int compare(Workflow w1, Workflow w2) {
-                return w1.getId().compareTo(w2.getId());
-            }
-
-        });
 
         if (workflowList.size() > 0) {
             StringBuilder sb = new StringBuilder();

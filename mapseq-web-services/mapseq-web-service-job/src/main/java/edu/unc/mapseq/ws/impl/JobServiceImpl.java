@@ -11,6 +11,7 @@ import org.apache.cxf.common.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.unc.mapseq.dao.FileDataDAO;
 import edu.unc.mapseq.dao.JobDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.model.Job;
@@ -21,6 +22,8 @@ public class JobServiceImpl implements JobService {
     private final Logger logger = LoggerFactory.getLogger(JobServiceImpl.class);
 
     private JobDAO jobDAO;
+
+    private FileDataDAO fileDataDAO;
 
     @Override
     public Job findById(Long id) {
@@ -39,12 +42,12 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public Long save(Job processing) {
+    public Long save(Job job) {
         logger.debug("ENTERING save(Job)");
         Long id = null;
         try {
-            id = jobDAO.save(processing);
-            logger.debug("job: {}", processing);
+            id = jobDAO.save(job);
+            logger.debug("job: {}", job);
         } catch (MaPSeqDAOException e) {
             e.printStackTrace();
         }
@@ -125,6 +128,14 @@ public class JobServiceImpl implements JobService {
 
     public void setJobDAO(JobDAO jobDAO) {
         this.jobDAO = jobDAO;
+    }
+
+    public FileDataDAO getFileDataDAO() {
+        return fileDataDAO;
+    }
+
+    public void setFileDataDAO(FileDataDAO fileDataDAO) {
+        this.fileDataDAO = fileDataDAO;
     }
 
 }

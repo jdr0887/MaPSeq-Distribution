@@ -13,15 +13,12 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 import edu.unc.mapseq.dao.MaPSeqDAOException;
-import edu.unc.mapseq.dao.PlatformDAO;
-import edu.unc.mapseq.dao.model.Account;
-import edu.unc.mapseq.dao.model.HTSFSample;
-import edu.unc.mapseq.dao.model.Platform;
-import edu.unc.mapseq.dao.model.SequencerRun;
+import edu.unc.mapseq.dao.model.Flowcell;
+import edu.unc.mapseq.dao.model.Sample;
 import edu.unc.mapseq.dao.model.Study;
 import edu.unc.mapseq.dao.ws.WSDAOManager;
 
-public class CreateSequencerRunTest {
+public class CreateFlowcellTest {
 
     @Test
     public void testFileNameRegex() {
@@ -47,30 +44,12 @@ public class CreateSequencerRunTest {
             lnr.readLine();
             String line;
 
-            Account account = daoMgr.getMaPSeqDAOBean().getAccountDAO().findByName(System.getProperty("user.name"))
-                    .get(0);
-
-            if (account == null) {
-                System.out.println("Must register account first");
-                return;
-            }
-
-            Platform platform = null;
-            try {
-                PlatformDAO platformDAO = daoMgr.getMaPSeqDAOBean().getPlatformDAO();
-                platform = platformDAO.findById(53L);
-            } catch (MaPSeqDAOException e) {
-                e.printStackTrace();
-            }
-
-            SequencerRun sequencerRun = new SequencerRun();
-            sequencerRun.setCreator(account);
-            sequencerRun.setBaseDirectory("asdfasdf");
-            sequencerRun.setPlatform(platform);
+            Flowcell flowcell = new Flowcell();
+            flowcell.setBaseDirectory("asdfasdf");
 
             try {
-                Long sequencerRunId = daoMgr.getMaPSeqDAOBean().getSequencerRunDAO().save(sequencerRun);
-                sequencerRun.setId(sequencerRunId);
+                Long flowcellId = daoMgr.getMaPSeqDAOBean().getFlowcellDAO().save(flowcell);
+                flowcell.setId(flowcellId);
             } catch (MaPSeqDAOException e1) {
                 e1.printStackTrace();
             }
@@ -78,7 +57,7 @@ public class CreateSequencerRunTest {
             while ((line = lnr.readLine()) != null) {
 
                 String[] st = line.split(",");
-                String flowcell = st[0];
+                String flowcellProper = st[0];
                 String laneIndex = st[1];
                 String sampleId = st[2];
                 String sampleRef = st[3];
@@ -92,22 +71,18 @@ public class CreateSequencerRunTest {
                 Study study = daoMgr.getMaPSeqDAOBean().getStudyDAO().findByName(sampleProject).get(0);
                 if (study == null) {
                     study = new Study();
-                    study.setApproved(Boolean.TRUE);
-                    study.setCreator(account);
-                    study.setGrant("test");
                     study.setName(sampleProject);
                     daoMgr.getMaPSeqDAOBean().getStudyDAO().save(study);
                 }
 
-                HTSFSample htsfSample = new HTSFSample();
-                htsfSample.setBarcode(index);
-                htsfSample.setCreator(account);
-                htsfSample.setLaneIndex(Integer.valueOf(laneIndex));
-                htsfSample.setName(sampleId);
-                // htsfSample.setSequencerRun(sequencerRun);
-                htsfSample.setStudy(study);
+                Sample sample = new Sample();
+                sample.setBarcode(index);
+                sample.setLaneIndex(Integer.valueOf(laneIndex));
+                sample.setName(sampleId);
+                // sample.setFlowcell(flowcell);
+                sample.setStudy(study);
 
-                daoMgr.getMaPSeqDAOBean().getHTSFSampleDAO().save(htsfSample);
+                daoMgr.getMaPSeqDAOBean().getSampleDAO().save(sample);
             }
 
         } catch (MaPSeqDAOException e) {

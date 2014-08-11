@@ -17,7 +17,6 @@ import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.model.Attribute;
 import edu.unc.mapseq.dao.model.Flowcell;
-import edu.unc.mapseq.dao.model.FlowcellStatusType;
 import edu.unc.mapseq.dao.model.Sample;
 import edu.unc.mapseq.dao.model.Study;
 
@@ -44,7 +43,6 @@ public class CreateFlowcellFromSampleSheetAction extends AbstractAction {
     public Object doExecute() {
 
         Flowcell flowcell = new Flowcell();
-        flowcell.setStatus(FlowcellStatusType.COMPLETED);
         flowcell.setBaseDirectory(baseRunFolder);
         flowcell.setName(name);
 

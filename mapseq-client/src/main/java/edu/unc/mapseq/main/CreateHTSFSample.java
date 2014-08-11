@@ -19,14 +19,13 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 
-import edu.unc.mapseq.dao.HTSFSampleDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
-import edu.unc.mapseq.dao.model.Account;
+import edu.unc.mapseq.dao.SampleDAO;
 import edu.unc.mapseq.dao.model.FileData;
-import edu.unc.mapseq.dao.model.HTSFSample;
+import edu.unc.mapseq.dao.model.Flowcell;
 import edu.unc.mapseq.dao.model.MimeType;
-import edu.unc.mapseq.dao.model.SequencerRun;
+import edu.unc.mapseq.dao.model.Sample;
 import edu.unc.mapseq.dao.ws.WSDAOManager;
 
 public class CreateHTSFSample implements Callable<Long> {
@@ -35,7 +34,7 @@ public class CreateHTSFSample implements Callable<Long> {
 
     private final static Options cliOptions = new Options();
 
-    private Long sequencerRunId;
+    private Long flowcellId;
 
     private Integer laneIndex;
 
@@ -61,39 +60,26 @@ public class CreateHTSFSample implements Callable<Long> {
 
         MaPSeqDAOBean maPSeqDAOBean = daoMgr.getMaPSeqDAOBean();
 
-        List<Account> accountList = null;
+        Flowcell flowcell = null;
         try {
-            accountList = maPSeqDAOBean.getAccountDAO().findByName(System.getProperty("user.name"));
-            if (accountList == null || (accountList != null && accountList.isEmpty())) {
-                System.err.printf("Account doesn't exist: %s%n", System.getProperty("user.name"));
-                System.err.println("Must register account first");
-                return null;
-            }
-        } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
-        }
-        Account account = accountList.get(0);
-
-        SequencerRun sequencerRun = null;
-        try {
-            sequencerRun = maPSeqDAOBean.getSequencerRunDAO().findById(this.sequencerRunId);
+            flowcell = maPSeqDAOBean.getFlowcellDAO().findById(this.flowcellId);
         } catch (Exception e1) {
         }
 
-        if (sequencerRun == null) {
-            System.err.println("SequencerRun not found: " + this.sequencerRunId);
+        if (flowcell == null) {
+            System.err.println("Flowcell not found: " + this.flowcellId);
             System.err
-                    .println("Please run <MAPSEQ_HOME>/bin/mapseq-list-sequencer-runs.sh and use a valid SequencerRun Identifier.");
+                    .println("Please run <MAPSEQ_HOME>/bin/mapseq-list-flowcells.sh and use a valid Flowcell Identifier.");
             return null;
         }
 
-        if (!read1Fastq.getName().startsWith(sequencerRun.getName())) {
+        if (!read1Fastq.getName().startsWith(flowcell.getName())) {
             System.err.println("Invalid fastq name: " + this.read1Fastq.getName());
             System.err.println("Fastq should start with SequencerRun Name");
             return null;
         }
 
-        if (read2Fastq != null && !read2Fastq.getName().startsWith(sequencerRun.getName())) {
+        if (read2Fastq != null && !read2Fastq.getName().startsWith(flowcell.getName())) {
             System.err.println("Invalid fastq name: " + this.read2Fastq.getName());
             System.err.println("Fastq should start with SequencerRun Name");
             return null;
@@ -144,7 +130,7 @@ public class CreateHTSFSample implements Callable<Long> {
             return null;
         }
 
-        File sequencerRunOutputDir = new File(mapseqOutputDirectory, sequencerRun.getName());
+        File sequencerRunOutputDir = new File(mapseqOutputDirectory, flowcell.getName());
         File workflowOutputDir = new File(sequencerRunOutputDir, "CASAVA");
         File htsfSampleOutputDir = new File(workflowOutputDir, String.format("L%03d_%s", laneIndex, barcode));
 
@@ -208,18 +194,17 @@ public class CreateHTSFSample implements Callable<Long> {
                 fileDataSet.add(read2FastqFD);
             }
 
-            HTSFSampleDAO htsfSampleDAO = maPSeqDAOBean.getHTSFSampleDAO();
+            SampleDAO sampleDAO = maPSeqDAOBean.getSampleDAO();
 
-            HTSFSample htsfSample = new HTSFSample();
-            htsfSample.setName(getName());
-            htsfSample.setCreator(account);
-            htsfSample.setBarcode(barcode);
-            htsfSample.setStudy(maPSeqDAOBean.getStudyDAO().findById(this.studyId));
-            htsfSample.setLaneIndex(laneIndex);
-            htsfSample.setSequencerRun(sequencerRun);
-            htsfSample.setFileDatas(fileDataSet);
-            Long id = htsfSampleDAO.save(htsfSample);
-            htsfSample.setId(id);
+            Sample sample = new Sample();
+            sample.setName(getName());
+            sample.setBarcode(barcode);
+            sample.setStudy(maPSeqDAOBean.getStudyDAO().findById(this.studyId));
+            sample.setLaneIndex(laneIndex);
+            sample.setFlowcell(flowcell);
+            sample.getFileDatas().addAll(fileDataSet);
+            Long id = sampleDAO.save(sample);
+            sample.setId(id);
             return id;
         } catch (MaPSeqDAOException e) {
             e.printStackTrace();
@@ -244,12 +229,12 @@ public class CreateHTSFSample implements Callable<Long> {
         this.barcode = barcode;
     }
 
-    public Long getSequencerRunId() {
-        return sequencerRunId;
+    public Long getFlowcellId() {
+        return flowcellId;
     }
 
-    public void setSequencerRunId(Long sequencerRunId) {
-        this.sequencerRunId = sequencerRunId;
+    public void setFlowcellId(Long flowcellId) {
+        this.flowcellId = flowcellId;
     }
 
     public Integer getLaneIndex() {
@@ -295,7 +280,7 @@ public class CreateHTSFSample implements Callable<Long> {
         cliOptions.addOption(OptionBuilder.withLongOpt("barcode").isRequired().hasArg().create());
         cliOptions.addOption(OptionBuilder.withLongOpt("read1Fastq").isRequired().hasArg().create());
         cliOptions.addOption(OptionBuilder.withLongOpt("studyId").isRequired().hasArg().create());
-        cliOptions.addOption(OptionBuilder.withLongOpt("sequencerRunId").isRequired().hasArg().create());
+        cliOptions.addOption(OptionBuilder.withLongOpt("flowcellId").isRequired().hasArg().create());
         cliOptions.addOption(OptionBuilder.withLongOpt("laneIndex").isRequired().hasArg().create());
 
         cliOptions.addOption(OptionBuilder.withLongOpt("help").withDescription("print this help message").create("?"));
@@ -311,7 +296,7 @@ public class CreateHTSFSample implements Callable<Long> {
 
             main.setName(commandLine.getOptionValue("name"));
             main.setBarcode(commandLine.getOptionValue("barcode"));
-            main.setSequencerRunId(Long.valueOf(commandLine.getOptionValue("sequencerRunId")));
+            main.setFlowcellId(Long.valueOf(commandLine.getOptionValue("flowcellId")));
             main.setLaneIndex(Integer.valueOf(commandLine.getOptionValue("laneIndex")));
             main.setStudyId(Long.valueOf(commandLine.getOptionValue("studyId")));
 

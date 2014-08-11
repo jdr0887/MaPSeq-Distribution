@@ -312,11 +312,6 @@ public class ModuleCLIGenerator extends AbstractGenerator {
                         .invoke("withLongOpt").arg(JExpr.lit("workflowRunAttemptId")).invoke("create")));
 
         mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption").arg(
-                optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit("sampleId")).invoke("hasArg")
-                        .invoke("withDescription").arg(JExpr.lit("Sample Identifier")).invoke("withLongOpt")
-                        .arg(JExpr.lit("sampleId")).invoke("create")));
-
-        mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption").arg(
                 optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit("propertyFile")).invoke("hasArg")
                         .invoke("withDescription").arg(JExpr.lit("Property File")).invoke("withLongOpt")
                         .arg(JExpr.lit("propertyFile")).invoke("create")));
@@ -464,12 +459,6 @@ public class ModuleCLIGenerator extends AbstractGenerator {
                 commandLineVar.invoke("getOptionValue").arg("workflowRunAttemptId")));
         hasOptionConditionalThenBlock.add(applicationVar.invoke("set" + StringUtils.capitalize("workflowRunAttemptId"))
                 .arg(paramVar));
-
-        hasOptionConditional = tryBlockBody._if(commandLineVar.invoke("hasOption").arg("sampleId"));
-        hasOptionConditionalThenBlock = hasOptionConditional._then();
-        paramVar = hasOptionConditionalThenBlock.decl(longJClass, "sampleId");
-        paramVar.init(longJClass.staticInvoke("valueOf").arg(commandLineVar.invoke("getOptionValue").arg("sampleId")));
-        hasOptionConditionalThenBlock.add(applicationVar.invoke("setSampleId").arg(paramVar));
 
         hasOptionConditional = tryBlockBody._if(commandLineVar.invoke("hasOption").arg("serializeFile"));
         hasOptionConditionalThenBlock = hasOptionConditional._then();

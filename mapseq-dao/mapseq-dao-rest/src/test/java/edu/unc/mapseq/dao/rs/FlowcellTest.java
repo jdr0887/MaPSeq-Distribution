@@ -15,7 +15,6 @@ import edu.unc.mapseq.dao.FlowcellDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.model.Attribute;
 import edu.unc.mapseq.dao.model.Flowcell;
-import edu.unc.mapseq.dao.model.FlowcellStatusType;
 
 public class FlowcellTest {
 
@@ -84,7 +83,6 @@ public class FlowcellTest {
             Flowcell entity = new Flowcell();
             entity.setBaseDirectory("adsf");
             entity.setName("test");
-            entity.setStatus(FlowcellStatusType.COMPLETED);
             Long id = flowcellDAO.save(entity);
             System.out.println(id);
         } catch (MaPSeqDAOException e) {

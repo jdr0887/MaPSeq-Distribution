@@ -13,9 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.StudyDAO;
-import edu.unc.mapseq.dao.model.Sample;
 import edu.unc.mapseq.dao.model.Study;
-import edu.unc.mapseq.ws.SampleService;
 import edu.unc.mapseq.ws.StudyService;
 
 /**

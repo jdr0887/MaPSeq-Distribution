@@ -83,4 +83,9 @@ public class FlowcellDAOImpl extends NamedEntityDAOImpl<Flowcell, Long> implemen
         return flowcellList;
     }
 
+    @Override
+    public List<Flowcell> findByWorkflowRunId(Long arg0) throws MaPSeqDAOException {
+        return null;
+    }
+
 }

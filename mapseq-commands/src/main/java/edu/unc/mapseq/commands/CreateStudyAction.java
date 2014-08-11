@@ -16,9 +16,6 @@ public class CreateStudyAction extends AbstractAction {
     @Argument(index = 0, name = "name", description = "Name", required = true, multiValued = false)
     private String name;
 
-    @Argument(index = 1, name = "approved", description = "Approved", required = true, multiValued = false)
-    private Boolean approved;
-
     public CreateStudyAction() {
         super();
     }
@@ -28,7 +25,6 @@ public class CreateStudyAction extends AbstractAction {
 
         try {
             Study study = new Study();
-            study.setApproved(approved);
             study.setName(name);
             Long studyId = maPSeqDAOBean.getStudyDAO().save(study);
             return studyId;
@@ -52,14 +48,6 @@ public class CreateStudyAction extends AbstractAction {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Boolean getApproved() {
-        return approved;
-    }
-
-    public void setApproved(Boolean approved) {
-        this.approved = approved;
     }
 
 }

@@ -61,9 +61,9 @@ public class ListStudies implements Runnable {
         if (studyList.size() > 0) {
             StringBuilder sb = new StringBuilder();
             Formatter formatter = new Formatter(sb, Locale.US);
-            formatter.format("%1$-8s %2$-40s %3$s%n", "ID", "Name", "Grant");
+            formatter.format("%1$-8s %2$-40s%n", "ID", "Name");
             for (Study study : studyList) {
-                formatter.format("%1$-8s %2$-40s %3$s%n", study.getId(), study.getName(), study.getGrant());
+                formatter.format("%1$-8s %2$-40s %3$s%n", study.getId(), study.getName());
                 formatter.flush();
             }
             System.out.println(formatter.toString());

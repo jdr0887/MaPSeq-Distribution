@@ -8,31 +8,29 @@ import org.renci.jlrm.condor.CondorJobBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.unc.mapseq.dao.model.HTSFSample;
-import edu.unc.mapseq.dao.model.SequencerRun;
-import edu.unc.mapseq.dao.model.WorkflowPlan;
-import edu.unc.mapseq.dao.model.WorkflowRun;
+import edu.unc.mapseq.dao.model.Sample;
+import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
 
 public class WorkflowJobFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(WorkflowJobFactory.class);
 
-    public static CondorJobBuilder createJob(int count, Class<?> moduleClass, WorkflowPlan workflowPlan) {
-        return createJob(count, moduleClass, workflowPlan, null);
+    public static CondorJobBuilder createJob(int count, Class<?> moduleClass, WorkflowRunAttempt workflowRunAttempt) {
+        return createJob(count, moduleClass, workflowRunAttempt, null);
     }
 
-    public static CondorJobBuilder createJob(int count, Class<?> moduleClass, WorkflowPlan workflowPlan,
-            HTSFSample htsfSample) {
-        return createJob(count, moduleClass, workflowPlan, htsfSample, true);
+    public static CondorJobBuilder createJob(int count, Class<?> moduleClass, WorkflowRunAttempt workflowRunAttempt,
+            Sample sample) {
+        return createJob(count, moduleClass, workflowRunAttempt, sample, true);
     }
 
-    public static CondorJobBuilder createJob(int count, Class<?> moduleClass, WorkflowPlan workflowPlan,
-            HTSFSample htsfSample, boolean persistFileData) {
-        return createJob(count, moduleClass, workflowPlan, htsfSample, persistFileData, 3);
+    public static CondorJobBuilder createJob(int count, Class<?> moduleClass, WorkflowRunAttempt workflowRunAttempt,
+            Sample sample, boolean persistFileData) {
+        return createJob(count, moduleClass, workflowRunAttempt, sample, persistFileData, 3);
     }
 
-    public static CondorJobBuilder createJob(int count, Class<?> moduleClass, WorkflowPlan workflowPlan,
-            HTSFSample htsfSample, boolean persistFileData, Integer retry) {
+    public static CondorJobBuilder createJob(int count, Class<?> moduleClass, WorkflowRunAttempt workflowRunAttempt,
+            Sample sample, boolean persistFileData, Integer retry) {
         logger.debug("ENTERING createJob(int, Class<?>, WorkflowPlan, HTSFSample, boolean, Integer)");
         logger.debug("moduleClass.getSimpleName(): {}", moduleClass.getSimpleName());
 
@@ -54,37 +52,17 @@ public class WorkflowJobFactory {
             }
         }
 
-        if (workflowPlan != null) {
-
-            WorkflowRun workflowRun = workflowPlan.getWorkflowRun();
-
-            if (workflowRun != null) {
-                builder.addArgument("--workflowRunId", workflowRun.getId().toString());
-                if (workflowRun.getCreator() != null) {
-                    builder.addArgument("--accountId", workflowRun.getCreator().getId().toString());
-                }
-            }
-
-            SequencerRun sequencerRun = workflowPlan.getSequencerRun();
-
-            if (sequencerRun != null) {
-                logger.debug("sequencerRun.getId().toString(): {}", sequencerRun.getId().toString());
-                builder.addArgument("--sequencerRunId", sequencerRun.getId().toString());
-            } else if (sequencerRun == null && htsfSample != null) {
-                logger.debug("htsfSample.getSequencerRun().getId().toString(): {}", htsfSample.getSequencerRun()
-                        .getId().toString());
-                builder.addArgument("--sequencerRunId", htsfSample.getSequencerRun().getId().toString());
-            }
-
+        if (workflowRunAttempt != null) {
+            builder.addArgument("--workflowRunAttemptId", workflowRunAttempt.getId().toString());
         }
 
         if (persistFileData) {
             builder.addArgument("--persistFileData");
         }
 
-        if (htsfSample != null) {
-            logger.debug("htsfSample.getId().toString(): {}", htsfSample.getId().toString());
-            builder.addArgument("--htsfSampleId", htsfSample.getId().toString());
+        if (sample != null) {
+            logger.debug(sample.toString());
+            builder.addArgument("--sampleId", sample.getId().toString());
         }
 
         return builder;
