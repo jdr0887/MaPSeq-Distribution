@@ -57,11 +57,6 @@
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/check-workflow-status">
-      <action class="edu.unc.mapseq.commands.CheckWorkflowStatusAction">
-        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
-      </action>
-    </command>
     <command name="mapseq/create-sample">
       <action class="edu.unc.mapseq.commands.CreateSampleAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
