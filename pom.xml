@@ -2,7 +2,7 @@
   <parent>
     <groupId>edu.unc.mapseq</groupId>
     <artifactId>mapseq</artifactId>
-    <version>0.0.21</version>
+    <version>0.0.22-SNAPSHOT</version>
   </parent>
   <name>MaPSeq :: Distribution</name>
   <modelVersion>4.0.0</modelVersion>
@@ -14,7 +14,6 @@
     <mapseq.version>0.4.11-SNAPSHOT</mapseq.version>
     <renci.charts.version>0.0.5</renci.charts.version>
     <spring.version>3.2.4.RELEASE</spring.version>
-    <karaf.version>2.3.5</karaf.version>
   </properties>
   <issueManagement>
     <system>gForge</system>
