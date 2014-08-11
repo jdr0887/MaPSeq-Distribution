@@ -12,13 +12,9 @@
   ">
 
   <reference id="workflowRunDAO" interface="edu.unc.mapseq.dao.WorkflowRunDAO" />
-  <reference id="workflowPlanDAO" interface="edu.unc.mapseq.dao.WorkflowPlanDAO" />
-  <reference id="jobDAO" interface="edu.unc.mapseq.dao.JobDAO" />
 
   <bean id="workflowRun" class="edu.unc.mapseq.ws.impl.WorkflowRunServiceImpl">
     <property name="workflowRunDAO" ref="workflowRunDAO" />
-    <property name="workflowPlanDAO" ref="workflowPlanDAO" />
-    <property name="jobDAO" ref="jobDAO" />
   </bean>
 
   <jaxrs:server id="WorkflowRunServiceRS" address="/WorkflowRun">
