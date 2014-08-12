@@ -2,8 +2,6 @@ package edu.unc.mapseq.commands;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.Formatter;
 import java.util.List;
@@ -57,23 +55,19 @@ public class ListWorkflowRunsAction extends AbstractAction {
                             "Workflow Run Name", "Created Date", "Start Date", "End Date", "Status");
                 }
 
-                Collections.sort(workflowRunList, new Comparator<WorkflowRun>() {
-                    @Override
-                    public int compare(WorkflowRun wr1, WorkflowRun wr2) {
-                        return wr1.getId().compareTo(wr2.getId());
-                    }
-                });
+                List<WorkflowRunAttempt> attempts = maPSeqDAOBean.getWorkflowRunAttemptDAO().findByWorkflowId(
+                        workflowId);
 
-                for (WorkflowRun workflowRun : workflowRunList) {
+                if (attempts != null && !attempts.isEmpty()) {
 
-                    Date createdDate = workflowRun.getCreated();
-                    String formattedCreatedDate = "";
-                    if (createdDate != null) {
-                        formattedCreatedDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
-                                .format(createdDate);
-                    }
-
-                    for (WorkflowRunAttempt attempt : workflowRun.getAttempts()) {
+                    for (WorkflowRunAttempt attempt : attempts) {
+                        WorkflowRun workflowRun = attempt.getWorkflowRun();
+                        Date createdDate = workflowRun.getCreated();
+                        String formattedCreatedDate = "";
+                        if (createdDate != null) {
+                            formattedCreatedDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
+                                    .format(createdDate);
+                        }
 
                         Date startDate = attempt.getStarted();
                         String formattedStartDate = "";
