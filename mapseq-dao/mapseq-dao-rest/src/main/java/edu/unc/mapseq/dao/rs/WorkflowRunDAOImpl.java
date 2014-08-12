@@ -92,6 +92,16 @@ public class WorkflowRunDAOImpl extends NamedEntityDAOImpl<WorkflowRun, Long> im
     }
 
     @Override
+    public WorkflowRun findByWorkflowRunAttemptId(Long workflowRunAttemptId) throws MaPSeqDAOException {
+        logger.debug("ENTERING findByWorkflowRunAttemptId(Long)");
+        WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
+        WorkflowRun workflowRun = client
+                .path("findByWorkflowRunAttemptId/{workflowRunAttemptId}", workflowRunAttemptId)
+                .accept(MediaType.APPLICATION_JSON).get(WorkflowRun.class);
+        return workflowRun;
+    }
+
+    @Override
     public List<WorkflowRun> findByFlowcellId(Long flowcellId) throws MaPSeqDAOException {
         logger.debug("ENTERING findByFlowcellId(Long)");
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
