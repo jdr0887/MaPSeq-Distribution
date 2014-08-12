@@ -49,9 +49,10 @@ public class ListWorkflowRuns implements Runnable {
         try {
             workflowRunList.addAll(workflowRunDAO.findByWorkflowId(workflowId));
         } catch (MaPSeqDAOException e) {
+            e.printStackTrace();
         }
         try {
-            if (workflowRunList != null && workflowRunList.size() > 0) {
+            if (workflowRunList != null && !workflowRunList.isEmpty()) {
                 StringBuilder sb = new StringBuilder();
                 Formatter formatter = new Formatter(sb, Locale.US);
                 if (longFormat != null && longFormat) {
@@ -63,16 +64,19 @@ public class ListWorkflowRuns implements Runnable {
                             "Workflow Run Name", "Created Date", "Start Date", "End Date", "Status");
                 }
 
-                for (WorkflowRun workflowRun : workflowRunList) {
+                List<WorkflowRunAttempt> attempts = maPSeqDAOBean.getWorkflowRunAttemptDAO().findByWorkflowId(
+                        workflowId);
+                if (attempts != null && !attempts.isEmpty()) {
 
-                    Date createdDate = workflowRun.getCreated();
-                    String formattedCreatedDate = "";
-                    if (createdDate != null) {
-                        formattedCreatedDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
-                                .format(createdDate);
-                    }
+                    for (WorkflowRunAttempt attempt : attempts) {
 
-                    for (WorkflowRunAttempt attempt : workflowRun.getAttempts()) {
+                        WorkflowRun workflowRun = attempt.getWorkflowRun();
+                        Date createdDate = workflowRun.getCreated();
+                        String formattedCreatedDate = "";
+                        if (createdDate != null) {
+                            formattedCreatedDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
+                                    .format(createdDate);
+                        }
 
                         Date startDate = attempt.getStarted();
                         String formattedStartDate = "";
@@ -123,6 +127,8 @@ public class ListWorkflowRuns implements Runnable {
     @SuppressWarnings("static-access")
     public static void main(String[] args) {
 
+        cliOptions.addOption(OptionBuilder.withArgName("workflowId").withLongOpt("workflowId").isRequired().hasArg()
+                .create());
         cliOptions.addOption(OptionBuilder.withArgName("help").withDescription("print this help message")
                 .withLongOpt("help").create("?"));
 
@@ -133,6 +139,10 @@ public class ListWorkflowRuns implements Runnable {
             if (commandLine.hasOption("?")) {
                 helpFormatter.printHelp(main.getClass().getSimpleName(), cliOptions);
                 return;
+            }
+
+            if (commandLine.hasOption("workflowId")) {
+                main.setWorkflowId(Long.valueOf(commandLine.getOptionValue("workflowId")));
             }
 
             main.run();
