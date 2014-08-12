@@ -20,7 +20,7 @@ import edu.unc.mapseq.ws.StudyService;
  * 
  * @author jdr0887
  */
-public class StudyDAOImpl extends NamedEntityDAOImpl<Study, Long> implements StudyDAO {
+public class StudyDAOImpl extends BaseDAOImpl<Study, Long> implements StudyDAO {
 
     private final Logger logger = LoggerFactory.getLogger(StudyDAOImpl.class);
 
