@@ -46,24 +46,12 @@ public class ListStudies implements Runnable {
         } catch (Exception e) {
         }
 
-        Collections.sort(studyList, new Comparator<Study>() {
-
-            @Override
-            public int compare(Study w1, Study w2) {
-                if (StringUtils.isNotEmpty(w1.getName()) && StringUtils.isNotEmpty(w2.getName())) {
-                    return w1.getName().compareTo(w2.getName());
-                }
-                return 0;
-            }
-
-        });
-
         if (studyList.size() > 0) {
             StringBuilder sb = new StringBuilder();
             Formatter formatter = new Formatter(sb, Locale.US);
             formatter.format("%1$-8s %2$-40s%n", "ID", "Name");
             for (Study study : studyList) {
-                formatter.format("%1$-8s %2$-40s %3$s%n", study.getId(), study.getName());
+                formatter.format("%1$-8s %2$-40s%n", study.getId(), study.getName());
                 formatter.flush();
             }
             System.out.println(formatter.toString());
