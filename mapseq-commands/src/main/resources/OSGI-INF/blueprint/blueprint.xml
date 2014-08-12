@@ -87,8 +87,8 @@
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/create-htsf-sample-attribute">
-      <action class="edu.unc.mapseq.commands.CreateHTSFSampleAttributeAction">
+    <command name="mapseq/create-sample-attribute">
+      <action class="edu.unc.mapseq.commands.CreateSampleAttributeAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
