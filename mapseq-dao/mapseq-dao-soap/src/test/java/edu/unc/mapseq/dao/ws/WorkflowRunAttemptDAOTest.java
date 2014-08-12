@@ -26,7 +26,7 @@ import edu.unc.mapseq.ws.WorkflowRunService;
 public class WorkflowRunAttemptDAOTest {
 
     @Test
-    public void testFindBySequencerRunAndWorkflowName() {
+    public void testFindByFlowcellAndWorkflowName() {
         QName serviceQName = new QName("http://ws.mapseq.unc.edu", "WorkflowRunService");
         QName portQName = new QName("http://ws.mapseq.unc.edu", "WorkflowRunPort");
         Service service = Service.create(serviceQName);

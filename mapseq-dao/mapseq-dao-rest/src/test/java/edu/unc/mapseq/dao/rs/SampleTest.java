@@ -10,7 +10,7 @@ import edu.unc.mapseq.dao.model.Sample;
 public class SampleTest {
 
     @Test
-    public void testFindBySequencerRunId() {
+    public void testFindByFlowcellId() {
         RSDAOManager daoMgr = RSDAOManager.getInstance("edu/unc/mapseq/dao/rs/mapseq-dao-beans-test.xml");
         try {
             List<Sample> entityList = daoMgr.getMaPSeqDAOBean().getSampleDAO().findByFlowcellId(108078L);

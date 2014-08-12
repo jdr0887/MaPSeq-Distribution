@@ -16,7 +16,7 @@ import edu.unc.mapseq.dao.FlowcellDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.model.Flowcell;
 
-@Command(scope = "mapseq", name = "list-sequencer-runs", description = "List SequencerRuns")
+@Command(scope = "mapseq", name = "list-flowcells", description = "List Flowcells")
 public class ListFlowcellsAction extends AbstractAction {
 
     private final Logger logger = LoggerFactory.getLogger(ListFlowcellsAction.class);

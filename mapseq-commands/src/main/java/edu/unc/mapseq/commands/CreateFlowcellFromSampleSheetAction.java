@@ -108,7 +108,7 @@ public class CreateFlowcellFromSampleSheetAction extends AbstractAction {
             e.printStackTrace();
         }
 
-        System.out.println("SequencerRun ID: " + flowcell.getId());
+        System.out.println("Flowcell ID: " + flowcell.getId());
         return null;
     }
 

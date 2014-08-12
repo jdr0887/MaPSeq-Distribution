@@ -62,22 +62,22 @@ public class CreateSampleAction extends AbstractAction {
         }
 
         if (flowcell == null) {
-            System.err.println("SequencerRun not found: " + this.flowcellId);
-            System.err.println("Please run list-sequencer-runs and use a valid SequencerRun Identifier.");
+            System.err.println("Flowcell not found: " + this.flowcellId);
+            System.err.println("Please run list-flowcells and use a valid Flowcell Identifier.");
             return null;
         }
 
         File read1FastqFile = new File(read1Fastq);
         if (!read1FastqFile.getName().startsWith(flowcell.getName())) {
             System.err.println("Invalid fastq name: " + read1FastqFile.getName());
-            System.err.println("Fastq should start with SequencerRun Name");
+            System.err.println("Fastq should start with Flowcell Name");
             return null;
         }
 
         File read2FastqFile = new File(read2Fastq);
         if (read2FastqFile != null && !read2FastqFile.getName().startsWith(flowcell.getName())) {
             System.err.println("Invalid fastq name: " + read2FastqFile.getName());
-            System.err.println("Fastq should start with SequencerRun Name");
+            System.err.println("Fastq should start with Flowcell Name");
             return null;
         }
 

@@ -74,11 +74,11 @@ public class DeleteFlowcellAction extends AbstractAction {
                         for (Sample entity : sampleList) {
                             sampleDAO.delete(entity);
                         }
-                        System.out.printf("%d Sample entities deleted", sampleList.size());
+                        System.out.printf("%d Sample entities deleted%n", sampleList.size());
                     }
 
                     flowcellDAO.delete(flowcell);
-                    System.out.println("Deleted SequencerRun: " + flowcell.getId());
+                    System.out.printf("Deleted Flowcell: %s%n", flowcell.getId());
 
                 } catch (MaPSeqDAOException e) {
                     e.printStackTrace();

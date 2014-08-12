@@ -27,7 +27,7 @@ public class CreateFlowcellTest {
         Matcher matcher = pattern.matcher(good);
         assertTrue(matcher.matches());
 
-        String bad = "TestSequencerRun";
+        String bad = "TestFlowcell";
         matcher = pattern.matcher(bad);
         assertFalse(matcher.matches());
     }

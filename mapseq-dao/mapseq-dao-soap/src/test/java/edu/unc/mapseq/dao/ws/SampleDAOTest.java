@@ -111,11 +111,11 @@ public class SampleDAOTest {
     }
 
     @Test
-    public void testFindBySequencerRunIdAndSampleName() throws Exception {
+    public void testFindByFlowcellIdAndSampleName() throws Exception {
 
         WSDAOManager daoMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
         SampleDAO hTSFSampleDAO = daoMgr.getMaPSeqDAOBean().getSampleDAO();
-        // List<HTSFSample> htsfSampleList = hTSFSampleDAO.findBySequencerRunIdAndSampleName(27352L, "NCG_00007%");
+        // List<HTSFSample> htsfSampleList = hTSFSampleDAO.findByFlowcellIdAndSampleName(27352L, "NCG_00007%");
         List<Sample> sampleList = hTSFSampleDAO.findByFlowcellId(56470L);
         if (sampleList != null && sampleList.size() > 0) {
             for (Sample sample : sampleList) {

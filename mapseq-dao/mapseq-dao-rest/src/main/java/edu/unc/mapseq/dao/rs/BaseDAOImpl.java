@@ -4,6 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 
 import edu.unc.mapseq.config.MaPSeqConfigurationService;
@@ -22,7 +26,10 @@ public abstract class BaseDAOImpl<T extends Persistable, ID extends Serializable
     public BaseDAOImpl() {
         super();
         JacksonJaxbJsonProvider provider = new JacksonJaxbJsonProvider();
-        // ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(MapperFeature.USE_WRAPPER_NAME_AS_PROPERTY_NAME, true);
+        provider.setMapper(mapper);
+        
         // mapper.setAnnotationIntrospector(new JaxbAnnotationIntrospector());
         // AnnotationIntrospector introspector = new JaxbAnnotationIntrospector();
         // // make deserializer use JAXB annotations (only)

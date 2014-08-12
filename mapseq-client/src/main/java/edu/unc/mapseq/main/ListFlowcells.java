@@ -36,10 +36,11 @@ public class ListFlowcells implements Runnable {
         MaPSeqDAOBean maPSeqDAOBean = daoMgr.getMaPSeqDAOBean();
 
         List<Flowcell> flowcellList = new ArrayList<Flowcell>();
-        FlowcellDAO sequencerRunDAO = maPSeqDAOBean.getFlowcellDAO();
+        FlowcellDAO flowcellDAO = maPSeqDAOBean.getFlowcellDAO();
         try {
-            flowcellList.addAll(sequencerRunDAO.findAll());
+            flowcellList.addAll(flowcellDAO.findAll());
         } catch (Exception e) {
+            e.printStackTrace();
         }
 
         if (!flowcellList.isEmpty()) {

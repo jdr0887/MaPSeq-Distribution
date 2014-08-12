@@ -77,10 +77,10 @@ public class FlowcellServiceImpl implements FlowcellService {
     }
 
     @Override
-    public Long save(Flowcell sequencerRun) {
-        logger.debug("ENTERING save(SequencerRun)");
+    public Long save(Flowcell flowcell) {
+        logger.debug("ENTERING save(Flowcell)");
         try {
-            return flowcellDAO.save(sequencerRun);
+            return flowcellDAO.save(flowcell);
         } catch (MaPSeqDAOException e) {
             e.printStackTrace();
         }

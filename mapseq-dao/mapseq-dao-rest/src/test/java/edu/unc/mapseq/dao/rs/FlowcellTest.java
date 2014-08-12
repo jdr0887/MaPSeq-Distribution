@@ -50,10 +50,10 @@ public class FlowcellTest {
             if (entityList != null && entityList.size() > 0) {
                 for (Flowcell entity : entityList) {
                     System.out.println(entity.toString());
-                    Set<Attribute> attributeSet = entity.getAttributes();
-                    for (Attribute attribute : attributeSet) {
-                        System.out.printf("%s:%s%n", attribute.getName(), attribute.getValue());
-                    }
+//                    Set<Attribute> attributeSet = entity.getAttributes();
+//                    for (Attribute attribute : attributeSet) {
+//                        System.out.printf("%s:%s%n", attribute.getName(), attribute.getValue());
+//                    }
                 }
             }
         } catch (ParseException e) {

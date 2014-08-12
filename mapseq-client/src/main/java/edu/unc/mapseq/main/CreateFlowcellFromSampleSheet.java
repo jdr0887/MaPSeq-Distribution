@@ -145,7 +145,6 @@ public class CreateFlowcellFromSampleSheet implements Runnable {
     @SuppressWarnings("static-access")
     public static void main(String[] args) {
 
-        cliOptions.addOption(OptionBuilder.withLongOpt("platformId").isRequired().hasArg().create());
         cliOptions.addOption(OptionBuilder.withLongOpt("baseDirectory").isRequired().hasArg().create());
         cliOptions.addOption(OptionBuilder.withLongOpt("runName").isRequired().hasArg().create());
         cliOptions.addOption(OptionBuilder.withLongOpt("sampleSheet").isRequired().hasArg().create());
