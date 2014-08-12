@@ -4,11 +4,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationConfig;
+import com.fasterxml.jackson.databind.introspect.AnnotationIntrospectorPair;
+import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
+import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 
 import edu.unc.mapseq.config.MaPSeqConfigurationService;
 import edu.unc.mapseq.dao.BaseDAO;
@@ -27,19 +29,9 @@ public abstract class BaseDAOImpl<T extends Persistable, ID extends Serializable
         super();
         JacksonJaxbJsonProvider provider = new JacksonJaxbJsonProvider();
         ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(MapperFeature.USE_WRAPPER_NAME_AS_PROPERTY_NAME, true);
+        mapper.getDeserializationConfig().useRootWrapping();
+        //mapper.enable(MapperFeature.USE_WRAPPER_NAME_AS_PROPERTY_NAME);
         provider.setMapper(mapper);
-        
-        // mapper.setAnnotationIntrospector(new JaxbAnnotationIntrospector());
-        // AnnotationIntrospector introspector = new JaxbAnnotationIntrospector();
-        // // make deserializer use JAXB annotations (only)
-        // mapper.getDeserializationConfig().setAnnotationIntrospector(introspector);
-        // // make serializer use JAXB annotations (only)
-        // mapper.getSerializationConfig().setAnnotationIntrospector(introspector);
-        // provider.setMapper(mapper);
-
-        // JSONProvider<T> provider = new JSONProvider<T>();
-        // provider.setDropRootElement(true);
         providers.add(provider);
     }
 
