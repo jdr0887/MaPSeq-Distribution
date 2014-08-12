@@ -22,6 +22,10 @@ public class WorkflowRunServiceImpl implements WorkflowRunService {
 
     private WorkflowRunDAO workflowRunDAO;
 
+    public WorkflowRunServiceImpl() {
+        super();
+    }
+
     @Override
     public WorkflowRun findById(Long id) {
         logger.debug("ENTERING findById(Long)");
@@ -81,6 +85,22 @@ public class WorkflowRunServiceImpl implements WorkflowRunService {
             logger.error("MaPSeqDAOException", e);
         }
         return ret;
+    }
+
+    @Override
+    public WorkflowRun findByWorkflowRunAttemptId(Long workflowRunAttemptId) {
+        logger.debug("ENTERING findByWorkflowRunAttemptId(Long)");
+        if (workflowRunAttemptId == null) {
+            logger.warn("workflowRunAttemptId is empty");
+            return null;
+        }
+        try {
+            return workflowRunDAO.findByWorkflowRunAttemptId(workflowRunAttemptId);
+        } catch (MaPSeqDAOException e) {
+            logger.warn("Problem with workflowRunDAO.findByWorkflowRunAttemptId({})", workflowRunAttemptId);
+            logger.error("MaPSeqDAOException", e);
+        }
+        return null;
     }
 
     @Override

@@ -25,6 +25,10 @@ public class JobServiceImpl implements JobService {
 
     private FileDataDAO fileDataDAO;
 
+    public JobServiceImpl() {
+        super();
+    }
+
     @Override
     public Job findById(Long id) {
         logger.debug("ENTERING findById(Long)");

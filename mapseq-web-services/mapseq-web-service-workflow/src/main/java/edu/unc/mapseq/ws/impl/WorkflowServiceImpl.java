@@ -22,6 +22,10 @@ public class WorkflowServiceImpl implements WorkflowService {
 
     private WorkflowDAO workflowDAO;
 
+    public WorkflowServiceImpl() {
+        super();
+    }
+
     @Override
     public List<Workflow> findAll() {
         logger.debug("ENTERING findAll()");

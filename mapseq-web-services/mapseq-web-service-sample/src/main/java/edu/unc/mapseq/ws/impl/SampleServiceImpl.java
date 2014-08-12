@@ -22,6 +22,10 @@ public class SampleServiceImpl implements SampleService {
 
     private SampleDAO sampleDAO;
 
+    public SampleServiceImpl() {
+        super();
+    }
+
     @Override
     public Sample findById(Long id) {
         logger.debug("ENTERING findById(Long)");

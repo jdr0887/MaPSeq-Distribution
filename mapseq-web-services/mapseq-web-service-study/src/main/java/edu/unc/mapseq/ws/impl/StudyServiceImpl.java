@@ -22,6 +22,10 @@ public class StudyServiceImpl implements StudyService {
 
     private StudyDAO studyDAO;
 
+    public StudyServiceImpl() {
+        super();
+    }
+
     @Override
     public Study findById(Long id) {
         logger.debug("ENTERING findById(Long)");

@@ -25,6 +25,10 @@ public class FileDataServiceImpl implements FileDataService {
 
     private FileDataDAO fileDataDAO;
 
+    public FileDataServiceImpl() {
+        super();
+    }
+
     @Override
     public FileData findById(Long id) {
         logger.debug("ENTERING findById(Long)");
