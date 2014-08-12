@@ -123,44 +123,33 @@
             </goals>
           </execution>
           <execution>
-	    <id>mapseq-check-workflow-status</id>
+	    <id>mapseq-create-sample</id>
 	    <configuration>
 	      <outputDir>${project.basedir}/src/main/distribution/bin</outputDir>
-	      <scriptName>mapseq-check-workflow-status.sh</scriptName>
-	      <className>edu.unc.mapseq.main.CheckWorkflowStatus</className>
+	      <scriptName>mapseq-create-sample.sh</scriptName>
+	      <className>edu.unc.mapseq.main.CreateSample</className>
 	    </configuration>	    
             <goals>
               <goal>mapseq-script</goal>
             </goals>
           </execution>
           <execution>
-	    <id>mapseq-create-htsf-sample</id>
+	    <id>mapseq-create-flowcell-from-samplesheet</id>
 	    <configuration>
 	      <outputDir>${project.basedir}/src/main/distribution/bin</outputDir>
-	      <scriptName>mapseq-create-htsf-sample.sh</scriptName>
-	      <className>edu.unc.mapseq.main.CreateHTSFSample</className>
+	      <scriptName>mapseq-create-flowcell-from-samplesheet.sh</scriptName>
+	      <className>edu.unc.mapseq.main.CreateFlowcellFromSampleSheet</className>
 	    </configuration>	    
             <goals>
               <goal>mapseq-script</goal>
             </goals>
           </execution>
           <execution>
-	    <id>mapseq-create-sequencer-run-from-samplesheet</id>
+	    <id>mapseq-create-flowcell</id>
 	    <configuration>
 	      <outputDir>${project.basedir}/src/main/distribution/bin</outputDir>
-	      <scriptName>mapseq-create-sequencer-run-from-samplesheet.sh</scriptName>
-	      <className>edu.unc.mapseq.main.CreateSequencerRunFromSampleSheet</className>
-	    </configuration>	    
-            <goals>
-              <goal>mapseq-script</goal>
-            </goals>
-          </execution>
-          <execution>
-	    <id>mapseq-create-sequencer-run</id>
-	    <configuration>
-	      <outputDir>${project.basedir}/src/main/distribution/bin</outputDir>
-	      <scriptName>mapseq-create-sequencer-run.sh</scriptName>
-	      <className>edu.unc.mapseq.main.CreateSequencerRun</className>
+	      <scriptName>mapseq-create-flowcell.sh</scriptName>
+	      <className>edu.unc.mapseq.main.CreateFlowcell</className>
 	    </configuration>	    
             <goals>
               <goal>mapseq-script</goal>
@@ -200,44 +189,33 @@
             </goals>
           </execution>
           <execution>
-	    <id>mapseq-list-htsf-samples</id>
+	    <id>mapseq-list-samples</id>
 	    <configuration>
 	      <outputDir>${project.basedir}/src/main/distribution/bin</outputDir>
-	      <scriptName>mapseq-list-htsf-samples.sh</scriptName>
-	      <className>edu.unc.mapseq.main.ListHTSFSamples</className>
+	      <scriptName>mapseq-list-samples.sh</scriptName>
+	      <className>edu.unc.mapseq.main.ListSamples</className>
 	    </configuration>	    
             <goals>
               <goal>mapseq-script</goal>
             </goals>
           </execution>
           <execution>
-	    <id>mapseq-list-my-workflow-runs</id>
+	    <id>mapseq-list-workflow-runs</id>
 	    <configuration>
 	      <outputDir>${project.basedir}/src/main/distribution/bin</outputDir>
-	      <scriptName>mapseq-list-my-workflow-runs.sh</scriptName>
-	      <className>edu.unc.mapseq.main.ListMyWorkflowRuns</className>
+	      <scriptName>mapseq-list-workflow-runs.sh</scriptName>
+	      <className>edu.unc.mapseq.main.ListWorkflowRuns</className>
 	    </configuration>	    
             <goals>
               <goal>mapseq-script</goal>
             </goals>
           </execution>
           <execution>
-	    <id>mapseq-list-platforms</id>
+	    <id>mapseq-list-flowcells</id>
 	    <configuration>
 	      <outputDir>${project.basedir}/src/main/distribution/bin</outputDir>
-	      <scriptName>mapseq-list-platforms.sh</scriptName>
-	      <className>edu.unc.mapseq.main.ListPlatforms</className>
-	    </configuration>	    
-            <goals>
-              <goal>mapseq-script</goal>
-            </goals>
-          </execution>
-          <execution>
-	    <id>mapseq-list-sequencer-runs</id>
-	    <configuration>
-	      <outputDir>${project.basedir}/src/main/distribution/bin</outputDir>
-	      <scriptName>mapseq-list-sequencer-runs.sh</scriptName>
-	      <className>edu.unc.mapseq.main.ListSequencerRuns</className>
+	      <scriptName>mapseq-list-flowcells.sh</scriptName>
+	      <className>edu.unc.mapseq.main.ListFlowcells</className>
 	    </configuration>	    
             <goals>
               <goal>mapseq-script</goal>
@@ -260,17 +238,6 @@
 	      <outputDir>${project.basedir}/src/main/distribution/bin</outputDir>
 	      <scriptName>mapseq-list-workflows.sh</scriptName>
 	      <className>edu.unc.mapseq.main.ListWorkflows</className>
-	    </configuration>	    
-            <goals>
-              <goal>mapseq-script</goal>
-            </goals>
-          </execution>
-          <execution>
-	    <id>mapseq-register-account</id>
-	    <configuration>
-	      <outputDir>${project.basedir}/src/main/distribution/bin</outputDir>
-	      <scriptName>mapseq-register-account.sh</scriptName>
-	      <className>edu.unc.mapseq.main.RegisterAccount</className>
 	    </configuration>	    
             <goals>
               <goal>mapseq-script</goal>
