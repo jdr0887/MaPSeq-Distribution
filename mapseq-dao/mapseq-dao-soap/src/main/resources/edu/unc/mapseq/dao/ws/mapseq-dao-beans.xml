@@ -32,6 +32,11 @@
     <property name="configurationService" ref="configurationService" />
   </bean>
 
+  <bean id="workflowRunAttemptDAO" class="edu.unc.mapseq.dao.ws.WorkflowRunAttemptDAOImpl" init-method="init"
+    singleton="true">
+    <property name="configurationService" ref="configurationService" />
+  </bean>
+
   <bean id="mapseqBean" class="edu.unc.mapseq.dao.MaPSeqDAOBean">
     <property name="fileDataDAO" ref="fileDataDAO" />
     <property name="sampleDAO" ref="sampleDAO" />
@@ -40,6 +45,7 @@
     <property name="sequencerRunDAO" ref="sequencerRunDAO" />
     <property name="workflowDAO" ref="workflowDAO" />
     <property name="workflowRunDAO" ref="workflowRunDAO" />
+    <property name="workflowRunAttemptDAO" ref="workflowRunAttemptDAO" />
   </bean>
 
 </beans>
