@@ -76,6 +76,7 @@
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-flowcell/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-workflow/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-workflow-run/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-workflow-run-attempt/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-dao/mapseq-dao-soap/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution/mapseq-modules/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution/mapseq-webapp/${project.version}/war</bundle>
