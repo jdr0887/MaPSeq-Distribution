@@ -44,25 +44,44 @@ public class DeleteSampleAction extends AbstractAction {
                     Sample sample = sampleDAO.findById(id);
                     List<WorkflowRun> workflowRunList = workflowRunDAO.findBySampleId(sample.getId());
 
-                    if (workflowRunList != null && workflowRunList.size() > 0) {
+                    if (workflowRunList != null && !workflowRunList.isEmpty()) {
 
                         for (WorkflowRun workflowRun : workflowRunList) {
 
-                            for (WorkflowRunAttempt attempt : workflowRun.getAttempts()) {
-                                List<Job> jobList = jobDAO.findByWorkflowRunAttemptId(attempt.getId());
-                                if (jobList != null && jobList.size() > 0) {
-                                    jobDAO.delete(jobList);
-                                    System.out.printf("%d Job entities deleted", jobList.size());
+                            List<WorkflowRunAttempt> attempts = workflowRunAttemptDAO.findByWorkflowRunId(workflowRun
+                                    .getId());
+
+                            if (attempts != null && !attempts.isEmpty()) {
+                                for (WorkflowRunAttempt attempt : workflowRun.getAttempts()) {
+                                    List<Job> jobList = jobDAO.findByWorkflowRunAttemptId(attempt.getId());
+                                    if (jobList != null && jobList.size() > 0) {
+                                        for (Job job : jobList) {
+                                            job.setAttributes(null);
+                                            job.setFileDatas(null);
+                                            jobDAO.save(job);
+                                        }
+                                        jobDAO.delete(jobList);
+                                        System.out.printf("%d Jobs deleted%n", jobList.size());
+                                    }
                                 }
-                                workflowRunAttemptDAO.delete(attempt);
-                                System.out.println("Deleted WorkflowRunAttempt: " + attempt.getId());
+                                workflowRunAttemptDAO.delete(attempts);
+                                System.out.printf("%d WorkflowRunAttempts deleted%n", attempts.size());
+
                             }
-                            workflowRunDAO.delete(workflowRun);
-                            System.out.println("Deleted WorkflowRun: " + workflowRun.getId());
+                            workflowRun.setAttributes(null);
+                            workflowRun.setFileDatas(null);
+                            workflowRunDAO.save(workflowRun);
 
                         }
 
+                        workflowRunDAO.delete(workflowRunList);
+                        System.out.printf("%d WorkflowRuns deleted%n", workflowRunList.size());
+
                     }
+
+                    sample.setAttributes(null);
+                    sample.setFileDatas(null);
+                    sampleDAO.save(sample);
 
                     sampleDAO.delete(sample);
                     System.out.printf("Deleted Sample: %s", id);

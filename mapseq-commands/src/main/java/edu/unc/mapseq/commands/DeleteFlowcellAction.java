@@ -42,40 +42,63 @@ public class DeleteFlowcellAction extends AbstractAction {
             WorkflowRunAttemptDAO workflowRunAttemptDAO = maPSeqDAOBean.getWorkflowRunAttemptDAO();
             JobDAO jobDAO = maPSeqDAOBean.getJobDAO();
 
-            for (Long sequencerRunId : this.flowcellIdList) {
+            for (Long flowcellId : this.flowcellIdList) {
                 try {
-                    Flowcell flowcell = flowcellDAO.findById(sequencerRunId);
+                    Flowcell flowcell = flowcellDAO.findById(flowcellId);
                     List<WorkflowRun> workflowRunList = workflowRunDAO.findByFlowcellId(flowcell.getId());
 
                     if (workflowRunList != null && !workflowRunList.isEmpty()) {
 
                         for (WorkflowRun workflowRun : workflowRunList) {
 
-                            for (WorkflowRunAttempt attempt : workflowRun.getAttempts()) {
+                            List<WorkflowRunAttempt> attempts = workflowRunAttemptDAO.findByWorkflowRunId(workflowRun
+                                    .getId());
 
-                                List<Job> jobList = jobDAO.findByWorkflowRunAttemptId(attempt.getId());
-                                if (jobList != null && jobList.size() > 0) {
-                                    jobDAO.delete(jobList);
-                                    System.out.printf("%d Job entities deleted", jobList.size());
+                            if (attempts != null && !attempts.isEmpty()) {
+
+                                for (WorkflowRunAttempt attempt : attempts) {
+
+                                    List<Job> jobList = jobDAO.findByWorkflowRunAttemptId(attempt.getId());
+                                    if (jobList != null && jobList.size() > 0) {
+                                        for (Job job : jobList) {
+                                            job.setAttributes(null);
+                                            job.setFileDatas(null);
+                                            jobDAO.save(job);
+                                        }
+                                        jobDAO.delete(jobList);
+                                        System.out.printf("%d Jobs deleted%n", jobList.size());
+                                    }
                                 }
-                                workflowRunAttemptDAO.delete(attempt);
-                                System.out.printf("Deleted WorkflowRunAttempt: ", attempt.getId());
+                                workflowRunAttemptDAO.delete(attempts);
+                                System.out.printf("%d WorkflowRunAttempts deleted%n", attempts.size());
+
                             }
-                            workflowRunDAO.delete(workflowRun);
-                            System.out.println("Deleted WorkflowRun: " + workflowRun.getId());
+
+                            workflowRun.setAttributes(null);
+                            workflowRun.setFileDatas(null);
+                            workflowRunDAO.save(workflowRun);
 
                         }
+                        workflowRunDAO.delete(workflowRunList);
+                        System.out.printf("%d WorkflowRuns deleted%n", workflowRunList.size());
 
                     }
 
                     List<Sample> sampleList = sampleDAO.findByFlowcellId(flowcell.getId());
 
                     if (sampleList != null && sampleList.size() > 0) {
-                        for (Sample entity : sampleList) {
-                            sampleDAO.delete(entity);
+                        for (Sample sample : sampleList) {
+                            sample.setAttributes(null);
+                            sample.setFileDatas(null);
+                            sampleDAO.save(sample);
                         }
-                        System.out.printf("%d Sample entities deleted%n", sampleList.size());
+                        sampleDAO.delete(sampleList);
+                        System.out.printf("%d Samples deleted%n", sampleList.size());
                     }
+
+                    flowcell.setAttributes(null);
+                    flowcell.setFileDatas(null);
+                    flowcellDAO.save(flowcell);
 
                     flowcellDAO.delete(flowcell);
                     System.out.printf("Deleted Flowcell: %s%n", flowcell.getId());
