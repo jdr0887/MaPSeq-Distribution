@@ -102,11 +102,6 @@
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/delete-workflow-run">
-      <action class="edu.unc.mapseq.commands.DeleteWorkflowRunAction">
-        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
-      </action>
-    </command>
     <command name="mapseq/list-samples">
       <action class="edu.unc.mapseq.commands.ListSamplesAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
