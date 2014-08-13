@@ -36,7 +36,7 @@ public class ListSampleAttributesAction extends AbstractAction {
         } catch (MaPSeqDAOException e) {
         }
         if (entity == null) {
-            System.out.println("HTSFSample was not found");
+            System.out.println("Sample was not found");
             return null;
         }
 
