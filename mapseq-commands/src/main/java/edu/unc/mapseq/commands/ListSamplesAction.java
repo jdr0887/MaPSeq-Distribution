@@ -1,8 +1,6 @@
 package edu.unc.mapseq.commands;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Formatter;
 import java.util.List;
 import java.util.Locale;
@@ -74,12 +72,6 @@ public class ListSamplesAction extends AbstractAction {
             } else {
                 formatter.format("%1$-12s %2$-40s %3$-6s %4$s%n", "Sample ID", "Sample Name", "Lane", "Barcode");
             }
-            Collections.sort(sampleList, new Comparator<Sample>() {
-                @Override
-                public int compare(Sample sr1, Sample sr2) {
-                    return sr1.getId().compareTo(sr2.getId());
-                }
-            });
 
             for (Sample sample : sampleList) {
                 if (longFormat != null && longFormat) {
