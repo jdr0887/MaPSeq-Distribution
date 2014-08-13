@@ -1,6 +1,7 @@
 package edu.unc.mapseq.commands;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -14,7 +15,6 @@ import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
 import edu.unc.mapseq.dao.WorkflowRunDAO;
-import edu.unc.mapseq.dao.model.WorkflowRun;
 import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
 import edu.unc.mapseq.dao.model.WorkflowRunAttemptStatusType;
 
@@ -44,19 +44,24 @@ public class ResetWorkflowRunAction extends AbstractAction {
             for (Long workflowRunId : this.workflowRunIdList) {
                 logger.debug("resetting WorkflowRun: {}", workflowRunId);
                 try {
-                    WorkflowRun workflowRun = workflowRunDAO.findById(workflowRunId);
+                    List<WorkflowRunAttempt> attempts = workflowRunAttemptDAO.findByWorkflowRunId(workflowRunId);
 
-                    ListIterator<WorkflowRunAttempt> iter = new ArrayList<WorkflowRunAttempt>(workflowRun.getAttempts())
-                            .listIterator(workflowRun.getAttempts().size());
+                    ListIterator<WorkflowRunAttempt> iter = new ArrayList<WorkflowRunAttempt>(attempts)
+                            .listIterator(attempts.size());
                     if (iter.hasPrevious()) {
                         WorkflowRunAttempt latestAttempt = iter.previous();
                         latestAttempt.setStatus(WorkflowRunAttemptStatusType.RESET);
+                        Date date = new Date();
+                        if (latestAttempt.getStarted() == null) {
+                            latestAttempt.setStarted(date);
+                        }
+                        latestAttempt.setFinished(date);
                         workflowRunAttemptDAO.save(latestAttempt);
                     }
 
                     WorkflowRunAttempt attempt = new WorkflowRunAttempt();
                     attempt.setStatus(WorkflowRunAttemptStatusType.PENDING);
-                    attempt.setWorkflowRun(workflowRun);
+                    attempt.setWorkflowRun(workflowRunDAO.findById(workflowRunId));
                     workflowRunAttemptDAO.save(attempt);
 
                 } catch (MaPSeqDAOException e) {
