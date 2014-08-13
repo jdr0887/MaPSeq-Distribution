@@ -55,9 +55,9 @@ public class ListStudiesAction extends AbstractAction {
         if (studyList.size() > 0) {
             StringBuilder sb = new StringBuilder();
             Formatter formatter = new Formatter(sb, Locale.US);
-            formatter.format("%1$-8s %2$-40s %3$s%n", "ID", "Name");
+            formatter.format("%1$-8s %2$-40s%n", "ID", "Name");
             for (Study study : studyList) {
-                formatter.format("%1$-8s %2$-40s %3$s%n", study.getId(), study.getName());
+                formatter.format("%1$-8s %2$-40s%n", study.getId(), study.getName());
                 formatter.flush();
             }
             System.out.println(formatter.toString());
