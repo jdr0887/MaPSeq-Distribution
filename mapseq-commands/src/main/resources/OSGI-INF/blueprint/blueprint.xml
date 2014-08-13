@@ -123,7 +123,7 @@
       </action>
     </command>
     <command name="mapseq/list-workflow-runs">
-      <action class="edu.unc.mapseq.commands.ListWorkflowRunsAction">
+      <action class="edu.unc.mapseq.commands.ListWorkflowRunAttemptsAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
