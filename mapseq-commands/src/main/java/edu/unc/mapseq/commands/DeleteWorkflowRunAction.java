@@ -40,18 +40,29 @@ public class DeleteWorkflowRunAction extends AbstractAction {
                 try {
                     WorkflowRun workflowRun = workflowRunDAO.findById(workflowRunId);
 
-                    for (WorkflowRunAttempt attempt : workflowRun.getAttempts()) {
+                    List<WorkflowRunAttempt> attempts = workflowRunAttemptDAO.findByWorkflowRunId(workflowRun.getId());
 
-                        List<Job> jobList = jobDAO.findByWorkflowRunAttemptId(attempt.getId());
-                        if (jobList != null && jobList.size() > 0) {
-                            jobDAO.delete(jobList);
-                            System.out.printf("%d Job entities deleted", jobList.size());
+                    if (attempts != null && !attempts.isEmpty()) {
+
+                        for (WorkflowRunAttempt attempt : attempts) {
+
+                            List<Job> jobList = jobDAO.findByWorkflowRunAttemptId(attempt.getId());
+                            if (jobList != null && !jobList.isEmpty()) {
+                                for (Job job : jobList) {
+                                    job.setAttributes(null);
+                                    job.setFileDatas(null);
+                                    jobDAO.save(job);
+                                }
+                                jobDAO.delete(jobList);
+                                System.out.printf("%d Jobs deleted%n", jobList.size());
+                            }
                         }
-                        workflowRunAttemptDAO.delete(attempt);
-                        System.out.printf("Deleted WorkflowRunAttempt: ", attempt.getId());
+                        workflowRunAttemptDAO.delete(attempts);
+                        System.out.printf("%d WorkflowRunAttempts deleted%n", attempts.size());
                     }
+
                     workflowRunDAO.delete(workflowRun);
-                    System.out.println("Deleted WorkflowRun: " + workflowRun.getId());
+                    System.out.printf("Deleted WorkflowRun: %d%n", workflowRun.getId());
 
                 } catch (MaPSeqDAOException e) {
                     e.printStackTrace();

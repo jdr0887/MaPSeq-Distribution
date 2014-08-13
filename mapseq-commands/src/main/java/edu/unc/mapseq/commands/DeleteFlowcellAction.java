@@ -59,7 +59,7 @@ public class DeleteFlowcellAction extends AbstractAction {
                                 for (WorkflowRunAttempt attempt : attempts) {
 
                                     List<Job> jobList = jobDAO.findByWorkflowRunAttemptId(attempt.getId());
-                                    if (jobList != null && jobList.size() > 0) {
+                                    if (jobList != null && !jobList.isEmpty()) {
                                         for (Job job : jobList) {
                                             job.setAttributes(null);
                                             job.setFileDatas(null);
