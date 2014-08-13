@@ -88,4 +88,9 @@ public class FlowcellDAOImpl extends NamedEntityDAOImpl<Flowcell, Long> implemen
         return null;
     }
 
+    @Override
+    public List<Flowcell> findByExample(Flowcell flowcell) throws MaPSeqDAOException {
+        return null;
+    }
+
 }
