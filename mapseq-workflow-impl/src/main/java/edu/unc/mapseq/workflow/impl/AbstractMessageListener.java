@@ -22,7 +22,7 @@ import edu.unc.mapseq.dao.model.WorkflowRun;
 import edu.unc.mapseq.workflow.WorkflowBeanService;
 import edu.unc.mapseq.workflow.WorkflowException;
 import edu.unc.mapseq.workflow.model.WorkflowEntity;
-import edu.unc.mapseq.workflow.model.WorkflowEntityAttribute;
+import edu.unc.mapseq.workflow.model.WorkflowAttribute;
 
 public abstract class AbstractMessageListener implements MessageListener {
 
@@ -40,9 +40,9 @@ public abstract class AbstractMessageListener implements MessageListener {
 
         FlowcellDAO flowcellDAO = workflowBeanService.getMaPSeqDAOBean().getFlowcellDAO();
 
-        if (workflowEntity.getGuid() != null) {
+        if (workflowEntity.getId() != null) {
             try {
-                flowcell = flowcellDAO.findById(workflowEntity.getGuid());
+                flowcell = flowcellDAO.findById(workflowEntity.getId());
             } catch (MaPSeqDAOException e) {
                 e.printStackTrace();
             }
@@ -71,9 +71,9 @@ public abstract class AbstractMessageListener implements MessageListener {
 
         SampleDAO sampleDAO = workflowBeanService.getMaPSeqDAOBean().getSampleDAO();
 
-        if (workflowEntity.getGuid() != null) {
+        if (workflowEntity.getId() != null) {
             try {
-                sample = sampleDAO.findById(workflowEntity.getGuid());
+                sample = sampleDAO.findById(workflowEntity.getId());
             } catch (MaPSeqDAOException e) {
                 e.printStackTrace();
             }
@@ -127,15 +127,14 @@ public abstract class AbstractMessageListener implements MessageListener {
         return workflowRun;
     }
 
-    private Set<Attribute> parseAttributes(Set<Attribute> attributeSet,
-            List<WorkflowEntityAttribute> workflowEntityAttributes) {
+    private Set<Attribute> parseAttributes(Set<Attribute> attributeSet, List<WorkflowAttribute> workflowAttributes) {
 
         Set<String> attributeNameSet = new HashSet<String>();
         for (Attribute attribute : attributeSet) {
             attributeNameSet.add(attribute.getName());
         }
 
-        for (WorkflowEntityAttribute workflowEntityAttribute : workflowEntityAttributes) {
+        for (WorkflowAttribute workflowEntityAttribute : workflowAttributes) {
 
             if (!attributeNameSet.contains(workflowEntityAttribute.getName())) {
                 Attribute attribute = new Attribute(workflowEntityAttribute.getName(),
