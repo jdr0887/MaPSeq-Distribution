@@ -27,7 +27,8 @@ public class CreateStudyAction extends AbstractAction {
             Study study = new Study();
             study.setName(name);
             Long studyId = maPSeqDAOBean.getStudyDAO().save(study);
-            return studyId;
+            study.setId(studyId);
+            System.out.println(study.toString());
         } catch (MaPSeqDAOException e1) {
             e1.printStackTrace();
         }

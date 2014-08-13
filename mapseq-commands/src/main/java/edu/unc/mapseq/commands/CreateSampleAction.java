@@ -201,7 +201,7 @@ public class CreateSampleAction extends AbstractAction {
             sample.setFileDatas(fileDataSet);
             Long id = htsfSampleDAO.save(sample);
             sample.setId(id);
-            return id;
+            System.out.println(sample.toString());
         } catch (MaPSeqDAOException e) {
             e.printStackTrace();
         }

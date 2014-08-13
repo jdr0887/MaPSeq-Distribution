@@ -26,7 +26,8 @@ public class CreateWorkflowAction extends AbstractAction {
             Workflow workflow = new Workflow();
             workflow.setName(name);
             Long workflowId = maPSeqDAOBean.getWorkflowDAO().save(workflow);
-            return workflowId;
+            workflow.setId(workflowId);
+            System.out.println(workflow.toString());
         } catch (MaPSeqDAOException e1) {
             e1.printStackTrace();
         }
