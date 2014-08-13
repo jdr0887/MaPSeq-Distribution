@@ -4,13 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.introspect.AnnotationIntrospectorPair;
-import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
-import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
-import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 
 import edu.unc.mapseq.config.MaPSeqConfigurationService;
 import edu.unc.mapseq.dao.BaseDAO;
@@ -30,7 +25,7 @@ public abstract class BaseDAOImpl<T extends Persistable, ID extends Serializable
         JacksonJaxbJsonProvider provider = new JacksonJaxbJsonProvider();
         ObjectMapper mapper = new ObjectMapper();
         mapper.getDeserializationConfig().useRootWrapping();
-        //mapper.enable(MapperFeature.USE_WRAPPER_NAME_AS_PROPERTY_NAME);
+        // mapper.enable(MapperFeature.USE_WRAPPER_NAME_AS_PROPERTY_NAME);
         provider.setMapper(mapper);
         providers.add(provider);
     }
