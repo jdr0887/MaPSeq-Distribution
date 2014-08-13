@@ -117,7 +117,7 @@
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/list-workflow-runs">
+    <command name="mapseq/list-workflow-run-attempts">
       <action class="edu.unc.mapseq.commands.ListWorkflowRunAttemptsAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
