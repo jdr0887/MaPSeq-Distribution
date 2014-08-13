@@ -42,7 +42,7 @@
     <property name="sampleDAO" ref="sampleDAO" />
     <property name="jobDAO" ref="jobDAO" />
     <property name="studyDAO" ref="studyDAO" />
-    <property name="sequencerRunDAO" ref="sequencerRunDAO" />
+    <property name="flowcellDAO" ref="flowcellDAO" />
     <property name="workflowDAO" ref="workflowDAO" />
     <property name="workflowRunDAO" ref="workflowRunDAO" />
     <property name="workflowRunAttemptDAO" ref="workflowRunAttemptDAO" />
