@@ -28,7 +28,7 @@ import edu.unc.mapseq.dao.model.MimeType;
 import edu.unc.mapseq.dao.model.Sample;
 import edu.unc.mapseq.dao.ws.WSDAOManager;
 
-public class CreateSample implements Callable<Long> {
+public class CreateSample implements Callable<String> {
 
     private final static HelpFormatter helpFormatter = new HelpFormatter();
 
@@ -53,7 +53,7 @@ public class CreateSample implements Callable<Long> {
     }
 
     @Override
-    public Long call() {
+    public String call() {
 
         WSDAOManager daoMgr = WSDAOManager.getInstance();
         // RSDAOManager daoMgr = RSDAOManager.getInstance();
@@ -205,7 +205,7 @@ public class CreateSample implements Callable<Long> {
             sample.getFileDatas().addAll(fileDataSet);
             Long id = sampleDAO.save(sample);
             sample.setId(id);
-            return id;
+            return sample.toString();
         } catch (MaPSeqDAOException e) {
             e.printStackTrace();
         }
@@ -313,12 +313,7 @@ public class CreateSample implements Callable<Long> {
                 }
                 main.setRead2Fastq(read2FastqFile);
             }
-
-            Long id = main.call();
-            if (id == null) {
-                System.exit(-1);
-            }
-            System.out.println("HTSFSample ID: " + id);
+            System.out.println(main.call());
         } catch (ParseException e) {
             System.err.println(("Parsing Failed: " + e.getMessage()));
             helpFormatter.printHelp(main.getClass().getSimpleName(), cliOptions);

@@ -15,7 +15,7 @@ import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.model.Study;
 import edu.unc.mapseq.dao.ws.WSDAOManager;
 
-public class CreateStudy implements Callable<Long> {
+public class CreateStudy implements Callable<String> {
 
     private final static HelpFormatter helpFormatter = new HelpFormatter();
 
@@ -28,7 +28,7 @@ public class CreateStudy implements Callable<Long> {
     }
 
     @Override
-    public Long call() {
+    public String call() {
         WSDAOManager daoMgr = WSDAOManager.getInstance();
         // RSDAOManager daoMgr = RSDAOManager.getInstance();
         MaPSeqDAOBean maPSeqDAOBean = daoMgr.getMaPSeqDAOBean();
@@ -36,8 +36,9 @@ public class CreateStudy implements Callable<Long> {
         try {
             Study study = new Study();
             study.setName(name);
-            Long studyId = maPSeqDAOBean.getStudyDAO().save(study);
-            return studyId;
+            Long id = maPSeqDAOBean.getStudyDAO().save(study);
+            study.setId(id);
+            return study.toString();
         } catch (MaPSeqDAOException e1) {
             e1.printStackTrace();
         }

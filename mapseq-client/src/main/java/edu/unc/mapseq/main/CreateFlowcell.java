@@ -19,7 +19,7 @@ import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.model.Flowcell;
 import edu.unc.mapseq.dao.ws.WSDAOManager;
 
-public class CreateFlowcell implements Callable<Long> {
+public class CreateFlowcell implements Callable<String> {
 
     private final static HelpFormatter helpFormatter = new HelpFormatter();
 
@@ -34,7 +34,7 @@ public class CreateFlowcell implements Callable<Long> {
     }
 
     @Override
-    public Long call() {
+    public String call() {
         WSDAOManager daoMgr = WSDAOManager.getInstance();
         // RSDAOManager daoMgr = RSDAOManager.getInstance();
 
@@ -56,8 +56,9 @@ public class CreateFlowcell implements Callable<Long> {
                 flowcell.setBaseDirectory(this.baseRunFolder);
             }
             FlowcellDAO flowcellDAO = maPSeqDAOBean.getFlowcellDAO();
-            Long flowcellId = flowcellDAO.save(flowcell);
-            return flowcellId;
+            Long id = flowcellDAO.save(flowcell);
+            flowcell.setId(id);
+            return flowcell.toString();
         } catch (MaPSeqDAOException e1) {
             e1.printStackTrace();
         }

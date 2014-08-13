@@ -115,7 +115,7 @@ public class CreateFlowcellFromSampleSheet implements Runnable {
             e.printStackTrace();
         }
 
-        System.out.println("Flowcell ID: " + flowcell.getId());
+        System.out.println(flowcell.toString());
     }
 
     public String getBaseDirectory() {
