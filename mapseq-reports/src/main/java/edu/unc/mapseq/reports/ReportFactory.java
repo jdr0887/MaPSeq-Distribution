@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
 import edu.unc.mapseq.dao.model.Attribute;
 import edu.unc.mapseq.dao.model.Job;
 import edu.unc.mapseq.dao.model.Workflow;
-import edu.unc.mapseq.dao.model.WorkflowRun;
 import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
 import edu.unc.mapseq.dao.model.WorkflowRunAttemptStatusType;
 
@@ -183,8 +182,9 @@ public class ReportFactory {
         return chartFile;
     }
 
-    public static File createWorkflowRunCountReport(List<WorkflowRun> workflowRunList, Date startDate, Date endDate) {
-        logger.debug("ENTERING createWorkflowRunCountReport(MaPSeqDAOBean, Date, Date)");
+    public static File createWorkflowRunCountReport(List<WorkflowRunAttempt> workflowRunAttemptList, Date startDate,
+            Date endDate) {
+        logger.debug("ENTERING createWorkflowRunCountReport(List<WorkflowRunAttempt>, Date, Date)");
 
         File chartFile = null;
 
@@ -194,24 +194,20 @@ public class ReportFactory {
 
             Map<String, Integer> map = new HashMap<String, Integer>();
 
-            for (WorkflowRun workflowRun : workflowRunList) {
-                for (WorkflowRunAttempt attempt : workflowRun.getAttempts()) {
-                    if (attempt.getStatus().equals(WorkflowRunAttemptStatusType.DONE)) {
-                        String workflowName = workflowRun.getWorkflow().getName();
-                        if (!map.containsKey(workflowName)) {
-                            map.put(workflowName, 0);
-                        }
+            for (WorkflowRunAttempt attempt : workflowRunAttemptList) {
+                if (attempt.getStatus().equals(WorkflowRunAttemptStatusType.DONE)) {
+                    String workflowName = attempt.getWorkflowRun().getWorkflow().getName();
+                    if (!map.containsKey(workflowName)) {
+                        map.put(workflowName, 0);
                     }
                 }
             }
 
-            for (WorkflowRun workflowRun : workflowRunList) {
-                for (WorkflowRunAttempt attempt : workflowRun.getAttempts()) {
-                    if (attempt.getStatus().equals(WorkflowRunAttemptStatusType.DONE)) {
-                        String workflowName = workflowRun.getWorkflow().getName();
-                        if (map.containsKey(workflowName)) {
-                            map.put(workflowName, map.get(workflowName) + 1);
-                        }
+            for (WorkflowRunAttempt attempt : workflowRunAttemptList) {
+                if (attempt.getStatus().equals(WorkflowRunAttemptStatusType.DONE)) {
+                    String workflowName = attempt.getWorkflowRun().getWorkflow().getName();
+                    if (map.containsKey(workflowName)) {
+                        map.put(workflowName, map.get(workflowName) + 1);
                     }
                 }
             }
@@ -235,8 +231,9 @@ public class ReportFactory {
 
     }
 
-    public static File createWorkflowRunDurationReport(List<WorkflowRun> workflowRunList, Date startDate, Date endDate) {
-        logger.debug("ENTERING createWorkflowRunDurationReport(MaPSeqDAOBean, Date, Date)");
+    public static File createWorkflowRunDurationReport(List<WorkflowRunAttempt> workflowRunAttemptList, Date startDate,
+            Date endDate) {
+        logger.debug("ENTERING createWorkflowRunDurationReport(List<WorkflowRunAttempt>, Date, Date)");
 
         File chartFile = null;
 
@@ -246,26 +243,22 @@ public class ReportFactory {
 
             Map<String, List<Long>> map = new HashMap<String, List<Long>>();
 
-            for (WorkflowRun workflowRun : workflowRunList) {
-                for (WorkflowRunAttempt attempt : workflowRun.getAttempts()) {
-                    if (attempt.getStatus().equals(WorkflowRunAttemptStatusType.DONE)) {
-                        String workflowName = workflowRun.getWorkflow().getName();
-                        if (!map.containsKey(workflowName)) {
-                            map.put(workflowName, new ArrayList<Long>());
-                        }
+            for (WorkflowRunAttempt attempt : workflowRunAttemptList) {
+                if (attempt.getStatus().equals(WorkflowRunAttemptStatusType.DONE)) {
+                    String workflowName = attempt.getWorkflowRun().getWorkflow().getName();
+                    if (!map.containsKey(workflowName)) {
+                        map.put(workflowName, new ArrayList<Long>());
                     }
                 }
             }
 
-            for (WorkflowRun workflowRun : workflowRunList) {
-                for (WorkflowRunAttempt attempt : workflowRun.getAttempts()) {
-                    if (attempt.getStatus().equals(WorkflowRunAttemptStatusType.DONE)) {
-                        String workflowName = workflowRun.getWorkflow().getName();
-                        if (map.containsKey(workflowName)) {
-                            Date sDate = attempt.getStarted();
-                            Date eDate = attempt.getFinished();
-                            map.get(workflowName).add(eDate.getTime() - sDate.getTime());
-                        }
+            for (WorkflowRunAttempt attempt : workflowRunAttemptList) {
+                if (attempt.getStatus().equals(WorkflowRunAttemptStatusType.DONE)) {
+                    String workflowName = attempt.getWorkflowRun().getWorkflow().getName();
+                    if (map.containsKey(workflowName)) {
+                        Date sDate = attempt.getStarted();
+                        Date eDate = attempt.getFinished();
+                        map.get(workflowName).add(eDate.getTime() - sDate.getTime());
                     }
                 }
             }
@@ -283,7 +276,7 @@ public class ReportFactory {
             }
 
             ChartManager chartMgr = ChartManager.getInstance();
-            JFreeChart chart = chartMgr.createPieChart("MaPSeq :: WorkflowRun Duration", dataset);
+            JFreeChart chart = chartMgr.createPieChart("MaPSeq :: WorkflowRunAttempt Duration", dataset);
             PiePlot piePlot = (PiePlot) chart.getPlot();
             piePlot.setLabelGenerator(new CustomLabelGenerator());
             Font font = new Font("Dialog", Font.PLAIN, 12);

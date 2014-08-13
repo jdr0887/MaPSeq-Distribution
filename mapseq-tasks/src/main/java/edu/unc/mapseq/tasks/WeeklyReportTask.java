@@ -3,6 +3,7 @@ package edu.unc.mapseq.tasks;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -27,10 +28,12 @@ import com.itextpdf.text.pdf.PdfWriter;
 import edu.unc.mapseq.dao.JobDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
+import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
 import edu.unc.mapseq.dao.WorkflowRunDAO;
 import edu.unc.mapseq.dao.model.Job;
 import edu.unc.mapseq.dao.model.Workflow;
 import edu.unc.mapseq.dao.model.WorkflowRun;
+import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
 import edu.unc.mapseq.reports.ReportFactory;
 
 public class WeeklyReportTask implements Runnable {
@@ -69,11 +72,22 @@ public class WeeklyReportTask implements Runnable {
             document.setMargins(10, 10, 10, 10);
 
             WorkflowRunDAO workflowRunDAO = maPSeqDAOBean.getWorkflowRunDAO();
+            WorkflowRunAttemptDAO workflowRunAttemptDAO = maPSeqDAOBean.getWorkflowRunAttemptDAO();
             List<WorkflowRun> workflowRunList = workflowRunDAO.findByCreatedDateRange(startDate, endDate);
+            List<WorkflowRunAttempt> workflowRunAttemptList = new ArrayList<>();
+
+            if (workflowRunList != null && !workflowRunList.isEmpty()) {
+                for (WorkflowRun workflowRun : workflowRunList) {
+                    List<WorkflowRunAttempt> toAdd = workflowRunAttemptDAO.findByWorkflowRunId(workflowRun.getId());
+                    if (toAdd != null && !toAdd.isEmpty()) {
+                        workflowRunAttemptList.addAll(toAdd);
+                    }
+                }
+            }
 
             document.add(new Paragraph());
-            File workflowRunCountReportFile = ReportFactory.createWorkflowRunCountReport(workflowRunList, startDate,
-                    endDate);
+            File workflowRunCountReportFile = ReportFactory.createWorkflowRunCountReport(workflowRunAttemptList,
+                    startDate, endDate);
             Image img = Image.getInstance(workflowRunCountReportFile.getAbsolutePath());
             img.setAlignment(Element.ALIGN_CENTER);
             img.scalePercent(60, 60);
@@ -81,7 +95,7 @@ public class WeeklyReportTask implements Runnable {
             workflowRunCountReportFile.delete();
 
             document.add(new Paragraph());
-            File workflowRunDurationReportFile = ReportFactory.createWorkflowRunDurationReport(workflowRunList,
+            File workflowRunDurationReportFile = ReportFactory.createWorkflowRunDurationReport(workflowRunAttemptList,
                     startDate, endDate);
             img = Image.getInstance(workflowRunDurationReportFile.getAbsolutePath());
             img.setAlignment(Element.ALIGN_CENTER);

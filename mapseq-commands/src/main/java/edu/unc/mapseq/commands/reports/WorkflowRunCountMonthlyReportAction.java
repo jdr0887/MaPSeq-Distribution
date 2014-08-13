@@ -1,6 +1,7 @@
 package edu.unc.mapseq.commands.reports;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -15,8 +16,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
+import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
 import edu.unc.mapseq.dao.WorkflowRunDAO;
 import edu.unc.mapseq.dao.model.WorkflowRun;
+import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
 import edu.unc.mapseq.reports.ReportFactory;
 
 @Command(scope = "mapseq", name = "generate-workflow-run-count-monthly-report", description = "")
@@ -40,12 +43,23 @@ public class WorkflowRunCountMonthlyReportAction extends AbstractAction {
         Date startDate = c.getTime();
 
         WorkflowRunDAO workflowRunDAO = maPSeqDAOBean.getWorkflowRunDAO();
+        WorkflowRunAttemptDAO workflowRunAttemptDAO = maPSeqDAOBean.getWorkflowRunAttemptDAO();
         List<WorkflowRun> workflowRunList = workflowRunDAO.findByCreatedDateRange(startDate, endDate);
+        List<WorkflowRunAttempt> workflowRunAttemptList = new ArrayList<>();
 
-        File chartFile = ReportFactory.createWorkflowRunCountReport(workflowRunList, startDate, endDate);
+        if (workflowRunList != null && !workflowRunList.isEmpty()) {
+            for (WorkflowRun workflowRun : workflowRunList) {
+                List<WorkflowRunAttempt> toAdd = workflowRunAttemptDAO.findByWorkflowRunId(workflowRun.getId());
+                if (toAdd != null && !toAdd.isEmpty()) {
+                    workflowRunAttemptList.addAll(toAdd);
+                }
+            }
+        }
 
-        String subject = String.format("MaPSeq :: WorkflowRuns (%s - %s)", DateFormatUtils.format(startDate, "MM/dd"),
-                DateFormatUtils.format(endDate, "MM/dd"));
+        File chartFile = ReportFactory.createWorkflowRunCountReport(workflowRunAttemptList, startDate, endDate);
+
+        String subject = String.format("MaPSeq :: WorkflowRunAttempts (%s - %s)",
+                DateFormatUtils.format(startDate, "MM/dd"), DateFormatUtils.format(endDate, "MM/dd"));
 
         EmailAttachment attachment = new EmailAttachment();
         attachment.setPath(chartFile.getAbsolutePath());
