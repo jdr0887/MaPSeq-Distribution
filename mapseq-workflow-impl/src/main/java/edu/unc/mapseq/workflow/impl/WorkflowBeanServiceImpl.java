@@ -1,5 +1,6 @@
 package edu.unc.mapseq.workflow.impl;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import edu.unc.mapseq.config.MaPSeqConfigurationService;
@@ -20,6 +21,7 @@ public class WorkflowBeanServiceImpl implements WorkflowBeanService {
 
     public WorkflowBeanServiceImpl() {
         super();
+        this.attributes = new HashMap<>();
     }
 
     public int getCorePoolSize() {
