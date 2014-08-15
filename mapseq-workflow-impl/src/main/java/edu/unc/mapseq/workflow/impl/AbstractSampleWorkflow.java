@@ -77,6 +77,16 @@ public abstract class AbstractSampleWorkflow extends AbstractWorkflow {
 
     }
 
+    @Override
+    public void preRun() throws WorkflowException {
+        super.preRun();
+        if (getWorkflowBeanService().getAttributes() != null && !getWorkflowBeanService().getAttributes().isEmpty()) {
+            for (String key : getWorkflowBeanService().getAttributes().keySet()) {
+                logger.info("{}: {}", key, getWorkflowBeanService().getAttributes().get(key));
+            }
+        }
+    }
+
     protected Set<Sample> getAggregatedSamples() throws WorkflowException {
 
         Set<Sample> sampleSet = new HashSet<Sample>();
