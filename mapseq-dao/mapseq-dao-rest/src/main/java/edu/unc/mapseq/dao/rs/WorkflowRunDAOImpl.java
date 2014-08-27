@@ -66,8 +66,8 @@ public class WorkflowRunDAOImpl extends NamedEntityDAOImpl<WorkflowRun, Long> im
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
 
         Collection<? extends WorkflowRun> ret = client
-                .path("findByCreatorAndCreationDateRange/{accountId}/{startDate}/{endDate}", formattedStartDate,
-                        formattedEndDate).accept(MediaType.APPLICATION_JSON).getCollection(WorkflowRun.class);
+                .path("findByCreatedDateRange/{startDate}/{endDate}", formattedStartDate, formattedEndDate)
+                .accept(MediaType.APPLICATION_JSON).getCollection(WorkflowRun.class);
         return new ArrayList<WorkflowRun>(ret);
     }
 
