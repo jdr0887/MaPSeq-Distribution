@@ -2,137 +2,137 @@
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" default-activation="lazy">
 
   <command-bundle xmlns="http://karaf.apache.org/xmlns/shell/v1.1.0">
-    <command name="mapseq/list-modules">
+    <command>
       <action class="edu.unc.mapseq.commands.ListModulesAction">
         <property name="context" ref="blueprintBundleContext" />
       </action>
     </command>
-    <command name="mapseq/generate-job-per-cluster-report">
+    <command>
       <action class="edu.unc.mapseq.commands.reports.JobPerClusterReportAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/generate-weekly-report">
+    <command>
       <action class="edu.unc.mapseq.commands.reports.WeeklyReportAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/generate-workflow-run-count-weekly-report">
+    <command>
       <action class="edu.unc.mapseq.commands.reports.WorkflowRunCountWeeklyReportAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/generate-workflow-run-count-monthly-report">
+    <command>
       <action class="edu.unc.mapseq.commands.reports.WorkflowRunCountMonthlyReportAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/generate-workflow-job-count-per-cluster-weekly-report">
+    <command>
       <action class="edu.unc.mapseq.commands.reports.WorkflowJobCountPerClusterWeeklyReportAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/generate-workflow-jobs-weekly-report">
+    <command>
       <action class="edu.unc.mapseq.commands.reports.WorkflowJobsWeeklyReportAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/edit-sample-attribute">
+    <command>
       <action class="edu.unc.mapseq.commands.EditSampleAttributeAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/edit-workflow-run-attribute">
+    <command>
       <action class="edu.unc.mapseq.commands.EditWorkflowRunAttributeAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/delete-sample">
+    <command>
       <action class="edu.unc.mapseq.commands.DeleteSampleAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/synchronize-condor-with-workflow-run">
+    <command>
       <action class="edu.unc.mapseq.commands.SynchronizeCondorWithWorkflowRunAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/create-sample">
+    <command>
       <action class="edu.unc.mapseq.commands.CreateSampleAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/create-flowcell">
+    <command>
       <action class="edu.unc.mapseq.commands.CreateFlowcellAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/reset-workflow-run">
+    <command>
       <action class="edu.unc.mapseq.commands.ResetWorkflowRunAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/create-flowcell-from-sample-sheet">
+    <command>
       <action class="edu.unc.mapseq.commands.CreateFlowcellFromSampleSheetAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/create-study">
+    <command>
       <action class="edu.unc.mapseq.commands.CreateStudyAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/create-workflow">
+    <command>
       <action class="edu.unc.mapseq.commands.CreateWorkflowAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/create-sample-attribute">
+    <command>
       <action class="edu.unc.mapseq.commands.CreateSampleAttributeAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/create-workflow-run-attribute">
+    <command>
       <action class="edu.unc.mapseq.commands.CreateWorkflowRunAttributeAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/delete-flowcell">
+    <command>
       <action class="edu.unc.mapseq.commands.DeleteFlowcellAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/list-samples">
+    <command>
       <action class="edu.unc.mapseq.commands.ListSamplesAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/list-sample-attributes">
+    <command>
       <action class="edu.unc.mapseq.commands.ListSampleAttributesAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/list-workflow-run-attributes">
+    <command>
       <action class="edu.unc.mapseq.commands.ListWorkflowRunAttributesAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/list-workflow-run-attempts">
+    <command>
       <action class="edu.unc.mapseq.commands.ListWorkflowRunAttemptsAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/list-flowcells">
+    <command>
       <action class="edu.unc.mapseq.commands.ListFlowcellsAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/list-studies">
+    <command>
       <action class="edu.unc.mapseq.commands.ListStudiesAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
-    <command name="mapseq/list-workflows">
+    <command>
       <action class="edu.unc.mapseq.commands.ListWorkflowsAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
