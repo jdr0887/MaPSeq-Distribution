@@ -1,7 +1,9 @@
 package edu.unc.mapseq.dao.ws;
 
+import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.transport.http.HTTPConduit;
@@ -53,6 +55,17 @@ public class WorkflowRunAttemptDAOImpl extends BaseDAOImpl<WorkflowRunAttempt, L
     public List<WorkflowRunAttempt> findByWorkflowRunId(Long workflowRunId) throws MaPSeqDAOException {
         logger.debug("ENTERING findByWorkflowRunId(Long)");
         List<WorkflowRunAttempt> ret = workflowRunAttemptService.findByWorkflowRunId(workflowRunId);
+        return ret;
+    }
+
+    @Override
+    public List<WorkflowRunAttempt> findByCreatedDateRangeAndWorkflowId(Date startDate, Date endDate, Long workflowId)
+            throws MaPSeqDAOException {
+        logger.debug("ENTERING findByCreatedDateRangeAndWorkflowId(Date, Date, Long)");
+        String formattedStartDate = DateFormatUtils.ISO_DATE_FORMAT.format(startDate);
+        String formattedEndDate = DateFormatUtils.ISO_DATE_FORMAT.format(endDate);
+        List<WorkflowRunAttempt> ret = workflowRunAttemptService.findByCreatedDateRangeAndWorkflowId(
+                formattedStartDate, formattedEndDate, workflowId);
         return ret;
     }
 
