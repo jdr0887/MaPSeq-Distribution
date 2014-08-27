@@ -63,9 +63,12 @@ public abstract class AbstractSampleWorkflow extends AbstractWorkflow {
                             sample.getLaneIndex(), sample.getBarcode()));
                     sampleOutputDir.mkdirs();
                     // this will produce: /proj/seq/mapseq/RENCI/<flowcell>/<lane>_<barcode>
-                    sample.setOutputDirectory(outdir.getAbsolutePath());
-                    MaPSeqDAOBean mapseqDAOBean = getWorkflowBeanService().getMaPSeqDAOBean();
-                    mapseqDAOBean.getSampleDAO().save(sample);
+                    if (StringUtils.isNotEmpty(sample.getOutputDirectory())
+                            && !sample.getOutputDirectory().equals(sampleOutputDir.getAbsolutePath())) {
+                        sample.setOutputDirectory(outdir.getAbsolutePath());
+                        MaPSeqDAOBean mapseqDAOBean = getWorkflowBeanService().getMaPSeqDAOBean();
+                        mapseqDAOBean.getSampleDAO().save(sample);
+                    }
                 } catch (MaPSeqDAOException e) {
                     logger.error("Could not persist Sample");
                     throw new WorkflowException("Could not persist Sample");
