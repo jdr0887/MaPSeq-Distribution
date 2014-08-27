@@ -12,9 +12,7 @@ public class RSDAOManager {
 
     private static RSDAOManager instance;
 
-    private String beanXMLFile = "edu/unc/mapseq/dao/rs/mapseq-dao-beans.xml";
-
-    private ClassPathXmlApplicationContext applicationContext = null;
+    private MaPSeqDAOBean bean;
 
     public static RSDAOManager getInstance() {
         if (instance == null) {
@@ -31,16 +29,19 @@ public class RSDAOManager {
     }
 
     private RSDAOManager() {
-        this.applicationContext = new ClassPathXmlApplicationContext(this.beanXMLFile);
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext(
+                "edu/unc/mapseq/dao/rs/mapseq-dao-beans.xml");
+        this.bean = (MaPSeqDAOBean) applicationContext.getBean("mapseqBean", MaPSeqDAOBean.class);
+        applicationContext.close();
     }
 
     private RSDAOManager(String beanXMLFile) {
-        this.beanXMLFile = beanXMLFile;
-        this.applicationContext = new ClassPathXmlApplicationContext(this.beanXMLFile);
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext(beanXMLFile);
+        this.bean = (MaPSeqDAOBean) applicationContext.getBean("mapseqBean", MaPSeqDAOBean.class);
+        applicationContext.close();
     }
 
     public MaPSeqDAOBean getMaPSeqDAOBean() {
-        MaPSeqDAOBean bean = (MaPSeqDAOBean) applicationContext.getBean("mapseqBean", MaPSeqDAOBean.class);
         return bean;
     }
 
