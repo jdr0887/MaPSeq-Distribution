@@ -1,13 +1,19 @@
 package edu.unc.mapseq.ws.impl;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.time.DateFormatUtils;
+import org.apache.commons.lang.time.DateUtils;
+import org.apache.cxf.common.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
+import edu.unc.mapseq.dao.model.WorkflowRun;
 import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
 import edu.unc.mapseq.ws.WorkflowRunAttemptService;
 
@@ -37,6 +43,37 @@ public class WorkflowRunAttemptServiceImpl implements WorkflowRunAttemptService 
             logger.error("MaPSeqDAOException", e);
         }
         return workflowRunAttempt;
+    }
+
+    @Override
+    public List<WorkflowRunAttempt> findByCreatedDateRangeAndWorkflowId(String started, String finished, Long workflowId) {
+        logger.debug("ENTERING findByCreatedDateRangeAndWorkflowId(String, String, Long)");
+        List<WorkflowRunAttempt> ret = new ArrayList<>();
+        if (StringUtils.isEmpty(started)) {
+            logger.warn("started is empty");
+            return ret;
+        }
+        if (StringUtils.isEmpty(finished)) {
+            logger.warn("finished is empty");
+            return ret;
+        }
+        if (workflowId == null) {
+            logger.warn("workflowId is null");
+            return ret;
+        }
+        try {
+            Date parsedStartDate = DateUtils.parseDate(started,
+                    new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
+            Date parsedEndDate = DateUtils.parseDate(finished,
+                    new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
+            ret.addAll(workflowRunAttemptDAO.findByCreatedDateRangeAndWorkflowId(parsedStartDate, parsedEndDate,
+                    workflowId));
+        } catch (ParseException e1) {
+            e1.printStackTrace();
+        } catch (MaPSeqDAOException e) {
+            logger.error("MaPSeqDAOException", e);
+        }
+        return ret;
     }
 
     @Override
