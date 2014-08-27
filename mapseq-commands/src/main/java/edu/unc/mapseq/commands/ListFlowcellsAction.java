@@ -7,7 +7,7 @@ import java.util.Formatter;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.felix.gogo.commands.Command;
+import org.apache.karaf.shell.commands.Command;
 import org.apache.karaf.shell.console.AbstractAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +45,7 @@ public class ListFlowcellsAction extends AbstractAction {
 
             StringBuilder sb = new StringBuilder();
             Formatter formatter = new Formatter(sb, Locale.US);
-            formatter.format("%1$-8s %2$-38s %3$-42s %4$s%n", "ID", "Name", "Base Directory");
+            formatter.format("%1$-8s %2$-38s %3$-42s%n", "ID", "Name", "Base Directory");
             for (Flowcell flowcell : flowcellList) {
                 formatter.format("%1$-8s %2$-38s %3$-42s%n", flowcell.getId(), flowcell.getName(),
                         flowcell.getBaseDirectory());

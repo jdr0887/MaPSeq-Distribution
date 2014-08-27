@@ -5,7 +5,7 @@ import java.util.Enumeration;
 import java.util.Formatter;
 import java.util.Locale;
 
-import org.apache.felix.gogo.commands.Command;
+import org.apache.karaf.shell.commands.Command;
 import org.apache.karaf.shell.console.AbstractAction;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
