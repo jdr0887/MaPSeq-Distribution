@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -38,8 +39,6 @@ public abstract class AbstractSampleWorkflow extends AbstractWorkflow {
         if (samples != null && !samples.isEmpty()) {
             for (Sample sample : samples) {
                 try {
-                    WorkflowRun workflowRun = getWorkflowRunAttempt().getWorkflowRun();
-
                     RunModeType runMode = RunModeType.PROD;
                     String version = getVersion();
                     if (StringUtils.isEmpty(version)
@@ -60,14 +59,13 @@ public abstract class AbstractSampleWorkflow extends AbstractWorkflow {
                     }
 
                     File flowcellOutputDirectory = new File(outdir, sample.getFlowcell().getName());
-                    File workflowDir = new File(flowcellOutputDirectory, workflowRun.getWorkflow().getName());
-                    File sampleOutputDir = new File(workflowDir, String.format("L%03d_%s", sample.getLaneIndex(),
-                            sample.getBarcode()));
-                    File tmpDir = new File(sampleOutputDir, "tmp");
-                    tmpDir.mkdirs();
-
+                    File sampleOutputDir = new File(flowcellOutputDirectory, String.format("L%03d_%s",
+                            sample.getLaneIndex(), sample.getBarcode()));
+                    sampleOutputDir.mkdirs();
+                    // this will produce: /proj/seq/mapseq/RENCI/<flowcell>/<lane>_<barcode>
                     sample.setOutputDirectory(outdir.getAbsolutePath());
-                    getWorkflowBeanService().getMaPSeqDAOBean().getSampleDAO().save(sample);
+                    MaPSeqDAOBean mapseqDAOBean = getWorkflowBeanService().getMaPSeqDAOBean();
+                    mapseqDAOBean.getSampleDAO().save(sample);
                 } catch (MaPSeqDAOException e) {
                     logger.error("Could not persist Sample");
                     throw new WorkflowException("Could not persist Sample");
@@ -80,9 +78,10 @@ public abstract class AbstractSampleWorkflow extends AbstractWorkflow {
     @Override
     public void preRun() throws WorkflowException {
         super.preRun();
-        if (getWorkflowBeanService().getAttributes() != null && !getWorkflowBeanService().getAttributes().isEmpty()) {
-            for (String key : getWorkflowBeanService().getAttributes().keySet()) {
-                logger.info("{}: {}", key, getWorkflowBeanService().getAttributes().get(key));
+        Map<String, String> attributes = getWorkflowBeanService().getAttributes();
+        if (attributes != null && !attributes.isEmpty()) {
+            for (String key : attributes.keySet()) {
+                logger.info("{}: {}", key, attributes.get(key));
             }
         }
     }
