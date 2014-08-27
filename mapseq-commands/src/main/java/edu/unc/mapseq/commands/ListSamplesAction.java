@@ -22,9 +22,6 @@ public class ListSamplesAction extends AbstractAction {
 
     private MaPSeqDAOBean maPSeqDAOBean;
 
-    @Option(name = "-l", description = "long format", required = false, multiValued = false)
-    private Boolean longFormat;
-
     @Option(name = "--flowcellId", description = "Flowcell Identifier", required = false, multiValued = false)
     private Long flowcellId;
 
@@ -66,21 +63,12 @@ public class ListSamplesAction extends AbstractAction {
         if (sampleList != null && !sampleList.isEmpty()) {
             StringBuilder sb = new StringBuilder();
             Formatter formatter = new Formatter(sb, Locale.US);
-            if (longFormat != null && longFormat) {
-                formatter.format("%1$-12s %2$-40s %3$-6s %4$-16s %5$s%n", "Sample ID", "Sample Name", "Lane",
-                        "Barcode", "Output Directory");
-            } else {
-                formatter.format("%1$-12s %2$-40s %3$-6s %4$s%n", "Sample ID", "Sample Name", "Lane", "Barcode");
-            }
+            formatter.format("%1$-12s %2$-40s %3$-6s %4$-16s %5$s%n", "Sample ID", "Sample Name", "Lane", "Barcode",
+                    "Output Directory");
 
             for (Sample sample : sampleList) {
-                if (longFormat != null && longFormat) {
-                    formatter.format("%1$-12s %2$-40s %3$-6s %4$-16s%n", sample.getId(), sample.getName(),
-                            sample.getLaneIndex(), sample.getBarcode());
-                } else {
-                    formatter.format("%1$-12s %2$-40s %3$-6s %4$s%n", sample.getId(), sample.getName(),
-                            sample.getLaneIndex(), sample.getBarcode());
-                }
+                formatter.format("%1$-12s %2$-40s %3$-6s %4$-16s %5$s%n", sample.getId(), sample.getName(),
+                        sample.getLaneIndex(), sample.getBarcode(), sample.getOutputDirectory());
                 formatter.flush();
             }
             System.out.println(formatter.toString());
@@ -112,14 +100,6 @@ public class ListSamplesAction extends AbstractAction {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Boolean getLongFormat() {
-        return longFormat;
-    }
-
-    public void setLongFormat(Boolean longFormat) {
-        this.longFormat = longFormat;
     }
 
 }
