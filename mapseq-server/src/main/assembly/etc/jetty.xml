@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://jetty.mortbay.org/configure.dtd">
+
+<Configure class="org.eclipse.jetty.server.Server">
+
+  <Set name="ThreadPool">
+    <New class="org.eclipse.jetty.util.thread.QueuedThreadPool">
+      <Set name="minThreads">80</Set>
+      <Set name="maxThreads">800</Set>
+      <Set name="detailedDump">false</Set>
+    </New>
+  </Set>
+  
+  <Call name="addConnector">
+    <Arg>
+      <New class="org.eclipse.jetty.server.nio.SelectChannelConnector">
+	<Set name="host">
+	  <Property name="jetty.host" />
+	</Set>
+	<Set name="port">
+	  <Property name="jetty.port" default="8181"/>
+	</Set>
+	<Set name="maxIdleTime">3000000</Set>
+	<Set name="Acceptors">12</Set>
+	<Set name="statsOn">false</Set>
+	<Set name="confidentialPort">8443</Set>
+	<Set name="statsOn">false</Set>
+	<Set name="lowResourcesConnections">20000</Set>
+	<Set name="lowResourcesMaxIdleTime">5000</Set> 
+      </New>
+    </Arg>
+  </Call>
+  
+  <Call name="addBean">
+    <Arg>
+      <New class="org.eclipse.jetty.plus.jaas.JAASLoginService">
+	<Set name="name">karaf</Set>
+	<Set name="loginModuleName">karaf</Set>
+	<Set name="roleClassNames">
+	  <Array type="java.lang.String">
+	    <Item>org.apache.karaf.jaas.modules.RolePrincipal</Item>
+	  </Array>
+	</Set>
+      </New>
+    </Arg>
+  </Call>
+
+  <Call name="addBean">
+    <Arg>
+      <New class="org.eclipse.jetty.plus.jaas.JAASLoginService">
+	<Set name="name">default</Set>
+	<Set name="loginModuleName">karaf</Set>
+	<Set name="roleClassNames">
+	  <Array type="java.lang.String">
+	    <Item>org.apache.karaf.jaas.modules.RolePrincipal</Item>
+	  </Array>
+	</Set>
+      </New>
+    </Arg>
+  </Call>
+  
+</Configure>
