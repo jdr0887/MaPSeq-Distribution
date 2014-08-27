@@ -2,11 +2,13 @@ package edu.unc.mapseq.dao.rs;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +45,20 @@ public class WorkflowRunAttemptDAOImpl extends BaseDAOImpl<WorkflowRunAttempt, L
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
         Collection<? extends WorkflowRunAttempt> ret = client
                 .path("findByWorkflowRunId/{workflowRunId}", workflowRunId).accept(MediaType.APPLICATION_JSON)
+                .getCollection(WorkflowRunAttempt.class);
+        return new ArrayList<WorkflowRunAttempt>(ret);
+    }
+
+    @Override
+    public List<WorkflowRunAttempt> findByCreatedDateRangeAndWorkflowId(Date startDate, Date endDate, Long workflowId)
+            throws MaPSeqDAOException {
+        logger.info("ENTERING findByCreatedDateRangeAndWorkflowId(Date, Date, Long)");
+        String formattedStartDate = DateFormatUtils.ISO_DATE_FORMAT.format(startDate);
+        String formattedEndDate = DateFormatUtils.ISO_DATE_FORMAT.format(endDate);
+        WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
+        Collection<? extends WorkflowRunAttempt> ret = client
+                .path("findByCreatedDateRangeAndWorkflowId/{startDate}/{endDate}/{workflowId}", formattedStartDate,
+                        formattedEndDate, workflowId).accept(MediaType.APPLICATION_JSON)
                 .getCollection(WorkflowRunAttempt.class);
         return new ArrayList<WorkflowRunAttempt>(ret);
     }
