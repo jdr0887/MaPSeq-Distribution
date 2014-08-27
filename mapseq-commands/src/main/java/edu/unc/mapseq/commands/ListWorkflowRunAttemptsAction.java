@@ -9,7 +9,6 @@ import java.util.Locale;
 
 import org.apache.karaf.shell.commands.Argument;
 import org.apache.karaf.shell.commands.Command;
-import org.apache.karaf.shell.commands.Option;
 import org.apache.karaf.shell.console.AbstractAction;
 
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
@@ -23,9 +22,6 @@ public class ListWorkflowRunAttemptsAction extends AbstractAction {
 
     @Argument(index = 0, name = "workflowId", description = "Workflow identifier", required = true, multiValued = false)
     private Long workflowId;
-
-    @Option(name = "-l", description = "long format", required = false, multiValued = false)
-    private Boolean longFormat;
 
     private MaPSeqDAOBean maPSeqDAOBean;
 
@@ -46,14 +42,9 @@ public class ListWorkflowRunAttemptsAction extends AbstractAction {
             if (attempts != null && !attempts.isEmpty()) {
                 StringBuilder sb = new StringBuilder();
                 Formatter formatter = new Formatter(sb, Locale.US);
-                if (longFormat != null && longFormat) {
-                    formatter.format("%1$-8s %2$-25s %3$-54s %4$-18s %5$-18s %6$-18s %7$-18s %8$-18s %9$s%n", "ID",
-                            "Workflow Name", "Workflow Run Name", "Created Date", "Start Date", "End Date", "Status",
-                            "Submit Directory", "Condor DAG ClusterId");
-                } else {
-                    formatter.format("%1$-8s %2$-25s %3$-54s %4$-18s %5$-18s %6$-18s %7$s%n", "ID", "Workflow Name",
-                            "Workflow Run Name", "Created Date", "Start Date", "End Date", "Status");
-                }
+                formatter.format("%1$-8s %2$-25s %3$-54s %4$-18s %5$-18s %6$-18s %7$-18s %8$-18s %9$s%n", "ID",
+                        "Workflow Name", "Workflow Run Name", "Created Date", "Start Date", "End Date", "Status",
+                        "Submit Directory", "Condor DAG ClusterId");
 
                 for (WorkflowRunAttempt attempt : attempts) {
 
@@ -77,17 +68,10 @@ public class ListWorkflowRunAttemptsAction extends AbstractAction {
                         formattedEndDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(
                                 endDate);
                     }
-                    if (longFormat != null && longFormat) {
-                        formatter.format("%1$-8s %2$-25s %3$-54s %4$-18s %5$-18s %6$-18s %7$-18s %8$-18s %9$s%n",
-                                workflowRun.getId(), workflowRun.getWorkflow().getName(), workflowRun.getName(),
-                                formattedCreatedDate, formattedStartDate, formattedEndDate, attempt.getStatus()
-                                        .getState(), attempt.getSubmitDirectory(), attempt.getCondorDAGClusterId());
-                    } else {
-                        formatter.format("%1$-8s %2$-25s %3$-54s %4$-18s %5$-18s %6$-18s %7$s%n", workflowRun.getId(),
-                                workflowRun.getWorkflow().getName(), workflowRun.getName(), formattedCreatedDate,
-                                formattedStartDate, formattedEndDate, attempt.getStatus().getState());
-
-                    }
+                    formatter.format("%1$-8s %2$-25s %3$-54s %4$-18s %5$-18s %6$-18s %7$-18s %8$-18s %9$s%n",
+                            workflowRun.getId(), workflowRun.getWorkflow().getName(), workflowRun.getName(),
+                            formattedCreatedDate, formattedStartDate, formattedEndDate, attempt.getStatus().getState(),
+                            attempt.getSubmitDirectory(), attempt.getCondorDAGClusterId());
                     formatter.flush();
 
                 }
@@ -107,14 +91,6 @@ public class ListWorkflowRunAttemptsAction extends AbstractAction {
 
     public void setWorkflowId(Long workflowId) {
         this.workflowId = workflowId;
-    }
-
-    public Boolean getLongFormat() {
-        return longFormat;
-    }
-
-    public void setLongFormat(Boolean longFormat) {
-        this.longFormat = longFormat;
     }
 
     public MaPSeqDAOBean getMaPSeqDAOBean() {
