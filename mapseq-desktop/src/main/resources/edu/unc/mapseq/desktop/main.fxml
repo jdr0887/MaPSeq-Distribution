@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane prefHeight="400.0" prefWidth="700.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8"
+  xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.unc.mapseq.desktop.MainController">
+  <top>
+    <MenuBar BorderPane.alignment="CENTER">
+      <menus>
+        <Menu mnemonicParsing="false" text="Main">
+          <items>
+            <MenuItem mnemonicParsing="false" onAction="#showFlowcells" text="Flowcells" />
+            <MenuItem mnemonicParsing="false" onAction="#showStudies" text="Studies" />
+            <MenuItem mnemonicParsing="false" onAction="#showWorkflows" text="Workflows" />
+            <SeparatorMenuItem />
+            <MenuItem mnemonicParsing="false" onAction="#showPreferences" text="Preferences" />
+            <SeparatorMenuItem />
+            <MenuItem mnemonicParsing="false" onAction="#handleExit" text="Exit" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Reports">
+          <items>
+            <MenuItem mnemonicParsing="false" onAction="#showWorkflowRunAttemptCount" text="WorkflowRunAttempt Count" />
+            <MenuItem mnemonicParsing="false" onAction="#showWorkflowRunAttemptDuration" text="WorkflowRunAttempt Duration" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Help">
+          <items>
+            <MenuItem mnemonicParsing="false" onAction="#handleAbout" text="About" />
+          </items>
+        </Menu>
+      </menus>
+    </MenuBar>
+  </top>
+</BorderPane>
+
+
+
+
