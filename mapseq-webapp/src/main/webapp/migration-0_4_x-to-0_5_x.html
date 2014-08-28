@@ -1,0 +1,129 @@
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<!DOCTYPE html>
+<html>
+<head>
+<title>Migration</title>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <h2>Migration</h2>
+
+  <h3>1. Entity Changes</h3>
+
+  <ul>
+    <li>Account has been removed</li>
+    <li>WorkflowPlan has been removed</li>
+    <li>HTSFSample has been renamed to Sample</li>
+    <li>SequencerRun has been renamed to Flowcell</li>
+    <li>Platform has been removed</li>
+  </ul>
+
+  <h3>2. ActiveMQ Messaging changes (JSON)</h3>
+
+  <p>
+    Due to the Entity changes, there are some changes required to the JSON sent to the message queue destinations. So
+    the following, <br />
+  <pre>
+{
+  "account_name":"rc_lbg.svc",
+  "entities":
+  [
+    {
+      "entity_type":"HTSFSample",
+      "guid":"12341234132"
+    },
+    {
+      "entity_type":"WorkflowRun",
+      "name":"RNASeq-12341234132",
+      "attributes":
+      [
+        {
+          "name":"GATKDepthOfCoverage.interval_list.version",
+          "value":"123"
+        },
+        {
+          "name":"SAMToolsView.dx.id",
+          "value":"123"
+        }
+      ]
+    }
+  ]
+}</pre>
+  Becomes:
+  <br />
+  <pre>
+{
+  "entities":
+  [
+    {
+      "entityType":"Sample",
+      "id":"12341234132"
+    },
+    {
+      "entityType":"WorkflowRun",
+      "name":"RNASeq-12341234132",
+      "attributes":
+      [
+        {
+          "name":"GATKDepthOfCoverage.interval_list.version",
+          "value":"123"
+        },
+        {
+          "name":"SAMToolsView.dx.id",
+          "value":"123"
+        }
+      ]
+    }
+  ]
+}</pre>
+  </p>
+
+  <h3>3. MaPSeq commands in Karaf</h3>
+
+  <ul>
+    <li>mapseq:list-platforms has been removed</li>
+    <li>mapseq:list-my-workflow-runs is now mapseq:list-workflow-runs</li>
+    <li>mapseq:list-sequencer-runs is now mapseq:list-flowcells</li>
+    <li>mapseq:list-htsf-samples is now mapseq:list-samples</li>
+    <li>mapseq:list-htsf-sample-attributes is now mapseq:list-sample-attributes</li>
+  </ul>
+
+  <p>The formatting of mapseq:list-workflow-runs incorporates the new feature of WorkflowRun instances having a one
+    to many relationship with attempts.</p>
+
+  <pre>
+karaf@mapseq()> list-workflow-runs 8
+ID           Workflow Run Name                                      Created Date       Start Date         End Date           Status       Condor JobId   Submit Directory
+2000367      140811_UNC14-SN744_0485_AHAAW5ADXX_CASAVA              8/14/14 1:15 PM
+--           --                                                     8/14/14 1:15 PM    8/15/14 3:15 PM    8/17/14 9:19 AM    DONE         1406086        /nas02/home/r/c/rc_renci.svc/mapseq/submit/2014-08-15/CASAVA/1ecf518a-d635-49b2-b140-99d3ddb7ab9c
+2004634      140812_UNC18-D00493_0098_BHAAYBADXX_CASAVA             8/15/14 5:15 PM
+--           --                                                     8/15/14 5:15 PM    8/15/14 11:44 PM   8/17/14 12:31 PM   DONE         1406932        /nas02/home/r/c/rc_renci.svc/mapseq/submit/2014-08-15/CASAVA/56b2cd2f-5099-4944-b1d7-40fded66b688
+2004987      140812_UNC18-D00493_0097_AHAAW1ADXX_CASAVA             8/15/14 7:15 PM
+--           --                                                     8/15/14 7:15 PM    8/17/14 9:20 AM    8/17/14 7:24 PM    DONE         1409350        /nas02/home/r/c/rc_renci.svc/mapseq/submit/2014-08-17/CASAVA/700a976e-aac7-4d17-affb-52af1bd62444
+2013542      140813_UNC16-SN851_0408_AHA9WLADXX_CASAVA              8/18/14 5:15 PM
+--           --                                                     8/18/14 5:15 PM    8/19/14 10:24 AM   8/19/14 12:52 PM   DONE         1414422        /nas02/home/r/c/rc_renci.svc/mapseq/submit/2014-08-19/CASAVA/1e2f9b10-51a4-4172-bcca-f4d09a79d117
+2013738      140813_UNC14-SN744_0487_BHAATMADXX_CASAVA              8/18/14 5:15 PM
+--           --                                                     8/18/14 5:15 PM    8/19/14 10:24 AM   8/19/14 12:58 PM   DONE         1414423        /nas02/home/r/c/rc_renci.svc/mapseq/submit/2014-08-19/CASAVA/fd3e0989-39c2-4d12-a9e8-adc1e5e1de42
+2014104      140813_UNC16-SN851_0409_BHA9CUADXX_CASAVA              8/18/14 6:15 PM
+--           --                                                     8/18/14 6:15 PM    8/19/14 12:53 PM   8/19/14 11:33 PM   DONE         1415885        /nas02/home/r/c/rc_renci.svc/mapseq/submit/2014-08-19/CASAVA/fd92c6eb-5460-42c3-966e-7a63a4e8182f
+</pre>
+
+  <p>Note that attempts don't have an ID or NAME value & WorkflowRun instances don't have start/end dates, status,
+    job identifiers, or submit directories.</p>
+
+  <h3>4. MaPSeq web services</h3>
+
+  <p>
+    For reference, here is the <a href="schema1.xsd">MaPSeq DAO XSD</a> and the <a href="edu.unc.mapseq.ws.png">Web
+      Service API</a>
+  </p>
+
+  <p>Note that NamedEntity instances have the fileDatas wrapped such that "files" collections have "file" elements.
+    Similarly, attributes are treated the same. This only applies to the SOAP services where XML (de)serialization
+    strictly adheres to the annotations. For the REST services, the XML annotations are not binding since the JSON
+    provider doesn't map collections similarly.</p>
+
+</body>
+</html>
+
