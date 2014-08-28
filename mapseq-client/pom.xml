@@ -200,11 +200,11 @@
             </goals>
           </execution>
           <execution>
-	    <id>mapseq-list-workflow-run-attempts</id>
+	    <id>mapseq-list-workflow-runs</id>
 	    <configuration>
 	      <outputDir>${project.basedir}/src/main/distribution/bin</outputDir>
-	      <scriptName>mapseq-list-workflow-run-attempts.sh</scriptName>
-	      <className>edu.unc.mapseq.main.ListWorkflowRunAttempts</className>
+	      <scriptName>mapseq-list-workflow-runs.sh</scriptName>
+	      <className>edu.unc.mapseq.main.ListWorkflowRuns</className>
 	    </configuration>	    
             <goals>
               <goal>mapseq-script</goal>
