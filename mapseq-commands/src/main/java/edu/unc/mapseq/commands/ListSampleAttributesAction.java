@@ -42,7 +42,7 @@ public class ListSampleAttributesAction extends AbstractAction {
 
         StringBuilder sb = new StringBuilder();
         Formatter formatter = new Formatter(sb, Locale.US);
-        formatter.format("%1$-12s %2$-40s %3$s%n", "Attribute ID", "Name", "Value");
+        formatter.format("%1$-12s %2$-40s %3$s%n", "ID", "Name", "Value");
 
         Set<Attribute> attributeSet = entity.getAttributes();
         if (attributeSet != null && !attributeSet.isEmpty()) {
