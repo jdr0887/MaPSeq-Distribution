@@ -61,39 +61,13 @@ $(window).load(function(){
 
     thisTable.fnClearTable();
 
-    var username = $('#username').val();
-    console.log(username);
-
-    var userId;
-
-    $.ajax({
-      url:"/cxf/Account/AccountService/findByName/" + username,
-      <!-- url:"test/account.json.txt",-->
-      async: false,
-      dataType: "json",
-      type:"GET",
-      success: function(response) {    
-        console.log(response.account['@id']);
-        userId = response.account['@id'];
-      } 
-    });
-     
-    if (userId == "") {
-      alert("user '" + username + "' does not exit");
-      return false;
-    } 
-
     var startDate = $('#startDate').val();
     console.log(startDate);
     var endDate = $('#endDate').val();
     console.log(endDate);
-    var status = $('#status').val();
-    console.log(status);
     		
     $.ajax({
-      url:"/cxf/WorkflowRun/WorkflowRunService/findByCreatorAndStatusAndCreationDateRange/"
-      + userId + "/" + status + "/" + startDate + "/" + endDate,
-      <!--url:"test/workflowRun.json.txt",-->
+      url:"/cxf/WorkflowRun/WorkflowRunService/findByCreatedDateRange/" + startDate + "/" + endDate,
       dataType: "json",
       type:"GET",
       success: addToTable
@@ -106,16 +80,8 @@ $(window).load(function(){
 <body>
   <div class="container">
     <form id="searchform">
-      <input type="text" placeholder="Username" id="username" />
-      <input type="text" placeholder="Start Date" id="startDate" />
-      <input type="text" placeholder="End Date" id="endDate" /> 
-      <select id="status">
-	<option value="Select One">Select One</option> 
-	<option value="PENDING">Pending</option> 
-	<option value="RUNNING">Running</option> 
-	<option value="FAILED">Failed</option> 
-	<option value="DONE">Done</option> 
-      </select>
+      <input type="text" placeholder="Started Date" id="startDate" /> 
+      <input type="text" placeholder="Finished Date" id="endDate" />
       <input type="submit" value="Search" id="search" />
     </form>
     <section id="results">
