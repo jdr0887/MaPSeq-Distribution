@@ -57,7 +57,7 @@
       <groupId>edu.unc.mapseq.distribution</groupId>
       <artifactId>mapseq-features</artifactId>
       <classifier>features</classifier>
-      <version>0.5.5-SNAPSHOT</version>
+      <version>${mapseq.version}</version>
       <type>xml</type>
       <scope>runtime</scope>
     </dependency>
