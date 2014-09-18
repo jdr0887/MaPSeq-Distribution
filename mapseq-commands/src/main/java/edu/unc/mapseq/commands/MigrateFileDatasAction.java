@@ -24,7 +24,7 @@ import edu.unc.mapseq.dao.model.Workflow;
 @Command(scope = "mapseq", name = "migrate-file-datas", description = "Migrate FileData instances")
 public class MigrateFileDatasAction extends AbstractAction {
 
-    private final Logger logger = LoggerFactory.getLogger(ListWorkflowsAction.class);
+    private final Logger logger = LoggerFactory.getLogger(MigrateFileDatasAction.class);
 
     @Option(name = "--dryRun", description = "Don't move anything", required = false, multiValued = false)
     private Boolean dryRun = Boolean.FALSE;
@@ -33,6 +33,7 @@ public class MigrateFileDatasAction extends AbstractAction {
 
     @Override
     protected Object doExecute() throws Exception {
+        logger.debug("ENTERING doExecute()");
 
         FlowcellDAO flowcellDAO = maPSeqDAOBean.getFlowcellDAO();
         SampleDAO sampleDAO = maPSeqDAOBean.getSampleDAO();
@@ -46,17 +47,23 @@ public class MigrateFileDatasAction extends AbstractAction {
 
             for (Flowcell flowcell : flowcells) {
 
+                logger.debug(flowcell.toString());
+
                 List<Sample> samples = sampleDAO.findByFlowcellId(flowcell.getId());
 
                 if (samples != null && !samples.isEmpty()) {
 
                     for (Sample sample : samples) {
 
+                        logger.debug(sample.toString());
+
                         Set<FileData> fileDatas = sample.getFileDatas();
 
                         if (fileDatas != null && !fileDatas.isEmpty()) {
 
                             for (FileData fileData : fileDatas) {
+
+                                logger.debug(fileData.toString());
 
                                 String path = fileData.getPath();
                                 File originalFile = new File(path, fileData.getName());
@@ -88,7 +95,6 @@ public class MigrateFileDatasAction extends AbstractAction {
                                             destinationFile.getAbsolutePath());
 
                                     logger.info(msg);
-                                    System.out.printf(msg);
 
                                     if (dryRun) {
                                         continue;
