@@ -3,6 +3,11 @@
 
   <command-bundle xmlns="http://karaf.apache.org/xmlns/shell/v1.1.0">
     <command>
+      <action class="edu.unc.mapseq.commands.MigrateFileDatasAction">
+        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
+      </action>
+    </command>
+    <command>
       <action class="edu.unc.mapseq.commands.ListModulesAction">
         <property name="context" ref="blueprintBundleContext" />
       </action>
