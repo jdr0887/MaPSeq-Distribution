@@ -56,6 +56,7 @@ public class StudyDAOImpl extends NamedEntityDAOImpl<Study, Long> implements Stu
 
     @Override
     public List<Study> findAll() throws MaPSeqDAOException {
+        logger.debug("ENTERING findAll()");
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
         Collection<? extends Study> ret = client.path("findAll").accept(MediaType.APPLICATION_JSON)
                 .getCollection(Study.class);
