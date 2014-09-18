@@ -284,9 +284,7 @@ public class ModuleCLIGenerator extends AbstractGenerator {
         JClass gnuParserJClass = codeModel.ref(GnuParser.class);
         JClass stringJClass = codeModel.ref(String.class);
         JClass longJClass = codeModel.ref(Long.class);
-        JClass propertiesJClass = codeModel.ref(Properties.class);
         JClass fileJClass = codeModel.ref(File.class);
-        JClass fileInputStreamJClass = codeModel.ref(FileInputStream.class);
         JClass dateJClass = codeModel.ref(Date.class);
         JClass booleanJClass = codeModel.ref(Boolean.class);
         JClass listJClass = codeModel.ref(List.class);
@@ -312,11 +310,6 @@ public class ModuleCLIGenerator extends AbstractGenerator {
                         .invoke("withLongOpt").arg(JExpr.lit("workflowRunAttemptId")).invoke("create")));
 
         mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption").arg(
-                optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit("propertyFile")).invoke("hasArg")
-                        .invoke("withDescription").arg(JExpr.lit("Property File")).invoke("withLongOpt")
-                        .arg(JExpr.lit("propertyFile")).invoke("create")));
-
-        mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption").arg(
                 optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit("dryRun")).invoke("withDescription")
                         .arg(JExpr.lit("no web service calls & echo command line without running"))
                         .invoke("withLongOpt").arg(JExpr.lit("dryRun")).invoke("create")));
@@ -325,11 +318,6 @@ public class ModuleCLIGenerator extends AbstractGenerator {
                 optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit("persistFileData"))
                         .invoke("withDescription").arg(JExpr.lit("persist FileData's if they exist"))
                         .invoke("withLongOpt").arg(JExpr.lit("persistFileData")).invoke("create")));
-
-        mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption").arg(
-                optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit("parentJob")).invoke("hasArg")
-                        .invoke("withDescription").arg(JExpr.lit("Serialized Parent Job file")).invoke("withLongOpt")
-                        .arg(JExpr.lit("parentJob")).invoke("create")));
 
         mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption").arg(
                 optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit("serializeFile")).invoke("hasArg")
@@ -465,16 +453,6 @@ public class ModuleCLIGenerator extends AbstractGenerator {
         paramVar = hasOptionConditionalThenBlock.decl(fileJClass, "serializeFile");
         paramVar.init(JExpr._new(fileJClass).arg(commandLineVar.invoke("getOptionValue").arg("serializeFile")));
         hasOptionConditionalThenBlock.add(applicationVar.invoke("setSerializeFile").arg(paramVar));
-
-        hasOptionConditional = tryBlockBody._if(commandLineVar.invoke("hasOption").arg("propertyFile"));
-        hasOptionConditionalThenBlock = hasOptionConditional._then();
-        paramVar = hasOptionConditionalThenBlock.decl(fileJClass, "propertyFile");
-        paramVar.init(JExpr._new(fileJClass).arg(commandLineVar.invoke("getOptionValue").arg("propertyFile")));
-        JVar propertiesVar = hasOptionConditionalThenBlock.decl(propertiesJClass, "properties");
-        propertiesVar.init(JExpr._new(propertiesJClass));
-        hasOptionConditionalThenBlock.add(propertiesVar.invoke("load").arg(
-                JExpr._new(fileInputStreamJClass).arg(paramVar)));
-        hasOptionConditionalThenBlock.add(applicationVar.invoke("setProperties").arg(propertiesVar));
 
         hasOptionConditional = tryBlockBody._if(commandLineVar.invoke("hasOption").arg("dryRun"));
         hasOptionConditionalThenBlock = hasOptionConditional._then();
