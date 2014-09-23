@@ -90,7 +90,7 @@ public class UBUSamTranslate extends Module {
         FileData fileData = new FileData();
         fileData.setMimeType(MimeType.APPLICATION_BAM);
         fileData.setName(output.getName());
-        addFileData(fileData);
+        getFileDatas().add(fileData);
         return moduleOutput;
     }
 

@@ -138,19 +138,19 @@ public class GATKVariantRecalibrator extends Module {
         FileData fileData = new FileData();
         fileData.setName(recalFile.getName());
         fileData.setMimeType(MimeType.TEXT_RECALIBRATION);
-        addFileData(fileData);
+        getFileDatas().add(fileData);
 
         fileData = new FileData();
         fileData.setName(tranchesFile.getName());
         fileData.setMimeType(MimeType.TEXT_TRANCHES);
-        addFileData(fileData);
+        getFileDatas().add(fileData);
 
         if (rscriptFile != null && rscriptFile.exists()) {
 
             fileData = new FileData();
             fileData.setName(rscriptFile.getName());
             fileData.setMimeType(MimeType.APPLICATION_R);
-            addFileData(fileData);
+            getFileDatas().add(fileData);
 
         }
 

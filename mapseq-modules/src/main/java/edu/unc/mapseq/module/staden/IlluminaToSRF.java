@@ -90,7 +90,7 @@ public class IlluminaToSRF extends Module {
         FileData fm = new FileData();
         fm.setMimeType(MimeType.APPLICATION_SRF);
         fm.setName(output.getName());
-        addFileData(fm);
+        getFileDatas().add(fm);
 
         return new ShellModuleOutput(commandOutput);
     }

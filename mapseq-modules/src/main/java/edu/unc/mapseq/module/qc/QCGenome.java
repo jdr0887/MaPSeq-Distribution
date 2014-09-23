@@ -127,7 +127,7 @@ public class QCGenome extends Module {
             FileData fm = new FileData();
             fm.setName(outFile.getName());
             fm.setMimeType(MimeType.TEXT_QC_GENOME);
-            addFileData(fm);
+            getFileDatas().add(fm);
 
         } catch (Exception e) {
             e.printStackTrace();

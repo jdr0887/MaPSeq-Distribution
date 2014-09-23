@@ -136,17 +136,17 @@ public class BCTrend extends Module {
         FileData fm = new FileData();
         fm.setName(trendPlot.getName());
         fm.setMimeType(MimeType.PNG_BCTREND);
-        addFileData(fm);
+        getFileDatas().add(fm);
 
         fm = new FileData();
         fm.setName(outFile.getName());
         fm.setMimeType(MimeType.TEXT_BC_TREND);
-        addFileData(fm);
+        getFileDatas().add(fm);
 
         fm = new FileData();
         fm.setName(flagFile.getName());
         fm.setMimeType(MimeType.TEXT_BC_FLAG);
-        addFileData(fm);
+        getFileDatas().add(fm);
 
         return moduleOutput;
     }

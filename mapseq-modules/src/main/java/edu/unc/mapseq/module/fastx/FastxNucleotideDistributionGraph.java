@@ -78,7 +78,7 @@ public class FastxNucleotideDistributionGraph extends Module {
                 fm.setMimeType(MimeType.IMAGE_PNG);
             }
             fm.setName(output.getName());
-            addFileData(fm);
+            getFileDatas().add(fm);
 
         } catch (Exception e) {
             throw new ModuleException(e);

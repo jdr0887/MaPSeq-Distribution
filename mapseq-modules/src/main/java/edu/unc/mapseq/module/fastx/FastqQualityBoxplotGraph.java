@@ -93,7 +93,7 @@ public class FastqQualityBoxplotGraph extends Module {
         }
         fm.setPath(output.getParentFile().getAbsolutePath());
         fm.setName(output.getName());
-        addFileData(fm);
+        getFileDatas().add(fm);
 
         return new ShellModuleOutput(commandOutput);
     }

@@ -123,7 +123,7 @@ public class GATKIndelRealigner extends Module {
             FileData fileData = new FileData();
             fileData.setName(out.getName());
             fileData.setMimeType(MimeType.APPLICATION_BAM);
-            addFileData(fileData);
+            getFileDatas().add(fileData);
         }
 
         return new ShellModuleOutput(commandOutput);

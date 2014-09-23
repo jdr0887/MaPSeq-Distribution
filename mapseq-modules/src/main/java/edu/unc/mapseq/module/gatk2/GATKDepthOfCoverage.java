@@ -121,7 +121,7 @@ public class GATKDepthOfCoverage extends Module {
         FileData fileData = new FileData();
         fileData.setName(String.format("%s.sample_summary", outputPrefix));
         fileData.setMimeType(MimeType.TEXT_DEPTH_OF_COVERAGE_SUMMARY);
-        addFileData(fileData);
+        getFileDatas().add(fileData);
 
         return new ShellModuleOutput(commandOutput);
     }

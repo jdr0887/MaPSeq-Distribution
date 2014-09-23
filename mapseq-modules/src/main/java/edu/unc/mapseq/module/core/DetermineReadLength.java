@@ -96,7 +96,7 @@ public class DetermineReadLength extends Module {
         FileData fm = new FileData();
         fm.setMimeType(MimeType.TEXT_PLAIN);
         fm.setName(output.getName());
-        addFileData(fm);
+        getFileDatas().add(fm);
 
         return moduleOutput;
     }

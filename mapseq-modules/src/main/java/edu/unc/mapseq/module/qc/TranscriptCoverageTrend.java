@@ -88,7 +88,7 @@ public class TranscriptCoverageTrend extends Module {
             FileData fm = new FileData();
             fm.setName(outFile.getName());
             fm.setMimeType(MimeType.PNG_COVERAGE_X_TRANSCRIPT_PLOT);
-            addFileData(fm);
+            getFileDatas().add(fm);
 
         } catch (Exception e) {
             e.printStackTrace();

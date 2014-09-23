@@ -79,7 +79,7 @@ public class PicardMergeSAM extends Module {
         FileData fm = new FileData();
         fm.setName(output.getName());
         fm.setMimeType(MimeType.APPLICATION_BAM);
-        addFileData(fm);
+        getFileDatas().add(fm);
 
         return moduleOutput;
     }

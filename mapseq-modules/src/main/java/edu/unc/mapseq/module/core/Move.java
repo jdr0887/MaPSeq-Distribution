@@ -75,7 +75,7 @@ public class Move extends Module {
                 FileData fileData = new FileData();
                 fileData.setName(destination.getName());
                 fileData.setMimeType(mimeType);
-                addFileData(fileData);
+                getFileDatas().add(fileData);
             }
 
         } catch (Exception e) {

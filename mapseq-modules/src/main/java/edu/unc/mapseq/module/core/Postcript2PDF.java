@@ -66,7 +66,7 @@ public class Postcript2PDF extends Module {
         FileData fileData = new FileData();
         fileData.setMimeType(MimeType.APPLICATION_PDF);
         fileData.setName(output.getName());
-        addFileData(fileData);
+        getFileDatas().add(fileData);
 
         return new ShellModuleOutput(commandOutput);
     }

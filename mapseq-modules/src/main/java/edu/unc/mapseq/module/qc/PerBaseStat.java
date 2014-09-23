@@ -77,7 +77,7 @@ public class PerBaseStat extends Module {
             FileData fm = new FileData();
             fm.setMimeType(MimeType.TEXT_STAT_SUMMARY);
             fm.setName(outFile.getName());
-            addFileData(fm);
+            getFileDatas().add(fm);
 
         } catch (Exception e) {
             e.printStackTrace();

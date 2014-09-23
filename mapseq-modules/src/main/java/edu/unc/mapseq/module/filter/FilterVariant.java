@@ -160,7 +160,7 @@ public class FilterVariant extends Module {
         FileData fileData = new FileData();
         fileData.setName(output.getName());
         fileData.setMimeType(MimeType.TEXT_VCF);
-        addFileData(fileData);
+        getFileDatas().add(fileData);
 
         return moduleOutput;
     }

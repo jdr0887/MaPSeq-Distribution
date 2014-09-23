@@ -76,7 +76,7 @@ public class PicardFixMate extends Module {
         FileData fm = new FileData();
         fm.setMimeType(MimeType.APPLICATION_BAM);
         fm.setName(output.getName());
-        addFileData(fm);
+        getFileDatas().add(fm);
 
         return moduleOutput;
 

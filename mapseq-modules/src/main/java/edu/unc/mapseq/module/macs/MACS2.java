@@ -229,7 +229,7 @@ public class MACS2 extends Module {
                 FileData fileData = new FileData();
                 fileData.setMimeType(MimeType.APPLICATION_XLS);
                 fileData.setName(peaksXLSFile.getName());
-                addFileData(fileData);
+                getFileDatas().add(fileData);
             }
 
             File peaksBedFile = new File(this.treatment.getParentFile(), this.name + "_peaks.bed");
@@ -237,7 +237,7 @@ public class MACS2 extends Module {
                 FileData fileData = new FileData();
                 fileData.setMimeType(MimeType.TEXT_BED);
                 fileData.setName(peaksBedFile.getName());
-                addFileData(fileData);
+                getFileDatas().add(fileData);
             }
 
             File encodePeaksFile = new File(this.treatment.getParentFile(), this.name + "_peaks.encodePeak");
@@ -245,7 +245,7 @@ public class MACS2 extends Module {
                 FileData fileData = new FileData();
                 fileData.setMimeType(MimeType.TEXT_BED);
                 fileData.setName(encodePeaksFile.getName());
-                addFileData(fileData);
+                getFileDatas().add(fileData);
             }
 
         }

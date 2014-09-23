@@ -83,7 +83,7 @@ public class ZCat extends Module {
                 FileData fileData = new FileData();
                 fileData.setName(outputFile.getName());
                 fileData.setMimeType(mimeType);
-                addFileData(fileData);
+                getFileDatas().add(fileData);
             }
 
         } catch (ExecutorException e) {

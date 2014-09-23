@@ -68,7 +68,7 @@ public class UBUSamJunction extends Module {
         FileData fileData = new FileData();
         fileData.setMimeType(MimeType.TEXT_PLAIN);
         fileData.setName(output.getName());
-        addFileData(fileData);
+        getFileDatas().add(fileData);
 
         return moduleOutput;
     }
