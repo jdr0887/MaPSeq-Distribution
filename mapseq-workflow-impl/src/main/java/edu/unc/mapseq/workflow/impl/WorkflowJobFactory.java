@@ -8,7 +8,6 @@ import org.renci.jlrm.condor.CondorJobBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.unc.mapseq.dao.model.Sample;
 import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
 
 public class WorkflowJobFactory {
@@ -16,22 +15,17 @@ public class WorkflowJobFactory {
     private static final Logger logger = LoggerFactory.getLogger(WorkflowJobFactory.class);
 
     public static CondorJobBuilder createJob(int count, Class<?> moduleClass, WorkflowRunAttempt workflowRunAttempt) {
-        return createJob(count, moduleClass, workflowRunAttempt, null);
+        return createJob(count, moduleClass, workflowRunAttempt);
     }
 
     public static CondorJobBuilder createJob(int count, Class<?> moduleClass, WorkflowRunAttempt workflowRunAttempt,
-            Sample sample) {
-        return createJob(count, moduleClass, workflowRunAttempt, sample, true);
+            boolean persistFileData) {
+        return createJob(count, moduleClass, workflowRunAttempt, persistFileData, 3);
     }
 
     public static CondorJobBuilder createJob(int count, Class<?> moduleClass, WorkflowRunAttempt workflowRunAttempt,
-            Sample sample, boolean persistFileData) {
-        return createJob(count, moduleClass, workflowRunAttempt, sample, persistFileData, 3);
-    }
-
-    public static CondorJobBuilder createJob(int count, Class<?> moduleClass, WorkflowRunAttempt workflowRunAttempt,
-            Sample sample, boolean persistFileData, Integer retry) {
-        logger.debug("ENTERING createJob(int, Class<?>, WorkflowPlan, HTSFSample, boolean, Integer)");
+            boolean persistFileData, Integer retry) {
+        logger.debug("ENTERING createJob(int, Class<?>, WorkflowPlan, Sample, boolean, Integer)");
         logger.debug("moduleClass.getSimpleName(): {}", moduleClass.getSimpleName());
 
         File executable = new File("$MAPSEQ_HOME/bin/mapseq-run-module.sh");
@@ -58,11 +52,6 @@ public class WorkflowJobFactory {
 
         if (persistFileData) {
             builder.addArgument("--persistFileData");
-        }
-
-        if (sample != null) {
-            logger.debug(sample.toString());
-            builder.addArgument("--sampleId", sample.getId().toString());
         }
 
         return builder;
