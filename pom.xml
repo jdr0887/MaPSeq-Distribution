@@ -11,7 +11,7 @@
   <version>0.5.9-SNAPSHOT</version>
   <packaging>pom</packaging>
   <properties>
-    <mapseq.version>0.5.5</mapseq.version>
+    <mapseq.version>0.5.6</mapseq.version>
     <renci.charts.version>0.0.5</renci.charts.version>
     <spring.version>3.2.4.RELEASE</spring.version>
   </properties>
@@ -30,7 +30,6 @@
     <url>https://github.com/jdr0887/MaPSeq-Distribution</url>
     <developerConnection>scm:git:git@github.com:jdr0887/MaPSeq-Distribution.git</developerConnection>
     <connection>scm:git:git@github.com:jdr0887/MaPSeq-Distribution.git</connection>
-    <tag>HEAD</tag>
   </scm>
   <dependencyManagement>
     <dependencies>
