@@ -2,13 +2,13 @@
   <parent>
     <groupId>edu.unc.mapseq</groupId>
     <artifactId>distribution</artifactId>
-    <version>0.5.18-SNAPSHOT</version>
+    <version>0.5.18</version>
   </parent>
   <name>MaPSeq :: Distribution :: DAO</name>
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.unc.mapseq.distribution</groupId>
   <artifactId>mapseq-dao</artifactId>
-  <version>0.5.18-SNAPSHOT</version>
+  <version>0.5.18</version>
   <packaging>pom</packaging>
   <modules>
     <module>mapseq-dao-rest</module>
