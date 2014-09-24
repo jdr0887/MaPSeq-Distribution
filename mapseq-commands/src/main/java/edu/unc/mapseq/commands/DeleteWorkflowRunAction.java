@@ -66,7 +66,7 @@ public class DeleteWorkflowRunAction extends AbstractAction {
                     workflowRunDAO.save(workflowRun);
 
                     workflowRunDAO.delete(workflowRun);
-                    System.out.println("WorkflowRun deleted%n");
+                    System.out.println("WorkflowRun deleted");
 
                 } catch (MaPSeqDAOException e) {
                     e.printStackTrace();
