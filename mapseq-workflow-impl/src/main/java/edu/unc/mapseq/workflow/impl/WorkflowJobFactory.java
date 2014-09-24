@@ -15,7 +15,7 @@ public class WorkflowJobFactory {
     private static final Logger logger = LoggerFactory.getLogger(WorkflowJobFactory.class);
 
     public static CondorJobBuilder createJob(int count, Class<?> moduleClass, WorkflowRunAttempt workflowRunAttempt) {
-        return createJob(count, moduleClass, workflowRunAttempt);
+        return createJob(count, moduleClass, workflowRunAttempt, true);
     }
 
     public static CondorJobBuilder createJob(int count, Class<?> moduleClass, WorkflowRunAttempt workflowRunAttempt,
@@ -25,7 +25,7 @@ public class WorkflowJobFactory {
 
     public static CondorJobBuilder createJob(int count, Class<?> moduleClass, WorkflowRunAttempt workflowRunAttempt,
             boolean persistFileData, Integer retry) {
-        logger.debug("ENTERING createJob(int, Class<?>, WorkflowPlan, Sample, boolean, Integer)");
+        logger.debug("ENTERING createJob(int, Class<?>, WorkflowPlan, boolean, Integer)");
         logger.debug("moduleClass.getSimpleName(): {}", moduleClass.getSimpleName());
 
         File executable = new File("$MAPSEQ_HOME/bin/mapseq-run-module.sh");
