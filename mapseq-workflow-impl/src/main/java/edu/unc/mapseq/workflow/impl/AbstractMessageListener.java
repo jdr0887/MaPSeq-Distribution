@@ -21,8 +21,9 @@ import edu.unc.mapseq.dao.model.Workflow;
 import edu.unc.mapseq.dao.model.WorkflowRun;
 import edu.unc.mapseq.workflow.WorkflowBeanService;
 import edu.unc.mapseq.workflow.WorkflowException;
-import edu.unc.mapseq.workflow.model.WorkflowEntity;
 import edu.unc.mapseq.workflow.model.WorkflowAttribute;
+import edu.unc.mapseq.workflow.model.WorkflowEntity;
+import edu.unc.mapseq.workflow.model.WorkflowMessage;
 
 public abstract class AbstractMessageListener implements MessageListener {
 
@@ -151,6 +152,58 @@ public abstract class AbstractMessageListener implements MessageListener {
 
         }
         return attributeSet;
+    }
+
+    protected WorkflowRun createWorkflowRun(WorkflowMessage workflowMessage, Workflow workflow)
+            throws WorkflowException {
+        logger.debug("ENTERING createWorkflowRun(WorkflowMessage, Workflow)");
+
+        Set<Flowcell> flowcellSet = new HashSet<Flowcell>();
+        Set<Sample> sampleSet = new HashSet<Sample>();
+        WorkflowRun workflowRun = null;
+
+        for (WorkflowEntity entity : workflowMessage.getEntities()) {
+            if (StringUtils.isNotEmpty(entity.getEntityType())
+                    && Flowcell.class.getSimpleName().equals(entity.getEntityType())) {
+                Flowcell flowcell = getFlowcell(entity);
+                flowcellSet.add(flowcell);
+            }
+        }
+
+        for (WorkflowEntity entity : workflowMessage.getEntities()) {
+            if (StringUtils.isNotEmpty(entity.getEntityType())
+                    && Sample.class.getSimpleName().equals(entity.getEntityType())) {
+                Sample sample = getSample(entity);
+                sampleSet.add(sample);
+            }
+        }
+
+        if (flowcellSet.isEmpty() && sampleSet.isEmpty()) {
+            logger.warn("flowcellSet & sampleSet are both empty...not running anything");
+            throw new WorkflowException("flowcellSet & sampleSet are both empty...not running anything");
+        }
+
+        for (WorkflowEntity entity : workflowMessage.getEntities()) {
+            if (StringUtils.isNotEmpty(entity.getEntityType())
+                    && WorkflowRun.class.getSimpleName().equals(entity.getEntityType())) {
+                workflowRun = getWorkflowRun(workflow, entity);
+            }
+        }
+
+        if (workflowRun == null) {
+            logger.warn("WorkflowRun is null...not running anything");
+            throw new WorkflowException("WorkflowRun is null...not running anything");
+        }
+
+        if (!flowcellSet.isEmpty()) {
+            workflowRun.setFlowcells(flowcellSet);
+        }
+
+        if (!sampleSet.isEmpty()) {
+            workflowRun.setSamples(sampleSet);
+        }
+
+        return workflowRun;
     }
 
     public WorkflowBeanService getWorkflowBeanService() {
