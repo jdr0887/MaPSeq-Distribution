@@ -1,5 +1,7 @@
 package edu.unc.mapseq.dao.ws;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -24,6 +26,7 @@ import org.junit.Test;
 import edu.unc.mapseq.dao.FlowcellDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.SampleDAO;
+import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
 import edu.unc.mapseq.dao.WorkflowRunDAO;
 import edu.unc.mapseq.dao.model.FileData;
 import edu.unc.mapseq.dao.model.Flowcell;
@@ -33,6 +36,26 @@ import edu.unc.mapseq.dao.model.WorkflowRun;
 import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
 
 public class SampleDAOTest {
+
+    @Test
+    public void testFindByWorkflowRunId() {
+
+        WSDAOManager daoMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
+
+        try {
+            WorkflowRunAttemptDAO workflowRunAttemptDAO = daoMgr.getMaPSeqDAOBean().getWorkflowRunAttemptDAO();
+            WorkflowRunAttempt attempt = workflowRunAttemptDAO.findById(45L);
+
+            SampleDAO sampleDAO = daoMgr.getMaPSeqDAOBean().getSampleDAO();
+            List<Sample> samples = sampleDAO.findByWorkflowRunId(attempt.getWorkflowRun().getId());
+
+            assertTrue(samples != null);
+            assertTrue(!samples.isEmpty());
+        } catch (MaPSeqDAOException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     @Test
     public void testSave() {
