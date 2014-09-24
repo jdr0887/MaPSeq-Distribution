@@ -58,6 +58,11 @@
       </action>
     </command>
     <command>
+      <action class="edu.unc.mapseq.commands.DeleteWorkflowRunAction">
+        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
+      </action>
+    </command>
+    <command>
       <action class="edu.unc.mapseq.commands.SynchronizeCondorWithWorkflowRunAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
