@@ -110,6 +110,17 @@ public class FlowcellServiceImpl implements FlowcellService {
         return null;
     }
 
+    @Override
+    public List<Flowcell> findByWorkflowRunId(Long workflowRunId) {
+        logger.debug("ENTERING findByWorkflowRunId(Long)");
+        try {
+            List<Flowcell> ret = flowcellDAO.findByWorkflowRunId(workflowRunId);
+            return ret;
+        } catch (MaPSeqDAOException e) {
+        }
+        return null;
+    }
+
     public FlowcellDAO getFlowcellDAO() {
         return flowcellDAO;
     }

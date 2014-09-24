@@ -156,6 +156,22 @@ public class SampleServiceImpl implements SampleService {
         return ret;
     }
 
+    @Override
+    public List<Sample> findByWorkflowRunId(Long workflowRunId) {
+        logger.debug("ENTERING findByWorkflowRunId(Long)");
+        List<Sample> ret = new ArrayList<Sample>();
+        if (workflowRunId == null) {
+            logger.warn("workflowRunId is null");
+            return ret;
+        }
+        try {
+            ret.addAll(sampleDAO.findByWorkflowRunId(workflowRunId));
+        } catch (MaPSeqDAOException e) {
+            logger.error("Error", e);
+        }
+        return ret;
+    }
+
     public SampleDAO getSampleDAO() {
         return sampleDAO;
     }
