@@ -40,18 +40,6 @@ public class ListStudiesAction extends AbstractAction {
         } catch (Exception e) {
         }
 
-        Collections.sort(studyList, new Comparator<Study>() {
-
-            @Override
-            public int compare(Study w1, Study w2) {
-                if (StringUtils.isNotEmpty(w1.getName()) && StringUtils.isNotEmpty(w2.getName())) {
-                    return w1.getName().compareTo(w2.getName());
-                }
-                return 0;
-            }
-
-        });
-
         if (studyList.size() > 0) {
             StringBuilder sb = new StringBuilder();
             Formatter formatter = new Formatter(sb, Locale.US);
