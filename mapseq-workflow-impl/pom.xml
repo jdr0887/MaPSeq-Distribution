@@ -2,13 +2,13 @@
   <parent>
     <groupId>edu.unc.mapseq</groupId>
     <artifactId>distribution</artifactId>
-    <version>0.5.23-SNAPSHOT</version>
+    <version>0.5.23</version>
   </parent>
   <name>MaPSeq :: Distribution :: Workflow Impl</name>
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.unc.mapseq.distribution</groupId>
   <artifactId>mapseq-workflow-impl</artifactId>
-  <version>0.5.23-SNAPSHOT</version>
+  <version>0.5.23</version>
   <packaging>bundle</packaging>
   <dependencies>
     <dependency>
