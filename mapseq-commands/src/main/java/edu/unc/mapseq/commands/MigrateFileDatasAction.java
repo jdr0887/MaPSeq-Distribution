@@ -116,12 +116,9 @@ public class MigrateFileDatasAction extends AbstractAction {
 
                         }
 
+                        // moving /proj/seq/mapseq/LBG/<flowcell>/<workflow>/<sample>
                         String basePath = System.getenv("MAPSEQ_OUTPUT_DIRECTORY");
                         for (Workflow workflow : workflows) {
-
-                            File workflowDirectory = new File(String.format("%s/%s/L%03d_%s/%s", basePath,
-                                    flowcell.getName(), sample.getLaneIndex(), sample.getBarcode(), workflow.getName()));
-                            workflowDirectory.mkdirs();
 
                             File sampleDir = new File(String.format("%s/%s/%s/%s", basePath, flowcell.getName(),
                                     workflow.getName(), sample.getName()));
@@ -134,6 +131,52 @@ public class MigrateFileDatasAction extends AbstractAction {
                                     if (file.isDirectory()) {
                                         continue;
                                     }
+
+                                    File workflowDirectory = new File(String.format("%s/%s/L%03d_%s/%s", basePath,
+                                            flowcell.getName(), sample.getLaneIndex(), sample.getBarcode(), workflow.getName()));
+                                    workflowDirectory.mkdirs();
+
+                                    File destinationFile = new File(workflowDirectory, file.getName());
+
+                                    if (destinationFile.exists()) {
+                                        continue;
+                                    }
+
+                                    String msg = String.format("moving %s to %s", file.getAbsolutePath(),
+                                            destinationFile.getAbsolutePath());
+
+                                    logger.info(msg);
+
+                                    if (dryRun) {
+                                        continue;
+                                    }
+
+                                    FileUtils.moveFile(file, destinationFile);
+                                }
+
+                            }
+
+                        }
+
+                        // moving /proj/seq/mapseq/LBG/<flowcell>/<workflow>/<lane>_<barcode>
+                        for (Workflow workflow : workflows) {
+
+                            File sampleDir = new File(String.format("%s/%s/%s/L%03d_%s", basePath, flowcell.getName(),
+                                    workflow.getName(), sample.getLaneIndex(), sample.getBarcode()));
+
+                            File[] files = sampleDir.listFiles();
+                            if (files != null && files.length > 0) {
+
+                                for (File file : files) {
+
+                                    if (file.isDirectory()) {
+                                        continue;
+                                    }
+
+                                    File workflowDirectory = new File(String.format("%s/%s/L%03d_%s/%s", basePath,
+                                            flowcell.getName(), sample.getLaneIndex(), sample.getBarcode(),
+                                            workflow.getName()));
+                                    workflowDirectory.mkdirs();
 
                                     File destinationFile = new File(workflowDirectory, file.getName());
 
