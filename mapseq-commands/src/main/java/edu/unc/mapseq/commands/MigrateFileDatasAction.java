@@ -131,6 +131,10 @@ public class MigrateFileDatasAction extends AbstractAction {
 
                                 for (File file : files) {
 
+                                    if (file.isDirectory()) {
+                                        continue;
+                                    }
+
                                     File destinationFile = new File(workflowDirectory, file.getName());
 
                                     if (destinationFile.exists()) {
