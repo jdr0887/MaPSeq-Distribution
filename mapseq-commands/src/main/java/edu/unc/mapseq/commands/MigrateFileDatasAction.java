@@ -91,6 +91,10 @@ public class MigrateFileDatasAction extends AbstractAction {
 
                                     File destinationFile = new File(workflowDirectory, fileData.getName());
 
+                                    if (destinationFile.exists()) {
+                                        continue;
+                                    }
+
                                     String msg = String.format("moving %s to %s", originalFile.getAbsolutePath(),
                                             destinationFile.getAbsolutePath());
 
