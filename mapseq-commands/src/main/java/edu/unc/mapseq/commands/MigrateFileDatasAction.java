@@ -116,6 +116,43 @@ public class MigrateFileDatasAction extends AbstractAction {
 
                         }
 
+                        String basePath = System.getenv("MAPSEQ_OUTPUT_DIRECTORY");
+                        for (Workflow workflow : workflows) {
+
+                            File workflowDirectory = new File(String.format("%s/%s/L%03d_%s/%s", basePath,
+                                    flowcell.getName(), sample.getLaneIndex(), sample.getBarcode(), workflow.getName()));
+                            workflowDirectory.mkdirs();
+
+                            File sampleDir = new File(String.format("%s/%s/%s/%s", basePath, flowcell.getName(),
+                                    workflow.getName(), sample.getName()));
+
+                            File[] files = sampleDir.listFiles();
+                            if (files != null && files.length > 0) {
+
+                                for (File file : files) {
+
+                                    File destinationFile = new File(workflowDirectory, file.getName());
+
+                                    if (destinationFile.exists()) {
+                                        continue;
+                                    }
+
+                                    String msg = String.format("moving %s to %s", file.getAbsolutePath(),
+                                            destinationFile.getAbsolutePath());
+
+                                    logger.info(msg);
+
+                                    if (dryRun) {
+                                        continue;
+                                    }
+
+                                    FileUtils.moveFile(file, destinationFile);
+                                }
+
+                            }
+
+                        }
+
                     }
                 }
 
