@@ -11,13 +11,13 @@
   <version>0.5.25-SNAPSHOT</version>
   <packaging>pom</packaging>
   <properties>
-    <mapseq.version>0.5.12</mapseq.version>
+    <mapseq.version>0.5.13</mapseq.version>
     <renci.charts.version>0.0.5</renci.charts.version>
     <spring.version>3.2.4.RELEASE</spring.version>
   </properties>
   <issueManagement>
-    <system>gForge</system>
-    <url>https://code.renci.org/gf/project/mapseq/tracker/</url>
+    <system>GitHub Issues</system>
+    <url>https://github.com/jdr0887/MaPSeq-Distribution/issues</url>
   </issueManagement>
   <licenses>    
     <license>
