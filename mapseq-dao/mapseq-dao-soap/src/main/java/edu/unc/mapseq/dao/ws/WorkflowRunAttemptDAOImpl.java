@@ -47,8 +47,10 @@ public class WorkflowRunAttemptDAOImpl extends BaseDAOImpl<WorkflowRunAttempt, L
     }
 
     @Override
-    public Long save(WorkflowRunAttempt arg0) throws MaPSeqDAOException {
-        return null;
+    public Long save(WorkflowRunAttempt attempt) throws MaPSeqDAOException {
+        logger.debug("ENTERING save(WorkflowRunAttempt)");
+        Long ret = workflowRunAttemptService.save(attempt);
+        return ret;
     }
 
     @Override

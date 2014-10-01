@@ -94,6 +94,19 @@ public class WorkflowRunAttemptServiceImpl implements WorkflowRunAttemptService 
     }
 
     @Override
+    public Long save(WorkflowRunAttempt workflowRunAttempt) {
+        logger.debug("ENTERING save(WorkflowRunAttempt)");
+        Long workflowRunAttemptId = null;
+        try {
+            workflowRunAttemptId = workflowRunAttemptDAO.save(workflowRunAttempt);
+        } catch (MaPSeqDAOException e) {
+            logger.warn("Problem with workflowRunDAO.save({})", workflowRunAttempt.toString());
+            logger.error("MaPSeqDAOException", e);
+        }
+        return workflowRunAttemptId;
+    }
+
+    @Override
     public List<WorkflowRunAttempt> findByWorkflowId(Long workflowId) throws MaPSeqDAOException {
         logger.debug("ENTERING findByWorkflowId(Long)");
         List<WorkflowRunAttempt> ret = new ArrayList<>();
