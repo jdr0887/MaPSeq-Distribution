@@ -75,7 +75,9 @@ public class SynchronizeCondorWithWorkflowRunAction extends AbstractAction {
                     logger.debug(workflowRun.toString());
                     Workflow workflow = workflowRun.getWorkflow();
 
-                    for (WorkflowRunAttempt attempt : workflowRun.getAttempts()) {
+                    List<WorkflowRunAttempt> attempts = workflowRunAttemptDAO.findByWorkflowRunId(workflowRun.getId());
+
+                    for (WorkflowRunAttempt attempt : attempts) {
 
                         File dagOutFile = new File(attempt.getSubmitDirectory(), String.format("%s.dag.dagman.out",
                                 workflow.getName()));
