@@ -63,7 +63,9 @@ public abstract class AbstractSampleWorkflow extends AbstractWorkflow {
                             sample.getLaneIndex(), sample.getBarcode()));
                     sampleOutputDir.mkdirs();
                     // this will produce: /proj/seq/mapseq/RENCI/<flowcell>/<lane>_<barcode>
-                    if (!sample.getOutputDirectory().equals(sampleOutputDir.getAbsolutePath())) {
+                    if (sample.getOutputDirectory() == null
+                            || (sample.getOutputDirectory() != null && !sample.getOutputDirectory().equals(
+                                    sampleOutputDir.getAbsolutePath()))) {
                         sample.setOutputDirectory(sampleOutputDir.getAbsolutePath());
                         MaPSeqDAOBean mapseqDAOBean = getWorkflowBeanService().getMaPSeqDAOBean();
                         mapseqDAOBean.getSampleDAO().save(sample);
