@@ -1,7 +1,6 @@
 package edu.unc.mapseq.generator;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.text.MessageFormat;
@@ -10,7 +9,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -310,6 +308,11 @@ public class ModuleCLIGenerator extends AbstractGenerator {
                         .invoke("withLongOpt").arg(JExpr.lit("workflowRunAttemptId")).invoke("create")));
 
         mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption").arg(
+                optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit("sampleId")).invoke("hasArg")
+                        .invoke("withDescription").arg(JExpr.lit("Sample identifier")).invoke("withLongOpt")
+                        .arg(JExpr.lit("sampleId")).invoke("create")));
+
+        mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption").arg(
                 optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit("dryRun")).invoke("withDescription")
                         .arg(JExpr.lit("no web service calls & echo command line without running"))
                         .invoke("withLongOpt").arg(JExpr.lit("dryRun")).invoke("create")));
@@ -438,21 +441,29 @@ public class ModuleCLIGenerator extends AbstractGenerator {
                 .arg(cliOptionsFieldVar));
         conditionalThenBlock._return();
 
-        JConditional hasOptionConditional = tryBlockBody._if(commandLineVar.invoke("hasOption").arg(
-                "workflowRunAttemptId"));
+        String paramName = "workflowRunAttemptId";
+        JConditional hasOptionConditional = tryBlockBody._if(commandLineVar.invoke("hasOption").arg(paramName));
         JBlock hasOptionConditionalThenBlock = hasOptionConditional._then();
+        JVar paramVar = hasOptionConditionalThenBlock.decl(longJClass, paramName);
+        paramVar.init(longJClass.staticInvoke("valueOf").arg(commandLineVar.invoke("getOptionValue").arg(paramName)));
+        hasOptionConditionalThenBlock.add(applicationVar.invoke(
+                String.format("set%s", StringUtils.capitalize(paramName))).arg(paramVar));
 
-        JVar paramVar = hasOptionConditionalThenBlock.decl(longJClass, "workflowRunAttemptId");
-        paramVar.init(longJClass.staticInvoke("valueOf").arg(
-                commandLineVar.invoke("getOptionValue").arg("workflowRunAttemptId")));
-        hasOptionConditionalThenBlock.add(applicationVar.invoke("set" + StringUtils.capitalize("workflowRunAttemptId"))
-                .arg(paramVar));
-
-        hasOptionConditional = tryBlockBody._if(commandLineVar.invoke("hasOption").arg("serializeFile"));
+        paramName = "sampleId";
+        hasOptionConditional = tryBlockBody._if(commandLineVar.invoke("hasOption").arg(paramName));
         hasOptionConditionalThenBlock = hasOptionConditional._then();
-        paramVar = hasOptionConditionalThenBlock.decl(fileJClass, "serializeFile");
-        paramVar.init(JExpr._new(fileJClass).arg(commandLineVar.invoke("getOptionValue").arg("serializeFile")));
-        hasOptionConditionalThenBlock.add(applicationVar.invoke("setSerializeFile").arg(paramVar));
+        paramVar = hasOptionConditionalThenBlock.decl(longJClass, paramName);
+        paramVar.init(longJClass.staticInvoke("valueOf").arg(commandLineVar.invoke("getOptionValue").arg(paramName)));
+        hasOptionConditionalThenBlock.add(applicationVar.invoke(
+                String.format("set%s", StringUtils.capitalize(paramName))).arg(paramVar));
+
+        paramName = "serializeFile";
+        hasOptionConditional = tryBlockBody._if(commandLineVar.invoke("hasOption").arg(paramName));
+        hasOptionConditionalThenBlock = hasOptionConditional._then();
+        paramVar = hasOptionConditionalThenBlock.decl(fileJClass, paramName);
+        paramVar.init(JExpr._new(fileJClass).arg(commandLineVar.invoke("getOptionValue").arg(paramName)));
+        hasOptionConditionalThenBlock.add(applicationVar.invoke(
+                String.format("set%s", StringUtils.capitalize(paramName))).arg(paramVar));
 
         hasOptionConditional = tryBlockBody._if(commandLineVar.invoke("hasOption").arg("dryRun"));
         hasOptionConditionalThenBlock = hasOptionConditional._then();
@@ -468,6 +479,7 @@ public class ModuleCLIGenerator extends AbstractGenerator {
             if (field.isAnnotationPresent(InputArgument.class) || field.isAnnotationPresent(OutputArgument.class)) {
                 // Input input = field.getAnnotation(Input.class);
 
+                String capitalizedFieldName = StringUtils.capitalize(field.getName());
                 hasOptionConditional = tryBlockBody._if(commandLineVar.invoke("hasOption").arg(field.getName()));
                 hasOptionConditionalThenBlock = hasOptionConditional._then();
 
@@ -477,12 +489,12 @@ public class ModuleCLIGenerator extends AbstractGenerator {
                     paramVar.init(JExpr._new(typeClass).arg(
                             commandLineVar.invoke("getOptionValue").arg(field.getName())));
                     hasOptionConditionalThenBlock.add(applicationVar.invoke(
-                            "set" + StringUtils.capitalize(field.getName())).arg(paramVar));
+                            String.format("set%s", capitalizedFieldName)).arg(paramVar));
                 } else if (field.getType() == String.class) {
                     paramVar = hasOptionConditionalThenBlock.decl(typeClass.array(), field.getName());
                     paramVar.init(commandLineVar.invoke("getOptionValues").arg(field.getName()));
                     hasOptionConditionalThenBlock.add(applicationVar.invoke(
-                            "set" + StringUtils.capitalize(field.getName())).arg(
+                            String.format("set%s", capitalizedFieldName)).arg(
                             stringUtilsJClass.staticInvoke("join").arg(paramVar).arg(JExpr.lit(" "))));
                 } else if (field.getType() == Date.class) {
                     paramVar = hasOptionConditionalThenBlock.decl(typeClass, field.getName());
@@ -490,7 +502,7 @@ public class ModuleCLIGenerator extends AbstractGenerator {
                             longJClass.staticInvoke("valueOf").arg(
                                     commandLineVar.invoke("getOptionValue").arg(field.getName()))));
                     hasOptionConditionalThenBlock.add(applicationVar.invoke(
-                            "set" + StringUtils.capitalize(field.getName())).arg(paramVar));
+                            String.format("set%s", capitalizedFieldName)).arg(paramVar));
                 } else if (field.getType().isEnum()) {
 
                     JTryBlock enumCastTryBlock = hasOptionConditionalThenBlock._try();
@@ -499,8 +511,8 @@ public class ModuleCLIGenerator extends AbstractGenerator {
                     paramVar = enumCastTryBlockBody.decl(typeClass, field.getName());
                     paramVar.init(typeClass.staticInvoke("valueOf").arg(
                             commandLineVar.invoke("getOptionValue").arg(field.getName())));
-                    enumCastTryBlockBody.add(applicationVar.invoke("set" + StringUtils.capitalize(field.getName()))
-                            .arg(paramVar));
+                    enumCastTryBlockBody.add(applicationVar.invoke(String.format("set%s", capitalizedFieldName)).arg(
+                            paramVar));
 
                     JCatchBlock catchBlock = enumCastTryBlock._catch(exceptionJClass);
                     JVar exceptionVar = catchBlock.param("e");
@@ -536,19 +548,19 @@ public class ModuleCLIGenerator extends AbstractGenerator {
 
                     paramForEachBody.add(paramVar.invoke("add").arg(JExpr._new(typeJClass).arg(paramForEach.var())));
                     hasOptionConditionalThenBlock.add(applicationVar.invoke(
-                            "set" + StringUtils.capitalize(field.getName())).arg(paramVar));
+                            String.format("set%s", capitalizedFieldName)).arg(paramVar));
 
                 } else if (field.getType() == Boolean.class) {
 
                     hasOptionConditionalThenBlock.add(applicationVar.invoke(
-                            "set" + StringUtils.capitalize(field.getName())).arg(booleanJClass.staticRef("TRUE")));
+                            String.format("set%s", capitalizedFieldName)).arg(booleanJClass.staticRef("TRUE")));
 
                 } else {
                     paramVar = hasOptionConditionalThenBlock.decl(typeClass, field.getName());
                     paramVar.init(typeClass.staticInvoke("valueOf").arg(
                             commandLineVar.invoke("getOptionValue").arg(field.getName())));
                     hasOptionConditionalThenBlock.add(applicationVar.invoke(
-                            "set" + StringUtils.capitalize(field.getName())).arg(paramVar));
+                            String.format("set%s", capitalizedFieldName)).arg(paramVar));
                 }
 
             }
