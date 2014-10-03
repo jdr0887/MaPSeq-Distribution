@@ -8,25 +8,34 @@ import org.renci.jlrm.condor.CondorJobBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
+import edu.unc.mapseq.workflow.WorkflowException;
 
 public class WorkflowJobFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(WorkflowJobFactory.class);
 
-    public static CondorJobBuilder createJob(int count, Class<?> moduleClass, WorkflowRunAttempt workflowRunAttempt) {
-        return createJob(count, moduleClass, workflowRunAttempt, true);
+    public static CondorJobBuilder createJob(int count, Class<?> moduleClass, Long workflowRunAttemptId, Long sampleId)
+            throws WorkflowException {
+        return createJob(count, moduleClass, workflowRunAttemptId, sampleId, true);
     }
 
-    public static CondorJobBuilder createJob(int count, Class<?> moduleClass, WorkflowRunAttempt workflowRunAttempt,
-            boolean persistFileData) {
-        return createJob(count, moduleClass, workflowRunAttempt, persistFileData, 3);
+    public static CondorJobBuilder createJob(int count, Class<?> moduleClass, Long workflowRunAttemptId, Long sampleId,
+            boolean persistFileData) throws WorkflowException {
+        return createJob(count, moduleClass, workflowRunAttemptId, sampleId, persistFileData, 3);
     }
 
-    public static CondorJobBuilder createJob(int count, Class<?> moduleClass, WorkflowRunAttempt workflowRunAttempt,
-            boolean persistFileData, Integer retry) {
+    public static CondorJobBuilder createJob(int count, Class<?> moduleClass, Long workflowRunAttemptId, Long sampleId,
+            boolean persistFileData, Integer retry) throws WorkflowException {
         logger.debug("ENTERING createJob(int, Class<?>, WorkflowPlan, boolean, Integer)");
         logger.debug("moduleClass.getSimpleName(): {}", moduleClass.getSimpleName());
+
+        if (sampleId == null) {
+            throw new WorkflowException("sampleId is null");
+        }
+
+        if (workflowRunAttemptId == null) {
+            throw new WorkflowException("workflowRunAttemptId is null");
+        }
 
         File executable = new File("$MAPSEQ_HOME/bin/mapseq-run-module.sh");
         String jobName = String.format("%s_%d", moduleClass.getSimpleName(), count);
@@ -46,9 +55,8 @@ public class WorkflowJobFactory {
             }
         }
 
-        if (workflowRunAttempt != null) {
-            builder.addArgument("--workflowRunAttemptId", workflowRunAttempt.getId().toString());
-        }
+        builder.addArgument("--workflowRunAttemptId", workflowRunAttemptId.toString());
+        builder.addArgument("--sampleId", sampleId.toString());
 
         if (persistFileData) {
             builder.addArgument("--persistFileData");
