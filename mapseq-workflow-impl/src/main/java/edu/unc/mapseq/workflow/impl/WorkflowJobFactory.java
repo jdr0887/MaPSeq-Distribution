@@ -14,6 +14,11 @@ public class WorkflowJobFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(WorkflowJobFactory.class);
 
+    public static CondorJobBuilder createJob(int count, Class<?> moduleClass, Long workflowRunAttemptId)
+            throws WorkflowException {
+        return createJob(count, moduleClass, workflowRunAttemptId, null, false);
+    }
+
     public static CondorJobBuilder createJob(int count, Class<?> moduleClass, Long workflowRunAttemptId, Long sampleId)
             throws WorkflowException {
         return createJob(count, moduleClass, workflowRunAttemptId, sampleId, true);
@@ -29,10 +34,6 @@ public class WorkflowJobFactory {
         logger.debug("ENTERING createJob(int, Class<?>, WorkflowPlan, boolean, Integer)");
         logger.debug("moduleClass.getSimpleName(): {}", moduleClass.getSimpleName());
 
-        if (sampleId == null) {
-            throw new WorkflowException("sampleId is null");
-        }
-
         if (workflowRunAttemptId == null) {
             throw new WorkflowException("workflowRunAttemptId is null");
         }
@@ -46,6 +47,7 @@ public class WorkflowJobFactory {
         }
 
         builder.addArgument(moduleClass.getName()).addArgument("--serializeFile", String.format("%s.xml", jobName));
+        builder.addArgument("--workflowRunAttemptId", workflowRunAttemptId.toString());
 
         for (ClassAdvertisement classAd : ClassAdvertisementFactory.getDefaultClassAds()) {
             try {
@@ -55,8 +57,9 @@ public class WorkflowJobFactory {
             }
         }
 
-        builder.addArgument("--workflowRunAttemptId", workflowRunAttemptId.toString());
-        builder.addArgument("--sampleId", sampleId.toString());
+        if (sampleId != null) {
+            builder.addArgument("--sampleId", sampleId.toString());
+        }
 
         if (persistFileData) {
             builder.addArgument("--persistFileData");
