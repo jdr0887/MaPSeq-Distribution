@@ -34,10 +34,6 @@ public class WorkflowJobFactory {
         logger.debug("ENTERING createJob(int, Class<?>, WorkflowPlan, boolean, Integer)");
         logger.debug("moduleClass.getSimpleName(): {}", moduleClass.getSimpleName());
 
-        if (workflowRunAttemptId == null) {
-            throw new WorkflowException("workflowRunAttemptId is null");
-        }
-
         File executable = new File("$MAPSEQ_HOME/bin/mapseq-run-module.sh");
         String jobName = String.format("%s_%d", moduleClass.getSimpleName(), count);
         CondorJobBuilder builder = new CondorJobBuilder().name(jobName).executable(executable).retry(retry);
@@ -47,7 +43,6 @@ public class WorkflowJobFactory {
         }
 
         builder.addArgument(moduleClass.getName()).addArgument("--serializeFile", String.format("%s.xml", jobName));
-        builder.addArgument("--workflowRunAttemptId", workflowRunAttemptId.toString());
 
         for (ClassAdvertisement classAd : ClassAdvertisementFactory.getDefaultClassAds()) {
             try {
@@ -55,6 +50,10 @@ public class WorkflowJobFactory {
             } catch (CloneNotSupportedException e) {
                 e.printStackTrace();
             }
+        }
+
+        if (workflowRunAttemptId != null) {
+            builder.addArgument("--workflowRunAttemptId", workflowRunAttemptId.toString());
         }
 
         if (sampleId != null) {
