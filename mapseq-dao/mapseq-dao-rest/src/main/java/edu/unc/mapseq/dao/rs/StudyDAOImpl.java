@@ -19,7 +19,7 @@ import edu.unc.mapseq.dao.model.Study;
  * 
  * @author jdr0887
  */
-public class StudyDAOImpl extends NamedEntityDAOImpl<Study, Long> implements StudyDAO {
+public class StudyDAOImpl extends DictionaryEntityDAOImpl<Study, Long> implements StudyDAO {
 
     private final Logger logger = LoggerFactory.getLogger(StudyDAOImpl.class);
 
