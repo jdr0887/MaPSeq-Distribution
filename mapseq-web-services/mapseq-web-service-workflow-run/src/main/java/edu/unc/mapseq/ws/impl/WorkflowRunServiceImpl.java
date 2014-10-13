@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.ws.rs.core.Response;
+
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.cxf.common.util.StringUtils;
@@ -224,6 +226,30 @@ public class WorkflowRunServiceImpl implements WorkflowRunService {
             logger.error("MaPSeqDAOException", e);
         }
         return ret;
+    }
+
+    @Override
+    public Response addAttribute(Long attributeId, Long workflowRunId) {
+        logger.debug("ENTERING addAttribute(Long, Long)");
+        try {
+            workflowRunDAO.addAttribute(attributeId, workflowRunId);
+            return Response.ok().build();
+        } catch (MaPSeqDAOException e) {
+            logger.error("MaPSeqDAOException", e);
+        }
+        return Response.notModified().build();
+    }
+
+    @Override
+    public Response addFileData(Long fileDataId, Long workflowRunId) {
+        logger.debug("ENTERING addFileData(Long, Long)");
+        try {
+            workflowRunDAO.addFileData(fileDataId, workflowRunId);
+            return Response.ok().build();
+        } catch (MaPSeqDAOException e) {
+            logger.error("MaPSeqDAOException", e);
+        }
+        return Response.notModified().build();
     }
 
     public WorkflowRunDAO getWorkflowRunDAO() {

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.ws.rs.core.Response;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
@@ -170,6 +172,30 @@ public class SampleServiceImpl implements SampleService {
             logger.error("Error", e);
         }
         return ret;
+    }
+
+    @Override
+    public Response addAttribute(Long attributeId, Long sampleId) {
+        logger.debug("ENTERING addAttribute(Long, Long)");
+        try {
+            sampleDAO.addAttribute(attributeId, sampleId);
+            return Response.ok().build();
+        } catch (MaPSeqDAOException e) {
+            logger.error("MaPSeqDAOException", e);
+        }
+        return Response.notModified().build();
+    }
+
+    @Override
+    public Response addFileData(Long fileDataId, Long sampleId) {
+        logger.debug("ENTERING addFileData(Long, Long)");
+        try {
+            sampleDAO.addFileData(fileDataId, sampleId);
+            return Response.ok().build();
+        } catch (MaPSeqDAOException e) {
+            logger.error("MaPSeqDAOException", e);
+        }
+        return Response.notModified().build();
     }
 
     public SampleDAO getSampleDAO() {
