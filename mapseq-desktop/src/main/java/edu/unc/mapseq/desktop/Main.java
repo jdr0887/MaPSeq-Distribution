@@ -11,8 +11,6 @@ import java.util.prefs.Preferences;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Side;
 import javafx.scene.Scene;
