@@ -6,10 +6,11 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Properties;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.jgrapht.Graph;
-import org.renci.jlrm.IOUtils;
 import org.renci.jlrm.condor.CondorJob;
 import org.renci.jlrm.condor.CondorJobEdge;
 import org.renci.jlrm.condor.cli.CondorSubmitDAGCallable;
@@ -81,6 +82,7 @@ public abstract class AbstractWorkflow implements Workflow {
 
     @Override
     public void postRun() throws WorkflowException {
+
     }
 
     @Override
@@ -116,10 +118,11 @@ public abstract class AbstractWorkflow implements Workflow {
             throw new WorkflowException("MAPSEQ_OUTPUT_DIRECTORY does not exist");
         }
 
-        this.submitDirectory = new File(homeDirectory, "submit");
-        if (!this.submitDirectory.exists()) {
-            this.submitDirectory.mkdirs();
-        }
+        File submitDir = new File(homeDirectory, "submit");
+        File datedDir = new File(submitDir, DateFormatUtils.ISO_DATE_FORMAT.format(new Date()));
+        File namedDir = new File(datedDir, getName());
+        this.submitDirectory = new File(namedDir, UUID.randomUUID().toString());
+        this.submitDirectory.mkdirs();
 
         logger.debug("submitDirectory = {}", this.submitDirectory.getAbsolutePath());
     }
@@ -129,8 +132,6 @@ public abstract class AbstractWorkflow implements Workflow {
         logger.debug("ENTERING call()");
 
         CondorJob jobNode = null;
-        File workDir = IOUtils.createWorkDirectory(getSubmitDirectory(), getName());
-        logger.info("workDir = {}", workDir);
 
         int backOffCount = 0;
         boolean hasSubmittedSuccessfully = false;
@@ -147,7 +148,7 @@ public abstract class AbstractWorkflow implements Workflow {
 
         // DefaultCondorSubmitScriptExporter exporter = new DefaultCondorSubmitScriptExporter();
         SecureCondorSubmitScriptExporter exporter = new SecureCondorSubmitScriptExporter();
-        jobNode = exporter.export(getName(), workDir, getGraph(), includeGlideinRequirements);
+        jobNode = exporter.export(getName(), this.submitDirectory, getGraph(), includeGlideinRequirements);
         if (!jobNode.getSubmitFile().exists()) {
             logger.info("jobNode.getSubmitFile().getAbsolutePath() = {}", jobNode.getSubmitFile().getAbsolutePath());
             throw new WorkflowException("jobNode.getSubmitFile() doesn't exist");
@@ -194,7 +195,7 @@ public abstract class AbstractWorkflow implements Workflow {
             props.setProperty("rankdir", "LR");
             CondorDOTExporter<CondorJob, CondorJobEdge> dotExporter = new CondorDOTExporter<CondorJob, CondorJobEdge>(
                     new CondorJobVertexNameProvider(), new CondorJobVertexNameProvider(), null, null, null, props);
-            File dotFile = new File(workDir, getName() + ".dag.dot");
+            File dotFile = new File(this.submitDirectory, getName() + ".dag.dot");
             FileWriter fw = new FileWriter(dotFile);
             dotExporter.export(fw, graph);
         } catch (IOException e) {
@@ -204,7 +205,7 @@ public abstract class AbstractWorkflow implements Workflow {
         try {
             workflowRunAttempt.setStarted(new Date());
             workflowRunAttempt.setCondorDAGClusterId(jobNode.getCluster());
-            workflowRunAttempt.setSubmitDirectory(jobNode.getSubmitFile().getParentFile().getAbsolutePath());
+            workflowRunAttempt.setSubmitDirectory(this.submitDirectory.getAbsolutePath());
             MaPSeqDAOBean maPSeqDAOBean = getWorkflowBeanService().getMaPSeqDAOBean();
             WorkflowRunAttemptDAO workflowRunAttemptDAO = maPSeqDAOBean.getWorkflowRunAttemptDAO();
             workflowRunAttemptDAO.save(workflowRunAttempt);
@@ -214,6 +215,11 @@ public abstract class AbstractWorkflow implements Workflow {
         }
 
         return jobNode;
+    }
+
+    @Override
+    public void cleanUp() throws WorkflowException {
+
     }
 
     public Graph<CondorJob, CondorJobEdge> getGraph() {
