@@ -219,7 +219,20 @@ public abstract class AbstractWorkflow implements Workflow {
 
     @Override
     public void cleanUp() throws WorkflowException {
+        logger.debug("ENTERING cleanUp()");
 
+        RunModeType runMode = RunModeType.PROD;
+        String version = getVersion();
+        if (StringUtils.isEmpty(version) || (StringUtils.isNotEmpty(version) && version.contains("SNAPSHOT"))) {
+            runMode = RunModeType.DEV;
+        }
+
+        if (runMode.equals(RunModeType.PROD) && this.submitDirectory != null && this.submitDirectory.exists()) {
+            File[] submitDirFileArray = submitDirectory.listFiles();
+            for (File f : submitDirFileArray) {
+                f.delete();
+            }
+        }
     }
 
     public Graph<CondorJob, CondorJobEdge> getGraph() {
