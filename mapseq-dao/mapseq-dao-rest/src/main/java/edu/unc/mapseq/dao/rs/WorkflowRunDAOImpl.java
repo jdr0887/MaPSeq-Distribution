@@ -138,4 +138,16 @@ public class WorkflowRunDAOImpl extends NamedEntityDAOImpl<WorkflowRun, Long> im
         return new ArrayList<WorkflowRun>(ret);
     }
 
+    @Override
+    public void addAttribute(Long attributeId, Long workflowRunId) throws MaPSeqDAOException {
+        WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
+        client.path("/addAttribute/{attributeId}", attributeId).put(workflowRunId);
+    }
+
+    @Override
+    public void addFileData(Long fileDataId, Long workflowRunId) throws MaPSeqDAOException {
+        WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
+        client.path("/addFileData/{fileDataId}", fileDataId).put(workflowRunId);
+    }
+
 }

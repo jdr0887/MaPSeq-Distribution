@@ -94,4 +94,16 @@ public class FlowcellDAOImpl extends NamedEntityDAOImpl<Flowcell, Long> implemen
         return null;
     }
 
+    @Override
+    public void addAttribute(Long attributeId, Long flowcellId) throws MaPSeqDAOException {
+        WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
+        client.path("/addAttribute/{attributeId}", attributeId).put(flowcellId);
+    }
+
+    @Override
+    public void addFileData(Long fileDataId, Long flowcellId) throws MaPSeqDAOException {
+        WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
+        client.path("/addFileData/{fileDataId}", fileDataId).put(flowcellId);
+    }
+
 }
