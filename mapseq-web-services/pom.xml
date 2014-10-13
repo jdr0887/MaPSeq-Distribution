@@ -87,6 +87,7 @@
     </dependency>
   </dependencies>
   <modules>
+    <module>mapseq-web-service-attribute</module>
     <module>mapseq-web-service-file-data</module>
     <module>mapseq-web-service-flowcell</module>
     <module>mapseq-web-service-job</module>
