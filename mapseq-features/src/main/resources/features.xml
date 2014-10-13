@@ -64,6 +64,7 @@
     <bundle>mvn:edu.unc.mapseq.distribution/mapseq-reports/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution/mapseq-tasks/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution/mapseq-commands/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-attribute/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-file-data/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-job/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-sample/${project.version}</bundle>
