@@ -37,14 +37,16 @@ public abstract class AbstractSampleWorkflow extends AbstractWorkflow {
         Set<Sample> samples = getAggregatedSamples();
 
         if (samples != null && !samples.isEmpty()) {
+            
+            RunModeType runMode = RunModeType.PROD;
+            String version = getVersion();
+            if (StringUtils.isEmpty(version)
+                    || (StringUtils.isNotEmpty(version) && version.contains("SNAPSHOT"))) {
+                runMode = RunModeType.DEV;
+            }
+
             for (Sample sample : samples) {
                 try {
-                    RunModeType runMode = RunModeType.PROD;
-                    String version = getVersion();
-                    if (StringUtils.isEmpty(version)
-                            || (StringUtils.isNotEmpty(version) && version.contains("SNAPSHOT"))) {
-                        runMode = RunModeType.DEV;
-                    }
 
                     File outdir;
                     switch (runMode) {
