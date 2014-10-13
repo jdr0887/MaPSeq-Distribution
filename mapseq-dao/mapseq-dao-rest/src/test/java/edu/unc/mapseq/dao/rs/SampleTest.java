@@ -4,7 +4,10 @@ import java.util.List;
 
 import org.junit.Test;
 
+import edu.unc.mapseq.dao.AttributeDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
+import edu.unc.mapseq.dao.SampleDAO;
+import edu.unc.mapseq.dao.model.Attribute;
 import edu.unc.mapseq.dao.model.Sample;
 
 public class SampleTest {
@@ -22,7 +25,24 @@ public class SampleTest {
         } catch (MaPSeqDAOException e) {
             e.printStackTrace();
         }
+    }
 
+    @Test
+    public void testAddAttributeToSample() {
+        RSDAOManager daoMgr = RSDAOManager.getInstance("edu/unc/mapseq/dao/rs/mapseq-dao-beans-test.xml");
+        try {
+            SampleDAO sampleDAO = daoMgr.getMaPSeqDAOBean().getSampleDAO();
+            AttributeDAO attributeDAO = daoMgr.getMaPSeqDAOBean().getAttributeDAO();
+
+            Sample sample = sampleDAO.findById(2041809L);
+            Attribute attribute = new Attribute("fuzz", "buzz");
+            attribute.setId(attributeDAO.save(attribute));
+            sample.getAttributes().add(attribute);
+            sampleDAO.save(sample);
+
+        } catch (MaPSeqDAOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
