@@ -4,6 +4,10 @@
 
   <bean id="configurationService" class="edu.unc.mapseq.config.MaPSeqConfigurationServiceImpl" singleton="true" />
 
+  <bean id="attributeDAO" class="edu.unc.mapseq.dao.rs.AttributeDAOImpl" singleton="true">
+    <property name="configurationService" ref="configurationService" />
+  </bean>
+
   <bean id="fileDataDAO" class="edu.unc.mapseq.dao.rs.FileDataDAOImpl" singleton="true">
     <property name="configurationService" ref="configurationService" />
   </bean>
@@ -37,6 +41,7 @@
   </bean>
 
   <bean id="mapseqBean" class="edu.unc.mapseq.dao.MaPSeqDAOBean">
+    <property name="attributeDAO" ref="attributeDAO" />
     <property name="fileDataDAO" ref="fileDataDAO" />
     <property name="sampleDAO" ref="sampleDAO" />
     <property name="jobDAO" ref="jobDAO" />
