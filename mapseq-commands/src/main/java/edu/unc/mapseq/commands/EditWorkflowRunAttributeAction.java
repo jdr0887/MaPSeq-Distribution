@@ -8,6 +8,7 @@ import org.apache.karaf.shell.console.AbstractAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.unc.mapseq.dao.AttributeDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowRunDAO;
@@ -37,14 +38,16 @@ public class EditWorkflowRunAttributeAction extends AbstractAction {
     @Override
     public Object doExecute() {
 
+        AttributeDAO attributeDAO = maPSeqDAOBean.getAttributeDAO();
         WorkflowRunDAO workflowRunDAO = maPSeqDAOBean.getWorkflowRunDAO();
+
         WorkflowRun entity = null;
         try {
             entity = workflowRunDAO.findById(workflowRunId);
         } catch (MaPSeqDAOException e) {
         }
         if (entity == null) {
-            System.out.println("HTSFSample was not found");
+            System.out.println("WorkflowRun was not found");
             return null;
         }
 
@@ -53,13 +56,13 @@ public class EditWorkflowRunAttributeAction extends AbstractAction {
             for (Attribute attribute : attributeSet) {
                 if (attribute.getName().equals(name)) {
                     attribute.setValue(value);
+                    try {
+                        attributeDAO.save(attribute);
+                    } catch (MaPSeqDAOException e) {
+                        logger.error("MaPSeqDAOException", e);
+                    }
                     break;
                 }
-            }
-            try {
-                workflowRunDAO.save(entity);
-            } catch (MaPSeqDAOException e) {
-                logger.error("MaPSeqDAOException", e);
             }
         }
 
