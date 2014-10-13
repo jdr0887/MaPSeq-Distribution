@@ -1,6 +1,7 @@
 package edu.unc.mapseq.commands;
 
 import java.text.DateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Formatter;
 import java.util.List;
@@ -44,10 +45,19 @@ public class ListWorkflowRunsAction extends AbstractAction {
 
             List<WorkflowRun> workflowRunList = workflowRunDAO.findByWorkflowId(workflowId);
 
+            Calendar c = Calendar.getInstance();
+            c.setTime(new Date());
+            c.add(Calendar.DAY_OF_YEAR, -14);
+            Date twoWeeksAgo = c.getTime();
+
             if (workflowRunList != null && !workflowRunList.isEmpty()) {
                 for (WorkflowRun workflowRun : workflowRunList) {
 
                     Date createdDate = workflowRun.getCreated();
+                    if (createdDate.before(twoWeeksAgo)) {
+                        continue;
+                    }
+
                     String formattedCreatedDate = "";
                     if (createdDate != null) {
                         formattedCreatedDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
