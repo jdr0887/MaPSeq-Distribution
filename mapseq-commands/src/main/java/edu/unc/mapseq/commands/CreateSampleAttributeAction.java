@@ -8,6 +8,7 @@ import org.apache.karaf.shell.console.AbstractAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.unc.mapseq.dao.AttributeDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.SampleDAO;
@@ -37,6 +38,7 @@ public class CreateSampleAttributeAction extends AbstractAction {
     @Override
     public Object doExecute() {
 
+        AttributeDAO attributeDAO = maPSeqDAOBean.getAttributeDAO();
         SampleDAO sampleDAO = maPSeqDAOBean.getSampleDAO();
         Sample entity = null;
         try {
@@ -50,8 +52,10 @@ public class CreateSampleAttributeAction extends AbstractAction {
 
         Set<Attribute> attributeSet = entity.getAttributes();
         if (attributeSet != null) {
-            attributeSet.add(new Attribute(name, value));
             try {
+                Attribute attribute = new Attribute(name, value);
+                attribute.setId(attributeDAO.save(attribute));
+                attributeSet.add(attribute);
                 sampleDAO.save(entity);
             } catch (MaPSeqDAOException e) {
                 logger.error("MaPSeqDAOException", e);
