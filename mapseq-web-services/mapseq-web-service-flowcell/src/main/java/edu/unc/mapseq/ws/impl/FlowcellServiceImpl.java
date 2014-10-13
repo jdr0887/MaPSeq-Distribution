@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.ws.rs.core.Response;
+
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.cxf.common.util.StringUtils;
@@ -71,7 +73,7 @@ public class FlowcellServiceImpl implements FlowcellService {
         try {
             ret.addAll(flowcellDAO.findAll());
         } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
+            logger.error("MaPSeqDAOException", e);
         }
         return ret;
     }
@@ -82,7 +84,7 @@ public class FlowcellServiceImpl implements FlowcellService {
         try {
             return flowcellDAO.save(flowcell);
         } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
+            logger.error("MaPSeqDAOException", e);
         }
         return null;
     }
@@ -94,7 +96,7 @@ public class FlowcellServiceImpl implements FlowcellService {
         try {
             ret.addAll(flowcellDAO.findByStudyName(name));
         } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
+            logger.error("MaPSeqDAOException", e);
         }
         return ret;
     }
@@ -106,6 +108,7 @@ public class FlowcellServiceImpl implements FlowcellService {
             List<Flowcell> ret = flowcellDAO.findByName(flowcellName);
             return ret;
         } catch (MaPSeqDAOException e) {
+            logger.error("MaPSeqDAOException", e);
         }
         return null;
     }
@@ -117,8 +120,33 @@ public class FlowcellServiceImpl implements FlowcellService {
             List<Flowcell> ret = flowcellDAO.findByWorkflowRunId(workflowRunId);
             return ret;
         } catch (MaPSeqDAOException e) {
+            logger.error("MaPSeqDAOException", e);
         }
         return null;
+    }
+
+    @Override
+    public Response addAttribute(Long attributeId, Long flowcellId) {
+        logger.debug("ENTERING addAttribute(Long, Long)");
+        try {
+            flowcellDAO.addAttribute(attributeId, flowcellId);
+            return Response.ok().build();
+        } catch (MaPSeqDAOException e) {
+            logger.error("MaPSeqDAOException", e);
+        }
+        return Response.notModified().build();
+    }
+
+    @Override
+    public Response addFileData(Long fileDataId, Long flowcellId) {
+        logger.debug("ENTERING addFileData(Long, Long)");
+        try {
+            flowcellDAO.addFileData(fileDataId, flowcellId);
+            return Response.ok().build();
+        } catch (MaPSeqDAOException e) {
+            logger.error("MaPSeqDAOException", e);
+        }
+        return Response.notModified().build();
     }
 
     public FlowcellDAO getFlowcellDAO() {
