@@ -37,29 +37,30 @@ public class EditSampleAttributeAction extends AbstractAction {
     @Override
     public Object doExecute() {
 
-        SampleDAO htsfSampleDAO = maPSeqDAOBean.getSampleDAO();
+        SampleDAO sampleDAO = maPSeqDAOBean.getSampleDAO();
         Sample entity = null;
         try {
-            entity = htsfSampleDAO.findById(sampleId);
+            entity = sampleDAO.findById(sampleId);
         } catch (MaPSeqDAOException e) {
         }
+
         if (entity == null) {
-            System.out.println("HTSFSample was not found");
+            System.out.println("Sample was not found");
             return null;
         }
 
         Set<Attribute> attributeSet = entity.getAttributes();
-        if (attributeSet != null && attributeSet.size() > 0) {
+        if (attributeSet != null && !attributeSet.isEmpty()) {
             for (Attribute attribute : attributeSet) {
                 if (attribute.getName().equals(name)) {
                     attribute.setValue(value);
+                    try {
+                        maPSeqDAOBean.getAttributeDAO().save(attribute);
+                    } catch (MaPSeqDAOException e) {
+                        logger.error("MaPSeqDAOException", e);
+                    }
                     break;
                 }
-            }
-            try {
-                htsfSampleDAO.save(entity);
-            } catch (MaPSeqDAOException e) {
-                logger.error("MaPSeqDAOException", e);
             }
         }
 
