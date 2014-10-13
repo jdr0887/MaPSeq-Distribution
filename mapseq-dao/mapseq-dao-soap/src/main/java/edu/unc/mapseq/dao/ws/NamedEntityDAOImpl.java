@@ -10,6 +10,7 @@ public abstract class NamedEntityDAOImpl<T extends Persistable, ID extends Seria
         implements NamedEntityDAO<T, ID> {
 
     public NamedEntityDAOImpl() {
+        super();
     }
 
     public NamedEntityDAOImpl(Class<T> persistentClass) {
