@@ -23,11 +23,13 @@ import javax.xml.bind.PropertyException;
 
 import org.junit.Test;
 
+import edu.unc.mapseq.dao.AttributeDAO;
 import edu.unc.mapseq.dao.FlowcellDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.SampleDAO;
 import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
 import edu.unc.mapseq.dao.WorkflowRunDAO;
+import edu.unc.mapseq.dao.model.Attribute;
 import edu.unc.mapseq.dao.model.FileData;
 import edu.unc.mapseq.dao.model.Flowcell;
 import edu.unc.mapseq.dao.model.MimeType;
@@ -289,6 +291,24 @@ public class SampleDAOTest {
             formatter.close();
         }
 
+    }
+
+    @Test
+    public void testAddAttributeToSample() {
+        WSDAOManager daoMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
+        try {
+            SampleDAO sampleDAO = daoMgr.getMaPSeqDAOBean().getSampleDAO();
+            AttributeDAO attributeDAO = daoMgr.getMaPSeqDAOBean().getAttributeDAO();
+
+            Sample sample = sampleDAO.findById(2041809L);
+            Attribute attribute = new Attribute("fuzz1", "buzz1");
+            attribute.setId(attributeDAO.save(attribute));
+            sample.getAttributes().add(attribute);
+            sampleDAO.save(sample);
+
+        } catch (MaPSeqDAOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
