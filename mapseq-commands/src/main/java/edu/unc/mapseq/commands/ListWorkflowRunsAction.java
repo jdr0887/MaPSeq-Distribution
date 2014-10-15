@@ -1,7 +1,6 @@
 package edu.unc.mapseq.commands;
 
 import java.text.DateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Formatter;
 import java.util.List;
@@ -13,8 +12,6 @@ import org.apache.karaf.shell.console.AbstractAction;
 
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
-import edu.unc.mapseq.dao.WorkflowRunDAO;
-import edu.unc.mapseq.dao.model.WorkflowRun;
 import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
 
 @Command(scope = "mapseq", name = "list-workflow-runs", description = "List WorkflowRun instances")
@@ -32,73 +29,44 @@ public class ListWorkflowRunsAction extends AbstractAction {
     @Override
     public Object doExecute() {
 
-        WorkflowRunDAO workflowRunDAO = maPSeqDAOBean.getWorkflowRunDAO();
-
         WorkflowRunAttemptDAO workflowRunAttemptDAO = maPSeqDAOBean.getWorkflowRunAttemptDAO();
 
         try {
             StringBuilder sb = new StringBuilder();
             Formatter formatter = new Formatter(sb, Locale.US);
-            formatter.format("%1$-12s %2$-54s %3$-18s %4$-18s %5$-18s %6$-12s %7$-14s %8$s%n", "ID",
-                    "Workflow Run Name", "Created Date", "Start Date", "End Date", "Status", "Condor JobId",
-                    "Submit Directory");
+            formatter.format("%1$-12s %2$-16s %3$-56s %4$-20s %5$-20s %6$-20s %7$s%n", "ID", "WorkflowRun ID",
+                    "WorkflowRun Name", "Created Date", "Start Date", "End Date", "Status");
 
-            List<WorkflowRun> workflowRunList = workflowRunDAO.findByWorkflowId(workflowId);
+            List<WorkflowRunAttempt> attempts = workflowRunAttemptDAO.findByWorkflowId(workflowId);
 
-            Calendar c = Calendar.getInstance();
-            c.setTime(new Date());
-            c.add(Calendar.DAY_OF_YEAR, -14);
-            Date twoWeeksAgo = c.getTime();
+            String formattedCreatedDate = "";
+            String formattedStartDate = "";
+            String formattedEndDate = "";
 
-            if (workflowRunList != null && !workflowRunList.isEmpty()) {
-                for (WorkflowRun workflowRun : workflowRunList) {
+            if (attempts != null && !attempts.isEmpty()) {
+                for (WorkflowRunAttempt attempt : attempts) {
 
-                    Date createdDate = workflowRun.getCreated();
-                    if (createdDate.before(twoWeeksAgo)) {
-                        continue;
-                    }
-
-                    String formattedCreatedDate = "";
+                    Date createdDate = attempt.getCreated();
                     if (createdDate != null) {
                         formattedCreatedDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
                                 .format(createdDate);
                     }
 
-                    formatter.format("%1$-12s %2$-54s %3$s%n", workflowRun.getId(), workflowRun.getName(),
-                            formattedCreatedDate);
-
-                    List<WorkflowRunAttempt> attempts = workflowRunAttemptDAO.findByWorkflowRunId(workflowRun.getId());
-
-                    if (attempts != null && !attempts.isEmpty()) {
-                        for (WorkflowRunAttempt attempt : attempts) {
-
-                            createdDate = attempt.getCreated();
-                            if (createdDate != null) {
-                                formattedCreatedDate = DateFormat.getDateTimeInstance(DateFormat.SHORT,
-                                        DateFormat.SHORT).format(createdDate);
-                            }
-
-                            Date startDate = attempt.getStarted();
-                            String formattedStartDate = "";
-                            if (startDate != null) {
-                                formattedStartDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
-                                        .format(startDate);
-                            }
-                            Date endDate = attempt.getFinished();
-                            String formattedEndDate = "";
-                            if (endDate != null) {
-                                formattedEndDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
-                                        .format(endDate);
-                            }
-
-                            formatter.format("%1$-12s %2$-54s %3$-18s %4$-18s %5$-18s %6$-12s %7$-14s %8$s%n", "--",
-                                    "--", formattedCreatedDate, formattedStartDate, formattedEndDate, attempt
-                                            .getStatus().toString(), attempt.getCondorDAGClusterId(), attempt
-                                            .getSubmitDirectory());
-                            formatter.flush();
-
-                        }
+                    Date startDate = attempt.getStarted();
+                    if (startDate != null) {
+                        formattedStartDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(
+                                startDate);
                     }
+                    Date endDate = attempt.getFinished();
+                    if (endDate != null) {
+                        formattedEndDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(
+                                endDate);
+                    }
+
+                    formatter.format("%1$-12s %2$-16s %3$-56s %4$-20s %5$-20s %6$-20s %7$s%n", attempt.getId(), attempt
+                            .getWorkflowRun().getId(), attempt.getWorkflowRun().getName(), formattedCreatedDate,
+                            formattedStartDate, formattedEndDate, attempt.getStatus().toString());
+                    formatter.flush();
 
                 }
 
