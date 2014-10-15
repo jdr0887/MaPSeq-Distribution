@@ -37,6 +37,11 @@
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
+    <!-- <command> -->
+    <!-- <action class="edu.unc.mapseq.commands.reports.WorkflowRunDurationPerWorkflowWeeklyReportAction"> -->
+    <!-- <property name="maPSeqDAOBean" ref="maPSeqDAOBean" /> -->
+    <!-- </action> -->
+    <!-- </command> -->
     <command>
       <action class="edu.unc.mapseq.commands.reports.WorkflowJobsWeeklyReportAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
@@ -129,6 +134,11 @@
     </command>
     <command>
       <action class="edu.unc.mapseq.commands.ListWorkflowRunsAction">
+        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
+      </action>
+    </command>
+    <command>
+      <action class="edu.unc.mapseq.commands.ListWorkflowRunAttemptsAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
