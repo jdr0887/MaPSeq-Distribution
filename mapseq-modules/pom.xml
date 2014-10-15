@@ -55,15 +55,10 @@
       <artifactId>commons-lang</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jfree</groupId>
-      <artifactId>jfreechart</artifactId>
-      <version>1.0.14</version>
+      <groupId>org.renci.osgi.bundles</groupId>
+      <artifactId>jfreechart-1.0.17-bundle</artifactId>
+      <version>0.0.2</version>
     </dependency> 
-    <dependency>
-      <groupId>org.jfree</groupId>
-      <artifactId>jcommon</artifactId>
-      <version>1.0.17</version>
-    </dependency>
     <dependency>
       <groupId>edu.unc.mapseq.distribution.mapseq-dao</groupId>
       <artifactId>mapseq-dao-soap</artifactId>
@@ -83,14 +78,9 @@
       <version>1.55</version>
     </dependency>  
     <dependency>
-      <groupId>org.biojava</groupId>
-      <artifactId>biojava3-core</artifactId>
-      <version>3.0.7</version>
-    </dependency>
-    <dependency>
-      <groupId>org.biojava</groupId>
-      <artifactId>biojava3-sequencing</artifactId>
-      <version>3.0.7</version>
+      <groupId>org.renci.osgi.bundles</groupId>
+      <artifactId>biojava-3.0.7-bundle</artifactId>
+      <version>0.0.4</version>
     </dependency>
     <dependency>
       <groupId>commons-math</groupId>
