@@ -16,7 +16,7 @@
     <bundle>mvn:org.apache.log4j/com.springsource.org.apache.log4j/1.2.15</bundle>
     <bundle>mvn:org.apache.geronimo.specs/geronimo-validation_1.0_spec/1.1</bundle>
     <bundle>mvn:org.apache.geronimo.javamail/geronimo-javamail_1.4_mail/1.8</bundle>
-    <bundle>mvn:javax.ws.rs/javax.ws.rs-api/2.0-m10</bundle>
+    <!-- <bundle>mvn:javax.ws.rs/javax.ws.rs-api/2.0-m10</bundle> -->
     <bundle>mvn:org.apache.commons/commons-email/1.3.1</bundle>
     <bundle>mvn:javax.xml.stream/com.springsource.javax.xml.stream/1.0.1</bundle>
     <bundle>mvn:org.xmlpull/com.springsource.org.xmlpull/1.1.4.c</bundle>
@@ -39,10 +39,10 @@
     <bundle>mvn:org.renci/vcf-parser/0.0.2</bundle>
     <bundle>mvn:org.renci.osgi.bundles/postgresql-9.1-901.jdbc4-bundle/0.0.1</bundle>
     <bundle>mvn:org.renci.osgi.bundles/jgrapht-0.8.3-bundle/0.0.1</bundle>
-    <bundle>mvn:org.renci.osgi.bundles/biojava-3.0.7-bundle/0.0.1</bundle>
+    <bundle>mvn:org.renci.osgi.bundles/biojava-3.0.7-bundle/0.0.4</bundle>
     <bundle>mvn:org.renci.osgi.bundles/snappy-1.0.3-rc3-bundle/0.0.1</bundle>
     <bundle>mvn:org.renci.osgi.bundles/picard-1.55-bundle/0.0.1</bundle>
-    <bundle>mvn:org.renci.osgi.bundles/jfreechart-1.0.14-bundle/0.0.1</bundle>
+    <bundle>mvn:org.renci.osgi.bundles/jfreechart-1.0.17-bundle/0.0.2</bundle>
     <bundle>mvn:org.renci.osgi.bundles/samtools-1.55-bundle/0.0.1</bundle>
     <bundle>mvn:org.renci.osgi.bundles/jbzip2-0.9-bundle/0.0.1</bundle>
     <bundle>mvn:org.renci.osgi.bundles/fastqc-0.10.1-bundle/0.0.1</bundle>
