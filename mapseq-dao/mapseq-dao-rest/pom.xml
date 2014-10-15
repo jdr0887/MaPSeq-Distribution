@@ -85,9 +85,13 @@
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-frontend-jaxrs</artifactId>
     </dependency>
+    <!-- <dependency> -->
+    <!--   <groupId>org.apache.cxf</groupId> -->
+    <!--   <artifactId>cxf-bundle</artifactId> -->
+    <!-- </dependency> -->
     <dependency>
       <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-bundle</artifactId>
+      <artifactId>cxf-rt-rs-client</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
