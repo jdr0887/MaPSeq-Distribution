@@ -127,8 +127,18 @@ public class WeeklyReportTask implements Runnable {
                 img.setAlignment(Element.ALIGN_CENTER);
                 img.scalePercent(65, 65);
                 document.add(img);
-
                 workflowJobsPerClusterReportFile.delete();
+
+                // document.add(new Paragraph());
+                // List<WorkflowRunAttempt> attempts = workflowRunAttemptDAO.findByCreatedDateRangeAndWorkflowId(
+                // startDate, endDate, workflow.getId());
+                // File workflowRunAttemptReportFile = ReportFactory.createWorkflowRunDurationReport(workflow.getName(),
+                // attempts, startDate, endDate);
+                // img = Image.getInstance(workflowRunAttemptReportFile.getAbsolutePath());
+                // img.setAlignment(Element.ALIGN_CENTER);
+                // img.scalePercent(65, 65);
+                // document.add(img);
+                // workflowRunAttemptReportFile.delete();
 
                 document.add(new Paragraph());
                 File workflowJobsReportFile = ReportFactory.createWorkflowJobsReport(jobList, workflow, startDate,
