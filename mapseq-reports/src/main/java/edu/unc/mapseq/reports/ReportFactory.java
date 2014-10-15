@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
@@ -18,6 +19,8 @@ import org.jfree.chart.plot.PiePlot;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
+import org.jfree.data.time.Day;
+import org.jfree.data.time.TimeTableXYDataset;
 import org.renci.charts.ChartManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -279,6 +282,60 @@ public class ReportFactory {
             JFreeChart chart = chartMgr.createPieChart("MaPSeq :: WorkflowRunAttempt Duration", dataset);
             PiePlot piePlot = (PiePlot) chart.getPlot();
             piePlot.setLabelGenerator(new CustomLabelGenerator());
+            Font font = new Font("Dialog", Font.PLAIN, 12);
+            chart.addSubtitle(new TextTitle(String.format("(%s - %s)", DateFormatUtils.format(startDate, "MM/dd"),
+                    DateFormatUtils.format(endDate, "MM/dd")), font));
+            chartFile = chartMgr.saveAsPNG(chart, 600, 400);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        logger.info("report.getAbsolutePath(): {}", chartFile.getAbsolutePath());
+        return chartFile;
+
+    }
+
+    public static File createWorkflowRunDurationReport(String workflowName,
+            List<WorkflowRunAttempt> workflowRunAttemptList, Date startDate, Date endDate) {
+        logger.debug("ENTERING createWorkflowRunDurationReport(String, List<WorkflowRunAttempt>, Date, Date)");
+
+        File chartFile = null;
+
+        try {
+            TimeTableXYDataset dataset = new TimeTableXYDataset();
+
+            Map<Day, List<WorkflowRunAttempt>> map = new HashMap<Day, List<WorkflowRunAttempt>>();
+
+            for (WorkflowRunAttempt attempt : workflowRunAttemptList) {
+                if (!attempt.getStatus().equals(WorkflowRunAttemptStatusType.DONE)) {
+                    continue;
+                }
+                Day d = new Day(attempt.getCreated());
+                if (!map.containsKey(d)) {
+                    map.put(d, new ArrayList<WorkflowRunAttempt>());
+                }
+            }
+
+            for (WorkflowRunAttempt attempt : workflowRunAttemptList) {
+                if (!attempt.getStatus().equals(WorkflowRunAttemptStatusType.DONE)) {
+                    continue;
+                }
+                Day d = new Day(attempt.getCreated());
+                map.get(d).add(attempt);
+            }
+
+            for (Day d : map.keySet()) {
+                for (int i = 0; i < map.get(d).size(); ++i) {
+                    WorkflowRunAttempt attempt = map.get(d).get(i);
+                    Date sDate = attempt.getStarted();
+                    Date eDate = attempt.getFinished();
+                    dataset.add(d, TimeUnit.MILLISECONDS.toMinutes(eDate.getTime() - sDate.getTime()), map.get(d).size());
+                }
+            }
+
+            ChartManager chartMgr = ChartManager.getInstance();
+            JFreeChart chart = chartMgr.createBarChart(
+                    String.format("MaPSeq :: %s :: WorkflowRunAttempt Duration", workflowName), dataset);
             Font font = new Font("Dialog", Font.PLAIN, 12);
             chart.addSubtitle(new TextTitle(String.format("(%s - %s)", DateFormatUtils.format(startDate, "MM/dd"),
                     DateFormatUtils.format(endDate, "MM/dd")), font));
