@@ -123,6 +123,16 @@
       </action>
     </command>
     <command>
+      <action class="edu.unc.mapseq.commands.ListSampleFilesAction">
+        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
+      </action>
+    </command>
+    <command>
+      <action class="edu.unc.mapseq.commands.ListFlowcellFilesAction">
+        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
+      </action>
+    </command>
+    <command>
       <action class="edu.unc.mapseq.commands.ListSampleAttributesAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
