@@ -2,7 +2,7 @@
   <parent>
     <groupId>edu.unc.mapseq</groupId>
     <artifactId>mapseq</artifactId>
-    <version>0.1.2</version>
+    <version>0.1.3</version>
   </parent>
   <name>MaPSeq :: Distribution</name>
   <modelVersion>4.0.0</modelVersion>
@@ -11,8 +11,8 @@
   <version>0.5.34-SNAPSHOT</version>
   <packaging>pom</packaging>
   <properties>
-    <mapseq.version>0.5.16</mapseq.version>
-    <renci.charts.version>0.0.5</renci.charts.version>
+    <mapseq.version>0.5.17</mapseq.version>
+    <renci.charts.version>0.0.8</renci.charts.version>
     <spring.version>3.2.4.RELEASE</spring.version>
   </properties>
   <issueManagement>
@@ -239,6 +239,11 @@
       <dependency>
       	<groupId>org.apache.cxf</groupId>
       	<artifactId>cxf-bundle</artifactId>
+      	<version>${cxf.version}</version>
+      </dependency>
+      <dependency>
+	<groupId>org.apache.cxf</groupId>
+	<artifactId>cxf-rt-rs-client</artifactId>
       	<version>${cxf.version}</version>
       </dependency>
       <dependency>
