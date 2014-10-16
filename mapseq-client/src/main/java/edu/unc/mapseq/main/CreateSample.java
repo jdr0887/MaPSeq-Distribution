@@ -132,17 +132,17 @@ public class CreateSample implements Callable<String> {
 
         File sequencerRunOutputDir = new File(mapseqOutputDirectory, flowcell.getName());
         File workflowOutputDir = new File(sequencerRunOutputDir, "CASAVA");
-        File htsfSampleOutputDir = new File(workflowOutputDir, String.format("L%03d_%s", laneIndex, barcode));
+        File sampleOutputDir = new File(workflowOutputDir, String.format("L%03d_%s", laneIndex, barcode));
 
-        htsfSampleOutputDir.mkdirs();
+        sampleOutputDir.mkdirs();
 
-        if (!htsfSampleOutputDir.canWrite()) {
-            System.err.println("You don't have permission to write to: " + htsfSampleOutputDir.getAbsolutePath());
+        if (!sampleOutputDir.canWrite()) {
+            System.err.println("You don't have permission to write to: " + sampleOutputDir.getAbsolutePath());
             return null;
         }
 
         try {
-            File newR1FastqFile = new File(htsfSampleOutputDir, read1Fastq.getName());
+            File newR1FastqFile = new File(sampleOutputDir, read1Fastq.getName());
             if (!read1Fastq.getAbsolutePath().equals(newR1FastqFile.getAbsolutePath())) {
                 FileUtils.copyFile(read1Fastq, newR1FastqFile);
             }
@@ -152,7 +152,7 @@ public class CreateSample implements Callable<String> {
 
         if (read2Fastq != null) {
             try {
-                File newR2FastqFile = new File(htsfSampleOutputDir, read2Fastq.getName());
+                File newR2FastqFile = new File(sampleOutputDir, read2Fastq.getName());
                 if (!read2Fastq.getAbsolutePath().equals(newR2FastqFile.getAbsolutePath())) {
                     FileUtils.copyFile(read2Fastq, newR2FastqFile);
                 }
