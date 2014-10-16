@@ -4,7 +4,7 @@
 
   <bean id="configurationService" class="edu.unc.mapseq.config.MaPSeqConfigurationServiceImpl" singleton="true" />
 
-  <bean id="attributeDAO" class="edu.unc.mapseq.dao.ws.AttributeDAOImpl" singleton="true">
+  <bean id="attributeDAO" class="edu.unc.mapseq.dao.ws.AttributeDAOImpl" init-method="init" singleton="true">
     <property name="configurationService" ref="configurationService" />
   </bean>
 
