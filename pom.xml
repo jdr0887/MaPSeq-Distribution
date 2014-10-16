@@ -11,7 +11,7 @@
   <version>0.5.39-SNAPSHOT</version>
   <packaging>pom</packaging>
   <properties>
-    <mapseq.version>0.5.18</mapseq.version>
+    <mapseq.version>0.5.19</mapseq.version>
     <renci.charts.version>0.0.8</renci.charts.version>
     <spring.version>3.2.4.RELEASE</spring.version>
   </properties>
