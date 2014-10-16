@@ -36,8 +36,8 @@ public class SampleServiceImplTest {
         String host = "biodev2.its.unc.edu";
         service.addPort(portQName, SOAPBinding.SOAP11HTTP_MTOM_BINDING,
                 String.format("http://%s:%d/cxf/SampleService", host, 8181));
-        SampleService htsfSampleService = service.getPort(SampleService.class);
-        Client cl = ClientProxy.getClient(htsfSampleService);
+        SampleService sampleService = service.getPort(SampleService.class);
+        Client cl = ClientProxy.getClient(sampleService);
         HTTPConduit httpConduit = (HTTPConduit) cl.getConduit();
         httpConduit.getClient().setReceiveTimeout(5 * 60 * 1000);
 
@@ -54,7 +54,7 @@ public class SampleServiceImplTest {
                 JAXBContext context = JAXBContext.newInstance(SampleService.class);
                 Marshaller m = context.createMarshaller();
                 m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-                m.marshal(htsfSampleService.findById(id), fw);
+                m.marshal(sampleService.findById(id), fw);
             } catch (PropertyException e) {
                 e.printStackTrace();
             } catch (JAXBException e) {
@@ -78,22 +78,22 @@ public class SampleServiceImplTest {
 
     @Test
     public void testOCDAttribute() {
-        QName serviceQName = new QName("http://ws.mapseq.unc.edu", "HTSFSampleService");
-        QName portQName = new QName("http://ws.mapseq.unc.edu", "HTSFSamplePort");
+        QName serviceQName = new QName("http://ws.mapseq.unc.edu", "SampleService");
+        QName portQName = new QName("http://ws.mapseq.unc.edu", "SamplePort");
         Service service = Service.create(serviceQName);
         String host = "biodev2.its.unc.edu";
         service.addPort(portQName, SOAPBinding.SOAP11HTTP_MTOM_BINDING,
-                String.format("http://%s:%d/cxf/HTSFSampleService", host, 8181));
-        SampleService htsfSampleService = service.getPort(SampleService.class);
+                String.format("http://%s:%d/cxf/SampleService", host, 8181));
+        SampleService sampleService = service.getPort(SampleService.class);
 
         List<Sample> sampleList = new ArrayList<Sample>();
-        sampleList.addAll(htsfSampleService.findByFlowcellId(191541L));
-        sampleList.addAll(htsfSampleService.findByFlowcellId(191738L));
-        sampleList.addAll(htsfSampleService.findByFlowcellId(190345L));
-        sampleList.addAll(htsfSampleService.findByFlowcellId(192405L));
-        sampleList.addAll(htsfSampleService.findByFlowcellId(190520L));
-        sampleList.addAll(htsfSampleService.findByFlowcellId(191372L));
-        sampleList.addAll(htsfSampleService.findByFlowcellId(191192L));
+        sampleList.addAll(sampleService.findByFlowcellId(191541L));
+        sampleList.addAll(sampleService.findByFlowcellId(191738L));
+        sampleList.addAll(sampleService.findByFlowcellId(190345L));
+        sampleList.addAll(sampleService.findByFlowcellId(192405L));
+        sampleList.addAll(sampleService.findByFlowcellId(190520L));
+        sampleList.addAll(sampleService.findByFlowcellId(191372L));
+        sampleList.addAll(sampleService.findByFlowcellId(191192L));
 
         for (Sample sample : sampleList) {
 

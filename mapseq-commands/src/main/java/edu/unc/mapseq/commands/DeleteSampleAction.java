@@ -104,12 +104,12 @@ public class DeleteSampleAction extends AbstractAction {
         this.maPSeqDAOBean = maPSeqDAOBean;
     }
 
-    public List<Long> getHtsfSampleIdList() {
+    public List<Long> getSampleIdList() {
         return sampleIdList;
     }
 
-    public void setHtsfSampleIdList(List<Long> htsfSampleIdList) {
-        this.sampleIdList = htsfSampleIdList;
+    public void setSampleIdList(List<Long> sampleIdList) {
+        this.sampleIdList = sampleIdList;
     }
 
 }

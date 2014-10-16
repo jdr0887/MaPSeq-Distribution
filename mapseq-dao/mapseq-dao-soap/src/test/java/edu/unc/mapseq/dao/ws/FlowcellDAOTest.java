@@ -31,13 +31,13 @@ public class FlowcellDAOTest {
                     .findByCreatedDateRange(parsedStartDate, parsedEndDate);
             if (entityList != null && entityList.size() > 0) {
                 for (Flowcell flowcell : entityList) {
-                    // System.out.println(sequencerRun.toString());
+                    // System.out.println(flowcell.toString());
                     Set<String> attributeNameSet = new HashSet<String>();
 
                     List<Sample> sampleList = daoMgr.getMaPSeqDAOBean().getSampleDAO()
                             .findByFlowcellId(flowcell.getId());
                     for (Sample sample : sampleList) {
-                        // System.out.println(htsfSample.toString());
+                        // System.out.println(sample.toString());
                         Set<Attribute> attributeSet = sample.getAttributes();
                         for (Attribute attribute : attributeSet) {
                             // System.out.printf("%s:%s%n", attribute.getName(), attribute.getValue());

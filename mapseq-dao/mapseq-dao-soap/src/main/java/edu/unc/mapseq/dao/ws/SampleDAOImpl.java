@@ -72,8 +72,8 @@ public class SampleDAOImpl extends NamedEntityDAOImpl<Sample, Long> implements S
         logger.debug("ENTERING findByCreatedDateRange(Date, Date)");
         String formattedStartDate = DateFormatUtils.ISO_DATE_FORMAT.format(startDate);
         String formattedEndDate = DateFormatUtils.ISO_DATE_FORMAT.format(endDate);
-        List<Sample> htsfSampleList = sampleService.findByCreatedDateRange(formattedStartDate, formattedEndDate);
-        return htsfSampleList;
+        List<Sample> sampleList = sampleService.findByCreatedDateRange(formattedStartDate, formattedEndDate);
+        return sampleList;
     }
 
     @Override

@@ -101,15 +101,15 @@ public class SampleDAOTest {
                 fileDataSet.add(read2FastqFD);
             }
 
-            SampleDAO htsfSampleDAO = daoMgr.getMaPSeqDAOBean().getSampleDAO();
+            SampleDAO sampleDAO = daoMgr.getMaPSeqDAOBean().getSampleDAO();
 
-            Sample htsfSample = new Sample();
-            htsfSample.setName("asdf");
-            htsfSample.setBarcode("ATTCGA");
-            htsfSample.setStudy(daoMgr.getMaPSeqDAOBean().getStudyDAO().findById(45823L));
-            htsfSample.setLaneIndex(1);
-            htsfSample.setFlowcell(daoMgr.getMaPSeqDAOBean().getFlowcellDAO().findById(48432L));
-            htsfSample.setFileDatas(fileDataSet);
+            Sample sample = new Sample();
+            sample.setName("asdf");
+            sample.setBarcode("ATTCGA");
+            sample.setStudy(daoMgr.getMaPSeqDAOBean().getStudyDAO().findById(45823L));
+            sample.setLaneIndex(1);
+            sample.setFlowcell(daoMgr.getMaPSeqDAOBean().getFlowcellDAO().findById(48432L));
+            sample.setFileDatas(fileDataSet);
 
             try {
                 JAXBContext context = JAXBContext.newInstance(Sample.class);
@@ -117,7 +117,7 @@ public class SampleDAOTest {
                 m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
                 File moduleClassXMLFile = new File("/tmp/sample.xml");
                 FileWriter fw = new FileWriter(moduleClassXMLFile);
-                m.marshal(htsfSample, fw);
+                m.marshal(sample, fw);
             } catch (IOException e1) {
                 e1.printStackTrace();
             } catch (PropertyException e1) {
@@ -126,9 +126,9 @@ public class SampleDAOTest {
                 e1.printStackTrace();
             }
 
-            Long id = htsfSampleDAO.save(htsfSample);
-            htsfSample.setId(id);
-            System.out.println("HTSFSampleID: " + id);
+            Long id = sampleDAO.save(sample);
+            sample.setId(id);
+            System.out.println("SampleID: " + id);
         } catch (MaPSeqDAOException e) {
             e.printStackTrace();
         }
@@ -139,9 +139,9 @@ public class SampleDAOTest {
     public void testFindByFlowcellIdAndSampleName() throws Exception {
 
         WSDAOManager daoMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
-        SampleDAO hTSFSampleDAO = daoMgr.getMaPSeqDAOBean().getSampleDAO();
-        // List<HTSFSample> htsfSampleList = hTSFSampleDAO.findByFlowcellIdAndSampleName(27352L, "NCG_00007%");
-        List<Sample> sampleList = hTSFSampleDAO.findByFlowcellId(56470L);
+        SampleDAO sampleDAO = daoMgr.getMaPSeqDAOBean().getSampleDAO();
+        // List<Sample> sampleList = hTSFSampleDAO.findByFlowcellIdAndSampleName(27352L, "NCG_00007%");
+        List<Sample> sampleList = sampleDAO.findByFlowcellId(56470L);
         if (sampleList != null && sampleList.size() > 0) {
             for (Sample sample : sampleList) {
                 try {

@@ -84,8 +84,8 @@ public class SynchronizeCondorWithWorkflowRunTest {
 
                 String subFileContents = FileUtils.readFileToString(subFile);
 
-                if (subFileContents.contains(String.format("--sequencerRunId %d", 544290))
-                        && subFileContents.contains(String.format("--htsfSampleId %d", 544293))
+                if (subFileContents.contains(String.format("--flowcellId %d", 544290))
+                        && subFileContents.contains(String.format("--sampleId %d", 544293))
                         && subFileContents.contains(String.format("--workflowRunId %d", 592892))) {
 
                     File dagFile = fileList.get(0);

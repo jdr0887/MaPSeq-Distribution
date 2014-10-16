@@ -190,7 +190,7 @@ public class CreateSampleAction extends AbstractAction {
                 fileDataSet.add(read2FastqFD);
             }
 
-            SampleDAO htsfSampleDAO = maPSeqDAOBean.getSampleDAO();
+            SampleDAO sampleDAO = maPSeqDAOBean.getSampleDAO();
 
             Sample sample = new Sample();
             sample.setName(name);
@@ -199,7 +199,7 @@ public class CreateSampleAction extends AbstractAction {
             sample.setLaneIndex(laneIndex);
             sample.setFlowcell(flowcell);
             sample.setFileDatas(fileDataSet);
-            Long id = htsfSampleDAO.save(sample);
+            Long id = sampleDAO.save(sample);
             sample.setId(id);
             System.out.println(sample.toString());
         } catch (MaPSeqDAOException e) {
