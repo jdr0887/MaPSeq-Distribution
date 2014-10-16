@@ -8,6 +8,21 @@
       </action>
     </command>
     <command>
+      <action class="edu.unc.mapseq.commands.AddFileToFlowcellAction">
+        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
+      </action>
+    </command>
+    <command>
+      <action class="edu.unc.mapseq.commands.AddFileToSampleAction">
+        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
+      </action>
+    </command>
+    <command>
+      <action class="edu.unc.mapseq.commands.FileFilesAction">
+        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
+      </action>
+    </command>
+    <command>
       <action class="edu.unc.mapseq.commands.ListModulesAction">
         <property name="context" ref="blueprintBundleContext" />
       </action>
