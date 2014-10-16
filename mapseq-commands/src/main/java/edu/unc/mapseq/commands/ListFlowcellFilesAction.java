@@ -14,12 +14,12 @@ import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.model.FileData;
 import edu.unc.mapseq.dao.model.Flowcell;
 
-@Command(scope = "mapseq", name = "list-sample-files", description = "List Sample Files")
+@Command(scope = "mapseq", name = "list-flowcell-files", description = "List Flowcell Files")
 public class ListFlowcellFilesAction extends AbstractAction {
 
     private MaPSeqDAOBean maPSeqDAOBean;
 
-    @Argument(index = 0, name = "sampleId", description = "Sample Identifier", required = true, multiValued = false)
+    @Argument(index = 0, name = "flowcellId", description = "Flowcell Identifier", required = true, multiValued = false)
     private Long flowcellId;
 
     public ListFlowcellFilesAction() {
