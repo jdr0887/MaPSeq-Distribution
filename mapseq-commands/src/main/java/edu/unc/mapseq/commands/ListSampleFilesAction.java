@@ -66,12 +66,12 @@ public class ListSampleFilesAction extends AbstractAction {
         this.maPSeqDAOBean = maPSeqDAOBean;
     }
 
-    public Long getHtsfSampleId() {
+    public Long getSampleId() {
         return sampleId;
     }
 
-    public void setHtsfSampleId(Long htsfSampleId) {
-        this.sampleId = htsfSampleId;
+    public void setSampleId(Long sampleId) {
+        this.sampleId = sampleId;
     }
 
 }
