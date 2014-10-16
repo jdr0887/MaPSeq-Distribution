@@ -39,25 +39,25 @@ public class ListWorkflowRunsAction extends AbstractAction {
 
             List<WorkflowRunAttempt> attempts = workflowRunAttemptDAO.findByWorkflowId(workflowId);
 
-            String formattedCreatedDate = "";
-            String formattedStartDate = "";
-            String formattedEndDate = "";
-
             if (attempts != null && !attempts.isEmpty()) {
                 for (WorkflowRunAttempt attempt : attempts) {
 
                     Date createdDate = attempt.getCreated();
+                    String formattedCreatedDate = "";
                     if (createdDate != null) {
                         formattedCreatedDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
                                 .format(createdDate);
                     }
 
                     Date startDate = attempt.getStarted();
+                    String formattedStartDate = "";
                     if (startDate != null) {
                         formattedStartDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(
                                 startDate);
                     }
+
                     Date endDate = attempt.getFinished();
+                    String formattedEndDate = "";
                     if (endDate != null) {
                         formattedEndDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(
                                 endDate);
