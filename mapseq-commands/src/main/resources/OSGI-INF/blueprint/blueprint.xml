@@ -18,7 +18,7 @@
       </action>
     </command>
     <command>
-      <action class="edu.unc.mapseq.commands.FileFilesAction">
+      <action class="edu.unc.mapseq.commands.FindFilesAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
     </command>
