@@ -161,16 +161,4 @@ public class WorkflowRunDAOImpl extends NamedEntityDAOImpl<WorkflowRun, Long> im
         return ret;
     }
 
-    @Override
-    public void addAttribute(Long attributeId, Long workflowRunId) throws MaPSeqDAOException {
-        logger.debug("ENTERING addAttribute(Long, Long)");
-        workflowRunService.addAttribute(attributeId, workflowRunId);
-    }
-
-    @Override
-    public void addFileData(Long fileDataId, Long workflowRunId) throws MaPSeqDAOException {
-        logger.debug("ENTERING addFileData(Long, Long)");
-        workflowRunService.addFileData(fileDataId, workflowRunId);
-    }
-
 }

@@ -95,16 +95,4 @@ public class FlowcellDAOImpl extends NamedEntityDAOImpl<Flowcell, Long> implemen
         return null;
     }
 
-    @Override
-    public void addAttribute(Long attributeId, Long flowcellId) throws MaPSeqDAOException {
-        logger.debug("ENTERING addAttribute(Long, Flowcell)");
-        flowcellService.addAttribute(attributeId, flowcellId);
-    }
-
-    @Override
-    public void addFileData(Long fileDataId, Long flowcellId) throws MaPSeqDAOException {
-        logger.debug("ENTERING addFileData(Long, Flowcell)");
-        flowcellService.addFileData(fileDataId, flowcellId);
-    }
-
 }
