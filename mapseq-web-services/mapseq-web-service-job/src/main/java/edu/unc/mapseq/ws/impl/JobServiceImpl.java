@@ -128,30 +128,6 @@ public class JobServiceImpl implements JobService {
         return ret;
     }
 
-    @Override
-    public Response addAttribute(Long attributeId, Long jobId) {
-        logger.debug("ENTERING addAttribute(Long, Long)");
-        try {
-            jobDAO.addAttribute(attributeId, jobId);
-            return Response.ok().build();
-        } catch (MaPSeqDAOException e) {
-            logger.error("MaPSeqDAOException", e);
-        }
-        return Response.notModified().build();
-    }
-
-    @Override
-    public Response addFileData(Long fileDataId, Long jobId) {
-        logger.debug("ENTERING addFileData(Long, Long)");
-        try {
-            jobDAO.addFileData(fileDataId, jobId);
-            return Response.ok().build();
-        } catch (MaPSeqDAOException e) {
-            logger.error("MaPSeqDAOException", e);
-        }
-        return Response.notModified().build();
-    }
-
     public JobDAO getJobDAO() {
         return jobDAO;
     }

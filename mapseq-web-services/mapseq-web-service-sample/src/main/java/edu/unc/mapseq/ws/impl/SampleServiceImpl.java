@@ -174,30 +174,6 @@ public class SampleServiceImpl implements SampleService {
         return ret;
     }
 
-    @Override
-    public Response addAttribute(Long attributeId, Long sampleId) {
-        logger.debug("ENTERING addAttribute(Long, Long)");
-        try {
-            sampleDAO.addAttribute(attributeId, sampleId);
-            return Response.ok().build();
-        } catch (MaPSeqDAOException e) {
-            logger.error("MaPSeqDAOException", e);
-        }
-        return Response.notModified().build();
-    }
-
-    @Override
-    public Response addFileData(Long fileDataId, Long sampleId) {
-        logger.debug("ENTERING addFileData(Long, Long)");
-        try {
-            sampleDAO.addFileData(fileDataId, sampleId);
-            return Response.ok().build();
-        } catch (MaPSeqDAOException e) {
-            logger.error("MaPSeqDAOException", e);
-        }
-        return Response.notModified().build();
-    }
-
     public SampleDAO getSampleDAO() {
         return sampleDAO;
     }

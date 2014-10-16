@@ -14,7 +14,6 @@ import edu.unc.mapseq.dao.AttributeDAO;
 import edu.unc.mapseq.dao.FlowcellDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.SampleDAO;
-import edu.unc.mapseq.dao.WorkflowRunDAO;
 import edu.unc.mapseq.dao.model.Attribute;
 import edu.unc.mapseq.dao.model.Flowcell;
 import edu.unc.mapseq.dao.model.Sample;
@@ -53,15 +52,8 @@ public abstract class AbstractMessageListener implements MessageListener {
             throw new WorkflowException("No Flowcell found");
         }
 
-        if (workflowEntity.getAttributes() != null && !workflowEntity.getAttributes().isEmpty()) {
-            for (Attribute attribute : parseAttributes(flowcell.getAttributes(), workflowEntity.getAttributes())) {
-                try {
-                    flowcellDAO.addAttribute(attribute.getId(), flowcell.getId());
-                } catch (MaPSeqDAOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        Set<Attribute> attributes = parseAttributes(flowcell.getAttributes(), workflowEntity.getAttributes());
+        flowcell.setAttributes(attributes);
 
         logger.debug("Found Flowcell: {}", flowcell.toString());
         return flowcell;
@@ -84,15 +76,8 @@ public abstract class AbstractMessageListener implements MessageListener {
             throw new WorkflowException("No Sample found");
         }
 
-        if (workflowEntity.getAttributes() != null && !workflowEntity.getAttributes().isEmpty()) {
-            for (Attribute attribute : parseAttributes(sample.getAttributes(), workflowEntity.getAttributes())) {
-                try {
-                    sampleDAO.addAttribute(attribute.getId(), sample.getId());
-                } catch (MaPSeqDAOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        Set<Attribute> attributes = parseAttributes(sample.getAttributes(), workflowEntity.getAttributes());
+        sample.setAttributes(attributes);
 
         logger.debug("Found Sample: {}", sample.toString());
         return sample;
@@ -101,8 +86,6 @@ public abstract class AbstractMessageListener implements MessageListener {
     protected WorkflowRun getWorkflowRun(Workflow workflow, WorkflowEntity workflowEntity) throws WorkflowException {
         logger.debug("ENTERING getWorkflowRun(Workflow, JSONObject)");
 
-        WorkflowRunDAO workflowRunDAO = workflowBeanService.getMaPSeqDAOBean().getWorkflowRunDAO();
-
         WorkflowRun workflowRun = null;
         if (StringUtils.isNotEmpty(workflowEntity.getName())) {
 
@@ -110,15 +93,8 @@ public abstract class AbstractMessageListener implements MessageListener {
             workflowRun.setName(workflowEntity.getName());
             workflowRun.setWorkflow(workflow);
 
-            if (workflowEntity.getAttributes() != null && !workflowEntity.getAttributes().isEmpty()) {
-                for (Attribute attribute : parseAttributes(workflowRun.getAttributes(), workflowEntity.getAttributes())) {
-                    try {
-                        workflowRunDAO.addAttribute(attribute.getId(), workflowRun.getId());
-                    } catch (MaPSeqDAOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
+            Set<Attribute> attributes = parseAttributes(workflowRun.getAttributes(), workflowEntity.getAttributes());
+            workflowRun.setAttributes(attributes);
 
         }
 

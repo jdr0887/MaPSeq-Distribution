@@ -228,30 +228,6 @@ public class WorkflowRunServiceImpl implements WorkflowRunService {
         return ret;
     }
 
-    @Override
-    public Response addAttribute(Long attributeId, Long workflowRunId) {
-        logger.debug("ENTERING addAttribute(Long, Long)");
-        try {
-            workflowRunDAO.addAttribute(attributeId, workflowRunId);
-            return Response.ok().build();
-        } catch (MaPSeqDAOException e) {
-            logger.error("MaPSeqDAOException", e);
-        }
-        return Response.notModified().build();
-    }
-
-    @Override
-    public Response addFileData(Long fileDataId, Long workflowRunId) {
-        logger.debug("ENTERING addFileData(Long, Long)");
-        try {
-            workflowRunDAO.addFileData(fileDataId, workflowRunId);
-            return Response.ok().build();
-        } catch (MaPSeqDAOException e) {
-            logger.error("MaPSeqDAOException", e);
-        }
-        return Response.notModified().build();
-    }
-
     public WorkflowRunDAO getWorkflowRunDAO() {
         return workflowRunDAO;
     }

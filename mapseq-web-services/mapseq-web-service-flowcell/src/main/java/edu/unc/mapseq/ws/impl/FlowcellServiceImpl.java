@@ -125,30 +125,6 @@ public class FlowcellServiceImpl implements FlowcellService {
         return null;
     }
 
-    @Override
-    public Response addAttribute(Long attributeId, Long flowcellId) {
-        logger.debug("ENTERING addAttribute(Long, Long)");
-        try {
-            flowcellDAO.addAttribute(attributeId, flowcellId);
-            return Response.ok().build();
-        } catch (MaPSeqDAOException e) {
-            logger.error("MaPSeqDAOException", e);
-        }
-        return Response.notModified().build();
-    }
-
-    @Override
-    public Response addFileData(Long fileDataId, Long flowcellId) {
-        logger.debug("ENTERING addFileData(Long, Long)");
-        try {
-            flowcellDAO.addFileData(fileDataId, flowcellId);
-            return Response.ok().build();
-        } catch (MaPSeqDAOException e) {
-            logger.error("MaPSeqDAOException", e);
-        }
-        return Response.notModified().build();
-    }
-
     public FlowcellDAO getFlowcellDAO() {
         return flowcellDAO;
     }
