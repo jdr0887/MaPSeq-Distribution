@@ -34,13 +34,21 @@ public class FindFilesAction extends AbstractAction {
 
         FileDataDAO fileDataDAO = maPSeqDAOBean.getFileDataDAO();
         FileData example = new FileData();
+        
+        if (StringUtils.isEmpty(name) && StringUtils.isEmpty(path)) {
+            System.out.println("both name and path can't be null/empty");
+            return null;
+        }
+        
         if (StringUtils.isNotEmpty(name)) {
             example.setName(name);
         }
+        
         if (StringUtils.isNotEmpty(path)) {
             example.setPath(path);
         }
 
+        
         StringBuilder sb = new StringBuilder();
         Formatter formatter = new Formatter(sb, Locale.US);
         formatter.format("%1$-9s %2$-24s %3$-80s %4$s%n", "ID", "MimeType", "Path", "Name");
