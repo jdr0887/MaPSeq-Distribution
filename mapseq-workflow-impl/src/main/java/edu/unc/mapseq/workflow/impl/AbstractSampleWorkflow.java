@@ -12,8 +12,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.unc.mapseq.config.RunModeType;
+import edu.unc.mapseq.dao.FlowcellDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
+import edu.unc.mapseq.dao.SampleDAO;
 import edu.unc.mapseq.dao.model.FileData;
 import edu.unc.mapseq.dao.model.Flowcell;
 import edu.unc.mapseq.dao.model.Job;
@@ -37,11 +39,10 @@ public abstract class AbstractSampleWorkflow extends AbstractWorkflow {
         Set<Sample> samples = getAggregatedSamples();
 
         if (samples != null && !samples.isEmpty()) {
-            
+
             RunModeType runMode = RunModeType.PROD;
             String version = getVersion();
-            if (StringUtils.isEmpty(version)
-                    || (StringUtils.isNotEmpty(version) && version.contains("SNAPSHOT"))) {
+            if (StringUtils.isEmpty(version) || (StringUtils.isNotEmpty(version) && version.contains("SNAPSHOT"))) {
                 runMode = RunModeType.DEV;
             }
 
@@ -94,19 +95,25 @@ public abstract class AbstractSampleWorkflow extends AbstractWorkflow {
 
     protected Set<Sample> getAggregatedSamples() throws WorkflowException {
 
+        MaPSeqDAOBean mapseqDAOBean = getWorkflowBeanService().getMaPSeqDAOBean();
+        SampleDAO sampleDAO = mapseqDAOBean.getSampleDAO();
+        FlowcellDAO flowcellDAO = mapseqDAOBean.getFlowcellDAO();
+
         Set<Sample> sampleSet = new HashSet<Sample>();
 
         WorkflowRun workflowRun = getWorkflowRunAttempt().getWorkflowRun();
         try {
-            MaPSeqDAOBean mapseqDAOBean = getWorkflowBeanService().getMaPSeqDAOBean();
-            List<Sample> samples = mapseqDAOBean.getSampleDAO().findByWorkflowRunId(workflowRun.getId());
+            List<Sample> samples = sampleDAO.findByWorkflowRunId(workflowRun.getId());
             if (samples != null && !samples.isEmpty()) {
                 sampleSet.addAll(samples);
             }
-            List<Flowcell> flowcells = mapseqDAOBean.getFlowcellDAO().findByWorkflowRunId(workflowRun.getId());
+            List<Flowcell> flowcells = flowcellDAO.findByWorkflowRunId(workflowRun.getId());
             if (flowcells != null && !flowcells.isEmpty()) {
                 for (Flowcell flowcell : flowcells) {
-                    sampleSet.addAll(mapseqDAOBean.getSampleDAO().findByFlowcellId(flowcell.getId()));
+                    List<Sample> sampleList = sampleDAO.findByFlowcellId(flowcell.getId());
+                    if (sampleList != null && !sampleList.isEmpty()) {
+                        sampleSet.addAll(sampleList);
+                    }
                 }
             }
         } catch (MaPSeqDAOException e) {
