@@ -1,6 +1,8 @@
 package edu.unc.mapseq.commands;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Formatter;
 import java.util.List;
 import java.util.Locale;
@@ -38,10 +40,19 @@ public class ListWorkflowsAction extends AbstractAction {
 
         if (workflowList.size() > 0) {
             StringBuilder sb = new StringBuilder();
+            String format = "%1$-12s %2$-20s %3$-30s%n";
             Formatter formatter = new Formatter(sb, Locale.US);
-            formatter.format("%1$-8s %2$-30s%n", "ID", "Name");
+            formatter.format(format, "ID", "Created", "Name");
             for (Workflow workflow : workflowList) {
-                formatter.format("%1$-8s %2$-30s%n", workflow.getId(), workflow.getName());
+
+                Date createdDate = workflow.getCreated();
+                String formattedCreatedDate = "";
+                if (createdDate != null) {
+                    formattedCreatedDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(
+                            createdDate);
+                }
+
+                formatter.format(format, workflow.getId(), formattedCreatedDate, workflow.getName());
                 formatter.flush();
             }
             System.out.println(formatter.toString());

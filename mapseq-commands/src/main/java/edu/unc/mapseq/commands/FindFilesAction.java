@@ -1,5 +1,7 @@
 package edu.unc.mapseq.commands;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.Formatter;
 import java.util.List;
 import java.util.Locale;
@@ -34,30 +36,36 @@ public class FindFilesAction extends AbstractAction {
 
         FileDataDAO fileDataDAO = maPSeqDAOBean.getFileDataDAO();
         FileData example = new FileData();
-        
+
         if (StringUtils.isEmpty(name) && StringUtils.isEmpty(path)) {
             System.out.println("both name and path can't be null/empty");
             return null;
         }
-        
+
         if (StringUtils.isNotEmpty(name)) {
             example.setName(name);
         }
-        
+
         if (StringUtils.isNotEmpty(path)) {
             example.setPath(path);
         }
 
-        
         StringBuilder sb = new StringBuilder();
+        String format = "%1$-12s %2$-20s %3$-24s %3$-80s %4$s%n";
         Formatter formatter = new Formatter(sb, Locale.US);
-        formatter.format("%1$-9s %2$-24s %3$-80s %4$s%n", "ID", "MimeType", "Path", "Name");
+        formatter.format(format, "ID", "Created", "MimeType", "Path", "Name");
 
         try {
             List<FileData> fileDataSet = fileDataDAO.findByExample(example);
             if (fileDataSet != null && !fileDataSet.isEmpty()) {
                 for (FileData fileData : fileDataSet) {
-                    formatter.format("%1$-9s %2$-24s %3$-80s %4$s%n", fileData.getId(), fileData.getMimeType(),
+                    Date created = fileData.getCreated();
+                    String formattedCreated = "";
+                    if (created != null) {
+                        formattedCreated = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(
+                                created);
+                    }
+                    formatter.format(format, fileData.getId(), formattedCreated, fileData.getMimeType(),
                             fileData.getPath(), fileData.getName());
                     formatter.flush();
                 }

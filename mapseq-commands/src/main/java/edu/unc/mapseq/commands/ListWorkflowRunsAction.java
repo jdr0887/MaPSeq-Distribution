@@ -34,8 +34,9 @@ public class ListWorkflowRunsAction extends AbstractAction {
         try {
             StringBuilder sb = new StringBuilder();
             Formatter formatter = new Formatter(sb, Locale.US);
-            formatter.format("%1$-12s %2$-16s %3$-56s %4$-20s %5$-20s %6$-20s %7$s%n", "ID", "WorkflowRun ID",
-                    "WorkflowRun Name", "Created Date", "Start Date", "End Date", "Status");
+            String format = "%1$-12s %2$-16s %3$-56s %4$-20s %5$-20s %6$-20s %7$s%n";
+            formatter.format(format, "ID", "WorkflowRun ID", "WorkflowRun Name", "Created Date", "Start Date",
+                    "End Date", "Status");
 
             List<WorkflowRunAttempt> attempts = workflowRunAttemptDAO.findByWorkflowId(workflowId);
 
@@ -63,9 +64,9 @@ public class ListWorkflowRunsAction extends AbstractAction {
                                 endDate);
                     }
 
-                    formatter.format("%1$-12s %2$-16s %3$-56s %4$-20s %5$-20s %6$-20s %7$s%n", attempt.getId(), attempt
-                            .getWorkflowRun().getId(), attempt.getWorkflowRun().getName(), formattedCreatedDate,
-                            formattedStartDate, formattedEndDate, attempt.getStatus().toString());
+                    formatter.format(format, attempt.getId(), attempt.getWorkflowRun().getId(), attempt
+                            .getWorkflowRun().getName(), formattedCreatedDate, formattedStartDate, formattedEndDate,
+                            attempt.getStatus().toString());
                     formatter.flush();
 
                 }

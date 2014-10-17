@@ -1,8 +1,10 @@
 package edu.unc.mapseq.commands;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Formatter;
 import java.util.List;
 import java.util.Locale;
@@ -43,11 +45,20 @@ public class ListFlowcellsAction extends AbstractAction {
                 }
             });
 
+            String format = "%1$-12s %2$-20s %3$-38s %4$s%n";
             StringBuilder sb = new StringBuilder();
             Formatter formatter = new Formatter(sb, Locale.US);
-            formatter.format("%1$-8s %2$-38s %3$-42s%n", "ID", "Name", "Base Directory");
+            formatter.format(format, "ID", "Created", "Name", "Base Directory");
             for (Flowcell flowcell : flowcellList) {
-                formatter.format("%1$-8s %2$-38s %3$-42s%n", flowcell.getId(), flowcell.getName(),
+
+                Date created = flowcell.getCreated();
+                String formattedCreated = "";
+                if (created != null) {
+                    formattedCreated = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(
+                            created);
+                }
+
+                formatter.format(format, flowcell.getId(), formattedCreated, flowcell.getName(),
                         flowcell.getBaseDirectory());
                 formatter.flush();
             }

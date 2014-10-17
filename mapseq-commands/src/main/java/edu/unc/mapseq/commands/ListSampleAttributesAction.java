@@ -41,14 +41,14 @@ public class ListSampleAttributesAction extends AbstractAction {
         }
 
         StringBuilder sb = new StringBuilder();
+        String format = "%1$-12s %2$-40s %3$s%n";
         Formatter formatter = new Formatter(sb, Locale.US);
-        formatter.format("%1$-12s %2$-40s %3$s%n", "ID", "Name", "Value");
+        formatter.format(format, "ID", "Name", "Value");
 
         Set<Attribute> attributeSet = entity.getAttributes();
         if (attributeSet != null && !attributeSet.isEmpty()) {
             for (Attribute attribute : attributeSet) {
-                formatter
-                        .format("%1$-12s %2$-40s %3$s%n", attribute.getId(), attribute.getName(), attribute.getValue());
+                formatter.format(format, attribute.getId(), attribute.getName(), attribute.getValue());
                 formatter.flush();
             }
         }

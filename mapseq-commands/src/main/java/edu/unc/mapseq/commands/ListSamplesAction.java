@@ -1,6 +1,8 @@
 package edu.unc.mapseq.commands;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Formatter;
 import java.util.List;
 import java.util.Locale;
@@ -63,12 +65,20 @@ public class ListSamplesAction extends AbstractAction {
         if (sampleList != null && !sampleList.isEmpty()) {
             StringBuilder sb = new StringBuilder();
             Formatter formatter = new Formatter(sb, Locale.US);
-            formatter.format("%1$-12s %2$-40s %3$-6s %4$-16s %5$s%n", "Sample ID", "Sample Name", "Lane", "Barcode",
-                    "Output Directory");
+            String format = "%1$-12s %2$-20s %3$-40s %4$-8s %5$-20s %6$s%n";
+            formatter.format(format, "ID", "Created", "Name", "Lane", "Barcode", "Output Directory");
 
             for (Sample sample : sampleList) {
-                formatter.format("%1$-12s %2$-40s %3$-6s %4$-16s %5$s%n", sample.getId(), sample.getName(),
-                        sample.getLaneIndex(), sample.getBarcode(), sample.getOutputDirectory());
+
+                Date created = sample.getCreated();
+                String formattedCreated = "";
+                if (created != null) {
+                    formattedCreated = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(
+                            created);
+                }
+
+                formatter.format(format, sample.getId(), formattedCreated, sample.getName(), sample.getLaneIndex(),
+                        sample.getBarcode(), sample.getOutputDirectory());
                 formatter.flush();
             }
             System.out.println(formatter.toString());

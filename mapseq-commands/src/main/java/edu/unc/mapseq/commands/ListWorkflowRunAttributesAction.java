@@ -36,19 +36,20 @@ public class ListWorkflowRunAttributesAction extends AbstractAction {
         } catch (MaPSeqDAOException e) {
         }
         if (entity == null) {
-            System.out.println("Sample was not found");
+            System.out.println("WorkflowRun was not found");
             return null;
         }
 
         StringBuilder sb = new StringBuilder();
+        String format = "%1$-12s %2$-40s %3$s%n";
+
         Formatter formatter = new Formatter(sb, Locale.US);
-        formatter.format("%1$-12s %2$-40s %3$s%n", "Attribute ID", "Name", "Value");
+        formatter.format(format, "ID", "Name", "Value");
 
         Set<Attribute> attributeSet = entity.getAttributes();
         if (attributeSet != null && !attributeSet.isEmpty()) {
             for (Attribute attribute : attributeSet) {
-                formatter
-                        .format("%1$-12s %2$-40s %3$s%n", attribute.getId(), attribute.getName(), attribute.getValue());
+                formatter.format(format, attribute.getId(), attribute.getName(), attribute.getValue());
                 formatter.flush();
             }
         }

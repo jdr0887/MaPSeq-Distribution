@@ -34,38 +34,37 @@ public class ListWorkflowRunAttemptsAction extends AbstractAction {
         try {
             StringBuilder sb = new StringBuilder();
             Formatter formatter = new Formatter(sb, Locale.US);
-            formatter.format("%1$-12s %2$-20s %3$-20s %4$-20s %5$-16s %6$-16s %7$s%n", "ID", "Created Date",
-                    "Start Date", "End Date", "Status", "CondorJobId", "Submit Dir");
+            String format = "%1$-12s %2$-20s %3$-20s %4$-20s %5$-16s %6$-16s %7$s%n";
+            formatter.format(format, "ID", "Created", "Started", "Finished", "Status", "CondorJobId", "Submit Dir");
 
             List<WorkflowRunAttempt> attempts = workflowRunAttemptDAO.findByWorkflowRunId(workflowRunId);
-
-            String formattedCreatedDate = "";
-            String formattedStartDate = "";
-            String formattedEndDate = "";
 
             if (attempts != null && !attempts.isEmpty()) {
                 for (WorkflowRunAttempt attempt : attempts) {
 
                     Date createdDate = attempt.getCreated();
+                    String formattedCreatedDate = "";
                     if (createdDate != null) {
                         formattedCreatedDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
                                 .format(createdDate);
                     }
 
                     Date startDate = attempt.getStarted();
+                    String formattedStartDate = "";
                     if (startDate != null) {
                         formattedStartDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(
                                 startDate);
                     }
                     Date endDate = attempt.getFinished();
+                    String formattedEndDate = "";
                     if (endDate != null) {
                         formattedEndDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(
                                 endDate);
                     }
 
-                    formatter.format("%1$-12s %2$-20s %3$-20s %4$-20s %5$-16s %6$-16s %7$s%n", attempt.getId(),
-                            formattedCreatedDate, formattedStartDate, formattedEndDate, attempt.getStatus().toString(),
-                            attempt.getCondorDAGClusterId(), attempt.getSubmitDirectory());
+                    formatter.format(format, attempt.getId(), formattedCreatedDate, formattedStartDate,
+                            formattedEndDate, attempt.getStatus().toString(), attempt.getCondorDAGClusterId(),
+                            attempt.getSubmitDirectory());
                     formatter.flush();
 
                 }

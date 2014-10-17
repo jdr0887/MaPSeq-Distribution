@@ -1,6 +1,8 @@
 package edu.unc.mapseq.commands;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Formatter;
 import java.util.List;
 import java.util.Locale;
@@ -39,10 +41,19 @@ public class ListStudiesAction extends AbstractAction {
 
         if (studyList.size() > 0) {
             StringBuilder sb = new StringBuilder();
+            String format = "%1$-12s %2$-20s %2$-40s%n";
             Formatter formatter = new Formatter(sb, Locale.US);
-            formatter.format("%1$-8s %2$-40s%n", "ID", "Name");
+            formatter.format(format, "ID", "Created", "Name");
             for (Study study : studyList) {
-                formatter.format("%1$-8s %2$-40s%n", study.getId(), study.getName());
+
+                Date created = study.getCreated();
+                String formattedCreated = "";
+                if (created != null) {
+                    formattedCreated = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(
+                            created);
+                }
+
+                formatter.format(format, study.getId(), formattedCreated, study.getName());
                 formatter.flush();
             }
             System.out.println(formatter.toString());
