@@ -19,42 +19,37 @@ import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.junit.Test;
 
+import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.model.WorkflowRun;
 import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
+import edu.unc.mapseq.ws.WorkflowRunAttemptService;
 import edu.unc.mapseq.ws.WorkflowRunService;
 
 public class WorkflowRunAttemptDAOTest {
 
     @Test
-    public void testFindByFlowcellAndWorkflowName() {
-        QName serviceQName = new QName("http://ws.mapseq.unc.edu", "WorkflowRunService");
-        QName portQName = new QName("http://ws.mapseq.unc.edu", "WorkflowRunPort");
+    public void testFindByWorkflowRunId() throws MaPSeqDAOException {
+        QName serviceQName = new QName("http://ws.mapseq.unc.edu", "WorkflowRunAttemptService");
+        QName portQName = new QName("http://ws.mapseq.unc.edu", "WorkflowRunAttemptPort");
         Service service = Service.create(serviceQName);
-        String host = "biodev2.its.unc.edu";
+        // String host = "biodev2.its.unc.edu";
+        String host = "152.19.198.146";
         service.addPort(portQName, SOAPBinding.SOAP11HTTP_BINDING,
-                String.format("http://%s:%d/cxf/WorkflowRunService", host, 8181));
-        WorkflowRunService workflowRunService = service.getPort(WorkflowRunService.class);
-
-        List<WorkflowRun> workflowRunList = workflowRunService.findByFlowcellIdAndWorkflowId(55852L, 81L);
-
-        for (WorkflowRun workflowRun : workflowRunList) {
+                String.format("http://%s:%d/cxf/WorkflowRunAttemptService", host, 8181));
+        WorkflowRunAttemptService workflowRunAttemptService = service.getPort(WorkflowRunAttemptService.class);
+        List<WorkflowRunAttempt> workflowRunAttemptList = workflowRunAttemptService.findByWorkflowRunId(2053707L);
+        for (WorkflowRunAttempt attempt : workflowRunAttemptList) {
             try {
-                JAXBContext context = JAXBContext.newInstance(WorkflowRun.class);
+                JAXBContext context = JAXBContext.newInstance(WorkflowRunAttempt.class);
                 Marshaller m = context.createMarshaller();
                 m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-                File moduleClassXMLFile = new File("/tmp", String.format("%s-%d.xml", "WorkflowPlan",
-                        workflowRun.getId()));
-                FileWriter fw = new FileWriter(moduleClassXMLFile);
-                m.marshal(workflowRun, fw);
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            } catch (PropertyException e1) {
-                e1.printStackTrace();
-            } catch (JAXBException e1) {
+                File out = new File("/tmp", String.format("%s-%d.xml", "WorkflowPlanAttempt", attempt.getId()));
+                FileWriter fw = new FileWriter(out);
+                m.marshal(attempt, fw);
+            } catch (IOException | JAXBException e1) {
                 e1.printStackTrace();
             }
         }
-
     }
 
     @Test
