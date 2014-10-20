@@ -114,6 +114,10 @@ public abstract class AbstractMessageListener implements MessageListener {
             attributeNameSet.add(attribute.getName());
         }
 
+        if (workflowAttributes == null || workflowAttributes != null && workflowAttributes.isEmpty()) {
+            return attributeSet;
+        }
+
         for (WorkflowAttribute workflowEntityAttribute : workflowAttributes) {
 
             try {
