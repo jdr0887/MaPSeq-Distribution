@@ -124,11 +124,12 @@ public class WorkflowRunAttemptServiceImpl implements WorkflowRunAttemptService 
     }
 
     @Override
-    public List<WorkflowRunAttempt> findByWorkflowIdAndStatus(Long workflowId, String status) throws MaPSeqDAOException {
-        logger.debug("ENTERING findByWorkflowIdAndStatus(Long, String)");
+    public List<WorkflowRunAttempt> findByWorkflowNameAndStatus(String workflowName, String status)
+            throws MaPSeqDAOException {
+        logger.debug("ENTERING findByWorkflowNameAndStatus(String, String)");
         List<WorkflowRunAttempt> ret = new ArrayList<>();
-        if (workflowId == null) {
-            logger.warn("workflowId is null");
+        if (StringUtils.isEmpty(status)) {
+            logger.warn("workflowName is empty");
             return ret;
         }
         if (StringUtils.isEmpty(status)) {
@@ -147,9 +148,9 @@ public class WorkflowRunAttemptServiceImpl implements WorkflowRunAttemptService 
             return ret;
         }
         try {
-            ret.addAll(workflowRunAttemptDAO.findByWorkflowIdAndStatus(workflowId, statusType));
+            ret.addAll(workflowRunAttemptDAO.findByWorkflowNameAndStatus(workflowName, statusType));
         } catch (MaPSeqDAOException e) {
-            logger.warn("Problem with workflowRunAttemptDAO.findByWorkflowId({})", workflowId);
+            logger.warn("Problem with workflowRunAttemptDAO.findByWorkflowNameAndStatus({})", workflowName);
             logger.error("MaPSeqDAOException", e);
         }
         return ret;

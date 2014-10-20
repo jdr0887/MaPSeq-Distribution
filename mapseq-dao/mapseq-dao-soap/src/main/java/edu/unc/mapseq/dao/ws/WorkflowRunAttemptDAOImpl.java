@@ -92,10 +92,10 @@ public class WorkflowRunAttemptDAOImpl extends BaseDAOImpl<WorkflowRunAttempt, L
     }
 
     @Override
-    public List<WorkflowRunAttempt> findByWorkflowIdAndStatus(Long workflowId, WorkflowRunAttemptStatusType status)
+    public List<WorkflowRunAttempt> findByWorkflowNameAndStatus(String workflowName, WorkflowRunAttemptStatusType status)
             throws MaPSeqDAOException {
-        logger.debug("ENTERING findByWorkflowId(Long)");
-        List<WorkflowRunAttempt> ret = workflowRunAttemptService.findByWorkflowIdAndStatus(workflowId,
+        logger.debug("ENTERING findByWorkflowNameAndStatus(String, WorkflowRunAttemptStatusType)");
+        List<WorkflowRunAttempt> ret = workflowRunAttemptService.findByWorkflowNameAndStatus(workflowName,
                 status.toString());
         return ret;
     }
