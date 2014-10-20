@@ -45,7 +45,7 @@ public class ListSampleFilesAction extends AbstractAction {
         String format = "%1$-12s %2$-20s %3$-24s %4$-80s %5$s%n";
         StringBuilder sb = new StringBuilder();
         Formatter formatter = new Formatter(sb, Locale.US);
-        formatter.format(format, "ID", "Created", "MimeType", "Path", "Name");
+        formatter.format(format, "ID", "Created", "MimeType", "Name", "Path");
 
         Set<FileData> fileDataSet = entity.getFileDatas();
         if (fileDataSet != null && !fileDataSet.isEmpty()) {
@@ -59,7 +59,7 @@ public class ListSampleFilesAction extends AbstractAction {
                 }
 
                 formatter.format(format, fileData.getId(), formattedCreated, fileData.getMimeType(),
-                        fileData.getPath(), fileData.getName());
+                        fileData.getName(), fileData.getPath());
                 formatter.flush();
             }
         }
