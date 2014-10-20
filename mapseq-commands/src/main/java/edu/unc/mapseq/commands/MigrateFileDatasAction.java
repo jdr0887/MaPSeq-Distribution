@@ -1,6 +1,8 @@
 package edu.unc.mapseq.commands;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.util.List;
 import java.util.Set;
 
@@ -39,6 +41,7 @@ public class MigrateFileDatasAction extends AbstractAction {
         SampleDAO sampleDAO = maPSeqDAOBean.getSampleDAO();
         FileDataDAO fileDataDAO = maPSeqDAOBean.getFileDataDAO();
         WorkflowDAO workflowDAO = maPSeqDAOBean.getWorkflowDAO();
+        BufferedWriter restorationScript = new BufferedWriter(new FileWriter(new File("/tmp", "mpsRestoration.sh")));
 
         List<Workflow> workflows = workflowDAO.findAll();
         List<Flowcell> flowcells = flowcellDAO.findAll();
@@ -100,6 +103,11 @@ public class MigrateFileDatasAction extends AbstractAction {
 
                                     logger.info(msg);
 
+                                    restorationScript.write(String.format("mv %s %s",
+                                            destinationFile.getAbsolutePath(), originalFile.getAbsolutePath()));
+                                    restorationScript.newLine();
+                                    restorationScript.flush();
+
                                     if (dryRun) {
                                         continue;
                                     }
@@ -133,7 +141,8 @@ public class MigrateFileDatasAction extends AbstractAction {
                                     }
 
                                     File workflowDirectory = new File(String.format("%s/%s/L%03d_%s/%s", basePath,
-                                            flowcell.getName(), sample.getLaneIndex(), sample.getBarcode(), workflow.getName()));
+                                            flowcell.getName(), sample.getLaneIndex(), sample.getBarcode(),
+                                            workflow.getName()));
                                     workflowDirectory.mkdirs();
 
                                     File destinationFile = new File(workflowDirectory, file.getName());
@@ -146,6 +155,11 @@ public class MigrateFileDatasAction extends AbstractAction {
                                             destinationFile.getAbsolutePath());
 
                                     logger.info(msg);
+
+                                    restorationScript.write(String.format("mv %s %s",
+                                            destinationFile.getAbsolutePath(), file.getAbsolutePath()));
+                                    restorationScript.newLine();
+                                    restorationScript.flush();
 
                                     if (dryRun) {
                                         continue;
@@ -186,8 +200,12 @@ public class MigrateFileDatasAction extends AbstractAction {
 
                                     String msg = String.format("moving %s to %s", file.getAbsolutePath(),
                                             destinationFile.getAbsolutePath());
-
                                     logger.info(msg);
+
+                                    restorationScript.write(String.format("mv %s %s",
+                                            destinationFile.getAbsolutePath(), file.getAbsolutePath()));
+                                    restorationScript.newLine();
+                                    restorationScript.flush();
 
                                     if (dryRun) {
                                         continue;
@@ -200,11 +218,19 @@ public class MigrateFileDatasAction extends AbstractAction {
 
                         }
 
+                        String mpsOutputDir = System.getenv("MAPSEQ_OUTPUT_DIRECTORY");
+                        sample.setOutputDirectory(String.format("%s/%s/L%03d_%s", mpsOutputDir, flowcell.getName(),
+                                sample.getLaneIndex(), sample.getBarcode()));
+                        sampleDAO.save(sample);
+
                     }
                 }
 
             }
         }
+
+        restorationScript.flush();
+        restorationScript.close();
         logger.info("DONE");
 
         return null;
