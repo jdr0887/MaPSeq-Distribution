@@ -26,6 +26,7 @@
     <bundle>mvn:org.jaxen/com.springsource.org.jaxen/1.1.1</bundle>    
     <bundle>mvn:com.fasterxml.jackson.core/jackson-core/${jackson.version}</bundle>
     <bundle>mvn:com.fasterxml.jackson.core/jackson-annotations/${jackson.version}</bundle>
+    <bundle>mvn:com.fasterxml.jackson.module/jackson-module-jaxb-annotations/${jackson.version}</bundle>
     <bundle>mvn:com.fasterxml.jackson.core/jackson-databind/${jackson.version}</bundle>
     <bundle>mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-base/${jackson.version}</bundle>
     <bundle>mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-json-provider/${jackson.version}</bundle>
