@@ -124,7 +124,6 @@ public abstract class AbstractMessageListener implements MessageListener {
                 if (!attributeNameSet.contains(workflowEntityAttribute.getName())) {
                     Attribute attribute = new Attribute(workflowEntityAttribute.getName(),
                             workflowEntityAttribute.getValue());
-                    attribute.setId(attributeDAO.save(attribute));
                     attributeSet.add(attribute);
                 } else {
                     for (Attribute attribute : attributeSet) {
