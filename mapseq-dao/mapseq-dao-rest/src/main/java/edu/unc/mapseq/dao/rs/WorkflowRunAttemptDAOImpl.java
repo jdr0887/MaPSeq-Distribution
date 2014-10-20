@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
 import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
+import edu.unc.mapseq.dao.model.WorkflowRunAttemptStatusType;
 
 /**
  * 
@@ -89,4 +90,16 @@ public class WorkflowRunAttemptDAOImpl extends BaseDAOImpl<WorkflowRunAttempt, L
         logger.info("ENTERING findEnqueued(Long)");
         return null;
     }
+
+    @Override
+    public List<WorkflowRunAttempt> findByWorkflowIdAndStatus(Long workflowId, WorkflowRunAttemptStatusType status)
+            throws MaPSeqDAOException {
+        logger.info("ENTERING findByWorkflowIdAndStatus(Long)");
+        WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
+        Collection<? extends WorkflowRunAttempt> ret = client
+                .path("findByWorkflowIdAndStatus/{workflowId}/{status}", workflowId, status.toString())
+                .accept(MediaType.APPLICATION_JSON).getCollection(WorkflowRunAttempt.class);
+        return new ArrayList<WorkflowRunAttempt>(ret);
+    }
+
 }
