@@ -51,7 +51,7 @@ public class FindFilesAction extends AbstractAction {
         }
 
         StringBuilder sb = new StringBuilder();
-        String format = "%1$-12s %2$-20s %3$-24s %3$-80s %4$s%n";
+        String format = "%1$-12s %2$-20s %3$-24s %4$-80s %5$s%n";
         Formatter formatter = new Formatter(sb, Locale.US);
         formatter.format(format, "ID", "Created", "MimeType", "Path", "Name");
 
