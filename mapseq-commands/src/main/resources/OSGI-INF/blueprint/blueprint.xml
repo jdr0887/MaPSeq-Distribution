@@ -28,6 +28,9 @@
       </action>
     </command>
     <command>
+      <action class="edu.unc.mapseq.commands.ListMimeTypesAction" />
+    </command>
+    <command>
       <action class="edu.unc.mapseq.commands.reports.JobPerClusterReportAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
