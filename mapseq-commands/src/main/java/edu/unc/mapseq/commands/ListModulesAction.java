@@ -34,7 +34,7 @@ public class ListModulesAction extends AbstractAction {
 
         for (Bundle bundle : bundleArray) {
             logger.info("bundle: {}", bundle.getLocation());
-            if (bundle.getSymbolicName().equals("modules")) {
+            if (bundle.getSymbolicName().equals("mapseq-modules")) {
                 Enumeration<URL> e = bundle.findEntries("edu/unc/mapseq/module", "*CLI.class", true);
                 formatter.format(format, "Name");
                 while (e.hasMoreElements()) {
