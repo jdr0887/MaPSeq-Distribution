@@ -41,7 +41,7 @@ public class ListStudiesAction extends AbstractAction {
 
         if (studyList.size() > 0) {
             StringBuilder sb = new StringBuilder();
-            String format = "%1$-12s %2$-20s %2$-40s%n";
+            String format = "%1$-12s %2$-20s %3$-40s%n";
             Formatter formatter = new Formatter(sb, Locale.US);
             formatter.format(format, "ID", "Created", "Name");
             for (Study study : studyList) {
