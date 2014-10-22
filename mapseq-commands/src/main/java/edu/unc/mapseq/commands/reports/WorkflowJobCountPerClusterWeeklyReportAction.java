@@ -51,7 +51,7 @@ public class WorkflowJobCountPerClusterWeeklyReportAction extends AbstractAction
 
         File chartFile = ReportFactory.createWorkflowJobCountPerClusterReport(jobList, workflow, startDate, endDate);
 
-        String subject = String.format("MaPSeq :: Jobs Per Cluster Report :: %s (%s - %s)", workflow.getName(),
+        String subject = String.format("MaPSeq : %s : Jobs Per Cluster Report : (%s - %s)", workflow.getName(),
                 DateFormatUtils.format(startDate, "MM/dd"), DateFormatUtils.format(endDate, "MM/dd"));
 
         EmailAttachment attachment = new EmailAttachment();
