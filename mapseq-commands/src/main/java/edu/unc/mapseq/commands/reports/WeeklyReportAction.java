@@ -1,5 +1,6 @@
 package edu.unc.mapseq.commands.reports;
 
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.apache.karaf.shell.commands.Argument;
@@ -24,10 +25,12 @@ public class WeeklyReportAction extends AbstractAction {
     @Override
     protected Object doExecute() throws Exception {
         logger.debug("ENTERING doExecute()");
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
         WeeklyReportTask task = new WeeklyReportTask();
         task.setMaPSeqDAOBean(maPSeqDAOBean);
         task.setToEmailAddress(toEmailAddress);
-        Executors.newSingleThreadExecutor().execute(task);
+        executorService.submit(task);
+        executorService.shutdown();
         return null;
     }
 
