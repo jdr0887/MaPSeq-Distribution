@@ -100,7 +100,7 @@ public class WeeklyReportTask implements Runnable {
             imgCell.setHorizontalAlignment(Element.ALIGN_CENTER);
             imgCell.setVerticalAlignment(Element.ALIGN_CENTER);
             summaryTable.addCell(imgCell);
-            // workflowRunCountReportFile.delete();
+            workflowRunCountReportFile.delete();
 
             File workflowRunDurationReportFile = ReportFactory.createWorkflowRunDurationReport(workflowRunAttemptList,
                     startDate, endDate);
@@ -112,7 +112,7 @@ public class WeeklyReportTask implements Runnable {
             imgCell.setHorizontalAlignment(Element.ALIGN_CENTER);
             imgCell.setVerticalAlignment(Element.ALIGN_CENTER);
             summaryTable.addCell(imgCell);
-            // workflowRunDurationReportFile.delete();
+            workflowRunDurationReportFile.delete();
             summaryTable.completeRow();
 
             document.add(summaryTable);
@@ -156,7 +156,7 @@ public class WeeklyReportTask implements Runnable {
                 imgCell.setVerticalAlignment(Element.ALIGN_CENTER);
                 imgCell.setBorder(0);
                 table.addCell(imgCell);
-                // workflowJobsPerClusterReportFile.delete();
+                workflowJobsPerClusterReportFile.delete();
 
                 List<WorkflowRunAttempt> attempts = workflowRunAttemptDAO.findByCreatedDateRangeAndWorkflowId(
                         startDate, endDate, workflow.getId());
@@ -170,7 +170,7 @@ public class WeeklyReportTask implements Runnable {
                 imgCell.setVerticalAlignment(Element.ALIGN_CENTER);
                 imgCell.setBorder(0);
                 table.addCell(imgCell);
-                // workflowRunAttemptReportFile.delete();
+                workflowRunAttemptReportFile.delete();
                 table.completeRow();
 
                 File workflowJobsReportFile = ReportFactory.createWorkflowJobsReport(jobList, workflow, startDate,
@@ -184,7 +184,7 @@ public class WeeklyReportTask implements Runnable {
                 imgCell.setVerticalAlignment(Element.ALIGN_CENTER);
                 imgCell.setBorder(0);
                 table.addCell(imgCell);
-                // workflowJobsReportFile.delete();
+                workflowJobsReportFile.delete();
 
                 document.add(table);
             }
@@ -220,7 +220,7 @@ public class WeeklyReportTask implements Runnable {
                 e.printStackTrace();
             }
 
-            // pdfFile.delete();
+            pdfFile.delete();
 
         }
 
