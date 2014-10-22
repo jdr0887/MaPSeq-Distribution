@@ -92,6 +92,11 @@ public class WorkflowRunAttemptDAOImpl extends BaseDAOImpl<WorkflowRunAttempt, L
     }
 
     @Override
+    public List<WorkflowRunAttempt> findByCreatedDateRange(Date started, Date finished) throws MaPSeqDAOException {
+        return null;
+    }
+
+    @Override
     public List<WorkflowRunAttempt> findByWorkflowNameAndStatus(String workflowName, WorkflowRunAttemptStatusType status)
             throws MaPSeqDAOException {
         logger.info("ENTERING findByWorkflowNameAndStatus(String, WorkflowRunAttemptStatusType)");
