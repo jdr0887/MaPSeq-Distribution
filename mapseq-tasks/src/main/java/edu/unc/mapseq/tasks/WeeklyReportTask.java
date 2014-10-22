@@ -3,7 +3,6 @@ package edu.unc.mapseq.tasks;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -20,19 +19,21 @@ import org.slf4j.LoggerFactory;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import edu.unc.mapseq.dao.JobDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
-import edu.unc.mapseq.dao.WorkflowRunDAO;
 import edu.unc.mapseq.dao.model.Job;
 import edu.unc.mapseq.dao.model.Workflow;
-import edu.unc.mapseq.dao.model.WorkflowRun;
 import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
 import edu.unc.mapseq.reports.ReportFactory;
 
@@ -55,7 +56,7 @@ public class WeeklyReportTask implements Runnable {
         Date endDate = new Date();
         Calendar c = Calendar.getInstance();
         c.setTime(endDate);
-        c.add(Calendar.WEEK_OF_YEAR, -1);
+        c.add(Calendar.WEEK_OF_YEAR, -4);
         Date startDate = c.getTime();
 
         Document document = new Document(PageSize.LETTER.rotate());
@@ -69,43 +70,56 @@ public class WeeklyReportTask implements Runnable {
             writer.setCompressionLevel(9);
 
             document.open();
-            document.setMargins(10, 10, 10, 10);
 
-            WorkflowRunDAO workflowRunDAO = maPSeqDAOBean.getWorkflowRunDAO();
+            PdfPTable summaryTable = new PdfPTable(1);
+            summaryTable.setWidthPercentage(100);
+
+            Font font = FontFactory.getFont(FontFactory.COURIER_BOLD);
+            font.setSize(18);
+
+            Phrase phrase = new Phrase("MaPSeq :: Overview", font);
+
+            PdfPCell titleCell = new PdfPCell(phrase);
+            titleCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            titleCell.setVerticalAlignment(Element.ALIGN_CENTER);
+            titleCell.setBorder(0);
+            titleCell.setPaddingBottom(10);
+            summaryTable.addCell(titleCell);
+
             WorkflowRunAttemptDAO workflowRunAttemptDAO = maPSeqDAOBean.getWorkflowRunAttemptDAO();
-            List<WorkflowRun> workflowRunList = workflowRunDAO.findByCreatedDateRange(startDate, endDate);
-            List<WorkflowRunAttempt> workflowRunAttemptList = new ArrayList<>();
+            List<WorkflowRunAttempt> workflowRunAttemptList = workflowRunAttemptDAO.findByCreatedDateRange(startDate,
+                    endDate);
 
-            if (workflowRunList != null && !workflowRunList.isEmpty()) {
-                for (WorkflowRun workflowRun : workflowRunList) {
-                    List<WorkflowRunAttempt> toAdd = workflowRunAttemptDAO.findByWorkflowRunId(workflowRun.getId());
-                    if (toAdd != null && !toAdd.isEmpty()) {
-                        workflowRunAttemptList.addAll(toAdd);
-                    }
-                }
-            }
-
-            document.add(new Paragraph());
             File workflowRunCountReportFile = ReportFactory.createWorkflowRunCountReport(workflowRunAttemptList,
                     startDate, endDate);
             Image img = Image.getInstance(workflowRunCountReportFile.getAbsolutePath());
             img.setAlignment(Element.ALIGN_CENTER);
             img.scalePercent(60, 60);
-            document.add(img);
-            workflowRunCountReportFile.delete();
+            PdfPCell imgCell = new PdfPCell(img);
+            imgCell.setBorder(0);
+            imgCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            imgCell.setVerticalAlignment(Element.ALIGN_CENTER);
+            summaryTable.addCell(imgCell);
+            // workflowRunCountReportFile.delete();
 
-            document.add(new Paragraph());
             File workflowRunDurationReportFile = ReportFactory.createWorkflowRunDurationReport(workflowRunAttemptList,
                     startDate, endDate);
             img = Image.getInstance(workflowRunDurationReportFile.getAbsolutePath());
             img.setAlignment(Element.ALIGN_CENTER);
             img.scalePercent(60, 60);
-            document.add(img);
-            workflowRunDurationReportFile.delete();
+            imgCell = new PdfPCell(img);
+            imgCell.setBorder(0);
+            imgCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            imgCell.setVerticalAlignment(Element.ALIGN_CENTER);
+            summaryTable.addCell(imgCell);
+            // workflowRunDurationReportFile.delete();
+            summaryTable.completeRow();
+
+            document.add(summaryTable);
 
             Set<Workflow> workflowSet = new HashSet<Workflow>();
-            for (WorkflowRun workflowRun : workflowRunList) {
-                workflowSet.add(workflowRun.getWorkflow());
+            for (WorkflowRunAttempt attempt : workflowRunAttemptList) {
+                workflowSet.add(attempt.getWorkflowRun().getWorkflow());
             }
 
             JobDAO jobDAO = maPSeqDAOBean.getJobDAO();
@@ -115,41 +129,64 @@ public class WeeklyReportTask implements Runnable {
             for (Workflow workflow : synchronizedWorkflowSet) {
 
                 logger.debug(workflow.toString());
-
                 document.newPage();
+
+                PdfPTable table = new PdfPTable(2);
+                table.setWidthPercentage(100);
+
+                phrase = new Phrase(String.format("MaPSeq :: %s", workflow.getName()), font);
+
+                titleCell = new PdfPCell(phrase);
+                titleCell.setColspan(2);
+                titleCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                titleCell.setVerticalAlignment(Element.ALIGN_CENTER);
+                titleCell.setBorder(0);
+                titleCell.setPaddingBottom(10);
+                table.addCell(titleCell);
 
                 List<Job> jobList = jobDAO.findByWorkflowIdAndCreatedDateRange(workflow.getId(), startDate, endDate);
 
-                document.add(new Paragraph());
                 File workflowJobsPerClusterReportFile = ReportFactory.createWorkflowJobCountPerClusterReport(jobList,
                         workflow, startDate, endDate);
                 img = Image.getInstance(workflowJobsPerClusterReportFile.getAbsolutePath());
                 img.setAlignment(Element.ALIGN_CENTER);
-                img.scalePercent(65, 65);
-                document.add(img);
-                workflowJobsPerClusterReportFile.delete();
+                img.scalePercent(50, 50);
+                imgCell = new PdfPCell(img);
+                imgCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                imgCell.setVerticalAlignment(Element.ALIGN_CENTER);
+                imgCell.setBorder(0);
+                table.addCell(imgCell);
+                // workflowJobsPerClusterReportFile.delete();
 
-                // document.add(new Paragraph());
-                // List<WorkflowRunAttempt> attempts = workflowRunAttemptDAO.findByCreatedDateRangeAndWorkflowId(
-                // startDate, endDate, workflow.getId());
-                // File workflowRunAttemptReportFile = ReportFactory.createWorkflowRunDurationReport(workflow.getName(),
-                // attempts, startDate, endDate);
-                // img = Image.getInstance(workflowRunAttemptReportFile.getAbsolutePath());
-                // img.setAlignment(Element.ALIGN_CENTER);
-                // img.scalePercent(65, 65);
-                // document.add(img);
+                List<WorkflowRunAttempt> attempts = workflowRunAttemptDAO.findByCreatedDateRangeAndWorkflowId(
+                        startDate, endDate, workflow.getId());
+                File workflowRunAttemptReportFile = ReportFactory.createWorkflowRunCountReport(workflow.getName(),
+                        attempts, startDate, endDate);
+                img = Image.getInstance(workflowRunAttemptReportFile.getAbsolutePath());
+                img.setAlignment(Element.ALIGN_CENTER);
+                img.scalePercent(50, 50);
+                imgCell = new PdfPCell(img);
+                imgCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                imgCell.setVerticalAlignment(Element.ALIGN_CENTER);
+                imgCell.setBorder(0);
+                table.addCell(imgCell);
                 // workflowRunAttemptReportFile.delete();
+                table.completeRow();
 
-                document.add(new Paragraph());
                 File workflowJobsReportFile = ReportFactory.createWorkflowJobsReport(jobList, workflow, startDate,
                         endDate);
                 img = Image.getInstance(workflowJobsReportFile.getAbsolutePath());
                 img.scalePercent(70, 70);
                 img.setAlignment(Element.ALIGN_CENTER);
-                document.add(img);
+                imgCell = new PdfPCell(img);
+                imgCell.setColspan(2);
+                imgCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                imgCell.setVerticalAlignment(Element.ALIGN_CENTER);
+                imgCell.setBorder(0);
+                table.addCell(imgCell);
+                // workflowJobsReportFile.delete();
 
-                workflowJobsReportFile.delete();
-
+                document.add(table);
             }
 
             document.close();
@@ -183,7 +220,7 @@ public class WeeklyReportTask implements Runnable {
                 e.printStackTrace();
             }
 
-            pdfFile.delete();
+            // pdfFile.delete();
 
         }
 
