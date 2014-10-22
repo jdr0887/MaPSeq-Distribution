@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
@@ -20,7 +19,8 @@ import org.jfree.chart.title.TextTitle;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.time.Day;
-import org.jfree.data.time.TimeTableXYDataset;
+import org.jfree.data.time.TimeSeries;
+import org.jfree.data.time.TimeSeriesCollection;
 import org.renci.charts.ChartManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +47,7 @@ public class ReportFactory {
 
             DefaultPieDataset dataset = new DefaultPieDataset();
 
-            Map<String, Integer> map = new HashMap<String, Integer>();
+            Map<String, List<Attribute>> map = new HashMap<String, List<Attribute>>();
 
             for (Job job : jobList) {
                 Set<Attribute> attributeSet = job.getAttributes();
@@ -56,7 +56,7 @@ public class ReportFactory {
                         String name = attribute.getName();
                         String value = attribute.getValue();
                         if (StringUtils.isNotEmpty(name) && name.equals("siteName") && !map.containsKey(value)) {
-                            map.put(value, 0);
+                            map.put(value, new ArrayList<Attribute>());
                         }
                     }
                 }
@@ -69,23 +69,22 @@ public class ReportFactory {
                         String name = attribute.getName();
                         String value = attribute.getValue();
                         if (StringUtils.isNotEmpty(name) && name.equals("siteName") && map.containsKey(value)) {
-                            map.put(value, map.get(value) + 1);
+                            map.get(value).add(attribute);
                         }
                     }
                 }
             }
 
             for (String key : map.keySet()) {
-                dataset.setValue(key, map.get(key));
+                dataset.setValue(key, map.get(key).size());
             }
 
             ChartManager chartMgr = ChartManager.getInstance();
 
             JFreeChart chart = chartMgr.createPieChart(
-                    String.format("MaPSeq :: Job Count Per Cluster :: %s", workflow.getName()), dataset);
-            Font font = new Font("Dialog", Font.PLAIN, 12);
-            chart.addSubtitle(new TextTitle(String.format("(%s - %s)", DateFormatUtils.format(startDate, "MM/dd"),
-                    DateFormatUtils.format(endDate, "MM/dd")), font));
+                    String.format("Job Count Per Cluster", workflow.getName()),
+                    String.format("(%s - %s)", DateFormatUtils.format(startDate, "MM/dd"),
+                            DateFormatUtils.format(endDate, "MM/dd")), dataset);
             chartFile = chartMgr.saveAsPNG(chart, 600, 400);
 
         } catch (Exception e) {
@@ -171,7 +170,7 @@ public class ReportFactory {
                 dataset.setValue(jobDurationList.get(0), series2, jobSiteDurationBean.getSiteName());
             }
 
-            String title = String.format("MaPSeq :: Job Duration :: %s", jobName);
+            String title = String.format("Job Duration", jobName);
             JFreeChart chart = chartMgr.createLayeredBarChart(title, "Site", "Duration (Min)", dataset);
             Font font = new Font("Dialog", Font.PLAIN, 12);
             chart.addSubtitle(new TextTitle(String.format("(%s - %s)", DateFormatUtils.format(startDate, "MM/dd"),
@@ -220,10 +219,10 @@ public class ReportFactory {
             }
 
             ChartManager chartMgr = ChartManager.getInstance();
-            JFreeChart chart = chartMgr.createPieChart("MaPSeq :: WorkflowRun Count", dataset);
-            Font font = new Font("Dialog", Font.PLAIN, 12);
-            chart.addSubtitle(new TextTitle(String.format("(%s - %s)", DateFormatUtils.format(startDate, "MM/dd"),
-                    DateFormatUtils.format(endDate, "MM/dd")), font));
+            JFreeChart chart = chartMgr.createPieChart(
+                    "WorkflowRun Count",
+                    String.format("(%s - %s)", DateFormatUtils.format(startDate, "MM/dd"),
+                            DateFormatUtils.format(endDate, "MM/dd")), dataset);
             chartFile = chartMgr.saveAsPNG(chart, 600, 400);
         } catch (Exception e) {
             e.printStackTrace();
@@ -279,12 +278,12 @@ public class ReportFactory {
             }
 
             ChartManager chartMgr = ChartManager.getInstance();
-            JFreeChart chart = chartMgr.createPieChart("MaPSeq :: WorkflowRunAttempt Duration", dataset);
+            JFreeChart chart = chartMgr.createPieChart(
+                    "WorkflowRunAttempt Duration",
+                    String.format("(%s - %s)", DateFormatUtils.format(startDate, "MM/dd"),
+                            DateFormatUtils.format(endDate, "MM/dd")), dataset);
             PiePlot piePlot = (PiePlot) chart.getPlot();
             piePlot.setLabelGenerator(new CustomLabelGenerator());
-            Font font = new Font("Dialog", Font.PLAIN, 12);
-            chart.addSubtitle(new TextTitle(String.format("(%s - %s)", DateFormatUtils.format(startDate, "MM/dd"),
-                    DateFormatUtils.format(endDate, "MM/dd")), font));
             chartFile = chartMgr.saveAsPNG(chart, 600, 400);
         } catch (Exception e) {
             e.printStackTrace();
@@ -295,15 +294,13 @@ public class ReportFactory {
 
     }
 
-    public static File createWorkflowRunDurationReport(String workflowName,
+    public static File createWorkflowRunCountReport(String workflowName,
             List<WorkflowRunAttempt> workflowRunAttemptList, Date startDate, Date endDate) {
         logger.debug("ENTERING createWorkflowRunDurationReport(String, List<WorkflowRunAttempt>, Date, Date)");
 
         File chartFile = null;
 
         try {
-            TimeTableXYDataset dataset = new TimeTableXYDataset();
-
             Map<Day, List<WorkflowRunAttempt>> map = new HashMap<Day, List<WorkflowRunAttempt>>();
 
             for (WorkflowRunAttempt attempt : workflowRunAttemptList) {
@@ -324,22 +321,18 @@ public class ReportFactory {
                 map.get(d).add(attempt);
             }
 
+            TimeSeriesCollection dataset = new TimeSeriesCollection();
+            TimeSeries s1 = new TimeSeries(workflowName);
             for (Day d : map.keySet()) {
-                for (int i = 0; i < map.get(d).size(); ++i) {
-                    WorkflowRunAttempt attempt = map.get(d).get(i);
-                    Date sDate = attempt.getStarted();
-                    Date eDate = attempt.getFinished();
-                    dataset.add(d, TimeUnit.MILLISECONDS.toMinutes(eDate.getTime() - sDate.getTime()), map.get(d).size());
-                }
+                s1.add(d, map.get(d).size());
             }
+            dataset.addSeries(s1);
 
             ChartManager chartMgr = ChartManager.getInstance();
-            JFreeChart chart = chartMgr.createBarChart(
-                    String.format("MaPSeq :: %s :: WorkflowRunAttempt Duration", workflowName), dataset);
-            Font font = new Font("Dialog", Font.PLAIN, 12);
-            chart.addSubtitle(new TextTitle(String.format("(%s - %s)", DateFormatUtils.format(startDate, "MM/dd"),
-                    DateFormatUtils.format(endDate, "MM/dd")), font));
-            chartFile = chartMgr.saveAsPNG(chart, 600, 400);
+            chartFile = chartMgr.createBarChartAsPNG(
+                    String.format("WorkflowRunAttempts", workflowName),
+                    String.format("(%s - %s)", DateFormatUtils.format(startDate, "MM/dd"),
+                            DateFormatUtils.format(endDate, "MM/dd")), dataset);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -413,7 +406,7 @@ public class ReportFactory {
                 dataset.setValue(jobDurationList.get(0), series2, key);
             }
 
-            String title = String.format("MaPSeq :: Job Duration :: %s", workflow.getName());
+            String title = String.format("Job Duration", workflow.getName());
             JFreeChart chart = chartMgr.createLayeredBarChart(title, "Job", "Duration (Min)", dataset);
             Font font = new Font("Dialog", Font.PLAIN, 12);
             chart.addSubtitle(new TextTitle(String.format("(%s - %s)", DateFormatUtils.format(startDate, "MM/dd"),
