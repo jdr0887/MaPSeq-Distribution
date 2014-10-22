@@ -58,7 +58,7 @@ public class WorkflowRunCountMonthlyReportAction extends AbstractAction {
 
         File chartFile = ReportFactory.createWorkflowRunCountReport(workflowRunAttemptList, startDate, endDate);
 
-        String subject = String.format("MaPSeq :: WorkflowRunAttempts (%s - %s)",
+        String subject = String.format("MaPSeq : WorkflowRunAttempts (%s - %s)",
                 DateFormatUtils.format(startDate, "MM/dd"), DateFormatUtils.format(endDate, "MM/dd"));
 
         EmailAttachment attachment = new EmailAttachment();

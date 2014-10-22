@@ -52,7 +52,7 @@ public class WorkflowJobsWeeklyReportAction extends AbstractAction {
 
         File chartFile = ReportFactory.createWorkflowJobsReport(jobList, workflow, startDate, endDate);
 
-        String subject = String.format("MaPSeq :: Job Duration :: %s (%s - %s)", workflow.getName(),
+        String subject = String.format("MaPSeq : %s : Job Duration : (%s - %s)", workflow.getName(),
                 DateFormatUtils.format(startDate, "MM/dd"), DateFormatUtils.format(endDate, "MM/dd"));
 
         EmailAttachment attachment = new EmailAttachment();

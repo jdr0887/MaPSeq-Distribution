@@ -59,7 +59,7 @@ public class WorkflowRunDurationWeeklyReportAction extends AbstractAction {
 
         File chartFile = ReportFactory.createWorkflowRunDurationReport(workflowRunAttemptList, startDate, endDate);
 
-        String subject = String.format("MaPSeq :: WorkflowRunAttempts (%s - %s)",
+        String subject = String.format("MaPSeq : WorkflowRunAttempts (%s - %s)",
                 DateFormatUtils.format(startDate, "MM/dd"), DateFormatUtils.format(endDate, "MM/dd"));
 
         EmailAttachment attachment = new EmailAttachment();
