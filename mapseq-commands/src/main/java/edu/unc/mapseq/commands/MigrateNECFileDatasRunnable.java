@@ -19,7 +19,6 @@ import edu.unc.mapseq.dao.SampleDAO;
 import edu.unc.mapseq.dao.model.FileData;
 import edu.unc.mapseq.dao.model.Flowcell;
 import edu.unc.mapseq.dao.model.Sample;
-import edu.unc.mapseq.dao.model.Workflow;
 
 public class MigrateNECFileDatasRunnable implements Runnable {
 
