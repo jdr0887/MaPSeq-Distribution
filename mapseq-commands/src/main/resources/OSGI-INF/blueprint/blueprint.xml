@@ -8,6 +8,11 @@
       </action>
     </command>
     <command>
+      <action class="edu.unc.mapseq.commands.MigrateNECFileDatasAction">
+        <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
+      </action>
+    </command>
+    <command>
       <action class="edu.unc.mapseq.commands.AddFileToFlowcellAction">
         <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
       </action>
