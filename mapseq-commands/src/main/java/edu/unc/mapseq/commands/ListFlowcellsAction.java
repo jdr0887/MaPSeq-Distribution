@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.karaf.shell.commands.Command;
+import org.apache.karaf.shell.commands.Option;
 import org.apache.karaf.shell.console.AbstractAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,15 +26,26 @@ public class ListFlowcellsAction extends AbstractAction {
 
     private MaPSeqDAOBean maPSeqDAOBean;
 
+    @Option(name = "--workflowRunId", description = "WorkflowRun Identifier", required = false, multiValued = false)
+    private Long workflowRunId;
+
     @Override
     protected Object doExecute() throws Exception {
         logger.debug("ENTERING doExecute()");
 
         List<Flowcell> flowcellList = new ArrayList<Flowcell>();
         FlowcellDAO flowcellDAO = maPSeqDAOBean.getFlowcellDAO();
-        try {
-            flowcellList.addAll(flowcellDAO.findAll());
-        } catch (Exception e) {
+
+        List<Flowcell> flowcells = null;
+
+        if (workflowRunId != null) {
+            flowcells = flowcellDAO.findByWorkflowRunId(workflowRunId);
+        } else {
+            flowcells = flowcellDAO.findAll();
+        }
+
+        if (flowcells != null && !flowcells.isEmpty()) {
+            flowcellList.addAll(flowcells);
         }
 
         if (flowcellList.size() > 0) {
@@ -75,6 +87,14 @@ public class ListFlowcellsAction extends AbstractAction {
 
     public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
         this.maPSeqDAOBean = maPSeqDAOBean;
+    }
+
+    public Long getWorkflowRunId() {
+        return workflowRunId;
+    }
+
+    public void setWorkflowRunId(Long workflowRunId) {
+        this.workflowRunId = workflowRunId;
     }
 
 }

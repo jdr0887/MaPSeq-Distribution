@@ -1,11 +1,12 @@
 package edu.unc.mapseq.commands;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Formatter;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.karaf.shell.commands.Command;
@@ -14,7 +15,6 @@ import org.apache.karaf.shell.console.AbstractAction;
 
 import edu.unc.mapseq.dao.FlowcellDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
-import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.SampleDAO;
 import edu.unc.mapseq.dao.model.Flowcell;
 import edu.unc.mapseq.dao.model.Sample;
@@ -27,6 +27,9 @@ public class ListSamplesAction extends AbstractAction {
     @Option(name = "--flowcellId", description = "Flowcell Identifier", required = false, multiValued = false)
     private Long flowcellId;
 
+    @Option(name = "--workflowRunId", description = "WorkflowRun Identifier", required = false, multiValued = false)
+    private Long workflowRunId;
+
     @Option(name = "--name", description = "like search by name", required = false, multiValued = false)
     private String name;
 
@@ -35,7 +38,7 @@ public class ListSamplesAction extends AbstractAction {
     }
 
     @Override
-    public Object doExecute() {
+    public Object doExecute() throws Exception {
 
         FlowcellDAO flowcellDAO = maPSeqDAOBean.getFlowcellDAO();
         SampleDAO sampleDAO = maPSeqDAOBean.getSampleDAO();
@@ -45,20 +48,27 @@ public class ListSamplesAction extends AbstractAction {
             return null;
         }
 
-        List<Sample> sampleList = new ArrayList<Sample>();
+        Set<Sample> sampleList = new HashSet<Sample>();
+
+        if (workflowRunId != null) {
+            List<Sample> samples = sampleDAO.findByWorkflowRunId(workflowRunId);
+            if (samples != null && !samples.isEmpty()) {
+                sampleList.addAll(samples);
+            }
+        }
 
         if (flowcellId != null) {
-            try {
-                Flowcell flowcell = flowcellDAO.findById(flowcellId);
-                sampleList.addAll(sampleDAO.findByFlowcellId(flowcell.getId()));
-            } catch (MaPSeqDAOException e) {
+            Flowcell flowcell = flowcellDAO.findById(flowcellId);
+            List<Sample> samples = sampleDAO.findByFlowcellId(flowcell.getId());
+            if (samples != null && !samples.isEmpty()) {
+                sampleList.addAll(samples);
             }
         }
 
         if (StringUtils.isNotEmpty(name)) {
-            try {
-                sampleList.addAll(sampleDAO.findByName(name));
-            } catch (MaPSeqDAOException e) {
+            List<Sample> samples = sampleDAO.findByName(name);
+            if (samples != null && !samples.isEmpty()) {
+                sampleList.addAll(samples);
             }
         }
 
@@ -110,6 +120,14 @@ public class ListSamplesAction extends AbstractAction {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Long getWorkflowRunId() {
+        return workflowRunId;
+    }
+
+    public void setWorkflowRunId(Long workflowRunId) {
+        this.workflowRunId = workflowRunId;
     }
 
 }
