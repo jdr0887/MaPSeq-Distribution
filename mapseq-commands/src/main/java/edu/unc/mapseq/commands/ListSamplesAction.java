@@ -43,11 +43,6 @@ public class ListSamplesAction extends AbstractAction {
         FlowcellDAO flowcellDAO = maPSeqDAOBean.getFlowcellDAO();
         SampleDAO sampleDAO = maPSeqDAOBean.getSampleDAO();
 
-        if (flowcellId == null && StringUtils.isEmpty(name)) {
-            System.out.println("flowcellId & name can't both be null/empty");
-            return null;
-        }
-
         Set<Sample> sampleList = new HashSet<Sample>();
 
         if (workflowRunId != null) {
