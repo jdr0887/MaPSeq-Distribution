@@ -8,6 +8,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.jgrapht.Graph;
@@ -25,6 +26,7 @@ import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
 import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
+import edu.unc.mapseq.dao.model.WorkflowRunAttemptStatusType;
 import edu.unc.mapseq.workflow.Workflow;
 import edu.unc.mapseq.workflow.WorkflowBeanService;
 import edu.unc.mapseq.workflow.WorkflowException;
@@ -227,10 +229,12 @@ public abstract class AbstractWorkflow implements Workflow {
             runMode = RunModeType.DEV;
         }
 
-        if (runMode.equals(RunModeType.PROD) && this.submitDirectory != null && this.submitDirectory.exists()) {
-            File[] submitDirFileArray = submitDirectory.listFiles();
-            for (File f : submitDirFileArray) {
-                f.delete();
+        if (getWorkflowRunAttempt().getStatus().equals(WorkflowRunAttemptStatusType.DONE)
+                && runMode.equals(RunModeType.PROD) && this.submitDirectory != null && this.submitDirectory.exists()) {
+            try {
+                FileUtils.deleteDirectory(submitDirectory);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
