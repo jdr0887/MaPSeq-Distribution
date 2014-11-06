@@ -27,7 +27,8 @@ import edu.unc.mapseq.module.constraints.FileIsReadable;
  * 
  */
 @Application(name = "ConfigureBCLToFastQ")
-@Executable(value = "$PERL_HOME/bin/perl $%s_CASAVA_HOME/bin/configureBclToFastq.pl")
+//@Executable(value = "$PERL_HOME/bin/perl $%s_CASAVA_HOME/bin/configureBclToFastq.pl")
+@Executable(value = "$%s_CASAVA_HOME/bin/configureBclToFastq.pl")
 public class ConfigureBCLToFastq extends Module {
 
     @NotNull(message = "workDir is required", groups = InputValidations.class)
@@ -118,7 +119,7 @@ public class ConfigureBCLToFastq extends Module {
         }
 
         commandInput.setCommand(command.toString());
-
+        System.out.println(command.toString());
         CommandOutput commandOutput;
         try {
             Executor executor = BashExecutor.getInstance();
@@ -201,4 +202,25 @@ public class ConfigureBCLToFastq extends Module {
         this.ignoreMissingStats = ignoreMissingStats;
     }
 
+    public static void main(String[] args) {
+        ConfigureBCLToFastq module = new ConfigureBCLToFastq();
+        module.setWorkflowName("TEST");
+
+        module.setInputDir(new File("inputdir"));
+        module.setMismatches(Boolean.TRUE);
+        module.setIgnoreMissingBCL(Boolean.TRUE);
+        module.setIgnoreMissingStats(Boolean.TRUE);
+        module.setFastqClusterCount(0);
+        module.setTiles(1);
+        module.setOutputDir(new File("outputdir"));
+        module.setSampleSheet(new File("samplesheet"));
+        module.setForce(Boolean.TRUE);
+
+        try {
+            module.call();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 }
