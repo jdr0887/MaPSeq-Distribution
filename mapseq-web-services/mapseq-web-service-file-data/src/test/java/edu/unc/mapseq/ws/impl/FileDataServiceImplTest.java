@@ -22,6 +22,28 @@ import edu.unc.mapseq.ws.FileDataService;
 public class FileDataServiceImplTest {
 
     @Test
+    public void testUpload() {
+
+        QName serviceQName = new QName("http://ws.mapseq.unc.edu", "FileDataService");
+        Service service = Service.create(serviceQName);
+        QName portQName = new QName("http://ws.mapseq.unc.edu", "FileDataPort");
+        service.addPort(portQName, SOAPBinding.SOAP11HTTP_BINDING,
+                String.format("http://%s:%d/cxf/FileDataService", "localhost", 8181));
+        FileDataService fileDataService = service.getPort(FileDataService.class);
+        Binding binding = ((BindingProvider) service.getPort(portQName, FileDataService.class)).getBinding();
+        ((SOAPBinding) binding).setMTOMEnabled(true);
+
+        try {
+            File f = new File("/tmp", "140912_UNC17-D00216_0247_BC4G46ANXX.csv");
+            DataHandler handler = new DataHandler(f.toURI().toURL());
+            fileDataService.upload(handler, "140912_UNC17-D00216_0247_BC4G46ANXX", "CASAVA", f.getName(), "TEXT_CSV");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Test
     public void testDownload() {
 
         QName serviceQName = new QName("http://ws.mapseq.unc.edu", "FileDataService");
