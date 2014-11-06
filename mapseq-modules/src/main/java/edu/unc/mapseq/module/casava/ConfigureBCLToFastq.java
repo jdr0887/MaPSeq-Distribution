@@ -9,6 +9,8 @@ import org.renci.common.exec.CommandInput;
 import org.renci.common.exec.CommandOutput;
 import org.renci.common.exec.Executor;
 import org.renci.common.exec.ExecutorException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.unc.mapseq.module.Module;
 import edu.unc.mapseq.module.ModuleException;
@@ -27,9 +29,11 @@ import edu.unc.mapseq.module.constraints.FileIsReadable;
  * 
  */
 @Application(name = "ConfigureBCLToFastQ")
-//@Executable(value = "$PERL_HOME/bin/perl $%s_CASAVA_HOME/bin/configureBclToFastq.pl")
+// @Executable(value = "$PERL_HOME/bin/perl $%s_CASAVA_HOME/bin/configureBclToFastq.pl")
 @Executable(value = "$%s_CASAVA_HOME/bin/configureBclToFastq.pl")
 public class ConfigureBCLToFastq extends Module {
+
+    private final Logger logger = LoggerFactory.getLogger(ConfigureBCLToFastq.class);
 
     @NotNull(message = "workDir is required", groups = InputValidations.class)
     @InputArgument
@@ -119,7 +123,7 @@ public class ConfigureBCLToFastq extends Module {
         }
 
         commandInput.setCommand(command.toString());
-        System.out.println(command.toString());
+        logger.info(command.toString());
         CommandOutput commandOutput;
         try {
             Executor executor = BashExecutor.getInstance();
