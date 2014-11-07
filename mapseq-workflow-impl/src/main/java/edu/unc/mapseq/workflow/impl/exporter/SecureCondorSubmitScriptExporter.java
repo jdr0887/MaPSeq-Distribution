@@ -103,18 +103,19 @@ public class SecureCondorSubmitScriptExporter extends DefaultCondorSubmitScriptE
                     classAd.setValue(Boolean.TRUE.toString());
                     job.getClassAdvertisments().add(classAd);
 
-                    String requirements = "(Arch == \"X86_64\") && (OpSys == \"LINUX\") && (request_memory >= 500) && (request_disk >= 0)";
+                    StringBuilder requirements = new StringBuilder();
                     if (includeGlideinRequirements) {
+                        requirements.append(String.format(
+                                "(TARGET.JLRM_USER == \"%s\") && (TARGET.IS_GLIDEIN == True)",
+                                System.getProperty("user.name")));
                         if (StringUtils.isNotEmpty(job.getSiteName())) {
-                            requirements += String.format(" && (TARGET.JLRM_SITE_NAME == \"%s\")", job.getSiteName());
+                            requirements.append(String.format(" && (TARGET.JLRM_SITE_NAME == \"%s\")",
+                                    job.getSiteName()));
                         }
-                        requirements += String.format(
-                                " && (TARGET.JLRM_USER == \"%s\") && (TARGET.IS_GLIDEIN == True)",
-                                System.getProperty("user.name"));
                     }
 
                     classAd = ClassAdvertisementFactory.getClassAd(CLASS_AD_KEY_REQUIREMENTS).clone();
-                    classAd.setValue(requirements);
+                    classAd.setValue(requirements.toString());
                     job.getClassAdvertisments().add(classAd);
 
                 }
