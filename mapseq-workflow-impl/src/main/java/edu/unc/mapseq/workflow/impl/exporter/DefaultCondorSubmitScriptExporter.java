@@ -105,7 +105,7 @@ public class DefaultCondorSubmitScriptExporter extends CondorSubmitScriptExporte
                     classAd.setValue(Boolean.TRUE.toString());
                     job.getClassAdvertisments().add(classAd);
 
-                    String requirements = "(Arch == \"X86_64\") && (OpSys == \"LINUX\") && (Memory >= 500) && (Disk >= 0)";
+                    String requirements = "(Arch == \"X86_64\") && (OpSys == \"LINUX\") && (request_memory >= 500) && (request_disk >= 0)";
                     if (includeGlideinRequirements) {
                         if (StringUtils.isNotEmpty(job.getSiteName())) {
                             requirements += String.format(" && (TARGET.JLRM_SITE_NAME == \"%s\")", job.getSiteName());
