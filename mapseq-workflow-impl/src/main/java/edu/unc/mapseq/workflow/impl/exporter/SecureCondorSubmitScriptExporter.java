@@ -72,11 +72,11 @@ public class SecureCondorSubmitScriptExporter extends DefaultCondorSubmitScriptE
                     job.getClassAdvertisments().add(classAd);
 
                     classAd = ClassAdvertisementFactory.getClassAd(CLASS_AD_KEY_GET_ENV).clone();
-                    if (StringUtils.isNotEmpty(job.getSiteName()) && "Kure".equals(job.getSiteName())) {
-                        classAd.setValue(Boolean.TRUE.toString());
-                    } else {
-                        classAd.setValue(Boolean.FALSE.toString());
-                    }
+                    // if (StringUtils.isNotEmpty(job.getSiteName()) && "Kure".equals(job.getSiteName())) {
+                    // classAd.setValue(Boolean.TRUE.toString());
+                    // } else {
+                    classAd.setValue(Boolean.FALSE.toString());
+                    // }
                     job.getClassAdvertisments().add(classAd);
 
                     classAd = ClassAdvertisementFactory.getClassAd(CLASS_AD_KEY_REQUEST_CPUS).clone();
