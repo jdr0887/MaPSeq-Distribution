@@ -174,6 +174,16 @@ public class SampleServiceImpl implements SampleService {
         return ret;
     }
 
+    @Override
+    public void addFileDataToSample(Long fileDataId, Long sampleId) {
+        logger.debug("ENTERING addFileDataToSample(Long, Long)");
+        try {
+            sampleDAO.addFileDataToSample(fileDataId, sampleId);
+        } catch (MaPSeqDAOException e) {
+            logger.error("Error", e);
+        }
+    }
+
     public SampleDAO getSampleDAO() {
         return sampleDAO;
     }

@@ -90,4 +90,10 @@ public class SampleDAOImpl extends NamedEntityDAOImpl<Sample, Long> implements S
         return sampleList;
     }
 
+    @Override
+    public void addFileDataToSample(Long fileDataId, Long sampleId) throws MaPSeqDAOException {
+        logger.debug("ENTERING addFileDataToSample(Long, Long)");
+        sampleService.addFileDataToSample(fileDataId, sampleId);
+    }
+
 }
