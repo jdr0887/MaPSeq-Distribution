@@ -60,6 +60,20 @@ public class SampleDAOTest {
     }
 
     @Test
+    public void testAddFileDataToSample() {
+
+        WSDAOManager daoMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
+
+        try {
+            SampleDAO sampleDAO = daoMgr.getMaPSeqDAOBean().getSampleDAO();
+            sampleDAO.addFileDataToSample(1L, 2216370L);
+        } catch (MaPSeqDAOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Test
     public void testSave() {
 
         WSDAOManager daoMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");

@@ -28,6 +28,18 @@ public class SampleTest {
     }
 
     @Test
+    public void testAddFileDataToSample() {
+        RSDAOManager daoMgr = RSDAOManager.getInstance("edu/unc/mapseq/dao/rs/mapseq-dao-beans-test.xml");
+        try {
+            SampleDAO sampleDAO = daoMgr.getMaPSeqDAOBean().getSampleDAO();
+            sampleDAO.addFileDataToSample(2L, 2216370L);
+        } catch (MaPSeqDAOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Test
     public void testAddAttributeToSample() {
         RSDAOManager daoMgr = RSDAOManager.getInstance("edu/unc/mapseq/dao/rs/mapseq-dao-beans-test.xml");
         try {
