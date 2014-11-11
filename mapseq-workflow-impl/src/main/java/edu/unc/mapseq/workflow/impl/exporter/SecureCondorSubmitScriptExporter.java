@@ -173,8 +173,7 @@ public class SecureCondorSubmitScriptExporter extends DefaultCondorSubmitScriptE
         scriptSB.append("if [ -e ~/.mapseqrc ]; then . ~/.mapseqrc; fi\n");
         scriptSB.append("if [ -e ~/.jlrmrc ]; then . ~/.jlrmrc; fi\n");
         scriptSB.append("if [ \"x$MAPSEQ_HOME\" = \"x\" ]; then echo \"ERROR: MAPSEQ_HOME has to be set\"; exit 1; fi\n");
-        scriptSB.append("/bin/hostname -f\n");
-        scriptSB.append("/usr/bin/id\n");
+        scriptSB.append("/bin/hostname -f; /usr/bin/id; /bin/env\n");
 
         String commandFormat = "%nRC=0; %s; RC=$?%n%sif [ $RC != 0 ]; then exit $RC; fi%n%n";
 
