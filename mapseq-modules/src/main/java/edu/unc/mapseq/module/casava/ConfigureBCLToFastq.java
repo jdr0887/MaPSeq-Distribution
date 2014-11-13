@@ -29,8 +29,8 @@ import edu.unc.mapseq.module.constraints.FileIsReadable;
  * 
  */
 @Application(name = "ConfigureBCLToFastQ")
-// @Executable(value = "$PERL_HOME/bin/perl $%s_CASAVA_HOME/bin/configureBclToFastq.pl")
-@Executable(value = "$%s_CASAVA_HOME/bin/configureBclToFastq.pl")
+@Executable(value = "$PERL_HOME/bin/perl $%s_CASAVA_HOME/bin/configureBclToFastq.pl")
+// @Executable(value = "$%s_CASAVA_HOME/bin/configureBclToFastq.pl")
 public class ConfigureBCLToFastq extends Module {
 
     private final Logger logger = LoggerFactory.getLogger(ConfigureBCLToFastq.class);
