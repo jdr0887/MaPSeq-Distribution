@@ -3,7 +3,9 @@ package edu.unc.mapseq.workflow.impl;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
@@ -223,6 +225,23 @@ public abstract class AbstractWorkflow implements Workflow {
     public void cleanUp() throws WorkflowException {
         logger.debug("ENTERING cleanUp()");
 
+        String mapseqHome = System.getenv("MAPSEQ_HOME");
+        if (StringUtils.isNotEmpty(mapseqHome)) {
+            File tmpDir = new File(mapseqHome, "tmp");
+            File tmpWorkflowDir = new File(tmpDir, getName());
+            WorkflowRunAttempt attempt = getWorkflowRunAttempt();
+            if (attempt != null) {
+                File tmpWorkflowAttemptDir = new File(tmpWorkflowDir, getWorkflowRunAttempt().getId().toString());
+                if (tmpWorkflowAttemptDir.exists()) {
+                    try {
+                        FileUtils.deleteDirectory(tmpWorkflowAttemptDir);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
         RunModeType runMode = RunModeType.PROD;
         String version = getVersion();
         if (StringUtils.isEmpty(version) || (StringUtils.isNotEmpty(version) && version.contains("SNAPSHOT"))) {
@@ -231,10 +250,18 @@ public abstract class AbstractWorkflow implements Workflow {
 
         if (getWorkflowRunAttempt().getStatus().equals(WorkflowRunAttemptStatusType.DONE)
                 && runMode.equals(RunModeType.PROD) && this.submitDirectory != null && this.submitDirectory.exists()) {
-            try {
-                FileUtils.deleteDirectory(submitDirectory);
-            } catch (IOException e) {
-                e.printStackTrace();
+            List<File> fileList = Arrays.asList(submitDirectory.listFiles());
+            if (fileList != null && !fileList.isEmpty()) {
+                for (File file : fileList) {
+                    if (file.getName().startsWith(getName())) {
+                        continue;
+                    }
+
+                    if (file.getName().endsWith(".xml") || file.getName().endsWith(".out")
+                            || file.getName().endsWith(".log")) {
+                        file.delete();
+                    }
+                }
             }
         }
     }
