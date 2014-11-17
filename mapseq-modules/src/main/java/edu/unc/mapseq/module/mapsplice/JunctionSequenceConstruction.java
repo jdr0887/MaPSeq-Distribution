@@ -88,7 +88,7 @@ public class JunctionSequenceConstruction extends Module {
         CommandOutput commandOutput;
         try {
             Executor executor = BashExecutor.getInstance();
-            commandOutput = executor.execute(commandInput, new File(System.getProperty("user.home"), ".mapseqrc"));
+            commandOutput = executor.execute(commandInput);
         } catch (ExecutorException e) {
             throw new ModuleException(e);
         }

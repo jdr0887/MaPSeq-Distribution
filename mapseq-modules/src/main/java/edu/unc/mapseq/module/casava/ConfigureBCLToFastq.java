@@ -35,7 +35,7 @@ public class ConfigureBCLToFastq extends Module {
 
     private final Logger logger = LoggerFactory.getLogger(ConfigureBCLToFastq.class);
 
-    @NotNull(message = "workDir is required", groups = InputValidations.class)
+    @NotNull(message = "outputDir is required", groups = InputValidations.class)
     @InputArgument
     private File outputDir;
 
@@ -86,7 +86,6 @@ public class ConfigureBCLToFastq extends Module {
         CommandInput commandInput = new CommandInput();
         StringBuilder command = new StringBuilder();
         command.append(getExecutable());
-
         try {
 
             command.append(" --output-dir ").append(outputDir.getAbsolutePath());
@@ -127,7 +126,7 @@ public class ConfigureBCLToFastq extends Module {
         CommandOutput commandOutput;
         try {
             Executor executor = BashExecutor.getInstance();
-            commandOutput = executor.execute(commandInput, new File(System.getProperty("user.home"), ".mapseqrc"));
+            commandOutput = executor.execute(commandInput);
         } catch (ExecutorException e) {
             throw new ModuleException(e);
         }

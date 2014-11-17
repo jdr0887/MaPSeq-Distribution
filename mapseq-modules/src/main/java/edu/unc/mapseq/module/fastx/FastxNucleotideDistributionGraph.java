@@ -69,7 +69,7 @@ public class FastxNucleotideDistributionGraph extends Module {
 
             commandInput.setCommand(command.toString());
             Executor executor = BashExecutor.getInstance();
-            commandOutput = executor.execute(commandInput, new File(System.getProperty("user.home"), ".mapseqrc"));
+            commandOutput = executor.execute(commandInput);
 
             FileData fm = new FileData();
             if (generatePostcript != null && generatePostcript) {

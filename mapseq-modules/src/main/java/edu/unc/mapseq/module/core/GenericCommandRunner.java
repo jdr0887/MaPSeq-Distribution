@@ -1,6 +1,5 @@
 package edu.unc.mapseq.module.core;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +43,7 @@ public class GenericCommandRunner extends Module {
         CommandOutput commandOutput;
         try {
             Executor executor = BashExecutor.getInstance();
-            commandOutput = executor.execute(commandInput, new File(System.getProperty("user.home"), ".mapseqrc"));
+            commandOutput = executor.execute(commandInput);
         } catch (ExecutorException e) {
             throw new ModuleException(e);
         }

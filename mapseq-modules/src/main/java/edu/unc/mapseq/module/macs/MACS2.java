@@ -217,7 +217,7 @@ public class MACS2 extends Module {
         CommandOutput commandOutput;
         Executor executor = BashExecutor.getInstance();
         try {
-            commandOutput = executor.execute(commandInput, new File(System.getProperty("user.home"), ".mapseqrc"));
+            commandOutput = executor.execute(commandInput);
         } catch (ExecutorException e) {
             throw new ModuleException(e);
         }

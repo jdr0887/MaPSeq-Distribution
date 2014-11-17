@@ -1,7 +1,5 @@
 package edu.unc.mapseq.module.qc;
 
-import java.io.File;
-
 import org.renci.common.exec.BashExecutor;
 import org.renci.common.exec.CommandInput;
 import org.renci.common.exec.CommandOutput;
@@ -37,8 +35,6 @@ public class SequenceReadQualityFilter extends Module {
 
     @Override
     public ModuleOutput call() throws ModuleException {
-        File userHome = new File(System.getProperty("user.home"));
-
         CommandInput commandInput = new CommandInput();
         StringBuilder command = new StringBuilder();
         command.append(String.format(getModuleClass().getAnnotation(Executable.class).value()));
@@ -47,7 +43,7 @@ public class SequenceReadQualityFilter extends Module {
         CommandOutput commandOutput;
         try {
             Executor executor = BashExecutor.getInstance();
-            commandOutput = executor.execute(commandInput, new File(userHome, ".mapseqrc"));
+            commandOutput = executor.execute(commandInput);
         } catch (ExecutorException e) {
             throw new ModuleException(e);
         }

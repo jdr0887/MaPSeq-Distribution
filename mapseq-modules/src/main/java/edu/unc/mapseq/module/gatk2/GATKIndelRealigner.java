@@ -116,7 +116,7 @@ public class GATKIndelRealigner extends Module {
         CommandOutput commandOutput;
         try {
             Executor executor = BashExecutor.getInstance();
-            commandOutput = executor.execute(commandInput, new File(System.getProperty("user.home"), ".mapseqrc"));
+            commandOutput = executor.execute(commandInput);
             if (!commandOutput.getStdout().toString().contains("Total runtime")) {
                 // commandOutput.setDescription("The stdout file seems not have a line for the \"Total runtime\"");
                 commandOutput.setExitCode(-1);

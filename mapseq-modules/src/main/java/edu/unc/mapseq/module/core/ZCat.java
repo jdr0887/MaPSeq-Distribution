@@ -77,7 +77,7 @@ public class ZCat extends Module {
             commandInput.setCommand(command.toString());
 
             Executor executor = BashExecutor.getInstance();
-            commandOutput = executor.execute(commandInput, new File(System.getProperty("user.home"), ".mapseqrc"));
+            commandOutput = executor.execute(commandInput);
 
             if (mimeType != null) {
                 FileData fileData = new FileData();

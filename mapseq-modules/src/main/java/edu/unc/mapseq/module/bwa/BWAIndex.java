@@ -73,7 +73,7 @@ public class BWAIndex extends Module {
             commandInput.setWorkDir(mapseqTmpDir);
             commandInput.setCommand(command.toString());
             Executor executor = BashExecutor.getInstance();
-            commandOutput = executor.execute(commandInput, new File(System.getProperty("user.home"), ".mapseqrc"));
+            commandOutput = executor.execute(commandInput);
         } catch (Exception e) {
             throw new ModuleException(e);
         }
