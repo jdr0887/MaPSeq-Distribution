@@ -20,7 +20,6 @@
           <instructions>
 	    <Export-Package>edu.unc.mapseq.ws.impl.*</Export-Package>
             <Private-Package>edu.unc.mapseq.ws.impl</Private-Package>
-	    <!-- <Require-Bundle>org.apache.cxf.bundle</Require-Bundle> -->
           </instructions>
         </configuration>
       </plugin>      
