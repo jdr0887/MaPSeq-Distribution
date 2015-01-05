@@ -1,7 +1,6 @@
 package edu.unc.mapseq.workflow.impl;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -16,10 +15,7 @@ import edu.unc.mapseq.dao.FlowcellDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.SampleDAO;
-import edu.unc.mapseq.dao.model.FileData;
 import edu.unc.mapseq.dao.model.Flowcell;
-import edu.unc.mapseq.dao.model.Job;
-import edu.unc.mapseq.dao.model.MimeType;
 import edu.unc.mapseq.dao.model.Sample;
 import edu.unc.mapseq.dao.model.WorkflowRun;
 import edu.unc.mapseq.workflow.WorkflowException;
@@ -126,44 +122,6 @@ public abstract class AbstractSampleWorkflow extends AbstractWorkflow {
         }
 
         return sampleSet;
-    }
-
-    protected List<File> lookupFileByJobAndMimeTypeAndWorkflowId(Set<FileData> fileDataSet, Class<?> clazz,
-            MimeType mimeType, Long workflowId) {
-        logger.debug("ENTERING lookupFileByJobAndMimeTypeAndWorkflowId(Set<FileData>, Class<?>, MimeType, Long)");
-
-        List<File> ret = new ArrayList<File>();
-
-        if (fileDataSet == null) {
-            logger.warn("fileDataSet was null...returning empty file list");
-            return ret;
-        }
-
-        logger.info("fileDataSet.size() = {}", fileDataSet.size());
-        MaPSeqDAOBean mapseqDAOBean = getWorkflowBeanService().getMaPSeqDAOBean();
-
-        for (FileData fileData : fileDataSet) {
-            if (fileData.getMimeType().equals(mimeType)) {
-                List<Job> jobList = null;
-                try {
-                    jobList = mapseqDAOBean.getJobDAO().findByFileDataIdAndWorkflowId(fileData.getId(),
-                            clazz.getName(), workflowId);
-                } catch (MaPSeqDAOException e) {
-                    e.printStackTrace();
-                }
-                if (jobList != null && jobList.size() > 0) {
-                    for (Job job : jobList) {
-                        if (job.getName().contains(clazz.getSimpleName())) {
-                            logger.debug("using FileData: {}", fileData.toString());
-                            logger.debug("from Job: {}", job.toString());
-                            ret.add(new File(fileData.getPath(), fileData.getName()));
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-        return ret;
     }
 
 }
