@@ -12,7 +12,10 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.unc.mapseq.dao.MaPSeqDAOBean;
+import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.model.FileData;
+import edu.unc.mapseq.dao.model.Job;
 import edu.unc.mapseq.dao.model.MimeType;
 
 public class WorkflowUtil {
@@ -67,6 +70,60 @@ public class WorkflowUtil {
         Collections.sort(readPairList);
 
         return readPairList;
+    }
+
+    public static File findFileByJobAndMimeTypeAndWorkflowId(MaPSeqDAOBean maPSeqDAOBean, Set<FileData> fileDataSet,
+            Class<?> clazz, MimeType mimeType, Long workflowId) {
+        logger.debug("ENTERING findFileByJobAndMimeTypeAndWorkflowId(Set<FileData>, Class<?>, MimeType, Long)");
+
+        File ret = null;
+
+        if (fileDataSet == null) {
+            logger.warn("fileDataSet was null...returning empty file list");
+            return ret;
+        }
+
+        logger.info("fileDataSet.size() = {}", fileDataSet.size());
+
+        for (FileData fileData : fileDataSet) {
+            if (fileData.getMimeType().equals(mimeType)) {
+                List<Job> jobList = null;
+                try {
+                    jobList = maPSeqDAOBean.getJobDAO().findByFileDataIdAndWorkflowId(fileData.getId(),
+                            clazz.getName(), workflowId);
+                } catch (MaPSeqDAOException e) {
+                    e.printStackTrace();
+                }
+                if (jobList != null && jobList.size() > 0) {
+                    for (Job job : jobList) {
+                        if (job.getName().contains(clazz.getSimpleName())) {
+                            logger.debug("using FileData: {}", fileData.toString());
+                            logger.debug("from Job: {}", job.toString());
+                            ret = new File(fileData.getPath(), fileData.getName());
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return ret;
+    }
+
+    public static File findFileByMimeTypeAndSuffix(Set<FileData> fileDataSet, MimeType mimeType, String suffix) {
+        logger.debug("ENTERING findFileByMimeTypeAndSuffix(Set<FileData>, MimeType, String)");
+        File ret = null;
+        if (fileDataSet == null) {
+            logger.warn("fileDataSet was null...returning empty file list");
+            return ret;
+        }
+        logger.info("fileDataSet.size() = {}", fileDataSet.size());
+        for (FileData fileData : fileDataSet) {
+            if (fileData.getMimeType().equals(mimeType) && fileData.getName().endsWith(suffix)) {
+                ret = new File(fileData.getPath(), fileData.getName());
+                break;
+            }
+        }
+        return ret;
     }
 
 }
