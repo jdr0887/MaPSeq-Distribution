@@ -27,6 +27,8 @@ import edu.unc.mapseq.config.RunModeType;
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
+import edu.unc.mapseq.dao.model.FileData;
+import edu.unc.mapseq.dao.model.MimeType;
 import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
 import edu.unc.mapseq.dao.model.WorkflowRunAttemptStatusType;
 import edu.unc.mapseq.workflow.Workflow;
@@ -264,6 +266,23 @@ public abstract class AbstractWorkflow implements Workflow {
                 }
             }
         }
+    }
+
+    protected File lookupFileByMimeTypeAndSuffix(Set<FileData> fileDataSet, MimeType mimeType, String suffix) {
+        logger.debug("ENTERING lookupFileByMimeTypeAndSuffix(Set<FileData>, MimeType, String)");
+        File ret = null;
+        if (fileDataSet == null) {
+            logger.warn("fileDataSet was null...returning empty file list");
+            return ret;
+        }
+        logger.info("fileDataSet.size() = {}", fileDataSet.size());
+        for (FileData fileData : fileDataSet) {
+            if (fileData.getMimeType().equals(mimeType) && fileData.getName().endsWith(suffix)) {
+                ret = new File(fileData.getPath(), fileData.getName());
+                break;
+            }
+        }
+        return ret;
     }
 
     public Graph<CondorJob, CondorJobEdge> getGraph() {
