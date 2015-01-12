@@ -1,108 +1,50 @@
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <!DOCTYPE html>
 <html>
 <head>
-<title>Workflow Runs</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="icon" href="../../favicon.ico">
+<title>HOME</title>
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
 <link rel="stylesheet" type="text/css" href="css/data_tables.css" />
 <link rel="stylesheet" href="css/style.css" />
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-<script type="text/javascript" src="http://datatables.net/release-datatables/media/js/jquery.dataTables.js"></script>
-<script type="text/javascript" src="js/jquery.dateFormat-1.0.js"></script>
-<script type="text/javascript" src="js/document-ready-integration.js"></script>
-<script type='text/javascript'>//<![CDATA[ 
-
-$(function() {
-  $( "#startDate" ).datepicker({ dateFormat: "yy-mm-dd" });
-  $( "#endDate" ).datepicker({ dateFormat: "yy-mm-dd" });
-});
-
-$(window).load(function(){
-
-  var thisTable = $("#workflowRuns").dataTable({
-    "sPaginationType": "full_numbers",
-    "bJQueryUI": true,
-    "aaSorting": [[ 6, "asc" ]]
-  });
-
-  function addToTable(response) {
-    $.each(response.workflowRun, function(i, workflowRun) {
-    	
-       var workflowRunStartDate = "";
-       if (workflowRun.startDate != null && workflowRun.startDate != "") {
-         workflowRunStartDate = $.format.date(workflowRun.startDate, 'MM/dd/yyyy hh:mm a');
-       }
-
-       var workflowRunEndDate = "";
-       if (workflowRun.endDate != null && workflowRun.endDate != "") {
-         workflowRunEndDate = $.format.date(workflowRun.endDate, 'MM/dd/yyyy hh:mm a');
-       }
-
-       var workflowRunVersion = "";
-       if (workflowRun.version != null && workflowRun.version != "") {
-         workflowRunVersion = workflowRun.version;
-       }
-
-      thisTable.fnAddData([
-        workflowRun['@id'], 
-        workflowRun.workflow['@name'],  
-		workflowRunVersion,
-		"<a href='jobs.html?workflowRunId=" + workflowRun['@id'] + "'>" + workflowRun['@name'] + "</a>",
-		workflowRun.status,
-		$.format.date(workflowRun['@creationDate'], 'MM/dd/yyyy hh:mm a'), 
-		workflowRunStartDate,
-		workflowRunEndDate
-      ]);
-    });
-  }
-
-  $("#searchform").submit(function() {
-
-    thisTable.fnClearTable();
-
-    var startDate = $('#startDate').val();
-    console.log(startDate);
-    var endDate = $('#endDate').val();
-    console.log(endDate);
-    		
-    $.ajax({
-      url:"/cxf/WorkflowRun/WorkflowRunService/findByCreatedDateRange/" + startDate + "/" + endDate,
-      dataType: "json",
-      type:"GET",
-      success: addToTable
-    });
-    return false;
-  });
-});//]]>
-</script>
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<link rel="stylesheet" href="css/bootstrap-theme.min.css">
+<script src="js/bootstrap.min.js"></script>
 </head>
 <body>
-  <div class="container">
-    <form id="searchform">
-      <input type="text" placeholder="Started Date" id="startDate" /> 
-      <input type="text" placeholder="Finished Date" id="endDate" />
-      <input type="submit" value="Search" id="search" />
-    </form>
-    <section id="results">
-      <table id="workflowRuns" class="display">
-        <thead>
-          <tr>
-            <th width="5%">ID</th>
-            <th width="15%">Workflow Name</th>
-            <th width="5%">Workflow Version</th>
-            <th width="20%">Name</th>
-            <th width="5%">Status</th>
-            <th width="15%">Date Created</th>
-            <th width="15%">Date Started</th>
-            <th width="15%">Date Finished</th>
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
-    </section>
-  </div>
+  <nav class="navbar navbar-default navbar-static-top">
+    <div class="container">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+            aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">MaPSeq</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="index.html">Home</a></li>
+            <li><a href="workflowRuns.html">Search</a></li>
+            <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Reports <span
+                class="caret"></span>
+            </a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="weeklyReport.html">Weekly Report</a></li>
+                <li><a href="monthlyReport.html">Monthly Report</a></li>
+              </ul></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
 </body>
 </html>
-
