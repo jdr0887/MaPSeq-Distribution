@@ -2,6 +2,12 @@
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0" default-activation="eager">
 
+  <cm:property-placeholder persistent-id="edu.unc.mapseq.tasks" update-strategy="reload">
+    <cm:default-properties>
+      <cm:property name="enabled" value="false" />
+    </cm:default-properties>
+  </cm:property-placeholder>
+
   <bean id="task" class="edu.unc.mapseq.tasks.WeeklyReportTask">
     <property name="toEmailAddress" value="seqware-users@code.renci.org" />
     <property name="maPSeqDAOBean" ref="maPSeqDAOBean" />
@@ -10,6 +16,8 @@
   <bean id="WeeklyReportService" class="edu.unc.mapseq.tasks.WeeklyReportService" init-method="start"
     destroy-method="stop" activation="eager">
     <property name="task" ref="task" />
+    <property name="enabled" value="${enabled}" />
+    <cm:managed-properties persistent-id="edu.unc.mapseq.tasks" update-strategy="container-managed" />
   </bean>
 
   <reference id="maPSeqConfigurationService" interface="edu.unc.mapseq.config.MaPSeqConfigurationService" />
