@@ -9,25 +9,8 @@
   <groupId>edu.unc.mapseq.distribution</groupId>
   <artifactId>mapseq-commands</artifactId>
   <version>0.5.70-SNAPSHOT</version>
-  <packaging>bundle</packaging>
+  <packaging>pom</packaging>
   <dependencies>
-    <dependency>
-      <groupId>edu.unc.mapseq.distribution</groupId>
-      <artifactId>mapseq-modules</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-email</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>edu.unc.mapseq.distribution</groupId>
-      <artifactId>mapseq-reports</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>edu.unc.mapseq.distribution</groupId>
-      <artifactId>mapseq-tasks</artifactId>
-    </dependency>
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
@@ -88,19 +71,14 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-  <build>
-    <plugins>
-      <plugin>
-	<groupId>org.apache.felix</groupId>
-	<artifactId>maven-bundle-plugin</artifactId>
-	<configuration>
-	  <instructions>
-	    <Private-Package />
-	    <Export-Package>edu.unc.mapseq.commands*</Export-Package>
-	    <Import-Package>org.apache.felix.service.command,org.apache.felix.gogo.commands,org.apache.karaf.shell.console,*</Import-Package>
-	  </instructions>
-	</configuration>
-      </plugin>
-    </plugins>
-  </build>
+  <modules>
+    <module>mapseq-commands-general</module>
+    <module>mapseq-commands-migration</module>
+    <module>mapseq-commands-workflow-run</module>
+    <module>mapseq-commands-workflow</module>
+    <module>mapseq-commands-study</module>
+    <module>mapseq-commands-sample</module>
+    <module>mapseq-commands-flowcell</module>
+    <module>mapseq-commands-reports</module>
+  </modules>
 </project>
