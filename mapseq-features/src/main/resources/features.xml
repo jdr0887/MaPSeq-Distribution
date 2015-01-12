@@ -64,7 +64,14 @@
     <bundle>mvn:edu.unc.mapseq.distribution/mapseq-workflow-impl/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution/mapseq-reports/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution/mapseq-tasks/${project.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.distribution/mapseq-commands/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-commands/mapseq-commands-flowcell/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-commands/mapseq-commands-general/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-commands/mapseq-commands-migration/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-commands/mapseq-commands-reports/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-commands/mapseq-commands-sample/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-commands/mapseq-commands-study/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-commands/mapseq-commands-workflow/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-commands/mapseq-commands-workflow-run/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-attribute/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-file-data/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-job/${project.version}</bundle>
