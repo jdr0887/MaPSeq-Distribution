@@ -1,0 +1,108 @@
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<!DOCTYPE html>
+<html>
+<head>
+<title>Workflow Runs</title>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<link rel="stylesheet" type="text/css" href="css/data_tables.css" />
+<link rel="stylesheet" href="css/style.css" />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+<script type="text/javascript" src="http://datatables.net/release-datatables/media/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="js/jquery.dateFormat-1.0.js"></script>
+<script type="text/javascript" src="js/document-ready-integration.js"></script>
+<script type='text/javascript'>//<![CDATA[ 
+
+$(function() {
+  $( "#startDate" ).datepicker({ dateFormat: "yy-mm-dd" });
+  $( "#endDate" ).datepicker({ dateFormat: "yy-mm-dd" });
+});
+
+$(window).load(function(){
+
+  var thisTable = $("#workflowRuns").dataTable({
+    "sPaginationType": "full_numbers",
+    "bJQueryUI": true,
+    "aaSorting": [[ 6, "asc" ]]
+  });
+
+  function addToTable(response) {
+    $.each(response.workflowRun, function(i, workflowRun) {
+    	
+       var workflowRunStartDate = "";
+       if (workflowRun.startDate != null && workflowRun.startDate != "") {
+         workflowRunStartDate = $.format.date(workflowRun.startDate, 'MM/dd/yyyy hh:mm a');
+       }
+
+       var workflowRunEndDate = "";
+       if (workflowRun.endDate != null && workflowRun.endDate != "") {
+         workflowRunEndDate = $.format.date(workflowRun.endDate, 'MM/dd/yyyy hh:mm a');
+       }
+
+       var workflowRunVersion = "";
+       if (workflowRun.version != null && workflowRun.version != "") {
+         workflowRunVersion = workflowRun.version;
+       }
+
+      thisTable.fnAddData([
+        workflowRun['@id'], 
+        workflowRun.workflow['@name'],  
+		workflowRunVersion,
+		"<a href='jobs.html?workflowRunId=" + workflowRun['@id'] + "'>" + workflowRun['@name'] + "</a>",
+		workflowRun.status,
+		$.format.date(workflowRun['@creationDate'], 'MM/dd/yyyy hh:mm a'), 
+		workflowRunStartDate,
+		workflowRunEndDate
+      ]);
+    });
+  }
+
+  $("#searchform").submit(function() {
+
+    thisTable.fnClearTable();
+
+    var startDate = $('#startDate').val();
+    console.log(startDate);
+    var endDate = $('#endDate').val();
+    console.log(endDate);
+    		
+    $.ajax({
+      url:"/cxf/WorkflowRun/WorkflowRunService/findByCreatedDateRange/" + startDate + "/" + endDate,
+      dataType: "json",
+      type:"GET",
+      success: addToTable
+    });
+    return false;
+  });
+});//]]>
+</script>
+</head>
+<body>
+  <div class="container">
+    <form id="searchform">
+      <input type="text" placeholder="Started Date" id="startDate" /> 
+      <input type="text" placeholder="Finished Date" id="endDate" />
+      <input type="submit" value="Search" id="search" />
+    </form>
+    <section id="results">
+      <table id="workflowRuns" class="display">
+        <thead>
+          <tr>
+            <th width="5%">ID</th>
+            <th width="15%">Workflow Name</th>
+            <th width="5%">Workflow Version</th>
+            <th width="20%">Name</th>
+            <th width="5%">Status</th>
+            <th width="15%">Date Created</th>
+            <th width="15%">Date Started</th>
+            <th width="15%">Date Finished</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </section>
+  </div>
+</body>
+</html>
+
