@@ -78,6 +78,7 @@
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-sample/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-study/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-flowcell/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-report/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-workflow/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-workflow-run/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-workflow-run-attempt/${project.version}</bundle>
