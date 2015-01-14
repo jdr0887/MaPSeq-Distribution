@@ -1,0 +1,1 @@
+[{"title":"NECClean","value":6.25471771E8},{"title":"NECVariantCalling","value":4.472740805E9},{"title":"NECAlignment","value":1.314310441E9},{"title":"NECIDCheck","value":3.06210247E8},{"title":"NECSymlink","value":8.85099953E8},{"title":"CASAVA","value":2.28437085E8}]
