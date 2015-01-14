@@ -8,7 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.unc.mapseq</groupId>
   <artifactId>distribution</artifactId>
-  <version>0.5.70-SNAPSHOT</version>
+  <version>0.5.70</version>
   <packaging>pom</packaging>
   <properties>
     <mapseq.version>0.5.36</mapseq.version>
@@ -30,7 +30,7 @@
     <url>https://github.com/jdr0887/MaPSeq-Distribution</url>
     <developerConnection>scm:git:git@github.com:jdr0887/MaPSeq-Distribution.git</developerConnection>
     <connection>scm:git:git@github.com:jdr0887/MaPSeq-Distribution.git</connection>
-    <tag>HEAD</tag>
+    <tag>distribution-0.5.70</tag>
   </scm>
   <dependencyManagement>
     <dependencies>
@@ -132,12 +132,12 @@
       <dependency>
       	<groupId>edu.unc.mapseq.distribution</groupId>
       	<artifactId>mapseq-reports</artifactId>
-      	<version>0.5.70-SNAPSHOT</version>
+      	<version>0.5.70</version>
       </dependency>
       <dependency>
       	<groupId>edu.unc.mapseq.distribution</groupId>
       	<artifactId>mapseq-tasks</artifactId>
-      	<version>0.5.70-SNAPSHOT</version>
+      	<version>0.5.70</version>
       </dependency>
       <dependency>
       	<groupId>edu.unc.mapseq.mapseq-dao</groupId>
@@ -162,17 +162,17 @@
       <dependency>
       	<groupId>edu.unc.mapseq.distribution</groupId>
       	<artifactId>mapseq-modules</artifactId>
-      	<version>0.5.70-SNAPSHOT</version>
+      	<version>0.5.70</version>
       </dependency>
       <dependency>
 	<groupId>edu.unc.mapseq.distribution.mapseq-dao</groupId>
 	<artifactId>mapseq-dao-soap</artifactId>
-      	<version>0.5.70-SNAPSHOT</version>
+      	<version>0.5.70</version>
       </dependency>
       <dependency>
 	<groupId>edu.unc.mapseq.distribution.mapseq-dao</groupId>
 	<artifactId>mapseq-dao-rest</artifactId>
-      	<version>0.5.70-SNAPSHOT</version>
+      	<version>0.5.70</version>
       </dependency>
       <dependency>
       	<groupId>org.apache.felix</groupId>
@@ -289,7 +289,7 @@
       <dependency>
 	<groupId>edu.unc.mapseq.distribution</groupId>
 	<artifactId>mapseq-module-cli-generator</artifactId>
-	<version>0.5.70-SNAPSHOT</version>
+	<version>0.5.70</version>
       </dependency> 
     </dependencies>
   </dependencyManagement>
