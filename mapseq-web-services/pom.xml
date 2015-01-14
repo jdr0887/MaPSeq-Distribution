@@ -100,5 +100,6 @@
     <module>mapseq-web-service-workflow</module>
     <module>mapseq-web-service-workflow-run</module>
     <module>mapseq-web-service-workflow-run-attempt</module>
+    <module>mapseq-web-service-report</module>
   </modules>
 </project>
