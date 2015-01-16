@@ -99,8 +99,8 @@ $(document).ready(function() {
 	var started = formatDate(currentDate);
 	console.log("started: " + started);
 
-	var workflowRunCountURL = "/cxf/Report/ReportService/findWorkflowRunCount/" + started + "/" + finished + "/DONE"; 
-		<!-- var workflowRunCountURL = "test/workflowRunAttemptCount.json.txt"; -->
+	var workflowRunCountURL = "/cxf/Report/ReportService/findWorkflowRunCount/" + started + "/" + finished + "/DONE";
+	<!-- var workflowRunCountURL = "test/workflowRunAttemptCount.json.txt"; -->
 	console.log("workflowRunCountURL: " + workflowRunCountURL);
 	
 	$.ajax({
@@ -111,8 +111,8 @@ $(document).ready(function() {
 		success: function (data) { workflowRunAttemptCount(data); }
         });
 
-	var workflowRunDurationURL = "/cxf/Report/ReportService/findWorkflowRunDuration/" + started + "/" + finished + "/DONE"; 
-	<!-- var workflowRunDurationURL = "test/workflowRunAttemptDuration.json.txt"; -->
+	var workflowRunDurationURL = "/cxf/Report/ReportService/findWorkflowRunDuration/" + started + "/" + finished + "/DONE";
+	<!-- var workflowRunDurationURL = "test/workflowRunAttemptDuration.json.txt";  -->
 	console.log("workflowRunDurationURL: " + workflowRunDurationURL);
 
 	$.ajax({
