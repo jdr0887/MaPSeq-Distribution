@@ -12,6 +12,12 @@
     <bundle>mvn:org.apache.commons/commons-compress/1.4</bundle>
     <bundle>mvn:com.itextpdf/itextpdf/5.4.4</bundle>
     <bundle>mvn:com.google.guava/guava/15.0</bundle>
+    <bundle>mvn:commons-digester/commons-digester/1.8.1</bundle>
+    <!-- <bundle>javax.faces/jsf-api/1.2_13</bundle> -->
+    <!-- <bundle>javax.faces/jsf-impl/1.2_13</bundle> -->
+    <!-- <bundle>mvn:org.apache.myfaces.core/myfaces-api/2.2.4</bundle> -->
+    <!-- <bundle>mvn:org.apache.myfaces.core/myfaces-impl/2.2.4</bundle> -->
+    <!-- <bundle>mvn:org.primefaces/primefaces/5.1</bundle> -->
     <bundle>mvn:net.sourceforge.serp/com.springsource.serp/1.13.1</bundle>
     <bundle>mvn:org.apache.log4j/com.springsource.org.apache.log4j/1.2.15</bundle>
     <bundle>mvn:org.apache.geronimo.specs/geronimo-validation_1.0_spec/1.1</bundle>
