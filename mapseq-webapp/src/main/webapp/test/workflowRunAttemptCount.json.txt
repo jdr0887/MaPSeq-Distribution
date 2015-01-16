@@ -1,1 +1,1 @@
-[{"name":"NECClean","y":20.0},{"name":"NECVariantCalling","y":20.0},{"name":"NECAlignment","y":20.0},{"name":"NECIDCheck","y":20.0},{"name":"NECSymlink","y":20.0},{"name":"NECSymlinasdfasdf","y":20.0}]
+[{"name":"NECClean","y":20.0},{"name":"NECVariantCalling","y":20.0},{"name":"NECAlignment","y":20.0},{"name":"NECIDCheck","y":20.0},{"name":"NECSymlink","y":20.0}]
