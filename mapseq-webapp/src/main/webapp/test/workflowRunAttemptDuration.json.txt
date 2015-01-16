@@ -1,1 +1,1 @@
-[{"title":"NECClean","value":6.25471771E8},{"title":"NECVariantCalling","value":4.472740805E9},{"title":"NECAlignment","value":1.314310441E9},{"title":"NECIDCheck","value":3.06210247E8},{"title":"NECSymlink","value":8.85099953E8},{"title":"CASAVA","value":2.28437085E8}]
+[{"name":"NECClean","y":6.25471771E8},{"name":"NECVariantCalling","y":4.472740805E9},{"name":"NECAlignment","y":1.314310441E9},{"name":"NECIDCheck","y":3.06210247E8},{"name":"NECSymlink","y":8.85099953E8},{"name":"CASAVA","y":2.28437085E8}]
