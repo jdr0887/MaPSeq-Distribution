@@ -7,123 +7,298 @@
 <meta name="author" content="">
 <link rel="icon" href="../../favicon.ico">
 <title>MaPSeq</title>
-<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css" />
 <link rel="stylesheet" type="text/css" href="css/data_tables.css" />
 <link rel="stylesheet" type="text/css" href="css/style.css" />
 <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css">
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
 <script type="text/javascript" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" src="js/highcharts.js"></script>
 <script type="text/javascript" src="js/modules/no-data-to-display.js"></script>
 <script type="text/javascript">
+	function workflowRunAttemptCount(workflowRunAttemptCountData) {
+		$('#workflowRunCount')
+				.highcharts(
+						{
+							credits : {
+								enabled : false
+							},
+							chart : {
+								plotBackgroundColor : null,
+								plotBorderWidth : null,
+								plotShadow : false
+							},
+							title : {
+								text : 'MaPSeq WorkflowRunAttempt Count'
+							},
+							tooltip : {
+								pointFormat : '{series.name}: <b>{point.y}</b>'
+							},
+							plotOptions : {
+								pie : {
+									allowPointSelect : true,
+									cursor : 'pointer',
+									dataLabels : {
+										enabled : true,
+										format : '<b>{point.name}</b>: {point.percentage:.1f} %',
+										style : {
+											color : (Highcharts.theme && Highcharts.theme.contrastTextColor)
+													|| 'black'
+										}
+									}
+								}
+							},
+							series : [ {
+								type : 'pie',
+								name : 'WorkflowRunAttempt Count',
+								data : workflowRunAttemptCountData
+							} ]
+						});
+	}
 
-function workflowRunAttemptCount (workflowRunAttemptCountData) {
-	$('#workflowRunCount').highcharts({
-		credits : { enabled : false },
-		chart : {
-			plotBackgroundColor : null,
-			plotBorderWidth : null,
-			plotShadow : false
-		},
-		title : { text : 'MaPSeq WorkflowRunAttempt Count' },
-		tooltip : { pointFormat : '{series.name}: <b>{point.percentage:.1f}%</b>' },
-		plotOptions : {
-			pie : {
-				allowPointSelect : true,
-				cursor : 'pointer',
-				dataLabels : {
-					enabled : true,
-					format : '<b>{point.name}</b>: {point.percentage:.1f} %',
-					style : { color : (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black' }
+	function workflowRunAttemptDuration(workflowRunAttemptDurationData) {
+		$('#workflowRunDuration')
+				.highcharts(
+						{
+							credits : {
+								enabled : false
+							},
+							chart : {
+								plotBackgroundColor : null,
+								plotBorderWidth : null,
+								plotShadow : false
+							},
+							title : {
+								text : 'MaPSeq WorkflowRunAttempt Duration'
+							},
+							tooltip : {
+								pointFormat : '{series.name}: <b>{point.y}</b>'
+							},
+							plotOptions : {
+								pie : {
+									allowPointSelect : true,
+									cursor : 'pointer',
+									dataLabels : {
+										enabled : true,
+										format : '<b>{point.name}</b>: {point.percentage:.1f} %',
+										style : {
+											color : (Highcharts.theme && Highcharts.theme.contrastTextColor)
+													|| 'black'
+										}
+									}
+								}
+							},
+							series : [ {
+								type : 'pie',
+								name : 'WorkflowRunAttempt Duration',
+								data : workflowRunAttemptDurationData
+							} ]
+						});
+	}
+
+	function formatDate(date) {
+		var day = date.getDate();
+		var month = date.getMonth() + 1;
+		var year = date.getFullYear();
+		if (month < 10) {
+			month = "0" + month;
+		}
+		if (day < 10) {
+			day = "0" + day;
+		}
+		return year + "-" + month + "-" + day;
+	};
+
+	function drawAccordions(workflowName, workflowId) {
+		document.getElementById("workflowCharts").innerHTML += "<div id=\"workflowRunAttemptBarChart" + workflowName + "\" style=\"width: 640px; height: 260px; margin: 0 auto\"></div>";
+	}
+
+	function drawCharts(workflowName, workflowId, data) {
+		var currentDate = new Date();
+		var currentDay = currentDate.getDate();
+
+		var asdf = [ 0, 0, 0, 0, 0, 0, 0 ];
+		for (i = 0; i < data.length; ++i) {
+			var workflowRunAttempt = data[i];
+			var created = new Date(workflowRunAttempt.created);
+			var index = (created.getDate() - currentDay) + 7;
+			asdf[index] += 1;
+		}
+
+		$('#workflowRunAttemptBarChart' + workflowName)
+				.highcharts(
+						{
+							credits : {
+								enabled : false
+							},
+							chart : {
+								type : 'column'
+							},
+							title : {
+								text : 'MaPSeq :: ' + workflowName
+							},
+							xAxis : {
+								type : 'datetime',
+								minRange : 7 * 24 * 3600000
+							// 7 days
+							},
+							yAxis : {
+								title : {
+									text : 'Count'
+								}
+							},
+							legend : {
+								enabled : false
+							},
+							plotOptions : {
+								area : {
+									fillColor : {
+										linearGradient : {
+											x1 : 0,
+											y1 : 0,
+											x2 : 0,
+											y2 : 1
+										},
+										stops : [
+												[
+														0,
+														Highcharts.getOptions().colors[0] ],
+												[
+														1,
+														Highcharts
+																.Color(
+																		Highcharts
+																				.getOptions().colors[0])
+																.setOpacity(0)
+																.get('rgba') ] ]
+									},
+									marker : {
+										radius : 2
+									},
+									lineWidth : 1,
+									states : {
+										hover : {
+											lineWidth : 1
+										}
+									},
+									threshold : null
+								}
+							},
+							series : [ {
+								type : 'column',
+								name : 'Count',
+								pointInterval : 24 * 3600 * 1000,
+								pointStart : Date.UTC(
+										currentDate.getFullYear(), currentDate
+												.getMonth(), currentDate
+												.getDate() - 7),
+								data : asdf
+							} ]
+						});
+
+	}
+
+	function writeAccordion(started, finished, workflowName, workflowId) {
+		var workflowCountURL = "/cxf/WorkflowRunAttempt/WorkflowRunAttemptService/findByCreatedDateRangeAndWorkflowIdAndStatus/"
+				+ started + "/" + finished + "/" + workflowId + "/DONE";
+		console.log("workflowCountURL: " + workflowCountURL);
+
+		$.ajax({
+			url : workflowCountURL,
+			async : true,
+			dataType : "json",
+			type : "GET",
+			success : function(data) {
+				if (data.length > 0) {
+					drawAccordions(workflowName, workflowId);
 				}
 			}
-		},
-		series : [ {
-			type : 'pie',
-			name : 'WorkflowRunAttempt Count',
-			data : workflowRunAttemptCountData
-		} ]
-	});
-}
+		});
 
-function workflowRunAttemptDuration (workflowRunAttemptDurationData) {
-	$('#workflowRunDuration').highcharts({
-		credits : { enabled : false },
-		chart : {
-			plotBackgroundColor : null,
-			plotBorderWidth : null,
-			plotShadow : false
-		},
-		title : { text : 'MaPSeq WorkflowRunAttempt Duration' },
-		tooltip : { pointFormat : '{series.name}: <b>{point.percentage:.1f}%</b>' },
-		plotOptions : {
-			pie : {
-				allowPointSelect : true,
-				cursor : 'pointer',
-				dataLabels : {
-					enabled : true,
-					format : '<b>{point.name}</b>: {point.percentage:.1f} %',
-					style : { color : (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black' }
+		$.ajax({
+			url : workflowCountURL,
+			async : true,
+			dataType : "json",
+			type : "GET",
+			success : function(data) {
+				if (data.length > 0) {
+					drawCharts(workflowName, workflowId, data);
 				}
 			}
-		},
-		series : [ {
-			type : 'pie',
-			name : 'WorkflowRunAttempt Duration',
-			data : workflowRunAttemptDurationData
-		} ]
+		});
+
+	}
+
+	function checkWorkflowCount(workflowsData) {
+		var currentDate = new Date();
+		var finished = formatDate(currentDate);
+		currentDate.setDate(currentDate.getDate() - 7);
+		var started = formatDate(currentDate);
+		for (i = 0, len = workflowsData.length; i < len; i++) {
+			var workflowName = workflowsData[i].name;
+			var workflowId = workflowsData[i].id;
+			writeAccordion(started, finished, workflowName, workflowId);
+		}
+	}
+
+	$(function() {
+
+		var currentDate = new Date();
+		var finished = formatDate(currentDate);
+		currentDate.setDate(currentDate.getDate() - 7);
+		var started = formatDate(currentDate);
+
+		var workflowRunCountURL = "/cxf/Report/ReportService/findWorkflowRunCount/"
+				+ started + "/" + finished + "/DONE";
+		//var workflowRunCountURL = "test/workflowRunAttemptCount.json.txt";
+		console.log("workflowRunCountURL: " + workflowRunCountURL);
+
+		$.ajax({
+			url : workflowRunCountURL,
+			async : true,
+			dataType : "json",
+			type : "GET",
+			success : function(data) {
+				workflowRunAttemptCount(data);
+			}
+		});
+
+		var workflowRunDurationURL = "/cxf/Report/ReportService/findWorkflowRunDuration/"
+				+ started + "/" + finished + "/DONE";
+		//var workflowRunDurationURL = "test/workflowRunAttemptDuration.json.txt";
+		console.log("workflowRunDurationURL: " + workflowRunDurationURL);
+
+		$.ajax({
+			url : workflowRunDurationURL,
+			async : true,
+			dataType : "json",
+			type : "GET",
+			success : function(data) {
+				workflowRunAttemptDuration(data);
+			}
+		});
+
+		var workflowsURL = "/cxf/Workflow/WorkflowService/findAll";
+		//var workflowsURL = "test/workflows.json.txt";
+		console.log("workflowsURL: " + workflowsURL);
+
+		$.ajax({
+			url : workflowsURL,
+			async : true,
+			dataType : "json",
+			type : "GET",
+			success : function(data) {
+				checkWorkflowCount(data);
+			}
+		});
+
+// 		$("#accordion").accordion({
+// 			collapsible : true
+// 		});
+
 	});
-}
-
-function formatDate(date) {
-    var day = date.getDate();
-    var month = date.getMonth() + 1;
-    var year = date.getFullYear();
-
-    if (month < 10) month = "0" + month;
-    if (day < 10) day = "0" + day;
-
-    return year + "-" + month + "-" + day;
-};
-
-$(document).ready(function() {
-	var currentDate = new Date();
-	
-	var finished = formatDate(currentDate);
-	console.log("finished: " + finished);
-
-	currentDate.setDate(currentDate.getDate() - 7);
-	
-	var started = formatDate(currentDate);
-	console.log("started: " + started);
-
-	var workflowRunCountURL = "/cxf/Report/ReportService/findWorkflowRunCount/" + started + "/" + finished + "/DONE";
-	<!-- var workflowRunCountURL = "test/workflowRunAttemptCount.json.txt"; -->
-	console.log("workflowRunCountURL: " + workflowRunCountURL);
-	
-	$.ajax({
-		url: workflowRunCountURL,
-  		async: true,
-		dataType: "json",
-		type:"GET",
-		success: function (data) { workflowRunAttemptCount(data); }
-        });
-
-	var workflowRunDurationURL = "/cxf/Report/ReportService/findWorkflowRunDuration/" + started + "/" + finished + "/DONE";
-	<!-- var workflowRunDurationURL = "test/workflowRunAttemptDuration.json.txt";  -->
-	console.log("workflowRunDurationURL: " + workflowRunDurationURL);
-
-	$.ajax({
-		url: workflowRunDurationURL,
-  		async: true,
-		dataType: "json",
-		type:"GET",
-		success: function (data) { workflowRunAttemptDuration(data); } 
-  	});
-});
-
 </script>
 </head>
 <body>
@@ -131,10 +306,10 @@ $(document).ready(function() {
     <div class="container">
       <div class="container-fluid">
         <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
-            aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+            aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span
+              class="icon-bar"></span>
           </button>
           <a class="navbar-brand" href="#">MaPSeq</a>
         </div>
@@ -142,8 +317,8 @@ $(document).ready(function() {
           <ul class="nav navbar-nav">
             <li><a href="index.html">Home</a></li>
             <li><a href="workflowRuns.html">Search</a></li>
-            <li class="active" class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Reports
-                <span class="caret"></span>
+            <li class="active" class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Reports <span
+                class="caret"></span>
             </a>
               <ul class="dropdown-menu" role="menu">
                 <li class="active"><a href="weeklyReport.html">Weekly Report</a></li>
@@ -156,7 +331,8 @@ $(document).ready(function() {
       </div>
     </div>
   </nav>
-  <div id="workflowRunCount" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
-  <div id="workflowRunDuration" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
+  <div id="workflowRunCount" style="min-width: 400px; height: 400px; max-width: 600px; margin: 0 auto"></div>
+  <div id="workflowRunDuration" style="min-width: 400px; height: 400px; max-width: 600px; margin: 0 auto"></div>
+  <div id="workflowCharts" style="min-width: 600px; height: 400px; max-width: 800px; margin: 0 auto"></div>
 </body>
 </html>
