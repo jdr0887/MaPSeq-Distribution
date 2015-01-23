@@ -73,6 +73,17 @@ public class WorkflowRunAttemptDAOImpl extends BaseDAOImpl<WorkflowRunAttempt, L
     }
 
     @Override
+    public List<WorkflowRunAttempt> findByCreatedDateRangeAndWorkflowIdAndStatus(Date startDate, Date endDate,
+            Long workflowId, WorkflowRunAttemptStatusType status) throws MaPSeqDAOException {
+        logger.debug("ENTERING findByCreatedDateRangeAndWorkflowId(Date, Date, Long)");
+        String formattedStartDate = DateFormatUtils.ISO_DATE_FORMAT.format(startDate);
+        String formattedEndDate = DateFormatUtils.ISO_DATE_FORMAT.format(endDate);
+        List<WorkflowRunAttempt> ret = workflowRunAttemptService.findByCreatedDateRangeAndWorkflowIdAndStatus(
+                formattedStartDate, formattedEndDate, workflowId, status.toString());
+        return ret;
+    }
+
+    @Override
     public List<WorkflowRunAttempt> findByWorkflowId(Long workflowId) throws MaPSeqDAOException {
         logger.debug("ENTERING findByWorkflowId(Long)");
         List<WorkflowRunAttempt> ret = workflowRunAttemptService.findByWorkflowId(workflowId);

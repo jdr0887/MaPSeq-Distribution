@@ -77,6 +77,58 @@ public class WorkflowRunAttemptServiceImpl implements WorkflowRunAttemptService 
     }
 
     @Override
+    public List<WorkflowRunAttempt> findByCreatedDateRangeAndWorkflowIdAndStatus(String started, String finished,
+            Long workflowId, String status) {
+        logger.debug("ENTERING findByCreatedDateRangeAndWorkflowIdAndStatus(String, String, Long, String)");
+        List<WorkflowRunAttempt> ret = new ArrayList<>();
+        if (StringUtils.isEmpty(started)) {
+            logger.warn("started is empty");
+            return ret;
+        }
+        if (StringUtils.isEmpty(finished)) {
+            logger.warn("finished is empty");
+            return ret;
+        }
+        if (workflowId == null) {
+            logger.warn("workflowId is null");
+            return ret;
+        }
+        if (StringUtils.isEmpty(status)) {
+            logger.warn("status is empty");
+            return ret;
+        }
+        WorkflowRunAttemptStatusType statusType = null;
+        try {
+            statusType = WorkflowRunAttemptStatusType.valueOf(status);
+        } catch (Exception e) {
+            logger.error("Exception", e);
+        }
+        if (statusType == null) {
+            logger.warn("invalid WorkflowRunAttemptStatusType");
+            return ret;
+        }
+
+        Date parsedStartDate = null;
+        Date parsedEndDate = null;
+        try {
+            parsedStartDate = DateUtils.parseDate(started,
+                    new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
+            parsedEndDate = DateUtils
+                    .parseDate(finished, new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
+        } catch (ParseException e) {
+            logger.error("ParseException", e);
+        }
+
+        try {
+            ret.addAll(workflowRunAttemptDAO.findByCreatedDateRangeAndWorkflowIdAndStatus(parsedStartDate,
+                    parsedEndDate, workflowId, statusType));
+        } catch (MaPSeqDAOException e) {
+            logger.error("MaPSeqDAOException", e);
+        }
+        return ret;
+    }
+
+    @Override
     public List<WorkflowRunAttempt> findByWorkflowRunId(Long workflowRunId) throws MaPSeqDAOException {
         logger.debug("ENTERING findByWorkflowRunId(Long)");
         List<WorkflowRunAttempt> ret = new ArrayList<>();
