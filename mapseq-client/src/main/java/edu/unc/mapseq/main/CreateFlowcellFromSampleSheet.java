@@ -16,6 +16,7 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
@@ -80,7 +81,13 @@ public class CreateFlowcellFromSampleSheet implements Runnable {
                 String operator = st[8];
                 String sampleProject = st[9];
 
-                List<Study> studyList = maPSeqDAOBean.getStudyDAO().findByName(sampleProject);
+                if (StringUtils.isEmpty(sampleProject)) {
+                    System.err.printf("sampleProject is empty/null");
+                    return;
+                }
+
+                List<Study> studyList = maPSeqDAOBean.getStudyDAO().findByName(sampleProject.trim());
+
                 if (studyList == null || (studyList != null && studyList.isEmpty())) {
                     System.err.printf("Study doesn't exist...fix your sample sheet for column 9 (sampleProject)");
                     return;
