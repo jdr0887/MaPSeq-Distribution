@@ -2,13 +2,13 @@
   <parent>
     <groupId>edu.unc.mapseq.distribution</groupId>
     <artifactId>mapseq-web-services</artifactId>
-    <version>0.5.72-SNAPSHOT</version>
+    <version>0.5.72</version>
   </parent>
   <name>MaPSeq :: Distribution :: Web Services :: Workflow</name>
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.unc.mapseq.distribution.mapseq-web-services</groupId>
   <artifactId>mapseq-web-service-workflow</artifactId>
-  <version>0.5.72-SNAPSHOT</version>
+  <version>0.5.72</version>
   <packaging>bundle</packaging>
   <build>
     <plugins>
