@@ -123,7 +123,6 @@
             <feature>management</feature>
             <feature>eventadmin</feature>
 	    <feature>transaction</feature>
-	    <feature>spring</feature>
 	    <feature>jdbc</feature>
 	    <feature>jndi</feature>
 	    <feature>openjpa</feature>
