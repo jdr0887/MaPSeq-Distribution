@@ -13,13 +13,7 @@ body {
 
 .weeklyWorkflowRunCountChart {
 	padding-top: 10px;
-	width: 400px;
-	height: 300px;
-	margin: 0 auto;
-}
-
-.weeklyWorkflowRunDurationChart {
-	padding-top: 60px;
+	float: left;
 	width: 400px;
 	height: 300px;
 	margin: 0 auto;
@@ -27,19 +21,52 @@ body {
 
 .monthlyWorkflowRunCountChart {
 	padding-top: 10px;
+	float: left;
+	width: 400px;
+	height: 300px;
+	margin: 0 auto;
+}
+
+.weeklyWorkflowRunDurationChart {
+	padding-top: 10px;
+	float: right;
 	width: 400px;
 	height: 300px;
 	margin: 0 auto;
 }
 
 .monthlyWorkflowRunDurationChart {
-	padding-top: 60px;
+	padding-top: 10px;
+	float: right;
 	width: 400px;
 	height: 300px;
 	margin: 0 auto;
 }
 
-.angular-charts-template .axis path,.angular-charts-template .axis line {
+.weeklyWorkflowRunDetail {
+	padding-top: 400px;
+	margin: 0 auto;
+}
+
+.monthlyWorkflowRunDetail {
+	padding-top: 400px;
+	margin: 0 auto;
+}
+
+.weeklyWorkflowRunCountBarChart {
+	padding-top: 20px;
+	width: 800px;
+	height: 300px;
+}
+
+.monthlyWorkflowRunCountBarChart {
+	padding-top: 20px;
+	width: 800px;
+	height: 300px;
+}
+
+.angular-charts-template .axis path,.angular-charts-template .axis line
+	{
 	fill: none;
 	stroke: #333;
 }
