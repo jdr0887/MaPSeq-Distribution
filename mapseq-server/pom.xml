@@ -3,13 +3,13 @@
   <parent>
     <groupId>edu.unc.mapseq</groupId>
     <artifactId>distribution</artifactId>
-    <version>0.5.73-SNAPSHOT</version>
+    <version>0.5.75-SNAPSHOT</version>
   </parent>
   <name>MaPSeq :: Distribution :: Server</name>
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.unc.mapseq.distribution</groupId>
   <artifactId>mapseq-server</artifactId>
-  <version>0.5.73-SNAPSHOT</version>
+  <version>0.5.75-SNAPSHOT</version>
   <packaging>karaf-assembly</packaging>
   <properties>
     <assembly.directory>${project.build.directory}/assembly</assembly.directory>
@@ -57,7 +57,7 @@
       <groupId>edu.unc.mapseq.distribution</groupId>
       <artifactId>mapseq-features</artifactId>
       <classifier>features</classifier>
-      <version>0.5.73-SNAPSHOT</version>
+      <version>0.5.75-SNAPSHOT</version>
       <type>xml</type>
       <scope>runtime</scope>
     </dependency>
