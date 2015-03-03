@@ -1,15 +1,15 @@
 var monthNames = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
 
-var app = angular.module('mapseq', [ 'ngResource', 'ngRoute', 'angularCharts' ]);
+var app = angular.module('mapseq', [ 'ngResource', 'ngRoute', 'angularCharts', 'nvd3ChartDirectives' ]);
 
 app.config([ '$routeProvider', function($routeProvider) {
   $routeProvider
 
   .when("/", { templateUrl : "home.html", controller : "PageCtrl" })
 
-  .when("/reports/weekly", { templateUrl : "reports/weekly.html", controller : "weeklyWorkflowRunReportCtrl" })
+  .when("/reports/week", { templateUrl : "reports/week.html", controller : "weekWorkflowRunReportCtrl" })
 
-  .when("/reports/monthly", { templateUrl : "reports/monthly.html", controller : "monthlyWorkflowRunReportCtrl" })
+  .when("/reports/month", { templateUrl : "reports/month.html", controller : "monthWorkflowRunReportCtrl" })
 
   .otherwise("/404", { templateUrl : "404.html", controller : "PageCtrl" });
 
@@ -32,26 +32,29 @@ function formatDate(date) {
   return year + "-" + month + "-" + day;
 };
 
-app.controller('weeklyWorkflowRunReportCtrl', function($scope, $resource) {
+app.controller('weekWorkflowRunReportCtrl', function($scope, $resource) {
 
   var currentDate = new Date();
   var finished = formatDate(currentDate);
   currentDate.setDate(currentDate.getDate() - 7);
   var started = formatDate(currentDate);
 
-  $scope.weeklyWorkflows = [];
-  $scope.weeklySelectedWorkflow = {};
+  $scope.weekWorkflowRunCountPieChartData = { series : [], data : [] };
+  $scope.weekWorkflowRunCountBarChartData = { series : [], data : [] };
 
-  $scope.weeklyWorkflowRunCountData = { series : [], data : [] };
-  $scope.weeklyWorkflowRunDurationData = { series : [], data : [] };
-  $scope.weeklyWorkflowRunCountBarChartData = { series : [], data : [] };
+  $scope.weekWorkflowRunCountPieChartConfig = { click : function(d) {
+    $scope.updateWeekWorkflowRunCountBarChart(d);
+  }, labels : false, tooltips : true, legend : { display : false, htmlEnabled : true, position : 'left' }, lineLegend : 'traditional' };
+  $scope.weekWorkflowRunCountBarChartConfig = { labels : false, tooltips : true, legend : { display : false, htmlEnabled : true, position : 'left' },
+    lineLegend : 'traditional' };
 
-  $scope.weeklyWorkflowRunCountConfig = { title : "Weekly WorkflowRunAttempt Count", labels : false, tooltips : true,
-    legend : { display : false, htmlEnabled : true, position : 'right' }, lineLegend : 'traditional' };
-  $scope.weeklyWorkflowRunDurationConfig = { title : "Weekly WorkflowRunAttempt Duration", labels : false, tooltips : true,
-    legend : { display : false, htmlEnabled : true, position : 'right' }, lineLegend : 'traditional' };
-  $scope.weeklyWorkflowRunCountBarChartConfig = { title : $scope.weeklySelectedWorkflow.name, labels : false, tooltips : true,
-    legend : { display : false, htmlEnabled : true, position : 'right' }, lineLegend : 'traditional' };
+  $scope.weekWorkflowRunDurationPieChartData = { series : [], data : [] };
+  $scope.weekWorkflowRunDurationBarChartData = { series : [], data : [] };
+
+  $scope.weekWorkflowRunDurationPieChartConfig = { labels : false, tooltips : true, legend : { display : false, htmlEnabled : true, position : 'left' },
+    lineLegend : 'traditional' };
+  $scope.weekWorkflowRunDurationBarChartConfig = { labels : false, tooltips : true, legend : { display : false, htmlEnabled : true, position : 'left' },
+    lineLegend : 'traditional' };
 
   var workflowServiceResource = $resource('/cxf/Workflow/WorkflowService/findAll');
   var workflowServiceResourceQuery = workflowServiceResource.query();
@@ -62,93 +65,123 @@ app.controller('weeklyWorkflowRunReportCtrl', function($scope, $resource) {
 
   workflowServiceResourceQuery.$promise.then(function(workflowsData) {
 
-    $scope.weeklySelectedWorkflow = workflowsData[0];
-    $scope.updateWeeklyWorkflowRunBarChart();
-
     angular.forEach(workflowsData, function(workflowData) {
-      var workflowRunAttemptResourceQuery = workflowRunAttemptResource.query({ started : started, finished : finished, workflowId : workflowData.id });
-      workflowRunAttemptResourceQuery.$promise.then(function(workflowRunAttemptsData) {
-        if (workflowRunAttemptsData.length > 0) {
-          
-          $scope.weeklyWorkflows.push(workflowData);
 
-          $scope.weeklyWorkflowRunCountData.series.push(workflowData.name);
-          $scope.weeklyWorkflowRunCountData.data.push({ "x" : workflowData.name, "y" : [ workflowRunAttemptsData.length ],
+      var workflowRunAttemptResourceQuery = workflowRunAttemptResource.query({ started : started, finished : finished, workflowId : workflowData.id });
+
+      workflowRunAttemptResourceQuery.$promise.then(function(workflowRunAttemptsData) {
+        
+        if (workflowRunAttemptsData.length > 0) {
+
+          $scope.weekWorkflowRunCountPieChartData.series.push(workflowData.name);
+          $scope.weekWorkflowRunCountPieChartData.data.push({ "x" : workflowData.name, "y" : [ workflowRunAttemptsData.length ],
             "tooltip" : workflowData.name + ": " + workflowRunAttemptsData.length });
 
-          $scope.weeklyWorkflowRunDurationData.series.push(workflowData.name);
+          $scope.weekWorkflowRunDurationPieChartData.series.push(workflowData.name);
+
+          var date = new Date();
+          date.setDate(date.getDate() - 7);
+
+          for (i = 0; i < 7; i++) {
+            date.setDate(date.getDate() + 1);
+            var display = monthNames[date.getMonth()] + " " + date.getDate();
+            $scope.weekWorkflowRunCountBarChartData.series.push(display);
+            $scope.weekWorkflowRunCountBarChartData.data.push({ "x" : display, "y" : [ 0 ] });
+          }
+
           var duration = 0;
           angular.forEach(workflowRunAttemptsData, function(workflowRunAttemptData) {
             var startDate = new Date(workflowRunAttemptData.started);
             var finishedDate = new Date(workflowRunAttemptData.finished);
-            var started = startDate.getTime();
-            var finished = finishedDate.getTime();
-            duration += parseInt(finished - started);
+            duration += parseInt(finishedDate.getTime() - startDate.getTime());
           });
-          $scope.weeklyWorkflowRunDurationData.data.push({ "x" : workflowData.name, "y" : [ duration ],
+          
+          $scope.weekWorkflowRunDurationPieChartData.data.push({ "x" : workflowData.name, "y" : [ duration ],
             "tooltip" : workflowData.name + ": " + Math.round(duration / (60 * 60 * 1000)) + " hours" });
+
+          $scope.weekWorkflowRunDurationBarChartData.series.push(workflowData.name);
+          $scope.weekWorkflowRunDurationBarChartData.data.push({ "x" : workflowData.name, "y" : [ Math.round(duration / (60 * 60 * 1000)) ] });
+
         }
       });
     });
+
   });
 
-  $scope.updateWeeklyWorkflowRunBarChart = function() {
+  $scope.updateWeekWorkflowRunCountBarChart = function(d) {
 
-    var workflowRunAttemptResourceQuery = workflowRunAttemptResource.query({ started : started, finished : finished,
-      workflowId : $scope.weeklySelectedWorkflow.id });
+    if (angular.isDefined(d) && angular.isDefined(d.data) && angular.isDefined(d.data.x)) {
 
-    $scope.weeklyWorkflowRunCountBarChartData.series = [];
-    $scope.weeklyWorkflowRunCountBarChartData.data = [];
+      var name = d.data.x;
+      var workflowNameResource = $resource('/cxf/Workflow/WorkflowService/findByName/:name', { name : '@name' });
+      var workflowNameResourceQuery = workflowNameResource.query();
+      workflowNameResourceQuery.$promise.then(function(workflowsData) {
+        console.log(workflowsData[0]);
 
-    workflowRunAttemptResourceQuery.$promise.then(function(workflowRunAttemptsData) {
+        var workflowRunAttemptResourceQuery = workflowRunAttemptResource.query({ started : started, finished : finished,
+          workflowId : $scope.weekSelectedWorkflow.id });
 
-      angular.forEach(workflowRunAttemptsData, function(workflowRunAttemptData) {
-        var dateCreated = new Date(workflowRunAttemptData.created);
-        var display = monthNames[dateCreated.getMonth()] + " " + dateCreated.getDate();
-        if ($scope.weeklyWorkflowRunCountBarChartData.series.indexOf(display) == -1) {
-          $scope.weeklyWorkflowRunCountBarChartData.series.push(display);
-          $scope.weeklyWorkflowRunCountBarChartData.data.push({ "x" : display, "y" : [ 0 ] });
-        }
-      });
+        $scope.weekWorkflowRunCountBarChartData.series = [];
+        $scope.weekWorkflowRunCountBarChartData.data = [];
 
-      angular.forEach(workflowRunAttemptsData, function(workflowRunAttemptData) {
-        var dateCreated = new Date(workflowRunAttemptData.created);
-        var display = monthNames[dateCreated.getMonth()] + " " + dateCreated.getDate();
+        workflowRunAttemptResourceQuery.$promise.then(function(workflowRunAttemptsData) {
 
-        for (i = 0; i < $scope.weeklyWorkflowRunCountBarChartData.data.length; ++i) {
-          var x = $scope.weeklyWorkflowRunCountBarChartData.data[i].x;
-          if (angular.equals(x, display)) {
-            $scope.weeklyWorkflowRunCountBarChartData.data[i].y[0] += 1;
+          var date = new Date();
+          date.setDate(date.getDate() - 7);
+
+          for (i = 0; i < 7; i++) {
+            date.setDate(date.getDate() + 1);
+            var display = monthNames[date.getMonth()] + " " + date.getDate();
+            $scope.weekWorkflowRunCountBarChartData.series.push(display);
+            $scope.weekWorkflowRunCountBarChartData.data.push({ "x" : display, "y" : [ 0 ] });
           }
-        }
+
+          angular.forEach(workflowRunAttemptsData, function(workflowRunAttemptData) {
+            var dateCreated = new Date(workflowRunAttemptData.created);
+            var display = monthNames[dateCreated.getMonth()] + " " + dateCreated.getDate();
+
+            for (i = 0; i < $scope.weekWorkflowRunCountBarChartData.data.length; ++i) {
+              var x = $scope.weekWorkflowRunCountBarChartData.data[i].x;
+              if (angular.equals(x, display)) {
+                $scope.weekWorkflowRunCountBarChartData.data[i].y[0] += 1;
+              }
+            }
+
+          });
+
+        });
 
       });
 
-    });
+    }
+
   };
 
 });
 
-app.controller('monthlyWorkflowRunReportCtrl', function($scope, $resource) {
+app.controller('monthWorkflowRunReportCtrl', function($scope, $resource) {
 
   var currentDate = new Date();
   var finished = formatDate(currentDate);
   currentDate.setDate(currentDate.getDate() - 30);
   var started = formatDate(currentDate);
 
-  $scope.monthlyWorkflows = [];
-  $scope.monthlySelectedWorkflow = {};
+  $scope.monthWorkflowRunCountPieChartData = { series : [], data : [] };
+  $scope.monthWorkflowRunCountBarChartData = { series : [], data : [] };
 
-  $scope.monthlyWorkflowRunCountData = { series : [], data : [] };
-  $scope.monthlyWorkflowRunDurationData = { series : [], data : [] };
-  $scope.monthlyWorkflowRunCountBarChartData = { series : [], data : [] };
+  $scope.monthWorkflowRunCountPieChartConfig = { click : function(d) {
+    $scope.updateMonthWorkflowRunCountBarChart(d);
+  }, labels : false, tooltips : true, legend : { display : false, htmlEnabled : true, position : 'left' }, lineLegend : 'traditional' };
+  $scope.monthWorkflowRunCountBarChartConfig = { labels : false, tooltips : true, legend : { display : false, htmlEnabled : true, position : 'left' },
+    lineLegend : 'traditional' };
 
-  $scope.monthlyWorkflowRunCountConfig = { title : "Monthly WorkflowRunAttempt Count", labels : false, tooltips : true,
-    legend : { display : false, htmlEnabled : true, position : 'right' }, lineLegend : 'traditional' };
-  $scope.monthlyWorkflowRunDurationConfig = { title : "Monthly WorkflowRunAttempt Duration", labels : false, tooltips : true,
-    legend : { display : false, htmlEnabled : true, position : 'right' }, lineLegend : 'traditional' };
-  $scope.monthlyWorkflowRunCountBarChartConfig = { title : $scope.monthlySelectedWorkflow.name, labels : false, tooltips : true,
-    legend : { display : false, htmlEnabled : true, position : 'right' }, lineLegend : 'traditional' };
+  $scope.monthWorkflowRunDurationPieChartData = { series : [], data : [] };
+  $scope.monthWorkflowRunDurationBarChartData = { series : [], data : [] };
+
+  $scope.monthWorkflowRunDurationPieChartConfig = { labels : false, tooltips : true, legend : { display : false, htmlEnabled : true, position : 'left' },
+    lineLegend : 'traditional' };
+  $scope.monthWorkflowRunDurationBarChartConfig = { labels : false, tooltips : true, legend : { display : false, htmlEnabled : true, position : 'left' },
+    lineLegend : 'traditional' };
 
   var workflowServiceResource = $resource('/cxf/Workflow/WorkflowService/findAll');
   var workflowServiceResourceQuery = workflowServiceResource.query();
@@ -159,66 +192,102 @@ app.controller('monthlyWorkflowRunReportCtrl', function($scope, $resource) {
 
   workflowServiceResourceQuery.$promise.then(function(workflowsData) {
 
-    $scope.monthlySelectedWorkflow = workflowsData[0];
-    $scope.updateMonthlyWorkflowRunBarChart();
-
     angular.forEach(workflowsData, function(workflowData) {
       var workflowRunAttemptResourceQuery = workflowRunAttemptResource.query({ started : started, finished : finished, workflowId : workflowData.id });
       workflowRunAttemptResourceQuery.$promise.then(function(workflowRunAttemptsData) {
         if (workflowRunAttemptsData.length > 0) {
-          $scope.monthlyWorkflows.push(workflowData);
-          $scope.monthlyWorkflowRunCountData.series.push(workflowData.name);
-          $scope.monthlyWorkflowRunCountData.data.push({ "x" : workflowData.name, "y" : [ workflowRunAttemptsData.length ],
+
+          $scope.monthWorkflowRunCountPieChartData.series.push(workflowData.name);
+          $scope.monthWorkflowRunCountPieChartData.data.push({ "x" : workflowData.name, "y" : [ workflowRunAttemptsData.length ],
             "tooltip" : workflowData.name + ": " + workflowRunAttemptsData.length });
-          $scope.monthlyWorkflowRunDurationData.series.push(workflowData.name);
+
+          $scope.monthWorkflowRunDurationPieChartData.series.push(workflowData.name);
+
+          var date = new Date();
+          date.setDate(date.getDate() - 30);
+
+          for (i = 0; i < 30; i++) {
+            date.setDate(date.getDate() + 1);
+            var display = (date.getMonth() + 1) + "-" + date.getDate();
+
+            $scope.monthWorkflowRunCountBarChartData.series.push(display);
+            $scope.monthWorkflowRunCountBarChartData.data.push({ "x" : display, "y" : [ 0 ] });
+          }
+
           var duration = 0;
           angular.forEach(workflowRunAttemptsData, function(workflowRunAttemptData) {
             var startDate = new Date(workflowRunAttemptData.started);
             var finishedDate = new Date(workflowRunAttemptData.finished);
-            var started = startDate.getTime();
-            var finished = finishedDate.getTime();
-            duration += parseInt(finished - started);
+            duration += parseInt(finishedDate.getTime() - startDate.getTime());
           });
-          $scope.monthlyWorkflowRunDurationData.data.push({ "x" : workflowData.name, "y" : [ duration ],
+
+          $scope.monthWorkflowRunDurationPieChartData.data.push({ "x" : workflowData.name, "y" : [ duration ],
             "tooltip" : workflowData.name + ": " + Math.round(duration / (60 * 60 * 1000)) + " hours" });
+
+          $scope.monthWorkflowRunDurationBarChartData.series.push(workflowData.name);
+          $scope.monthWorkflowRunDurationBarChartData.data.push({ "x" : workflowData.name, "y" : [ Math.round(duration / (60 * 60 * 1000)) ] });
         }
       });
     });
   });
 
-  $scope.updateMonthlyWorkflowRunBarChart = function() {
+  $scope.updateMonthWorkflowRunCountBarChart = function(d) {
 
-    var workflowRunAttemptResourceQuery = workflowRunAttemptResource.query({ started : started, finished : finished,
-      workflowId : $scope.monthlySelectedWorkflow.id });
+    var currentDate = new Date();
+    var finished = formatDate(currentDate);
+    currentDate.setDate(currentDate.getDate() - 30);
+    var started = formatDate(currentDate);
 
-    $scope.monthlyWorkflowRunCountBarChartData.series = [];
-    $scope.monthlyWorkflowRunCountBarChartData.data = [];
+    if (angular.isDefined(d) && angular.isDefined(d.data) && angular.isDefined(d.data.x)) {
+      var workflowNameResource = $resource('/cxf/Workflow/WorkflowService/findByName/:name', { name : '@name' });
 
-    workflowRunAttemptResourceQuery.$promise.then(function(workflowRunAttemptsData) {
+      var workflowNameResourceQuery = workflowNameResource.query({ name : d.data.x });
 
-      angular.forEach(workflowRunAttemptsData, function(workflowRunAttemptData) {
-        var dateCreated = new Date(workflowRunAttemptData.created);
-        var display = monthNames[dateCreated.getMonth()] + " " + dateCreated.getDate();
-        if ($scope.monthlyWorkflowRunCountBarChartData.series.indexOf(display) == -1) {
-          $scope.monthlyWorkflowRunCountBarChartData.series.push(display);
-          $scope.monthlyWorkflowRunCountBarChartData.data.push({ "x" : display, "y" : [ 0 ] });
-        }
+      workflowNameResourceQuery.$promise.then(function(workflowsData) {
+
+        angular.forEach(workflowsData, function(workflowData) {
+
+          var workflowRunAttemptResource = $resource(
+              '/cxf/WorkflowRunAttempt/WorkflowRunAttemptService/findByCreatedDateRangeAndWorkflowIdAndStatus/:started/:finished/:workflowId/DONE', {
+                started : '@started', finished : '@finished', workflowId : '@workflowId' });
+
+          var workflowRunAttemptResourceQuery = workflowRunAttemptResource.query({ started : started, finished : finished, workflowId : workflowData.id });
+
+          $scope.monthWorkflowRunCountBarChartData.series = [];
+          $scope.monthWorkflowRunCountBarChartData.data = [];
+
+          workflowRunAttemptResourceQuery.$promise.then(function(workflowRunAttemptsData) {
+
+            var date = new Date();
+            date.setDate(date.getDate() - 30);
+
+            for (i = 0; i < 30; i++) {
+              date.setDate(date.getDate() + 1);
+              var display = (date.getMonth() + 1) + "-" + date.getDate();
+              $scope.monthWorkflowRunCountBarChartData.series.push(display);
+              $scope.monthWorkflowRunCountBarChartData.data.push({ "x" : display, "y" : [ 0 ] });
+            }
+
+            angular.forEach(workflowRunAttemptsData, function(workflowRunAttemptData) {
+              var dateCreated = new Date(workflowRunAttemptData.created);
+              var display = (dateCreated.getMonth() + 1) + "-" + dateCreated.getDate();
+
+              for (i = 0; i < $scope.monthWorkflowRunCountBarChartData.data.length; ++i) {
+                var x = $scope.monthWorkflowRunCountBarChartData.data[i].x;
+                if (angular.equals(x, display)) {
+                  $scope.monthWorkflowRunCountBarChartData.data[i].y[0] += 1;
+                }
+              }
+
+            });
+
+          });
+        });
+
       });
 
-      angular.forEach(workflowRunAttemptsData, function(workflowRunAttemptData) {
-        var dateCreated = new Date(workflowRunAttemptData.created);
-        var display = monthNames[dateCreated.getMonth()] + " " + dateCreated.getDate();
+    }
 
-        for (i = 0; i < $scope.monthlyWorkflowRunCountBarChartData.data.length; ++i) {
-          var x = $scope.monthlyWorkflowRunCountBarChartData.data[i].x;
-          if (angular.equals(x, display)) {
-            $scope.monthlyWorkflowRunCountBarChartData.data[i].y[0] += 1;
-          }
-        }
-
-      });
-
-    });
   };
 
 });
