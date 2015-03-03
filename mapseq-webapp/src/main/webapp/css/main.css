@@ -11,105 +11,70 @@ body {
 	cursor: pointer;
 }
 
-.weeklyWorkflowRunCountChart {
-	padding-top: 10px;
-	float: left;
-	width: 400px;
-	height: 300px;
-	margin: 0 auto;
-}
-
-.monthlyWorkflowRunCountChart {
-	padding-top: 10px;
-	float: left;
-	width: 400px;
-	height: 300px;
-	margin: 0 auto;
-}
-
-.weeklyWorkflowRunDurationChart {
-	padding-top: 10px;
-	float: right;
-	width: 400px;
-	height: 300px;
-	margin: 0 auto;
-}
-
-.monthlyWorkflowRunDurationChart {
-	padding-top: 10px;
-	float: right;
-	width: 400px;
-	height: 300px;
-	margin: 0 auto;
-}
-
-.weeklyWorkflowRunDetail {
-	padding-top: 400px;
-	margin: 0 auto;
-}
-
-.monthlyWorkflowRunDetail {
-	padding-top: 400px;
-	margin: 0 auto;
-}
-
-.weeklyWorkflowRunCountBarChart {
-	padding-top: 20px;
-	width: 800px;
-	height: 300px;
-}
-
-.monthlyWorkflowRunCountBarChart {
-	padding-top: 20px;
-	width: 800px;
-	height: 300px;
-}
-
-.angular-charts-template .axis path,.angular-charts-template .axis line
-	{
-	fill: none;
-	stroke: #333;
-}
-
-.angular-charts-template .ac-title {
+.panel-heading {
 	font-weight: bold;
-	font-size: 1.2em;
 }
 
-.angular-charts-template .ac-chart {
+.tick {;
+	
+}
+
+.weekWorkflowRunCountPieChart {
 	float: left;
-	width: 75%;
+	width: 300px;
+	height: 300px;
+	margin: 0 auto;
 }
 
-.angular-charts-template .ac-line {
-	fill: none;
-	stroke-width: 2px;
-}
-
-.angular-charts-template table {
+.weekWorkflowRunDurationPieChart {
 	float: left;
-	max-width: 25%;
-	list-style: none;
-	margin: 0px;
-	padding: 0px;
+	width: 300px;
+	height: 300px;
+	margin: 0 auto;
 }
 
-.angular-charts-template td[ng-bind] {
-	display: inline-block;
+.weekWorkflowRunCountBarChart {
+	float: right;
+	width: 800px;
+	height: 300px;
+	margin: 0 auto;
 }
 
-.angular-charts-template .ac-legend-box {
-	border-radius: 5px;
-	height: 15px;
-	width: 15px;
+.weekWorkflowRunDurationBarChart {
+	float: right;
+	width: 800px;
+	height: 300px;
+	margin: 0 auto;
 }
 
-.ac-tooltip {
-	display: block;
-	position: absolute;
-	border: 2px solid rgba(51, 51, 51, 0.9);
-	background-color: rgba(22, 22, 22, 0.7);
-	border-radius: 5px;
-	padding: 5px;
-	color: white;
+.monthWorkflowRunCountPieChart {
+	float: left;
+	width: 300px;
+	height: 300px;
+	margin: 0 auto;
+}
+
+.monthWorkflowRunDurationPieChart {
+	float: left;
+	width: 300px;
+	height: 300px;
+	margin: 0 auto;
+}
+
+.monthWorkflowRunCountBarChart {
+	float: right;
+	width: 800px;
+	height: 300px;
+	margin: 0 auto;
+}
+
+.monthWorkflowRunDurationBarChart {
+	float: right;
+	width: 800px;
+	height: 300px;
+	margin: 0 auto;
+}
+
+.tick {
+	font-size: x-small;
 }
