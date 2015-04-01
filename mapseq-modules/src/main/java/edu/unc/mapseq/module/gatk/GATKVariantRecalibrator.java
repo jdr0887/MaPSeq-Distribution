@@ -1,6 +1,7 @@
 package edu.unc.mapseq.module.gatk;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
@@ -11,6 +12,8 @@ import org.renci.common.exec.CommandInput;
 import org.renci.common.exec.CommandOutput;
 import org.renci.common.exec.Executor;
 import org.renci.common.exec.ExecutorException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.unc.mapseq.dao.model.FileData;
 import edu.unc.mapseq.dao.model.MimeType;
@@ -29,6 +32,8 @@ import edu.unc.mapseq.module.constraints.FileIsReadable;
 @Application(name = "GATKVariantRecalibrator")
 @Executable(value = "$JAVA_HOME/bin/java -Xmx4g -Djava.io.tmpdir=$MAPSEQ_HOME/tmp -jar $%s_GATK_HOME/GenomeAnalysisTK.jar --analysis_type VariantRecalibrator")
 public class GATKVariantRecalibrator extends Module {
+
+    private final Logger logger = LoggerFactory.getLogger(GATKVariantRecalibrator.class);
 
     @NotNull(message = "input is required", groups = InputValidations.class)
     @FileIsReadable(message = "input is not readable", groups = InputValidations.class)
@@ -127,6 +132,8 @@ public class GATKVariantRecalibrator extends Module {
         }
 
         commandInput.setCommand(command.toString());
+        logger.info("command.toString(): {}", command.toString());
+        System.out.println(command.toString());
         CommandOutput commandOutput;
         try {
             Executor executor = BashExecutor.getInstance();
@@ -307,4 +314,49 @@ public class GATKVariantRecalibrator extends Module {
         this.percentBadVariants = percentBadVariants;
     }
 
+    public static void main(String[] args) {
+
+        GATKVariantRecalibrator module = new GATKVariantRecalibrator();
+        module.setWorkflowName("NCGENES");
+        module.setPhoneHome("NO_ET");
+        module.setDownsamplingType("NONE");
+        module.setReferenceSequence(new File("/proj/renci/sequence_analysis/references/BUILD.37.1/bwa061sam0118",
+                "BUILD.37.1.sorted.shortid.fa"));
+        module.setMaxGaussians(4);
+        module.setInput(new File("/proj/seq/mapseq/RENCI/150106_UNC10-SN254_0682_BHBEF1ADXX/L002_TGACCA/NCGenes",
+                "150106_UNC10-SN254_0682_BHBEF1ADXX_TGACCA_L002.fixed-rg.deduped.realign.fixmate.recal.vcf"));
+        module.setMode("SNP");
+        module.setRecalFile(new File("/proj/seq/mapseq/RENCI/150106_UNC10-SN254_0682_BHBEF1ADXX/L002_TGACCA/NCGenes",
+                "150106_UNC10-SN254_0682_BHBEF1ADXX_TGACCA_L002.fixed-rg.deduped.realign.fixmate.recal.variant.recal"));
+        module.setTranchesFile(new File(
+                "/proj/seq/mapseq/RENCI/150106_UNC10-SN254_0682_BHBEF1ADXX/L002_TGACCA/NCGenes",
+                "150106_UNC10-SN254_0682_BHBEF1ADXX_TGACCA_L002.fixed-rg.deduped.realign.fixmate.recal.variant.tranches"));
+        module.setRscriptFile(new File("/proj/seq/mapseq/RENCI/150106_UNC10-SN254_0682_BHBEF1ADXX/L002_TGACCA/NCGenes",
+                "150106_UNC10-SN254_0682_BHBEF1ADXX_TGACCA_L002.fixed-rg.deduped.realign.fixmate.recal.variant.plots.R"));
+        module.setPercentBadVariants(0.05);
+
+        List<String> resourceList = new ArrayList<String>();
+        resourceList
+                .add(":hapmap,known=false,training=true,truth=true,prior=15.0^/proj/renci/sequence_analysis/resources/gatk/bundle/1.2/b37/hapmap_3.3.b37.sites.renci.shortid.vcf");
+        resourceList
+                .add(":omni,known=false,training=true,truth=false,prior=12.0^/proj/renci/sequence_analysis/resources/gatk/bundle/1.2/b37/1000G_omni2.5.b37.sites.renci.shortid.vcf");
+        resourceList
+                .add(":dbsnp,known=true,training=false,truth=false,prior=8.0^/proj/renci/sequence_analysis/resources/gatk/bundle/1.2/b37/dbsnp_132.b37.renci.shortid.vcf");
+        module.setResource(resourceList);
+        List<String> useAnnotationList = new ArrayList<String>();
+        useAnnotationList.add("QD");
+        useAnnotationList.add("HaplotypeScore");
+        useAnnotationList.add("MQRankSum");
+        useAnnotationList.add("ReadPosRankSum");
+        useAnnotationList.add("MQ");
+        useAnnotationList.add("FS");
+        module.setUseAnnotation(useAnnotationList);
+
+        try {
+            module.call();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 }
