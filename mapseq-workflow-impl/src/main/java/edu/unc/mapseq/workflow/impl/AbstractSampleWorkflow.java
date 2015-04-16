@@ -17,6 +17,7 @@ import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.SampleDAO;
 import edu.unc.mapseq.dao.model.Flowcell;
 import edu.unc.mapseq.dao.model.Sample;
+import edu.unc.mapseq.dao.model.Study;
 import edu.unc.mapseq.dao.model.WorkflowRun;
 import edu.unc.mapseq.workflow.WorkflowException;
 
@@ -58,10 +59,20 @@ public abstract class AbstractSampleWorkflow extends AbstractWorkflow {
                     }
 
                     File flowcellOutputDirectory = new File(outdir, sample.getFlowcell().getName());
+                    // this will produce: /proj/seq/mapseq/RENCI/<flowcell>/<lane>_<barcode>
+
+                    Study study = sample.getStudy();
+                    if (study != null && StringUtils.isNotEmpty(study.getName()) && !study.getName().equals("NC_GENES")) {
+                        // this will produce: /proj/seq/mapseq/RENCI/<study>/<flowcell>/<lane>_<barcode>
+                        File studyDir = new File(outdir, study.getName());
+                        flowcellOutputDirectory = new File(studyDir, sample.getFlowcell().getName());
+                    }
+
                     File sampleOutputDir = new File(flowcellOutputDirectory, String.format("L%03d_%s",
                             sample.getLaneIndex(), sample.getBarcode()));
+                    logger.info("creating sample output directory: {}", sampleOutputDir.getAbsolutePath());
                     sampleOutputDir.mkdirs();
-                    // this will produce: /proj/seq/mapseq/RENCI/<flowcell>/<lane>_<barcode>
+
                     if (sample.getOutputDirectory() == null
                             || (sample.getOutputDirectory() != null && !sample.getOutputDirectory().equals(
                                     sampleOutputDir.getAbsolutePath()))) {
