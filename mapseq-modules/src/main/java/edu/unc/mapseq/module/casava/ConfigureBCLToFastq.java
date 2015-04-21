@@ -63,6 +63,9 @@ public class ConfigureBCLToFastq extends Module {
     private Boolean mismatches;
 
     @InputArgument
+    private Integer bases;
+
+    @InputArgument
     private Boolean ignoreMissingStats;
 
     @InputArgument
@@ -103,6 +106,10 @@ public class ConfigureBCLToFastq extends Module {
 
             if (force != null && force) {
                 command.append(" --force");
+            }
+
+            if (bases != null) {
+                command.append(String.format(" --use-bases-mask Y*n,I%sn,Y*n", bases.toString()));
             }
 
             if (mismatches != null && mismatches) {
@@ -163,6 +170,14 @@ public class ConfigureBCLToFastq extends Module {
 
     public void setForce(Boolean force) {
         this.force = force;
+    }
+
+    public Integer getBases() {
+        return bases;
+    }
+
+    public void setBases(Integer bases) {
+        this.bases = bases;
     }
 
     public Integer getFastqClusterCount() {
