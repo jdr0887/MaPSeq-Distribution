@@ -46,8 +46,7 @@
 	  <instructions>
 	    <Import-Package>*</Import-Package>
 	    <Export-Package>!*</Export-Package>
-	    <Bundle-Classpath>.,WEB-INF/classes
-	    </Bundle-Classpath>
+	    <Bundle-Classpath>.,WEB-INF/classes</Bundle-Classpath>
 	    <Web-ContextPath>mapseq</Web-ContextPath>
 	    <_removeheaders>Include-Resource,Private-Package,Embed-Dependency,Embed-Transitive</_removeheaders>
 	  </instructions>
