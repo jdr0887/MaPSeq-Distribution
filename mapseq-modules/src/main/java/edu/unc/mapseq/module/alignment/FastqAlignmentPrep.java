@@ -17,6 +17,7 @@ import edu.unc.mapseq.module.ModuleOutput;
 import edu.unc.mapseq.module.annotations.Application;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
+import edu.unc.mapseq.module.annotations.OutputArgument;
 import edu.unc.mapseq.module.annotations.OutputValidations;
 import edu.unc.mapseq.module.constraints.FileIsNotEmpty;
 import edu.unc.mapseq.module.constraints.FileIsReadable;
@@ -32,31 +33,31 @@ public class FastqAlignmentPrep extends Module {
     @NotNull(message = "r1Fastq is required", groups = InputValidations.class)
     @FileIsReadable(message = "r1Fastq is not readable", groups = InputValidations.class)
     @FileIsNotEmpty(message = "r1Fastq is empty", groups = InputValidations.class)
-    @InputArgument()
+    @InputArgument
     private File r1Fastq;
 
     @NotNull(message = "r2Fastq is required", groups = InputValidations.class)
     @FileIsReadable(message = "r2Fastq is not readable", groups = InputValidations.class)
     @FileIsNotEmpty(message = "r2Fastq is empty", groups = InputValidations.class)
-    @InputArgument()
+    @InputArgument
     private File r2Fastq;
 
     @NotNull(message = "r1FastqOutput is required", groups = InputValidations.class)
     @FileIsReadable(message = "r1FastqOutput is not readable", groups = OutputValidations.class)
     @FileIsNotEmpty(message = "r1FastqOutput is empty", groups = OutputValidations.class)
-    @InputArgument()
+    @OutputArgument
     private File r1FastqOutput;
 
     @NotNull(message = "r2FastqOutput is required", groups = InputValidations.class)
     @FileIsReadable(message = "r2FastqOutput is not readable", groups = OutputValidations.class)
     @FileIsNotEmpty(message = "r2FastqOutput is empty", groups = OutputValidations.class)
-    @InputArgument()
+    @OutputArgument
     private File r2FastqOutput;
 
     @NotNull(message = "fastqUnpairedReadsOutput is required", groups = InputValidations.class)
     @FileIsReadable(message = "fastqUnpairedReadsOutput is not readable", groups = OutputValidations.class)
     @FileIsNotEmpty(message = "fastqUnpairedReadsOutput is empty", groups = OutputValidations.class)
-    @InputArgument()
+    @OutputArgument
     private File fastqUnpairedReadsOutput;
 
     @Override
