@@ -75,6 +75,7 @@ public class PicardReorderSAM extends Module {
 
         FileData fm = new FileData();
         fm.setMimeType(MimeType.APPLICATION_BAM);
+        fm.setPath(output.getParentFile().getAbsolutePath());
         fm.setName(output.getName());
         getFileDatas().add(fm);
 

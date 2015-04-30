@@ -77,11 +77,13 @@ public class PicardMarkDuplicates extends Module {
 
         FileData fm = new FileData();
         fm.setName(output.getName());
+        fm.setPath(output.getParentFile().getAbsolutePath());
         fm.setMimeType(MimeType.APPLICATION_BAM);
         getFileDatas().add(fm);
 
         fm = new FileData();
         fm.setName(metricsFile.getName());
+        fm.setPath(metricsFile.getParentFile().getAbsolutePath());
         fm.setMimeType(MimeType.PICARD_MARK_DUPLICATE_METRICS);
         getFileDatas().add(fm);
 

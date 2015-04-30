@@ -119,6 +119,7 @@ public class PicardAddOrReplaceReadGroups extends Module {
         } else {
             fm.setMimeType(MimeType.TEXT_SAM);
         }
+        fm.setPath(output.getParentFile().getAbsolutePath());
         fm.setName(output.getName());
         getFileDatas().add(fm);
 

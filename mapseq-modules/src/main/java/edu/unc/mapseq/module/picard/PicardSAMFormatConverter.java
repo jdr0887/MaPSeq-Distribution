@@ -70,6 +70,7 @@ public class PicardSAMFormatConverter extends Module {
 
         FileData fm = new FileData();
         fm.setName(output.getName());
+        fm.setPath(output.getParentFile().getAbsolutePath());
         fm.setMimeType(MimeType.APPLICATION_BAM);
         getFileDatas().add(fm);
 

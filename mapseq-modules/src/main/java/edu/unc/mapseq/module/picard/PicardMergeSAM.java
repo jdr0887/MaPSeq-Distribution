@@ -78,6 +78,7 @@ public class PicardMergeSAM extends Module {
         moduleOutput.setExitCode(exitCode);
 
         FileData fm = new FileData();
+        fm.setPath(output.getParentFile().getAbsolutePath());
         fm.setName(output.getName());
         fm.setMimeType(MimeType.APPLICATION_BAM);
         getFileDatas().add(fm);
@@ -107,6 +108,22 @@ public class PicardMergeSAM extends Module {
 
     public void setSortOrder(String sortOrder) {
         this.sortOrder = sortOrder;
+    }
+
+    public static void main(String[] args) {
+        PicardMergeSAM module = new PicardMergeSAM();
+        module.setWorkflowName("TEST");
+        List<File> inputList = new ArrayList<File>();
+        inputList.add(new File("/tmp", "1.bam"));
+        inputList.add(new File("/tmp", "2.bam"));
+        module.setInput(inputList);
+        module.setOutput(new File("/tmp", "asdf.bam"));
+        try {
+            module.call();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 }
