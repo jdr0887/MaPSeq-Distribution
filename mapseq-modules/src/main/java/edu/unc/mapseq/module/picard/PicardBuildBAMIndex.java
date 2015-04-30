@@ -16,6 +16,7 @@ import edu.unc.mapseq.module.ModuleOutput;
 import edu.unc.mapseq.module.annotations.Application;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
+import edu.unc.mapseq.module.annotations.OutputArgument;
 import edu.unc.mapseq.module.annotations.OutputValidations;
 import edu.unc.mapseq.module.constraints.FileIsNotEmpty;
 import edu.unc.mapseq.module.constraints.FileIsReadable;
@@ -31,7 +32,7 @@ public class PicardBuildBAMIndex extends Module {
 
     @NotNull(message = "Output is required", groups = InputValidations.class)
     @FileIsNotEmpty(message = "output file is empty", groups = OutputValidations.class)
-    @InputArgument
+    @OutputArgument(persistFileData = true, mimeType = MimeType.APPLICATION_BAM_INDEX)
     private File output;
 
     public PicardBuildBAMIndex() {

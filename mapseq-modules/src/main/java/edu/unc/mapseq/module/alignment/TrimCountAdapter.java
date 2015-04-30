@@ -23,6 +23,7 @@ import edu.unc.mapseq.module.ModuleOutput;
 import edu.unc.mapseq.module.annotations.Application;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
+import edu.unc.mapseq.module.annotations.OutputArgument;
 import edu.unc.mapseq.module.annotations.OutputValidations;
 import edu.unc.mapseq.module.constraints.FileIsReadable;
 
@@ -59,17 +60,17 @@ public class TrimCountAdapter extends Module {
 
     @NotNull(message = "outFastq is required", groups = InputValidations.class)
     @FileIsReadable(groups = OutputValidations.class)
-    @InputArgument
+    @OutputArgument
     private File outFastq;
 
     @NotNull(message = "outQC is required", groups = InputValidations.class)
     @FileIsReadable(groups = OutputValidations.class)
-    @InputArgument
+    @OutputArgument
     private File outQC;
 
     @NotNull(message = "outStats is required", groups = InputValidations.class)
     @FileIsReadable(groups = OutputValidations.class)
-    @InputArgument
+    @OutputArgument
     private File outStats;
 
     public TrimCountAdapter() {

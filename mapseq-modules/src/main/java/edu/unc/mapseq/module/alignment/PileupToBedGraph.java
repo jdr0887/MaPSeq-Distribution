@@ -20,6 +20,7 @@ import edu.unc.mapseq.module.PileupBean;
 import edu.unc.mapseq.module.annotations.Application;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
+import edu.unc.mapseq.module.annotations.OutputArgument;
 import edu.unc.mapseq.module.annotations.OutputValidations;
 import edu.unc.mapseq.module.constraints.FileIsNotEmpty;
 import edu.unc.mapseq.module.constraints.FileIsReadable;
@@ -36,7 +37,7 @@ public class PileupToBedGraph extends Module {
     @NotNull(message = "outFile is required", groups = OutputValidations.class)
     @FileIsNotEmpty(message = "outFile is empty", groups = OutputValidations.class)
     @FileIsReadable(message = "outFile is not readable", groups = OutputValidations.class)
-    @InputArgument
+    @OutputArgument
     private File outFile;
 
     @NotNull(message = "chromosomeSizes is required", groups = InputValidations.class)

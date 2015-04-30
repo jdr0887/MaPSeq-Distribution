@@ -16,6 +16,7 @@ import edu.unc.mapseq.module.ModuleOutput;
 import edu.unc.mapseq.module.annotations.Application;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
+import edu.unc.mapseq.module.annotations.OutputArgument;
 import edu.unc.mapseq.module.annotations.OutputValidations;
 import edu.unc.mapseq.module.constraints.Contains;
 import edu.unc.mapseq.module.constraints.FileIsNotEmpty;
@@ -33,7 +34,7 @@ public class PicardMergeSAM extends Module {
     @NotNull(message = "Output is required", groups = InputValidations.class)
     @FileIsReadable(message = "Invalid output file", groups = OutputValidations.class)
     @FileIsNotEmpty(message = "output file is empty", groups = OutputValidations.class)
-    @InputArgument(description = "The BAM or SAM output file.")
+    @OutputArgument(persistFileData = true, mimeType = MimeType.APPLICATION_BAM)
     private File output;
 
     @NotNull(message = "sortOrder is required", groups = InputValidations.class)
