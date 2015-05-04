@@ -2,13 +2,13 @@
   <parent>
     <groupId>edu.unc.mapseq</groupId>
     <artifactId>distribution</artifactId>
-    <version>0.5.82</version>
+    <version>0.5.83-SNAPSHOT</version>
   </parent>
   <name>MaPSeq :: Distribution :: Commands</name>
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.unc.mapseq.distribution</groupId>
   <artifactId>mapseq-commands</artifactId>
-  <version>0.5.82</version>
+  <version>0.5.83-SNAPSHOT</version>
   <packaging>pom</packaging>
   <dependencies>
     <dependency>
