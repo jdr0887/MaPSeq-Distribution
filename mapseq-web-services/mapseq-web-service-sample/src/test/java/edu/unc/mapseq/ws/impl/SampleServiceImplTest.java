@@ -33,7 +33,7 @@ public class SampleServiceImplTest {
         QName serviceQName = new QName("http://ws.mapseq.unc.edu", "SampleService");
         QName portQName = new QName("http://ws.mapseq.unc.edu", "SamplePort");
         Service service = Service.create(serviceQName);
-        String host = "biodev2.its.unc.edu";
+        String host = "152.19.198.146";
         service.addPort(portQName, SOAPBinding.SOAP11HTTP_MTOM_BINDING,
                 String.format("http://%s:%d/cxf/SampleService", host, 8181));
         SampleService sampleService = service.getPort(SampleService.class);
@@ -41,8 +41,7 @@ public class SampleServiceImplTest {
         HTTPConduit httpConduit = (HTTPConduit) cl.getConduit();
         httpConduit.getClient().setReceiveTimeout(5 * 60 * 1000);
 
-        List<Long> idList = Arrays.asList(487268L, 487381L, 487950L, 490741L, 490882L, 621100L, 621514L, 621584L,
-                1659854L);
+        List<Long> idList = Arrays.asList(2514834L, 2514842L);
 
         FileWriter fw = null;
 
@@ -51,7 +50,7 @@ public class SampleServiceImplTest {
             try {
                 File resultsFile = new File("/tmp", String.format("Sample-%d.xml", id));
                 fw = new FileWriter(resultsFile);
-                JAXBContext context = JAXBContext.newInstance(SampleService.class);
+                JAXBContext context = JAXBContext.newInstance(Sample.class);
                 Marshaller m = context.createMarshaller();
                 m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
                 m.marshal(sampleService.findById(id), fw);
@@ -81,7 +80,7 @@ public class SampleServiceImplTest {
         QName serviceQName = new QName("http://ws.mapseq.unc.edu", "SampleService");
         QName portQName = new QName("http://ws.mapseq.unc.edu", "SamplePort");
         Service service = Service.create(serviceQName);
-        String host = "biodev2.its.unc.edu";
+        String host = "152.19.198.146";
         service.addPort(portQName, SOAPBinding.SOAP11HTTP_MTOM_BINDING,
                 String.format("http://%s:%d/cxf/SampleService", host, 8181));
         SampleService sampleService = service.getPort(SampleService.class);
