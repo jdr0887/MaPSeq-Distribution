@@ -54,6 +54,11 @@ public abstract class AbstractMessageListener implements MessageListener {
 
         Set<Attribute> attributes = parseAttributes(flowcell.getAttributes(), workflowEntity.getAttributes());
         flowcell.setAttributes(attributes);
+        try {
+            flowcellDAO.save(flowcell);
+        } catch (MaPSeqDAOException e) {
+            e.printStackTrace();
+        }
 
         logger.debug("Found Flowcell: {}", flowcell.toString());
         return flowcell;
@@ -78,6 +83,11 @@ public abstract class AbstractMessageListener implements MessageListener {
 
         Set<Attribute> attributes = parseAttributes(sample.getAttributes(), workflowEntity.getAttributes());
         sample.setAttributes(attributes);
+        try {
+            sampleDAO.save(sample);
+        } catch (MaPSeqDAOException e) {
+            e.printStackTrace();
+        }
 
         logger.debug("Found Sample: {}", sample.toString());
         return sample;
