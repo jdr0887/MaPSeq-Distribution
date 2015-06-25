@@ -37,7 +37,9 @@ public class WorkflowRunAttemptServiceImpl implements WorkflowRunAttemptService 
         }
         try {
             workflowRunAttempt = workflowRunAttemptDAO.findById(id);
-            logger.debug(workflowRunAttempt.toString());
+            if (workflowRunAttempt != null) {
+                logger.debug(workflowRunAttempt.toString());
+            }
         } catch (MaPSeqDAOException e) {
             logger.warn("Problem with workflowRunAttemptDAO.findById({})", id);
             logger.error("MaPSeqDAOException", e);

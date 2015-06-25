@@ -32,17 +32,20 @@ public class FileDataServiceImpl implements FileDataService {
     @Override
     public FileData findById(Long id) {
         logger.debug("ENTERING findById(Long)");
-        FileData entity = null;
+        FileData fileData = null;
         if (id == null) {
             logger.warn("id is null");
-            return entity;
+            return fileData;
         }
         try {
-            entity = fileDataDAO.findById(id);
+            fileData = fileDataDAO.findById(id);
+            if (fileData != null) {
+                logger.debug(fileData.toString());
+            }
         } catch (MaPSeqDAOException e) {
             logger.error("Error", e);
         }
-        return entity;
+        return fileData;
     }
 
     @Override

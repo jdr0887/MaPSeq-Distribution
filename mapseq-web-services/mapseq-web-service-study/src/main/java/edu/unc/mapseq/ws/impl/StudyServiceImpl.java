@@ -36,6 +36,9 @@ public class StudyServiceImpl implements StudyService {
         }
         try {
             study = studyDAO.findById(id);
+            if (study != null) {
+                logger.debug(study.toString());
+            }
         } catch (MaPSeqDAOException e) {
             logger.error("Error", e);
         }
@@ -92,6 +95,9 @@ public class StudyServiceImpl implements StudyService {
         }
         try {
             study = studyDAO.findBySampleId(sampleId);
+            if (study != null) {
+                logger.debug(study.toString());
+            }
         } catch (MaPSeqDAOException e) {
             logger.error("Error", e);
         }

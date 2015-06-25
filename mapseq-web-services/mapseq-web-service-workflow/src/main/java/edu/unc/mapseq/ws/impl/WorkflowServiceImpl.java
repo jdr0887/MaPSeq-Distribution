@@ -48,6 +48,9 @@ public class WorkflowServiceImpl implements WorkflowService {
         }
         try {
             workflow = workflowDAO.findById(id);
+            if (workflow != null) {
+                logger.debug(workflow.toString());
+            }
         } catch (MaPSeqDAOException e) {
             logger.error("Error", e);
         }

@@ -21,17 +21,20 @@ public class AttributeServiceImpl implements AttributeService {
     @Override
     public Attribute findById(Long id) {
         logger.debug("ENTERING findById(Long)");
-        Attribute entity = null;
+        Attribute attribute = null;
         if (id == null) {
             logger.warn("id is null");
-            return entity;
+            return attribute;
         }
         try {
-            entity = attributeDAO.findById(id);
+            attribute = attributeDAO.findById(id);
+            if (attribute != null) {
+                logger.debug(attribute.toString());
+            }
         } catch (MaPSeqDAOException e) {
             logger.error("Error", e);
         }
-        return entity;
+        return attribute;
     }
 
     @Override

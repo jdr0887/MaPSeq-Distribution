@@ -34,7 +34,9 @@ public class FlowcellServiceImpl implements FlowcellService {
         Flowcell flowcell = null;
         try {
             flowcell = flowcellDAO.findById(id);
-            logger.debug(flowcell.toString());
+            if (flowcell != null) {
+                logger.debug(flowcell.toString());
+            }
         } catch (MaPSeqDAOException e) {
             e.printStackTrace();
         }

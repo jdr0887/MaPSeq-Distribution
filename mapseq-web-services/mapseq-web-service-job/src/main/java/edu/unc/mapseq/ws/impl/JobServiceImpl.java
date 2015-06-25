@@ -39,6 +39,9 @@ public class JobServiceImpl implements JobService {
         }
         try {
             job = jobDAO.findById(id);
+            if (job != null) {
+                logger.debug(job.toString());
+            }
         } catch (MaPSeqDAOException e) {
             logger.error("Error", e);
         }
