@@ -90,9 +90,21 @@ public class CoverageBed extends Module {
     public static void main(String[] args) {
 
         CoverageBed module = new CoverageBed();
-        module.setInput(new File("inFile.txt"));
-        module.setBed(new File("bed.txt"));
-        module.setOutput(new File("output.txt"));
+        module.setBed(new File("/proj/seq/LBG/tier1data/nextgenseq/seqware-analysis/mapsplice_rsem",
+                "composite_exons.bed"));
+
+        // module.setInput(new
+        // File("/proj/seq/mapseq/LBG/CMPSeq/150514_UNC11-SN627_0400_AC5J46ACXX/L005_GTCCGC/RNASeq/",
+        // "150514_UNC11-SN627_0400_AC5J46ACXX_GTCCGC_L005.fixed-rg.sorted.bam"));
+        // module.setOutput(new
+        // File("/proj/seq/mapseq/LBG/CMPSeq/150514_UNC11-SN627_0400_AC5J46ACXX/L005_GTCCGC/RNASeq/",
+        // "150514_UNC11-SN627_0400_AC5J46ACXX_GTCCGC_L005.fixed-rg.sorted.coverageBedOut.test.txt"));
+
+        module.setInput(new File("/proj/seq/mapseq/LBG/CMPSeq/150501_UNC15-SN850_0405_BC5HCYACXX/L002_ACTGAT/RNASeq",
+                "150501_UNC15-SN850_0405_BC5HCYACXX_ACTGAT_L002.fixed-rg.sorted.bam"));
+        module.setOutput(new File("/proj/seq/mapseq/LBG/CMPSeq/150501_UNC15-SN850_0405_BC5HCYACXX/L002_ACTGAT/RNASeq",
+                "150501_UNC15-SN850_0405_BC5HCYACXX_ACTGAT_L002.fixed-rg.sorted.coverageBedOut.test.txt"));
+
         module.setSplitBed(Boolean.TRUE);
         module.setWorkflowName("TEST");
         try {
@@ -102,5 +114,4 @@ public class CoverageBed extends Module {
         }
 
     }
-
 }
