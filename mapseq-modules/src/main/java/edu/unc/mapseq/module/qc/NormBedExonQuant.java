@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.unc.mapseq.dao.model.FileData;
 import edu.unc.mapseq.dao.model.MimeType;
 import edu.unc.mapseq.module.DefaultModuleOutput;
@@ -23,6 +26,8 @@ import edu.unc.mapseq.module.annotations.InputArgument;
  */
 @Application(name = "NormBedExonQuant")
 public class NormBedExonQuant extends Module {
+
+    private final Logger logger = LoggerFactory.getLogger(NormBedExonQuant.class);
 
     @InputArgument
     private File compositeBed;
@@ -66,12 +71,12 @@ public class NormBedExonQuant extends Module {
             int total = 0;
             BufferedReader br2 = new BufferedReader(new FileReader(inFile));
             while ((line = br2.readLine()) != null) {
+                logger.info(line);
                 String[] splitArray = line.split("\t");
                 String id = splitArray[4];
                 String sCounts = splitArray[5];
                 String length = splitArray[7];
                 String cov = splitArray[8];
-
                 Integer counts = Integer.valueOf(sCounts);
                 total += counts;
 
@@ -141,4 +146,21 @@ public class NormBedExonQuant extends Module {
         this.outFile = outFile;
     }
 
+    public static void main(String[] args) {
+        NormBedExonQuant module = new NormBedExonQuant();
+        module.setWorkflowName("TEST");
+        module.setDryRun(Boolean.TRUE);
+        module.setCompositeBed(new File("/tmp", "composite_exons.bed"));
+        module.setInFile(new File("/tmp",
+                "150514_UNC11-SN627_0400_AC5J46ACXX_GTCCGC_L005.fixed-rg.sorted.coverageBedOut.txt"));
+        module.setOutFile(new File("/tmp",
+                "150514_UNC11-SN627_0400_AC5J46ACXX_GTCCGC_L005.fixed-rg.sorted.normBedExonQuantOut.txt"));
+
+        try {
+            module.call();
+        } catch (ModuleException e) {
+            e.printStackTrace();
+        }
+
+    }
 }
