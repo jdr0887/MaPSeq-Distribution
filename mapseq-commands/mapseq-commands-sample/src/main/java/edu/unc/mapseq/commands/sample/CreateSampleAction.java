@@ -127,18 +127,17 @@ public class CreateSampleAction extends AbstractAction {
         }
 
         File sequencerRunOutputDir = new File(mapseqOutputDirectory, flowcell.getName());
-        File workflowOutputDir = new File(sequencerRunOutputDir, "CASAVA");
-        File sampleOutputDir = new File(workflowOutputDir, this.name);
-
-        sampleOutputDir.mkdirs();
+        File sampleOutputDir = new File(sequencerRunOutputDir, String.format("L%03d_%s", laneIndex, barcode));
+        File workflowOutputDir = new File(sampleOutputDir, "CASAVA");
+        workflowOutputDir.mkdirs();
 
         if (!sampleOutputDir.canWrite()) {
-            System.err.println("You don't have permission to write to: " + sampleOutputDir.getAbsolutePath());
+            System.err.println("You don't have permission to write to: " + workflowOutputDir.getAbsolutePath());
             return null;
         }
 
         try {
-            File newR1FastqFile = new File(sampleOutputDir, read1FastqFile.getName());
+            File newR1FastqFile = new File(workflowOutputDir, read1FastqFile.getName());
             if (!read1FastqFile.getAbsolutePath().equals(newR1FastqFile.getAbsolutePath())) {
                 FileUtils.copyFile(read1FastqFile, newR1FastqFile);
             }
@@ -148,7 +147,7 @@ public class CreateSampleAction extends AbstractAction {
 
         if (read2Fastq != null) {
             try {
-                File newR2FastqFile = new File(sampleOutputDir, read2FastqFile.getName());
+                File newR2FastqFile = new File(workflowOutputDir, read2FastqFile.getName());
                 if (!read2FastqFile.getAbsolutePath().equals(newR2FastqFile.getAbsolutePath())) {
                     FileUtils.copyFile(read2FastqFile, newR2FastqFile);
                 }
@@ -198,9 +197,10 @@ public class CreateSampleAction extends AbstractAction {
             sample.setStudy(maPSeqDAOBean.getStudyDAO().findById(this.studyId));
             sample.setLaneIndex(laneIndex);
             sample.setFlowcell(flowcell);
+            sample.setId(sampleDAO.save(sample));
             sample.setFileDatas(fileDataSet);
-            Long id = sampleDAO.save(sample);
-            sample.setId(id);
+            sampleDAO.save(sample);
+
             System.out.println(sample.toString());
         } catch (MaPSeqDAOException e) {
             e.printStackTrace();
