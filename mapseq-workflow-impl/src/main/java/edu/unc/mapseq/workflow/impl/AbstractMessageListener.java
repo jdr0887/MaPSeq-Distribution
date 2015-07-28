@@ -31,6 +31,8 @@ public abstract class AbstractMessageListener implements MessageListener {
 
     private WorkflowBeanService workflowBeanService;
 
+    private String workflowName;
+
     public AbstractMessageListener() {
         super();
     }
@@ -210,6 +212,14 @@ public abstract class AbstractMessageListener implements MessageListener {
 
     public void setWorkflowBeanService(WorkflowBeanService workflowBeanService) {
         this.workflowBeanService = workflowBeanService;
+    }
+
+    public String getWorkflowName() {
+        return workflowName;
+    }
+
+    public void setWorkflowName(String workflowName) {
+        this.workflowName = workflowName;
     }
 
 }
