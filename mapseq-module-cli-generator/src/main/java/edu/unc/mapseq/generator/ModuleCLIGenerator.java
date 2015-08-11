@@ -3,21 +3,15 @@ package edu.unc.mapseq.generator;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -55,9 +49,7 @@ import edu.unc.mapseq.module.PersistantJobObserver;
 import edu.unc.mapseq.module.annotations.Application;
 import edu.unc.mapseq.module.annotations.Ignore;
 import edu.unc.mapseq.module.annotations.InputArgument;
-import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.annotations.OutputArgument;
-import edu.unc.mapseq.module.annotations.OutputValidations;
 
 /**
  * 
@@ -154,18 +146,10 @@ public class ModuleCLIGenerator extends AbstractGenerator {
         JClass executorsJClass = codeModel.ref(Executors.class);
         JClass executorServiceJClass = codeModel.ref(ExecutorService.class);
         JClass futureJClass = codeModel.ref(Future.class);
+        JClass longJClass = codeModel.ref(Long.class);
         JClass exceptionJClass = codeModel.ref(Exception.class);
         JClass systemJClass = codeModel.ref(System.class);
-        JClass applicationJClass = codeModel.ref(clazz);
-        JClass validatorJClass = codeModel.ref(Validator.class);
-        JClass setJClass = codeModel.ref(Set.class);
-        JClass constraintViolationJClass = codeModel.ref(ConstraintViolation.class);
-        JClass outputChecksJClass = codeModel.ref(OutputValidations.class);
-        JClass inputChecksJClass = codeModel.ref(InputValidations.class);
-        JClass messageFormatJClass = codeModel.ref(MessageFormat.class);
-        JClass stringJClass = codeModel.ref(String.class);
-        JClass validatorFactoryJClass = codeModel.ref(ValidatorFactory.class);
-        JClass validationJClass = codeModel.ref(Validation.class);
+        JClass timeUnitJClass = codeModel.ref(TimeUnit.class);
         JClass dryRunObserverJClass = codeModel.ref(DryRunJobObserver.class);
         JClass updateJobObserverJClass = codeModel.ref(PersistantJobObserver.class);
 
@@ -173,42 +157,11 @@ public class ModuleCLIGenerator extends AbstractGenerator {
 
         JBlock mainMethodBlock = mainMethod.body();
 
-        JVar validatorFactoryVar = mainMethodBlock.decl(validatorFactoryJClass, "validatorFactory");
-        validatorFactoryVar.init(validationJClass.staticInvoke("buildDefaultValidatorFactory"));
-
-        JVar validatorVar = mainMethodBlock.decl(validatorJClass, "validator");
-        validatorVar.init(validatorFactoryVar.invoke("getValidator"));
-
         JVar moduleOutputVar = mainMethodBlock.decl(moduleOutputJClass, "output");
         moduleOutputVar.init(JExpr._null());
 
         JTryBlock tryBlock = mainMethodBlock._try();
         JBlock tryBlockBody = tryBlock.body();
-
-        JVar constraintViolationsVar = tryBlockBody.decl(
-                setJClass.narrow(constraintViolationJClass.narrow(applicationJClass)), "constraintViolations");
-        constraintViolationsVar
-                .init(validatorVar.invoke("validate").arg(appFieldVar).arg(inputChecksJClass.dotclass()));
-
-        JConditional constraintViolationsVarSizeConditional = tryBlockBody._if(constraintViolationsVar.invoke("size")
-                .gt(JExpr.lit(0)).cand(appFieldVar.invoke("getDryRun").not()));
-        JBlock constraintViolationsVarSizeConditionalThenBlock = constraintViolationsVarSizeConditional._then();
-
-        JForEach paramForEach = constraintViolationsVarSizeConditionalThenBlock.forEach(
-                constraintViolationJClass.narrow(applicationJClass), "value", constraintViolationsVar);
-        JBlock paramForEachBody = paramForEach.body();
-
-        JVar errorMessageVar = paramForEachBody.decl(stringJClass, "errorMessage");
-        errorMessageVar.init(messageFormatJClass.staticInvoke("format").arg("The value of {0}.{1} was: {2}.  {3}")
-                .arg(paramForEach.var().invoke("getRootBeanClass"))
-                .arg(paramForEach.var().invoke("getPropertyPath").invoke("toString"))
-                .arg(paramForEach.var().invoke("getInvalidValue")).arg(paramForEach.var().invoke("getMessage")));
-
-        paramForEachBody.add(systemJClass.staticRef("err").invoke("println").arg(errorMessageVar));
-
-        constraintViolationsVarSizeConditionalThenBlock.add(helpFormatterVar.invoke("printHelp")
-                .arg(clazz.getSimpleName() + "CLI").arg(cliOptionsFieldVar));
-        constraintViolationsVarSizeConditionalThenBlock.add(systemJClass.staticInvoke("exit").arg(JExpr.lit(-1)));
 
         JVar moduleExecutorVar = tryBlockBody.decl(moduleExecutorJClass, "executor");
         moduleExecutorVar.init(JExpr._new(moduleExecutorJClass));
@@ -233,29 +186,13 @@ public class ModuleCLIGenerator extends AbstractGenerator {
 
         JVar futureVar = tryBlockBody.decl(futureJClass.narrow(moduleOutputJClass), "future");
         futureVar.init(executorServiceVar.invoke("submit").arg(moduleExecutorVar));
-        tryBlockBody.assign(moduleOutputVar, futureVar.invoke("get"));
         tryBlockBody.add(executorServiceVar.invoke("shutdown"));
-
-        tryBlockBody.assign(constraintViolationsVar,
-                validatorVar.invoke("validate").arg(appFieldVar).arg(outputChecksJClass.dotclass()));
-
-        constraintViolationsVarSizeConditional = tryBlockBody._if(constraintViolationsVar.invoke("size")
-                .gt(JExpr.lit(0)).cand(appFieldVar.invoke("getDryRun").not()));
-        constraintViolationsVarSizeConditionalThenBlock = constraintViolationsVarSizeConditional._then();
-
-        paramForEach = constraintViolationsVarSizeConditionalThenBlock.forEach(
-                constraintViolationJClass.narrow(applicationJClass), "value", constraintViolationsVar);
-        paramForEachBody = paramForEach.body();
-
-        errorMessageVar = paramForEachBody.decl(stringJClass, "errorMessage");
-        errorMessageVar.init(messageFormatJClass.staticInvoke("format").arg("The value of {0}.{1} was: {2}.  {3}")
-                .arg(paramForEach.var().invoke("getRootBeanClass"))
-                .arg(paramForEach.var().invoke("getPropertyPath").invoke("toString"))
-                .arg(paramForEach.var().invoke("getInvalidValue")).arg(paramForEach.var().invoke("getMessage")));
-
-        paramForEachBody.add(systemJClass.staticRef("err").invoke("println").arg(errorMessageVar));
-
-        constraintViolationsVarSizeConditionalThenBlock.add(systemJClass.staticInvoke("exit").arg(JExpr.lit(-1)));
+        tryBlockBody.add(executorServiceVar
+                .invoke("awaitTermination")
+                .arg(longJClass.staticInvoke("valueOf").arg(
+                        JExpr.lit(clazz.getAnnotation(Application.class).wallTime())))
+                .arg(timeUnitJClass.staticRef("DAYS")));
+        tryBlockBody.assign(moduleOutputVar, futureVar.invoke("get"));
 
         JCatchBlock catchBlock = tryBlock._catch(exceptionJClass);
 
