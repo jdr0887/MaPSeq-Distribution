@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -79,18 +80,21 @@ public class ModuleCLIGenerator extends AbstractGenerator {
             try {
 
                 codeModel = new JCodeModel();
-                String newClass = clazz.getPackage().toString().replace("package ", "") + "." + clazz.getSimpleName()
-                        + "CLI";
+                String newClass = String.format("%s.%sCLI", clazz.getPackage().toString().replace("package ", ""),
+                        clazz.getSimpleName());
                 System.out.println("Generating new class: " + newClass);
                 JDefinedClass cliClass = codeModel._class(newClass);
 
                 JClass runnableJClass = codeModel.ref(Runnable.class);
+                JClass callableJClass = codeModel.ref(Callable.class);
+                JClass moduleOutputJClass = codeModel.ref(ModuleOutput.class);
                 JClass helpFormatterJClass = codeModel.ref(HelpFormatter.class);
                 JClass applicationJClass = codeModel.ref(clazz);
                 JClass optionsJClass = codeModel.ref(Options.class);
                 JClass stringJClass = codeModel.ref(String.class);
 
-                cliClass._implements(runnableJClass);
+                // cliClass._implements(runnableJClass);
+                cliClass._implements(callableJClass.narrow(moduleOutputJClass));
 
                 Field[] fieldArray = clazz.getDeclaredFields();
                 for (Field field : fieldArray) {
@@ -153,22 +157,20 @@ public class ModuleCLIGenerator extends AbstractGenerator {
         JClass dryRunObserverJClass = codeModel.ref(DryRunJobObserver.class);
         JClass updateJobObserverJClass = codeModel.ref(PersistantJobObserver.class);
 
-        JMethod mainMethod = cliClass.method(JMod.PUBLIC, void.class, "run");
+        JMethod mainMethod = cliClass.method(JMod.PUBLIC, moduleOutputJClass, "call");
+        mainMethod._throws(exceptionJClass);
 
         JBlock mainMethodBlock = mainMethod.body();
 
         JVar moduleOutputVar = mainMethodBlock.decl(moduleOutputJClass, "output");
         moduleOutputVar.init(JExpr._null());
 
-        JTryBlock tryBlock = mainMethodBlock._try();
-        JBlock tryBlockBody = tryBlock.body();
-
-        JVar moduleExecutorVar = tryBlockBody.decl(moduleExecutorJClass, "executor");
+        JVar moduleExecutorVar = mainMethodBlock.decl(moduleExecutorJClass, "moduleExecutor");
         moduleExecutorVar.init(JExpr._new(moduleExecutorJClass));
 
-        tryBlockBody.add(moduleExecutorVar.invoke("setModule").arg(appFieldVar));
+        mainMethodBlock.add(moduleExecutorVar.invoke("setModule").arg(appFieldVar));
 
-        JConditional dryRunConditional = tryBlockBody._if(appFieldVar.invoke("getDryRun"));
+        JConditional dryRunConditional = mainMethodBlock._if(appFieldVar.invoke("getDryRun"));
         JBlock dryRunConditionalBlock = dryRunConditional._then();
         dryRunConditionalBlock.add(moduleExecutorVar.invoke("addObserver").arg(JExpr._new(dryRunObserverJClass)));
         JBlock dryRunConditionalElseBlock = dryRunConditional._else();
@@ -181,32 +183,20 @@ public class ModuleCLIGenerator extends AbstractGenerator {
         dryRunConditionalElseBlock.add(moduleExecutorVar.invoke("addObserver").arg(
                 JExpr._new(updateJobObserverJClass).arg(mapseqDAOBeanVar)));
 
-        JVar executorServiceVar = tryBlockBody.decl(executorServiceJClass, "executorService");
+        JVar executorServiceVar = mainMethodBlock.decl(executorServiceJClass, "executorService");
         executorServiceVar.init(executorsJClass.staticInvoke("newSingleThreadExecutor"));
 
-        JVar futureVar = tryBlockBody.decl(futureJClass.narrow(moduleOutputJClass), "future");
+        JVar futureVar = mainMethodBlock.decl(futureJClass.narrow(moduleOutputJClass), "future");
         futureVar.init(executorServiceVar.invoke("submit").arg(moduleExecutorVar));
-        tryBlockBody.add(executorServiceVar.invoke("shutdown"));
-        tryBlockBody.add(executorServiceVar
+        mainMethodBlock.add(executorServiceVar.invoke("shutdown"));
+        mainMethodBlock.add(executorServiceVar
                 .invoke("awaitTermination")
                 .arg(longJClass.staticInvoke("valueOf").arg(
                         JExpr.lit(clazz.getAnnotation(Application.class).wallTime())))
                 .arg(timeUnitJClass.staticRef("DAYS")));
-        tryBlockBody.assign(moduleOutputVar, futureVar.invoke("get"));
+        mainMethodBlock.assign(moduleOutputVar, futureVar.invoke("get"));
 
-        JCatchBlock catchBlock = tryBlock._catch(exceptionJClass);
-
-        JVar exceptionVar = catchBlock.param("e");
-        JBlock catchBlockBody = catchBlock.body();
-        catchBlockBody.add(exceptionVar.invoke("printStackTrace"));
-        JBlock finallyBlock = tryBlock._finally();
-
-        JConditional outputNullCheckConditional = finallyBlock._if(moduleOutputVar.eq(JExpr._null()));
-        JBlock outputNullCheckConditionalThenBlock = outputNullCheckConditional._then();
-        outputNullCheckConditionalThenBlock.add(systemJClass.staticInvoke("exit").arg(JExpr.lit(-1)));
-
-        finallyBlock.add(systemJClass.staticInvoke("exit").arg(moduleOutputVar.invoke("getExitCode")));
-
+        mainMethodBlock._return(moduleOutputVar);
     }
 
     private void buildMain(Class<?> clazz, JCodeModel codeModel, JDefinedClass cliClass, JFieldVar cliOptionsFieldVar,
@@ -217,6 +207,7 @@ public class ModuleCLIGenerator extends AbstractGenerator {
         JClass commandLineParserJClass = codeModel.ref(CommandLineParser.class);
         JClass commandLineJClass = codeModel.ref(CommandLine.class);
         JClass gnuParserJClass = codeModel.ref(GnuParser.class);
+        JClass moduleOutputJClass = codeModel.ref(ModuleOutput.class);
         JClass stringJClass = codeModel.ref(String.class);
         JClass longJClass = codeModel.ref(Long.class);
         JClass fileJClass = codeModel.ref(File.class);
@@ -360,14 +351,14 @@ public class ModuleCLIGenerator extends AbstractGenerator {
                         .arg(JExpr.lit("print this help message")).invoke("withLongOpt").arg("help").invoke("create")
                         .arg(JExpr.lit("?"))));
 
-        JVar clpVar = mainMethodBlock.decl(commandLineParserJClass, "commandLineParser");
-        clpVar.init(JExpr._new(gnuParserJClass));
-
         JVar applicationVar = mainMethodBlock.decl(applicationJClass, "app");
         applicationVar.init(JExpr._new(applicationJClass));
 
         JTryBlock tryBlock = mainMethodBlock._try();
         JBlock tryBlockBody = tryBlock.body();
+
+        JVar clpVar = tryBlockBody.decl(commandLineParserJClass, "commandLineParser");
+        clpVar.init(JExpr._new(gnuParserJClass));
 
         JVar commandLineVar = tryBlockBody.decl(commandLineJClass, "commandLine");
         commandLineVar.init(clpVar.invoke("parse").arg(cliOptionsFieldVar).arg(paramElement));
@@ -503,10 +494,6 @@ public class ModuleCLIGenerator extends AbstractGenerator {
             }
         }
 
-        JVar appCLIVar = tryBlockBody.decl(cliClass, "cliApp");
-        appCLIVar.init(JExpr._new(cliClass).arg(applicationVar));
-        tryBlockBody.add(appCLIVar.invoke("run"));
-
         JCatchBlock catchBlock = tryBlock._catch(parseExceptionJClass);
         JVar exceptionVar = catchBlock.param("e");
         JBlock catchBlockBody = catchBlock.body();
@@ -517,11 +504,32 @@ public class ModuleCLIGenerator extends AbstractGenerator {
 
         catchBlockBody.add(systemJClass.staticInvoke("exit").arg(JExpr.lit(-1)));
 
+        JVar moduleOutputVar = mainMethodBlock.decl(moduleOutputJClass, "moduleOutput");
+        moduleOutputVar.init(JExpr._null());
+        tryBlock = mainMethodBlock._try();
+        tryBlockBody = tryBlock.body();
+
+        JVar appCLIVar = tryBlockBody.decl(cliClass, "appCLI");
+        appCLIVar.init(JExpr._new(cliClass).arg(applicationVar));
+        tryBlockBody.assign(moduleOutputVar, appCLIVar.invoke("call"));
+
         catchBlock = tryBlock._catch(exceptionJClass);
         exceptionVar = catchBlock.param("e");
         catchBlockBody = catchBlock.body();
-        catchBlockBody.add(exceptionVar.invoke("printStackTrace"));
+        catchBlockBody.add(systemJClass.staticRef("err").invoke("println").arg(exceptionVar.invoke("getMessage")));
+        catchBlockBody.add(helpFormatterVar.invoke("printHelp").arg(clazz.getSimpleName() + "CLI")
+                .arg(cliOptionsFieldVar));
         catchBlockBody.add(systemJClass.staticInvoke("exit").arg(JExpr.lit(-1)));
+
+        JConditional nullModuleOutputConditional = mainMethodBlock._if(moduleOutputVar.eq(JExpr._null()));
+        JBlock nullModuleOutputConditionalThenBlock = nullModuleOutputConditional._then();
+        nullModuleOutputConditionalThenBlock.add(systemJClass.staticRef("err").invoke("println")
+                .arg(JExpr.lit("moduleOutput is null")));
+        nullModuleOutputConditionalThenBlock.add(helpFormatterVar.invoke("printHelp")
+                .arg(clazz.getSimpleName() + "CLI").arg(cliOptionsFieldVar));
+        nullModuleOutputConditionalThenBlock.add(systemJClass.staticInvoke("exit").arg(JExpr.lit(-1)));
+
+        mainMethodBlock.add(systemJClass.staticInvoke("exit").arg(moduleOutputVar.invoke("getExitCode")));
 
     }
 
