@@ -15,15 +15,13 @@ import edu.unc.mapseq.module.ModuleException;
 import edu.unc.mapseq.module.ModuleOutput;
 import edu.unc.mapseq.module.ShellModuleOutput;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.annotations.OutputValidations;
 import edu.unc.mapseq.module.constraints.FileIsNotEmpty;
 import edu.unc.mapseq.module.constraints.FileIsReadable;
 
-@Application(name = "DetermineNumberOfReads")
-@Executable(value = "/usr/bin/head -1 %s | /bin/cut -f 1 -d ' ' > %s")
+@Application(name = "DetermineNumberOfReads", executable = "/usr/bin/head -1 %s | /bin/cut -f 1 -d ' ' > %s")
 public class DetermineNumberOfReads extends Module {
 
     @NotNull(message = "flagstatInput is required", groups = InputValidations.class)
@@ -50,7 +48,7 @@ public class DetermineNumberOfReads extends Module {
     @Override
     public ModuleOutput call() throws ModuleException {
         CommandInput commandInput = new CommandInput();
-        commandInput.setCommand(String.format(getModuleClass().getAnnotation(Executable.class).value(),
+        commandInput.setCommand(String.format(getModuleClass().getAnnotation(Application.class).executable(),
                 flagstatInput.getAbsolutePath(), output.getAbsolutePath()));
         CommandOutput commandOutput;
         try {

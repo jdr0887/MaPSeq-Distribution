@@ -15,12 +15,10 @@ import edu.unc.mapseq.module.ModuleException;
 import edu.unc.mapseq.module.ModuleOutput;
 import edu.unc.mapseq.module.ShellModuleOutput;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 
-@Application(name = "PruneISOFormsFromGeneQuantFile")
-@Executable(value = "/bin/mv %1$s %2$s; sed /^uc0/d %2$s > %1$s")
+@Application(name = "PruneISOFormsFromGeneQuantFile", executable = "/bin/mv %1$s %2$s; sed /^uc0/d %2$s > %1$s")
 public class PruneISOFormsFromGeneQuantFile extends Module {
 
     @NotNull(message = "geneResults is required", groups = InputValidations.class)
@@ -34,7 +32,7 @@ public class PruneISOFormsFromGeneQuantFile extends Module {
     @Override
     public ModuleOutput call() throws Exception {
         CommandInput commandInput = new CommandInput();
-        commandInput.setCommand(String.format(getModuleClass().getAnnotation(Executable.class).value(),
+        commandInput.setCommand(String.format(getModuleClass().getAnnotation(Application.class).executable(),
                 geneResults.getAbsolutePath(), origGeneResults.getAbsolutePath()));
         CommandOutput commandOutput;
         try {

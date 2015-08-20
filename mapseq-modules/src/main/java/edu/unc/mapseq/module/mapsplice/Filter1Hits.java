@@ -6,14 +6,12 @@ import javax.validation.constraints.NotNull;
 
 import edu.unc.mapseq.module.Module;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.annotations.OutputValidations;
 import edu.unc.mapseq.module.constraints.FileIsReadable;
 
-@Application(name = "Filter1Hits")
-@Executable(value = "$%s_MAPSPLICE_HOME/bin/filter_1hits")
+@Application(name = "Filter1Hits", executable = "$%s_MAPSPLICE_HOME/bin/filter_1hits")
 public class Filter1Hits extends Module {
 
     @NotNull(message = "junctionFile is required", groups = InputValidations.class)
@@ -46,7 +44,8 @@ public class Filter1Hits extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Executable.class).value(), getWorkflowName().toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
+                .toUpperCase());
     }
 
     public File getJunctionFile() {

@@ -18,7 +18,6 @@ import edu.unc.mapseq.module.ModuleException;
 import edu.unc.mapseq.module.ModuleOutput;
 import edu.unc.mapseq.module.ShellModuleOutput;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.annotations.OutputValidations;
@@ -30,8 +29,7 @@ import edu.unc.mapseq.module.constraints.FileIsReadable;
  * @author jdr0887
  * 
  */
-@Application(name = "GATKIndelRealigner")
-@Executable(value = "$JAVA_HOME/bin/java -Xmx4g -Djava.io.tmpdir=$MAPSEQ_HOME/tmp -jar $%s_GATK_HOME/GenomeAnalysisTK.jar --analysis_type IndelRealigner")
+@Application(name = "GATKIndelRealigner", executable = "$JAVA_HOME/bin/java -Xmx4g -Djava.io.tmpdir=$MAPSEQ_HOME/tmp -jar $%s_GATK_HOME/GenomeAnalysisTK.jar --analysis_type IndelRealigner")
 public class GATKIndelRealigner extends Module {
 
     @NotNull(message = "inFile is required", groups = InputValidations.class)
@@ -75,7 +73,8 @@ public class GATKIndelRealigner extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Executable.class).value(), getWorkflowName().toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
+                .toUpperCase());
     }
 
     @Override

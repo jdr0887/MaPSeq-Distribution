@@ -36,6 +36,9 @@ public class PicardSAMFormatConverter extends Module {
     @OutputArgument(persistFileData = true, mimeType = MimeType.APPLICATION_BAM)
     private File output;
 
+    @InputArgument
+    private Integer maxRecordsInRAM = 1000000;
+
     public PicardSAMFormatConverter() {
         super();
     }
@@ -54,6 +57,7 @@ public class PicardSAMFormatConverter extends Module {
         try {
 
             List<String> argumentList = new ArrayList<String>();
+            argumentList.add(String.format("MAX_RECORDS_IN_RAM=%d", maxRecordsInRAM));
             argumentList.add("VALIDATION_STRINGENCY=SILENT");
             argumentList.add(String.format("TMP_DIR=%s/tmp", System.getenv("MAPSEQ_HOME")));
             argumentList.add("OUTPUT=" + output.getAbsolutePath());
@@ -75,6 +79,14 @@ public class PicardSAMFormatConverter extends Module {
         getFileDatas().add(fm);
 
         return moduleOutput;
+    }
+
+    public Integer getMaxRecordsInRAM() {
+        return maxRecordsInRAM;
+    }
+
+    public void setMaxRecordsInRAM(Integer maxRecordsInRAM) {
+        this.maxRecordsInRAM = maxRecordsInRAM;
     }
 
     public File getInput() {

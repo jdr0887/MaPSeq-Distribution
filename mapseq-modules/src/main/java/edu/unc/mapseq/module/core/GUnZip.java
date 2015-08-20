@@ -6,7 +6,6 @@ import javax.validation.constraints.NotNull;
 
 import edu.unc.mapseq.module.Module;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.annotations.OutputArgument;
@@ -17,8 +16,7 @@ import edu.unc.mapseq.module.constraints.FileIsReadable;
  * @author jdr0887
  * 
  */
-@Application(name = "GUnZip", isWorkflowRunIdOptional = true)
-@Executable(value = "/bin/gunzip")
+@Application(name = "GUnZip", executable = "/bin/gunzip", isWorkflowRunIdOptional = true)
 public class GUnZip extends Module {
 
     @NotNull(message = "gzFile is required", groups = InputValidations.class)

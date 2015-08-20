@@ -19,7 +19,6 @@ import edu.unc.mapseq.module.ModuleException;
 import edu.unc.mapseq.module.ModuleOutput;
 import edu.unc.mapseq.module.ShellModuleOutput;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.annotations.OutputArgument;
@@ -31,8 +30,7 @@ import edu.unc.mapseq.module.constraints.FileIsNotEmpty;
  * @author jdr0887
  * 
  */
-@Application(name = "ZCat", isWorkflowRunIdOptional = true)
-@Executable(value = "/bin/zcat")
+@Application(name = "ZCat", executable = "/bin/zcat", isWorkflowRunIdOptional = true)
 public class ZCat extends Module {
 
     private final Logger logger = LoggerFactory.getLogger(ZCat.class);
@@ -68,7 +66,7 @@ public class ZCat extends Module {
         CommandOutput commandOutput;
         try {
             StringBuilder command = new StringBuilder();
-            command.append(getModuleClass().getAnnotation(Executable.class).value());
+            command.append(getModuleClass().getAnnotation(Application.class).executable());
             command.append(" ").append(regularExpression);
             command.append(" > ").append(outputFile.getAbsolutePath());
 

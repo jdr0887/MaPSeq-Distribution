@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -29,9 +30,9 @@ import edu.unc.mapseq.module.annotations.OutputValidations;
 import edu.unc.mapseq.module.constraints.FileIsNotEmpty;
 import edu.unc.mapseq.module.constraints.FileIsReadable;
 
+//java implementation is 3x faster
 @Application(name = "FilterVariant")
-// java implementation is 3x faster
-// @Executable(value = "/proj/renci/rc_renci/scripts/python/utils/filter_vcf.py")
+// @Application(name = "FilterVariant", executable = "/proj/renci/rc_renci/scripts/python/utils/filter_vcf.py")
 public class FilterVariant extends Module {
 
     @NotNull(message = "intervalList is required", groups = InputValidations.class)
@@ -64,10 +65,8 @@ public class FilterVariant extends Module {
         DefaultModuleOutput moduleOutput = new DefaultModuleOutput();
 
         int exitCode = 0;
-        try {
-            Map<String, List<IntRange>> map = new HashMap<String, List<IntRange>>();
-            BufferedReader br = new BufferedReader(new FileReader(intervalList));
-
+        Map<String, List<IntRange>> map = new HashMap<String, List<IntRange>>();
+        try (FileReader fr = new FileReader(intervalList); BufferedReader br = new BufferedReader(fr)) {
             String line;
             while ((line = br.readLine()) != null) {
                 if (StringUtils.isEmpty(line.trim()) || line.startsWith("#")) {
@@ -77,9 +76,12 @@ public class FilterVariant extends Module {
                 String chromosome = lineArray[0];
                 map.put(chromosome, new ArrayList<IntRange>());
             }
-            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-            br = new BufferedReader(new FileReader(intervalList));
+        try (FileReader fr = new FileReader(intervalList); BufferedReader br = new BufferedReader(fr)) {
+            String line;
             while ((line = br.readLine()) != null) {
                 if (StringUtils.isEmpty(line.trim()) || line.startsWith("#")) {
                     continue;
@@ -101,10 +103,15 @@ public class FilterVariant extends Module {
                 IntRange range = new IntRange(start, end);
                 map.get(chromosome).add(range);
             }
-            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-            BufferedWriter bw = new BufferedWriter(new FileWriter(output));
-            br = new BufferedReader(new FileReader(input));
+        try (FileWriter fw = new FileWriter(output);
+                BufferedWriter bw = new BufferedWriter(fw);
+                FileReader fr = new FileReader(input);
+                BufferedReader br = new BufferedReader(fr)) {
+            String line;
             line: while ((line = br.readLine()) != null) {
 
                 if (line.startsWith("#")) {
@@ -126,7 +133,7 @@ public class FilterVariant extends Module {
                         }
                     }
 
-                    if (withMissing) {
+                    if (withMissing && lineSplit.length > 3) {
 
                         String alternateAllele = lineSplit[4];
 
@@ -147,8 +154,6 @@ public class FilterVariant extends Module {
 
                 bw.flush();
             }
-            br.close();
-            bw.close();
         } catch (Exception e) {
             e.printStackTrace();
             moduleOutput.setError(new StringBuilder(e.getMessage()));
@@ -221,6 +226,13 @@ public class FilterVariant extends Module {
         // "/home/jdr0887/tmp/130201_UNC14-SN744_0304_BC1NK7ACXX",
         // "130201_UNC14-SN744_0304_BC1NK7ACXX_ACTTGA_L006.fixed-rg.deduped.realign.fixmate.recal.variant.recalibrated.filtered.dxid_25_v_19.vcf"));
         // module.setIntervalList(new File("/home/jdr0887/tmp", "genes_dxid_25_v_19.interval_list"));
+
+        module.setInput(new File("/home/jdr0887/FilterVariant",
+                "150616_UNC18-D00493_0237_BC74YFANXX_TTAGGC_L005.fixed-rg.deduped.realign.fixmate.recal.vcf"));
+        module.setOutput(new File("/home/jdr0887/FilterVariant",
+                "150616_UNC18-D00493_0237_BC74YFANXX_TTAGGC_L005.fixed-rg.deduped.realign.fixmate.recal.variant.vcf"));
+        module.setIntervalList(new File("/home/jdr0887/FilterVariant", "ic_snp_v2.list"));
+        module.setWithMissing(Boolean.TRUE);
 
         try {
             long start = System.currentTimeMillis();

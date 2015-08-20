@@ -40,6 +40,9 @@ public class PicardMarkDuplicates extends Module {
     @InputArgument
     private File metricsFile;
 
+    @InputArgument
+    private Integer maxRecordsInRAM = 1000000;
+
     public PicardMarkDuplicates() {
         super();
     }
@@ -59,6 +62,7 @@ public class PicardMarkDuplicates extends Module {
 
             List<String> argumentList = new ArrayList<String>();
 
+            argumentList.add(String.format("MAX_RECORDS_IN_RAM=%d", maxRecordsInRAM));
             argumentList.add("VALIDATION_STRINGENCY=SILENT");
             argumentList.add("REMOVE_DUPLICATES=true");
             argumentList.add(String.format("TMP_DIR=%s/tmp", System.getenv("MAPSEQ_HOME")));
@@ -89,6 +93,14 @@ public class PicardMarkDuplicates extends Module {
 
         return moduleOutput;
 
+    }
+
+    public Integer getMaxRecordsInRAM() {
+        return maxRecordsInRAM;
+    }
+
+    public void setMaxRecordsInRAM(Integer maxRecordsInRAM) {
+        this.maxRecordsInRAM = maxRecordsInRAM;
     }
 
     public File getInput() {

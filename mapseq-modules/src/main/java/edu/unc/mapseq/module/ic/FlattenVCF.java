@@ -6,15 +6,13 @@ import javax.validation.constraints.NotNull;
 
 import edu.unc.mapseq.module.Module;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.annotations.OutputArgument;
 import edu.unc.mapseq.module.annotations.OutputValidations;
 import edu.unc.mapseq.module.constraints.FileIsReadable;
 
-@Application(name = "FlattenVCF")
-@Executable(value = "$%s_IC_HOME/bin/flatten_vcf.py")
+@Application(name = "FlattenVCF", executable = "$%s_IC_HOME/bin/flatten_vcf.py")
 public class FlattenVCF extends Module {
 
     @NotNull(message = "vcf is required", groups = InputValidations.class)
@@ -46,7 +44,8 @@ public class FlattenVCF extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Executable.class).value(), getWorkflowName().toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
+                .toUpperCase());
     }
 
     public File getVcf() {

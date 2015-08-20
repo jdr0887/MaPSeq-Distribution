@@ -6,7 +6,6 @@ import javax.validation.constraints.NotNull;
 
 import edu.unc.mapseq.module.Module;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.annotations.OutputArgument;
@@ -14,8 +13,7 @@ import edu.unc.mapseq.module.annotations.OutputValidations;
 import edu.unc.mapseq.module.constraints.FileIsNotEmpty;
 import edu.unc.mapseq.module.constraints.FileIsReadable;
 
-@Application(name = "BedGraphToBigWig")
-@Executable(value = "$%s_UCSC_HOME/bin/bedGraphToBigWig")
+@Application(name = "BedGraphToBigWig", executable = "$%s_UCSC_HOME/bin/bedGraphToBigWig")
 public class BedGraphToBigWig extends Module {
 
     @NotNull(message = "inFile is required", groups = InputValidations.class)
@@ -42,7 +40,8 @@ public class BedGraphToBigWig extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Executable.class).value(), getWorkflowName());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
+                .toUpperCase());
     }
 
     public File getInFile() {

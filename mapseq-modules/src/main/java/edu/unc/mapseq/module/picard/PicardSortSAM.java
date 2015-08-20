@@ -42,6 +42,9 @@ public class PicardSortSAM extends Module {
     @InputArgument(description = "The sorted BAM or SAM output file.")
     private String sortOrder;
 
+    @InputArgument
+    private Integer maxRecordsInRAM = 1000000;
+
     public PicardSortSAM() {
         super();
     }
@@ -60,6 +63,7 @@ public class PicardSortSAM extends Module {
         try {
 
             List<String> argumentList = new ArrayList<String>();
+            argumentList.add(String.format("MAX_RECORDS_IN_RAM=%d", maxRecordsInRAM));
             argumentList.add("VALIDATION_STRINGENCY=SILENT");
             argumentList.add("SORT_ORDER=" + sortOrder);
             argumentList.add(String.format("TMP_DIR=%s/tmp", System.getenv("MAPSEQ_HOME")));
@@ -83,6 +87,14 @@ public class PicardSortSAM extends Module {
 
         return moduleOutput;
 
+    }
+
+    public Integer getMaxRecordsInRAM() {
+        return maxRecordsInRAM;
+    }
+
+    public void setMaxRecordsInRAM(Integer maxRecordsInRAM) {
+        this.maxRecordsInRAM = maxRecordsInRAM;
     }
 
     public File getInput() {

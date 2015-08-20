@@ -17,7 +17,6 @@ import edu.unc.mapseq.module.ModuleException;
 import edu.unc.mapseq.module.ModuleOutput;
 import edu.unc.mapseq.module.ShellModuleOutput;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.annotations.OutputArgument;
@@ -25,8 +24,7 @@ import edu.unc.mapseq.module.annotations.OutputValidations;
 import edu.unc.mapseq.module.constraints.FileIsNotEmpty;
 import edu.unc.mapseq.module.constraints.FileIsReadable;
 
-@Application(name = "FastqQualityBoxplotGraph")
-@Executable(value = "$%s_FASTX_TOOLKIT_HOME/bin/fastq_quality_boxplot_graph.sh")
+@Application(name = "FastqQualityBoxplotGraph", executable = "$%s_FASTX_TOOLKIT_HOME/bin/fastq_quality_boxplot_graph.sh")
 public class FastqQualityBoxplotGraph extends Module {
 
     @FileIsReadable(message = "input is not readable", groups = InputValidations.class)
@@ -56,6 +54,12 @@ public class FastqQualityBoxplotGraph extends Module {
     }
 
     @Override
+    public String getExecutable() {
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
+                .toUpperCase());
+    }
+
+    @Override
     public ModuleOutput call() throws ModuleException {
 
         CommandOutput commandOutput = null;
@@ -63,8 +67,8 @@ public class FastqQualityBoxplotGraph extends Module {
         try {
             CommandInput commandInput = new CommandInput();
             StringBuilder command = new StringBuilder();
-            command.append(String.format(getModuleClass().getAnnotation(Executable.class).value(), getWorkflowName()
-                    .toUpperCase()));
+            command.append(String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                    getWorkflowName().toUpperCase()));
 
             if (generatePostcript != null && generatePostcript) {
                 command.append(" -p");

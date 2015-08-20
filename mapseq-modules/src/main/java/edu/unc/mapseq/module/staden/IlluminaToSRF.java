@@ -19,7 +19,6 @@ import edu.unc.mapseq.module.ModuleException;
 import edu.unc.mapseq.module.ModuleOutput;
 import edu.unc.mapseq.module.ShellModuleOutput;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.constraints.FileIsReadable;
@@ -29,8 +28,7 @@ import edu.unc.mapseq.module.constraints.FileIsReadable;
  * @author jdr0887
  * 
  */
-@Application(name = "IlluminaToSRF")
-@Executable(value = "STADEN_IO_LIB_HOME/bin/illumina2srf")
+@Application(name = "IlluminaToSRF", executable = "$%s_STADEN_IO_LIB_HOME/bin/illumina2srf")
 public class IlluminaToSRF extends Module {
 
     @NotNull(message = "qSeqPath is required", groups = InputValidations.class)
@@ -69,11 +67,16 @@ public class IlluminaToSRF extends Module {
     }
 
     @Override
+    public String getExecutable() {
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
+                .toUpperCase());
+    }
+
+    @Override
     public ModuleOutput call() throws ModuleException {
         CommandInput commandInput = new CommandInput();
         StringBuilder command = new StringBuilder();
-        command.append(String.format("$%s_%s", getWorkflowName().toUpperCase(),
-                getModuleClass().getAnnotation(Executable.class).value()));
+        command.append(getExecutable());
         command.append(" -force_config_machine_name");
         command.append(" -o ").append(output.getAbsolutePath());
         command.append(" ").append(qSeqPath).append(File.separator).append("s_").append(lane.toString())

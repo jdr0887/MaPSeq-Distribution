@@ -20,7 +20,6 @@ import edu.unc.mapseq.module.ModuleException;
 import edu.unc.mapseq.module.ModuleOutput;
 import edu.unc.mapseq.module.ShellModuleOutput;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.annotations.OutputValidations;
@@ -31,9 +30,8 @@ import edu.unc.mapseq.module.constraints.FileListIsReadable;
  * 
  * @author jdr0887
  */
-@Application(name = "Sort")
-@Executable(value = "/bin/sort")
-// @Executable(value = "/usr/bin/sort")
+@Application(name = "Sort", executable = "/bin/sort")
+// @Application(name = "Sort", executable = "/usr/bin/sort")
 public class Sort extends Module {
 
     private final Logger logger = LoggerFactory.getLogger(Sort.class);

@@ -18,13 +18,11 @@ import edu.unc.mapseq.module.ModuleException;
 import edu.unc.mapseq.module.ModuleOutput;
 import edu.unc.mapseq.module.ShellModuleOutput;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.constraints.FileIsReadable;
 
-@Application(name = "MACS2")
-@Executable(value = "MACS2_HOME/bin/macs2")
+@Application(name = "MACS2", executable = "$%s_MACS2_HOME/bin/macs2")
 public class MACS2 extends Module {
 
     @NotNull(message = "treatment is required", groups = InputValidations.class)
@@ -110,13 +108,18 @@ public class MACS2 extends Module {
     }
 
     @Override
+    public String getExecutable() {
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
+                .toUpperCase());
+    }
+
+    @Override
     public ModuleOutput call() throws Exception {
 
         CommandInput commandInput = new CommandInput();
 
         StringBuilder command = new StringBuilder();
-        command.append(String.format("$%s_%s", getWorkflowName().toUpperCase(),
-                getModuleClass().getAnnotation(Executable.class).value()));
+        command.append(getExecutable());
 
         command.append(" --treatment=").append(this.treatment.getAbsolutePath());
 

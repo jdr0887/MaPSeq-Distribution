@@ -17,7 +17,6 @@ import edu.unc.mapseq.module.ModuleException;
 import edu.unc.mapseq.module.ModuleOutput;
 import edu.unc.mapseq.module.ShellModuleOutput;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.constraints.FileIsNotEmpty;
@@ -28,9 +27,8 @@ import edu.unc.mapseq.module.constraints.FileIsReadable;
  * @author jdr0887
  * 
  */
-@Application(name = "ConfigureBCLToFastQ")
-@Executable(value = "$PERL_HOME/bin/perl $%s_CASAVA_HOME/bin/configureBclToFastq.pl")
-// @Executable(value = "$%s_CASAVA_HOME/bin/configureBclToFastq.pl")
+@Application(name = "ConfigureBCLToFastQ", executable = "$PERL_HOME/bin/perl $%s_CASAVA_HOME/bin/configureBclToFastq.pl")
+// @Application(name = "ConfigureBCLToFastQ", executable = "$%s_CASAVA_HOME/bin/configureBclToFastq.pl")
 public class ConfigureBCLToFastq extends Module {
 
     private final Logger logger = LoggerFactory.getLogger(ConfigureBCLToFastq.class);
@@ -81,7 +79,8 @@ public class ConfigureBCLToFastq extends Module {
     }
 
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Executable.class).value(), getWorkflowName().toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
+                .toUpperCase());
     }
 
     @Override

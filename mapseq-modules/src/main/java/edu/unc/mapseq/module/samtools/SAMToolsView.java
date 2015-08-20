@@ -21,15 +21,13 @@ import edu.unc.mapseq.module.ModuleException;
 import edu.unc.mapseq.module.ModuleOutput;
 import edu.unc.mapseq.module.ShellModuleOutput;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.annotations.OutputValidations;
 import edu.unc.mapseq.module.constraints.FileIsNotEmpty;
 import edu.unc.mapseq.module.constraints.FileIsReadable;
 
-@Application(name = "SAMToolsView")
-@Executable(value = "SAMTOOLS_HOME/bin/samtools view")
+@Application(name = "SAMToolsView", executable = "$%s_SAMTOOLS_HOME/bin/samtools view")
 public class SAMToolsView extends Module {
 
     @NotNull(message = "Input is required", groups = InputValidations.class)
@@ -90,12 +88,17 @@ public class SAMToolsView extends Module {
     }
 
     @Override
+    public String getExecutable() {
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
+                .toUpperCase());
+    }
+
+    @Override
     public ModuleOutput call() throws ModuleException {
 
         CommandInput commandInput = new CommandInput();
         StringBuilder command = new StringBuilder();
-        command.append(String.format("$%s_%s", getWorkflowName().toUpperCase(),
-                getModuleClass().getAnnotation(Executable.class).value()));
+        command.append(getExecutable());
 
         if (this.includeHeader != null && this.includeHeader) {
             command.append(" -h");

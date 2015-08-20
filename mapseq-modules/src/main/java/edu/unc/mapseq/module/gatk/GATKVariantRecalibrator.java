@@ -22,15 +22,13 @@ import edu.unc.mapseq.module.ModuleException;
 import edu.unc.mapseq.module.ModuleOutput;
 import edu.unc.mapseq.module.ShellModuleOutput;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.annotations.OutputArgument;
 import edu.unc.mapseq.module.annotations.OutputValidations;
 import edu.unc.mapseq.module.constraints.FileIsReadable;
 
-@Application(name = "GATKVariantRecalibrator")
-@Executable(value = "$JAVA_HOME/bin/java -Xmx4g -Djava.io.tmpdir=$MAPSEQ_HOME/tmp -jar $%s_GATK_HOME/GenomeAnalysisTK.jar --analysis_type VariantRecalibrator")
+@Application(name = "GATKVariantRecalibrator", executable = "$JAVA_HOME/bin/java -Xmx4g -Djava.io.tmpdir=$MAPSEQ_HOME/tmp -jar $%s_GATK_HOME/GenomeAnalysisTK.jar --analysis_type VariantRecalibrator")
 public class GATKVariantRecalibrator extends Module {
 
     private final Logger logger = LoggerFactory.getLogger(GATKVariantRecalibrator.class);
@@ -67,6 +65,37 @@ public class GATKVariantRecalibrator extends Module {
 
     @InputArgument(flag = "--use_annotation")
     private List<String> useAnnotation;
+
+    @InputArgument(flag = "--resource")
+    private List<String> resource;
+
+    @InputArgument(flag = "--mode")
+    private String mode;
+
+    @NotNull(message = "tranchesFile is required", groups = InputValidations.class)
+    @FileIsReadable(message = "tranchesFile is not readable", groups = OutputValidations.class)
+    @InputArgument(flag = "--tranches_file")
+    private File tranchesFile;
+
+    @OutputArgument(flag = "--rscript_file", persistFileData = true, mimeType = MimeType.APPLICATION_R)
+    private File rscriptFile;
+
+    @InputArgument(flag = "--phone_home")
+    private String phoneHome;
+
+    @InputArgument(flag = "--downsampling_type")
+    private String downsamplingType;
+
+    @Override
+    public Class<?> getModuleClass() {
+        return GATKVariantRecalibrator.class;
+    }
+
+    @Override
+    public String getExecutable() {
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
+                .toUpperCase());
+    }
 
     @Override
     public ModuleOutput call() throws Exception {
@@ -162,36 +191,6 @@ public class GATKVariantRecalibrator extends Module {
         }
 
         return new ShellModuleOutput(commandOutput);
-    }
-
-    @InputArgument(flag = "--resource")
-    private List<String> resource;
-
-    @InputArgument(flag = "--mode")
-    private String mode;
-
-    @NotNull(message = "tranchesFile is required", groups = InputValidations.class)
-    @FileIsReadable(message = "tranchesFile is not readable", groups = OutputValidations.class)
-    @InputArgument(flag = "--tranches_file")
-    private File tranchesFile;
-
-    @OutputArgument(flag = "--rscript_file", persistFileData = true, mimeType = MimeType.APPLICATION_R)
-    private File rscriptFile;
-
-    @InputArgument(flag = "--phone_home")
-    private String phoneHome;
-
-    @InputArgument(flag = "--downsampling_type")
-    private String downsamplingType;
-
-    @Override
-    public Class<?> getModuleClass() {
-        return GATKVariantRecalibrator.class;
-    }
-
-    @Override
-    public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Executable.class).value(), getWorkflowName().toUpperCase());
     }
 
     public String getPhoneHome() {

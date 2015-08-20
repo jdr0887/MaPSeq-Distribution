@@ -6,14 +6,12 @@ import javax.validation.constraints.NotNull;
 
 import edu.unc.mapseq.module.Module;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.annotations.OutputValidations;
 import edu.unc.mapseq.module.constraints.FileIsReadable;
 
-@Application(name = "FilterJunctionByROCarguNonCanonical")
-@Executable(value = "$%s_MAPSPLICE_HOME/bin/filterjuncbyROCarguNonCanonical")
+@Application(name = "FilterJunctionByROCarguNonCanonical", executable = "$%s_MAPSPLICE_HOME/bin/filterjuncbyROCarguNonCanonical")
 public class FilterJunctionByROCarguNonCanonical extends Module {
 
     @NotNull(message = "junctionFile is required", groups = InputValidations.class)
@@ -66,7 +64,8 @@ public class FilterJunctionByROCarguNonCanonical extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Executable.class).value(), getWorkflowName().toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
+                .toUpperCase());
     }
 
     public File getJunctionFile() {

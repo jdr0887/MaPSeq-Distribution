@@ -6,15 +6,13 @@ import javax.validation.constraints.NotNull;
 
 import edu.unc.mapseq.module.Module;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.annotations.OutputArgument;
 import edu.unc.mapseq.module.annotations.OutputValidations;
 import edu.unc.mapseq.module.constraints.FileIsReadable;
 
-@Application(name = "CompareExpected")
-@Executable(value = "$%s_IC_HOME/bin/comp_expected.py")
+@Application(name = "CompareExpected", executable = "$%s_IC_HOME/bin/comp_expected.py")
 public class CompareExpected extends Module {
 
     @NotNull(message = "output is required", groups = InputValidations.class)
@@ -39,7 +37,8 @@ public class CompareExpected extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Executable.class).value(), getWorkflowName().toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
+                .toUpperCase());
     }
 
     public File getOutput() {

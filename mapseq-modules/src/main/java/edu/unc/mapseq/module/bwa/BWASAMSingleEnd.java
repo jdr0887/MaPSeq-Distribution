@@ -7,7 +7,6 @@ import javax.validation.constraints.NotNull;
 import edu.unc.mapseq.dao.model.MimeType;
 import edu.unc.mapseq.module.Module;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.annotations.OutputArgument;
@@ -20,8 +19,7 @@ import edu.unc.mapseq.module.constraints.FileIsReadable;
  * @author jdr0887
  * 
  */
-@Application(name = "BWA :: SAMSE")
-@Executable(value = "$%s_BWA_HOME/bin/bwa samse")
+@Application(name = "BWA :: SAMSE", executable = "$%s_BWA_HOME/bin/bwa samse")
 public class BWASAMSingleEnd extends Module {
 
     @NotNull(message = "fastq is required", groups = InputValidations.class)
@@ -58,7 +56,8 @@ public class BWASAMSingleEnd extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Executable.class).value(), getWorkflowName().toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
+                .toUpperCase());
     }
 
     public File getFastq() {

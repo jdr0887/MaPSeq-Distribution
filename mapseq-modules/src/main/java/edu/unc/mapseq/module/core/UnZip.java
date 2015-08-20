@@ -6,7 +6,6 @@ import javax.validation.constraints.NotNull;
 
 import edu.unc.mapseq.module.Module;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.annotations.OutputArgument;
@@ -19,8 +18,7 @@ import edu.unc.mapseq.module.constraints.FileIsReadable;
  * @author jdr0887
  * 
  */
-@Application(name = "UnZip", isWorkflowRunIdOptional = true)
-@Executable(value = "/usr/bin/unzip")
+@Application(name = "UnZip", executable = "/usr/bin/unzip", isWorkflowRunIdOptional = true)
 public class UnZip extends Module {
 
     @NotNull(message = "Zip is required", groups = InputValidations.class)

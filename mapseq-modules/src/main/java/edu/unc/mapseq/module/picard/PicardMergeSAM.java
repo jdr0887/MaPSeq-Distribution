@@ -42,6 +42,9 @@ public class PicardMergeSAM extends Module {
     @InputArgument
     private String sortOrder;
 
+    @InputArgument
+    private Integer maxRecordsInRAM = 1000000;
+
     public PicardMergeSAM() {
         super();
     }
@@ -57,6 +60,7 @@ public class PicardMergeSAM extends Module {
         DefaultModuleOutput moduleOutput = new DefaultModuleOutput();
 
         List<String> argumentList = new ArrayList<String>();
+        argumentList.add(String.format("MAX_RECORDS_IN_RAM=%d", maxRecordsInRAM));
         argumentList.add("VALIDATION_STRINGENCY=SILENT");
         argumentList.add("SORT_ORDER=" + sortOrder);
         argumentList.add(String.format("TMP_DIR=%s/tmp", System.getenv("MAPSEQ_HOME")));
@@ -84,6 +88,14 @@ public class PicardMergeSAM extends Module {
         getFileDatas().add(fm);
 
         return moduleOutput;
+    }
+
+    public Integer getMaxRecordsInRAM() {
+        return maxRecordsInRAM;
+    }
+
+    public void setMaxRecordsInRAM(Integer maxRecordsInRAM) {
+        this.maxRecordsInRAM = maxRecordsInRAM;
     }
 
     public File getOutput() {

@@ -6,13 +6,11 @@ import javax.validation.constraints.NotNull;
 
 import edu.unc.mapseq.module.Module;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.annotations.OutputArgument;
 
-@Application(name = "MapSplice")
-@Executable(value = "python $%s_MAPSPLICE_HOME/mapsplice.py")
+@Application(name = "MapSplice", executable = "python $%s_MAPSPLICE_HOME/mapsplice.py", wallTime = 5L)
 public class MapSplice extends Module {
 
     @NotNull(message = "fastqR1 is required", groups = InputValidations.class)
@@ -93,7 +91,8 @@ public class MapSplice extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Executable.class).value(), getWorkflowName().toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
+                .toUpperCase());
     }
 
     public File getFastqR1() {

@@ -71,6 +71,9 @@ public class PicardAddOrReplaceReadGroups extends Module {
     @InputArgument
     private String readGroupCenterName;
 
+    @InputArgument
+    private Integer maxRecordsInRAM = 1000000;
+
     public PicardAddOrReplaceReadGroups() {
         super();
     }
@@ -91,6 +94,7 @@ public class PicardAddOrReplaceReadGroups extends Module {
 
             argumentList.add("VALIDATION_STRINGENCY=SILENT");
             argumentList.add(String.format("SORT_ORDER=%s", this.sortOrder));
+            argumentList.add(String.format("MAX_RECORDS_IN_RAM=%d", maxRecordsInRAM));
             argumentList.add(String.format("TMP_DIR=%s/tmp", System.getenv("MAPSEQ_HOME")));
             argumentList.add(String.format("RGID=%s", this.readGroupId));
             argumentList.add(String.format("RGLB=%s", this.readGroupLibrary));
@@ -124,6 +128,14 @@ public class PicardAddOrReplaceReadGroups extends Module {
         getFileDatas().add(fm);
 
         return moduleOutput;
+    }
+
+    public Integer getMaxRecordsInRAM() {
+        return maxRecordsInRAM;
+    }
+
+    public void setMaxRecordsInRAM(Integer maxRecordsInRAM) {
+        this.maxRecordsInRAM = maxRecordsInRAM;
     }
 
     public File getInput() {

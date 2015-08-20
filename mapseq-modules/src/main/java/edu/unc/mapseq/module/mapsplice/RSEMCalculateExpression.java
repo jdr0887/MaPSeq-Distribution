@@ -6,13 +6,11 @@ import javax.validation.constraints.NotNull;
 
 import edu.unc.mapseq.module.Module;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.annotations.OutputArgument;
 
-@Application(name = "RSEMCalculateExpression")
-@Executable(value = "$%s_RSEM_HOME/rsem-calculate-expression")
+@Application(name = "RSEMCalculateExpression", executable = "$%s_RSEM_HOME/rsem-calculate-expression", wallTime = 5L)
 public class RSEMCalculateExpression extends Module {
 
     @InputArgument(flag = "--paired-end")
@@ -41,7 +39,8 @@ public class RSEMCalculateExpression extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Executable.class).value(), getWorkflowName().toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
+                .toUpperCase());
     }
 
     @Override

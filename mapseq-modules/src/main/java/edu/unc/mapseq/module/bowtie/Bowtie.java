@@ -7,15 +7,13 @@ import javax.validation.constraints.NotNull;
 import edu.unc.mapseq.dao.model.MimeType;
 import edu.unc.mapseq.module.Module;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.annotations.OutputArgument;
 import edu.unc.mapseq.module.annotations.OutputValidations;
 import edu.unc.mapseq.module.constraints.FileIsReadable;
 
-@Application(name = "Bowtie")
-@Executable(value = "$%s_BOWTIE_HOME/bowtie")
+@Application(name = "Bowtie", executable = "$%s_BOWTIE_HOME/bowtie")
 public class Bowtie extends Module {
 
     @NotNull(message = "fastq1 is required", groups = InputValidations.class)
@@ -165,7 +163,8 @@ public class Bowtie extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Executable.class).value(), getWorkflowName().toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
+                .toUpperCase());
     }
 
     public File getFastq1() {

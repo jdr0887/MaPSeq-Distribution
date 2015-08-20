@@ -20,15 +20,13 @@ import edu.unc.mapseq.module.ModuleException;
 import edu.unc.mapseq.module.ModuleOutput;
 import edu.unc.mapseq.module.ShellModuleOutput;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.annotations.OutputValidations;
 import edu.unc.mapseq.module.constraints.FileIsReadable;
 import edu.unc.mapseq.module.constraints.FileListIsReadable;
 
-@Application(name = "NewSAM2Juntion")
-@Executable(value = "$%s_MAPSPLICE_HOME/bin/newsam2junc")
+@Application(name = "NewSAM2Juntion", executable = "$%s_MAPSPLICE_HOME/bin/newsam2junc")
 public class NewSAM2Juntion extends Module {
 
     private final Logger logger = LoggerFactory.getLogger(NewSAM2Juntion.class);
@@ -71,7 +69,8 @@ public class NewSAM2Juntion extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Executable.class).value(), getWorkflowName().toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
+                .toUpperCase());
     }
 
     @Override

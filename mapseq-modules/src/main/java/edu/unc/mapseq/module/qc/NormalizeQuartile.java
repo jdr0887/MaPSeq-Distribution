@@ -15,7 +15,6 @@ import edu.unc.mapseq.module.ModuleException;
 import edu.unc.mapseq.module.ModuleOutput;
 import edu.unc.mapseq.module.ShellModuleOutput;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.annotations.OutputArgument;
@@ -27,8 +26,7 @@ import edu.unc.mapseq.module.constraints.FileIsReadable;
  * @author jdr0887
  * 
  */
-@Application(name = "NormalizeQuartile")
-@Executable(value = "perl $MAPSEQ_HOME/bin/quartile_norm.pl")
+@Application(name = "NormalizeQuartile", executable = "perl $MAPSEQ_HOME/bin/quartile_norm.pl")
 public class NormalizeQuartile extends Module {
 
     @NotNull(message = "column is required", groups = InputValidations.class)
@@ -57,7 +55,7 @@ public class NormalizeQuartile extends Module {
     public ModuleOutput call() throws Exception {
         CommandInput commandInput = new CommandInput();
         StringBuilder command = new StringBuilder();
-        command.append(getModuleClass().getAnnotation(Executable.class).value());
+        command.append(getModuleClass().getAnnotation(Application.class).executable());
         command.append(" -c ").append(column.toString());
         command.append(" -q ").append(quantile.toString());
         command.append(" -t ").append(target.toString());

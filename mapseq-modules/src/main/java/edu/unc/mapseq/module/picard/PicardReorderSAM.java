@@ -40,6 +40,9 @@ public class PicardReorderSAM extends Module {
     @InputArgument
     private File referenceSequence;
 
+    @InputArgument
+    private Integer maxRecordsInRAM = 1000000;
+
     public PicardReorderSAM() {
         super();
     }
@@ -57,7 +60,7 @@ public class PicardReorderSAM extends Module {
         try {
 
             List<String> argumentList = new ArrayList<String>();
-
+            argumentList.add(String.format("MAX_RECORDS_IN_RAM=%d", maxRecordsInRAM));
             argumentList.add("VALIDATION_STRINGENCY=SILENT");
             argumentList.add(String.format("TMP_DIR=%s/tmp", System.getenv("MAPSEQ_HOME")));
             argumentList.add("REFERENCE=" + referenceSequence.getAbsolutePath());
@@ -80,6 +83,14 @@ public class PicardReorderSAM extends Module {
         getFileDatas().add(fm);
 
         return moduleOutput;
+    }
+
+    public Integer getMaxRecordsInRAM() {
+        return maxRecordsInRAM;
+    }
+
+    public void setMaxRecordsInRAM(Integer maxRecordsInRAM) {
+        this.maxRecordsInRAM = maxRecordsInRAM;
     }
 
     public File getInput() {

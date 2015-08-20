@@ -14,7 +14,6 @@ import edu.unc.mapseq.module.ModuleException;
 import edu.unc.mapseq.module.ModuleOutput;
 import edu.unc.mapseq.module.ShellModuleOutput;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.constraints.FileIsReadable;
@@ -24,8 +23,7 @@ import edu.unc.mapseq.module.constraints.FileIsReadable;
  * @author jdr0887
  * 
  */
-@Application(name = "BWA :: Index")
-@Executable(value = "BWA_HOME/bin/bwa index")
+@Application(name = "BWA :: Index", executable = "$%s_BWA_HOME/bin/bwa index")
 public class BWAIndex extends Module {
 
     @NotNull(message = "fastaDB is required", groups = InputValidations.class)
@@ -55,14 +53,19 @@ public class BWAIndex extends Module {
     }
 
     @Override
+    public String getExecutable() {
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
+                .toUpperCase());
+    }
+
+    @Override
     public ModuleOutput call() throws ModuleException {
         CommandOutput commandOutput = null;
         try {
 
             StringBuilder command = new StringBuilder();
             command.append("/bin/ln -s ").append(fastaDB).append(" ").append(symlinkFile.getAbsolutePath()).append(";");
-            command.append(String.format("$%s_%s", getWorkflowName().toUpperCase(),
-                    getModuleClass().getAnnotation(Executable.class).value()));
+            command.append(getExecutable());
             command.append(" ")
                     .append(getModuleClass().getDeclaredField("algorithm").getAnnotation(InputArgument.class).flag())
                     .append(" ").append(algorithm.getValue());

@@ -23,7 +23,6 @@ import edu.unc.mapseq.module.ModuleException;
 import edu.unc.mapseq.module.ModuleOutput;
 import edu.unc.mapseq.module.ShellModuleOutput;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.annotations.OutputValidations;
@@ -38,8 +37,7 @@ import edu.unc.mapseq.module.constraints.FileListIsReadable;
  * 
  */
 @Fastq(aligner = "aligner", platform = "platform", ends = "ends", files = "outputFiles", groups = OutputValidations.class)
-@Application(name = "SRF2Fastq")
-@Executable(value = "STADEN_IO_LIB_HOME/bin/srf2fastq")
+@Application(name = "SRF2Fastq", executable = "$%s_STADEN_IO_LIB_HOME/bin/srf2fastq")
 public class SRF2Fastq extends Module {
 
     @NotNull
@@ -150,11 +148,16 @@ public class SRF2Fastq extends Module {
     // }
 
     @Override
+    public String getExecutable() {
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
+                .toUpperCase());
+    }
+
+    @Override
     public ModuleOutput call() throws ModuleException {
         // Append initial command and options
         StringBuffer command = new StringBuffer();
-        command.append(String.format("$%s_%s", getWorkflowName().toUpperCase(),
-                getModuleClass().getAnnotation(Executable.class).value()));
+        command.append(getExecutable());
         command.append(" -c ");
 
         // filter bad reads if requested

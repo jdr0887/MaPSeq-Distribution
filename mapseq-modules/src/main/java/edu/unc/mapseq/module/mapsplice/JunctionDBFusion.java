@@ -17,14 +17,12 @@ import edu.unc.mapseq.module.ModuleException;
 import edu.unc.mapseq.module.ModuleOutput;
 import edu.unc.mapseq.module.ShellModuleOutput;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.annotations.OutputValidations;
 import edu.unc.mapseq.module.constraints.FileIsReadable;
 
-@Application(name = "FilterOriginalFusion")
-@Executable(value = "$%s_MAPSPLICE_HOME/bin/junc_db_fusion")
+@Application(name = "JunctionDBFusion", executable = "$%s_MAPSPLICE_HOME/bin/junc_db_fusion")
 public class JunctionDBFusion extends Module {
 
     private final Logger logger = LoggerFactory.getLogger(JunctionDBFusion.class);
@@ -72,7 +70,8 @@ public class JunctionDBFusion extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Executable.class).value(), getWorkflowName().toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
+                .toUpperCase());
     }
 
     @Override

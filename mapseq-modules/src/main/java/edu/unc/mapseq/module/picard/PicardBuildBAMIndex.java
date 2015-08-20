@@ -35,6 +35,9 @@ public class PicardBuildBAMIndex extends Module {
     @OutputArgument(persistFileData = true, mimeType = MimeType.APPLICATION_BAM_INDEX)
     private File output;
 
+    @InputArgument
+    private Integer maxRecordsInRAM = 1000000;
+
     public PicardBuildBAMIndex() {
         super();
     }
@@ -50,6 +53,7 @@ public class PicardBuildBAMIndex extends Module {
         int exitCode = 0;
         try {
             List<String> argumentList = new ArrayList<String>();
+            argumentList.add(String.format("MAX_RECORDS_IN_RAM=%d", maxRecordsInRAM));
             argumentList.add("OUTPUT=" + output.getAbsolutePath());
             argumentList.add("INPUT=" + input.getAbsolutePath());
             exitCode = new BuildBamIndex().instanceMain(argumentList.toArray(new String[argumentList.size()]));
@@ -68,6 +72,14 @@ public class PicardBuildBAMIndex extends Module {
         getFileDatas().add(fm);
 
         return moduleOutput;
+    }
+
+    public Integer getMaxRecordsInRAM() {
+        return maxRecordsInRAM;
+    }
+
+    public void setMaxRecordsInRAM(Integer maxRecordsInRAM) {
+        this.maxRecordsInRAM = maxRecordsInRAM;
     }
 
     public File getInput() {

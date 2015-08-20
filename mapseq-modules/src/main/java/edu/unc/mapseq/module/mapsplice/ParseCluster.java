@@ -17,13 +17,11 @@ import edu.unc.mapseq.module.ModuleException;
 import edu.unc.mapseq.module.ModuleOutput;
 import edu.unc.mapseq.module.ShellModuleOutput;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.constraints.FileIsReadable;
 
-@Application(name = "ParseCluster")
-@Executable(value = "$%s_MAPSPLICE_HOME/bin/parseCluster")
+@Application(name = "ParseCluster", executable = "$%s_MAPSPLICE_HOME/bin/parseCluster")
 public class ParseCluster extends Module {
 
     private final Logger logger = LoggerFactory.getLogger(ParseCluster.class);
@@ -44,7 +42,8 @@ public class ParseCluster extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Executable.class).value(), getWorkflowName().toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
+                .toUpperCase());
     }
 
     @Override

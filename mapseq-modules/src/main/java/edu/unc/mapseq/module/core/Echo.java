@@ -7,7 +7,6 @@ import javax.validation.constraints.Size;
 
 import edu.unc.mapseq.module.Module;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.annotations.OutputArgument;
@@ -18,8 +17,7 @@ import edu.unc.mapseq.module.constraints.FileIsReadable;
  * 
  * @author jdr0887
  */
-@Application(name = "Echo", isWorkflowRunIdOptional = true)
-@Executable(value = "/bin/echo")
+@Application(name = "Echo", executable = "/bin/echo", isWorkflowRunIdOptional = true)
 public class Echo extends Module {
 
     @Size(min = 0, message = "Greeting is required", groups = InputValidations.class)

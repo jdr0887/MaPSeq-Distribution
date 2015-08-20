@@ -19,14 +19,12 @@ import edu.unc.mapseq.module.ModuleException;
 import edu.unc.mapseq.module.ModuleOutput;
 import edu.unc.mapseq.module.ShellModuleOutput;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.annotations.OutputValidations;
 import edu.unc.mapseq.module.constraints.FileIsReadable;
 
-@Application(name = "FusionSAM2JunctionFilterAnchorNewFormat")
-@Executable(value = "$%s_MAPSPLICE_HOME/bin/fusionsam2junc_filteranchor_newfmt")
+@Application(name = "FusionSAM2JunctionFilterAnchorNewFormat", executable = "$%s_MAPSPLICE_HOME/bin/fusionsam2junc_filteranchor_newfmt")
 public class FusionSAM2JunctionFilterAnchorNewFormat extends Module {
 
     private final Logger logger = LoggerFactory.getLogger(FusionSAM2JunctionFilterAnchorNewFormat.class);
@@ -62,7 +60,8 @@ public class FusionSAM2JunctionFilterAnchorNewFormat extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Executable.class).value(), getWorkflowName().toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
+                .toUpperCase());
     }
 
     @Override

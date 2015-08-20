@@ -7,7 +7,6 @@ import javax.validation.constraints.NotNull;
 import edu.unc.mapseq.dao.model.MimeType;
 import edu.unc.mapseq.module.Module;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.annotations.OutputArgument;
@@ -15,8 +14,7 @@ import edu.unc.mapseq.module.annotations.OutputValidations;
 import edu.unc.mapseq.module.constraints.FileIsNotEmpty;
 import edu.unc.mapseq.module.constraints.FileIsReadable;
 
-@Application(name = "FastqQualityTrimmer")
-@Executable(value = "$%s_FASTX_TOOLKIT_HOME/bin/fastx_clipper")
+@Application(name = "FastqQualityTrimmer", executable = "$%s_FASTX_TOOLKIT_HOME/bin/fastx_clipper")
 public class FastxClipper extends Module {
 
     @FileIsReadable(message = "inFile is not readable", groups = InputValidations.class)
@@ -41,7 +39,8 @@ public class FastxClipper extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Executable.class).value(), getWorkflowName().toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
+                .toUpperCase());
     }
 
     public File getInFile() {

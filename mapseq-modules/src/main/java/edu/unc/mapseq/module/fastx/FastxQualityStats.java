@@ -6,7 +6,6 @@ import javax.validation.constraints.NotNull;
 
 import edu.unc.mapseq.module.Module;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.annotations.OutputArgument;
@@ -22,8 +21,7 @@ import edu.unc.mapseq.module.constraints.FileIsReadable;
  * Expected output: qual_filter.txt
  * 
  */
-@Application(name = "FastxQualityStats")
-@Executable(value = "$%s_FASTX_TOOLKIT_HOME/bin/fastx_quality_stats -Q33")
+@Application(name = "FastxQualityStats", executable = "$%s_FASTX_TOOLKIT_HOME/bin/fastx_quality_stats -Q33")
 public class FastxQualityStats extends Module {
 
     @FileIsReadable(message = "inFile is not readable", groups = InputValidations.class)
@@ -48,7 +46,8 @@ public class FastxQualityStats extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Executable.class).value(), getWorkflowName().toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
+                .toUpperCase());
     }
 
     public File getInFile() {

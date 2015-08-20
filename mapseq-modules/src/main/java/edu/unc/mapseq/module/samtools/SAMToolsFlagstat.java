@@ -7,7 +7,6 @@ import javax.validation.constraints.NotNull;
 import edu.unc.mapseq.dao.model.MimeType;
 import edu.unc.mapseq.module.Module;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.annotations.OutputArgument;
@@ -15,8 +14,7 @@ import edu.unc.mapseq.module.annotations.OutputValidations;
 import edu.unc.mapseq.module.constraints.FileIsNotEmpty;
 import edu.unc.mapseq.module.constraints.FileIsReadable;
 
-@Application(name = "SAMToolsIndex")
-@Executable(value = "$%s_SAMTOOLS_HOME/bin/samtools flagstat")
+@Application(name = "SAMToolsFlagstat", executable = "$%s_SAMTOOLS_HOME/bin/samtools flagstat")
 public class SAMToolsFlagstat extends Module {
 
     @NotNull(message = "Input is required", groups = InputValidations.class)
@@ -42,7 +40,8 @@ public class SAMToolsFlagstat extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Executable.class).value(), getWorkflowName().toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
+                .toUpperCase());
     }
 
     public File getInput() {

@@ -20,12 +20,10 @@ import edu.unc.mapseq.module.ModuleException;
 import edu.unc.mapseq.module.ModuleOutput;
 import edu.unc.mapseq.module.ShellModuleOutput;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 
-@Application(name = "AlignmentHandlerMulti")
-@Executable(value = "$%s_MAPSPLICE_HOME/bin/alignment_handler_multi")
+@Application(name = "AlignmentHandlerMulti", executable = "$%s_MAPSPLICE_HOME/bin/alignment_handler_multi", wallTime = 5L)
 public class AlignmentHandlerMulti extends Module {
 
     private final Logger logger = LoggerFactory.getLogger(AlignmentHandlerMulti.class);
@@ -151,7 +149,8 @@ public class AlignmentHandlerMulti extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Executable.class).value(), getWorkflowName().toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
+                .toUpperCase());
     }
 
     @Override

@@ -16,7 +16,6 @@ import edu.unc.mapseq.module.ModuleException;
 import edu.unc.mapseq.module.ModuleOutput;
 import edu.unc.mapseq.module.ShellModuleOutput;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.annotations.OutputValidations;
@@ -28,8 +27,7 @@ import edu.unc.mapseq.module.constraints.FileListIsReadable;
  * @author jdr0887
  * 
  */
-@Application(name = "Zip", isWorkflowRunIdOptional = true)
-@Executable(value = "/usr/bin/zip -j ")
+@Application(name = "Zip", executable = "/usr/bin/zip -j ", isWorkflowRunIdOptional = true)
 public class Zip extends Module {
 
     @NotNull(message = "Zip is required", groups = InputValidations.class)
@@ -55,7 +53,7 @@ public class Zip extends Module {
     public ModuleOutput call() throws ModuleException {
         CommandInput commandInput = new CommandInput();
         StringBuilder command = new StringBuilder();
-        command.append(getModuleClass().getAnnotation(Executable.class).value());
+        command.append(getModuleClass().getAnnotation(Application.class).executable());
 
         try {
             command.append(output.getAbsolutePath());

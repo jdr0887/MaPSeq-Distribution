@@ -14,7 +14,6 @@ import edu.unc.mapseq.module.ModuleException;
 import edu.unc.mapseq.module.ModuleOutput;
 import edu.unc.mapseq.module.ShellModuleOutput;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.annotations.OutputArgument;
@@ -24,8 +23,7 @@ import edu.unc.mapseq.module.constraints.FileIsReadable;
  * 
  * @author jdr0887
  */
-@Application(name = "Make")
-@Executable(value = "/usr/bin/make")
+@Application(name = "Make", executable = "/usr/bin/make")
 public class Make extends Module {
 
     @InputArgument(delimiter = "")
@@ -51,7 +49,7 @@ public class Make extends Module {
     public ModuleOutput call() throws ModuleException {
         CommandInput commandInput = new CommandInput();
         StringBuilder command = new StringBuilder();
-        command.append(getModuleClass().getAnnotation(Executable.class).value());
+        command.append(getModuleClass().getAnnotation(Application.class).executable());
 
         if (threads != null) {
             try {

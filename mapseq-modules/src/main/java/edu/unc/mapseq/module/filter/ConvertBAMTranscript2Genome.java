@@ -15,7 +15,6 @@ import edu.unc.mapseq.module.ModuleException;
 import edu.unc.mapseq.module.ModuleOutput;
 import edu.unc.mapseq.module.ShellModuleOutput;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.annotations.OutputValidations;
@@ -27,8 +26,7 @@ import edu.unc.mapseq.module.constraints.FileIsReadable;
  * @author jdr0887
  * 
  */
-@Application(name = "ConvertBAMTranscript2Genome")
-@Executable(value = "perl $MAPSEQ_HOME/bin/sw_module_ConvertBAMTranscript2Genome.pl")
+@Application(name = "ConvertBAMTranscript2Genome", executable = "perl $MAPSEQ_HOME/bin/sw_module_ConvertBAMTranscript2Genome.pl")
 public class ConvertBAMTranscript2Genome extends Module {
 
     @NotNull(message = "inFile is required", groups = InputValidations.class)
@@ -68,7 +66,7 @@ public class ConvertBAMTranscript2Genome extends Module {
 
         CommandInput commandInput = new CommandInput();
         StringBuilder command = new StringBuilder();
-        command.append(getModuleClass().getAnnotation(Executable.class).value());
+        command.append(getModuleClass().getAnnotation(Application.class).executable());
         command.append(" ").append(inFile.getAbsolutePath());
         command.append(" ").append(outFile.getAbsolutePath());
         command.append(" ").append(transcriptDB.getAbsolutePath());

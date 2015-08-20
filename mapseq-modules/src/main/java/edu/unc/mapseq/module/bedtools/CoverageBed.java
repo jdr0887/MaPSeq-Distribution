@@ -6,7 +6,6 @@ import javax.validation.constraints.NotNull;
 
 import edu.unc.mapseq.module.Module;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.annotations.OutputArgument;
@@ -19,8 +18,7 @@ import edu.unc.mapseq.module.constraints.FileIsReadable;
  * @author roachjm
  * 
  */
-@Application(name = "CoverageBed")
-@Executable(value = "$%s_BEDTOOLS_HOME/bin/bedtools coverage")
+@Application(name = "CoverageBed", executable = "$%s_BEDTOOLS_HOME/bin/bedtools coverage")
 public class CoverageBed extends Module {
 
     @NotNull(message = "input is required", groups = InputValidations.class)
@@ -52,7 +50,8 @@ public class CoverageBed extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Executable.class).value(), getWorkflowName().toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
+                .toUpperCase());
     }
 
     public File getInput() {

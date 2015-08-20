@@ -11,11 +11,9 @@ import edu.unc.mapseq.module.ModuleException;
 import edu.unc.mapseq.module.ModuleOutput;
 import edu.unc.mapseq.module.ShellModuleOutput;
 import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.Executable;
 import edu.unc.mapseq.module.annotations.InputArgument;
 
-@Application(name = "SequenceReadQualityFilter")
-@Executable(value = "perl $MAPSEQ_HOME/bin/sw_module_qualFilter.pl")
+@Application(name = "SequenceReadQualityFilter", executable = "perl $MAPSEQ_HOME/bin/sw_module_qualFilter.pl")
 public class SequenceReadQualityFilter extends Module {
 
     @InputArgument()
@@ -37,7 +35,7 @@ public class SequenceReadQualityFilter extends Module {
     public ModuleOutput call() throws ModuleException {
         CommandInput commandInput = new CommandInput();
         StringBuilder command = new StringBuilder();
-        command.append(String.format(getModuleClass().getAnnotation(Executable.class).value()));
+        command.append(String.format(getModuleClass().getAnnotation(Application.class).executable()));
 
         commandInput.setCommand(command.toString());
         CommandOutput commandOutput;
