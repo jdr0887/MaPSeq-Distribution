@@ -79,8 +79,8 @@ public class ConfigureBCLToFastq extends Module {
     }
 
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     @Override
@@ -108,7 +108,7 @@ public class ConfigureBCLToFastq extends Module {
             }
 
             if (bases != null) {
-                command.append(String.format(" --use-bases-mask Y*n,I%sn,Y*n", bases.toString()));
+                command.append(String.format(" --use-bases-mask Y*,I%sn,Y*", bases.toString()));
             }
 
             if (mismatches != null && mismatches) {
