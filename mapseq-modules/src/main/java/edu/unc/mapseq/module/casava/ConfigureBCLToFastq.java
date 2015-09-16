@@ -4,6 +4,7 @@ import java.io.File;
 
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.StringUtils;
 import org.renci.common.exec.BashExecutor;
 import org.renci.common.exec.CommandInput;
 import org.renci.common.exec.CommandOutput;
@@ -61,7 +62,13 @@ public class ConfigureBCLToFastq extends Module {
     private Boolean mismatches;
 
     @InputArgument
-    private Integer bases;
+    private Integer indexLength;
+
+    @InputArgument
+    private String read1Length;
+
+    @InputArgument
+    private String read2Length;
 
     @InputArgument
     private Boolean ignoreMissingStats;
@@ -107,8 +114,10 @@ public class ConfigureBCLToFastq extends Module {
                 command.append(" --force");
             }
 
-            if (bases != null) {
-                command.append(String.format(" --use-bases-mask Y*,I%sn,Y*", bases.toString()));
+            if (StringUtils.isNotEmpty(read1Length) && StringUtils.isNotEmpty(read2Length) && indexLength != null) {
+                command.append(String.format(" --use-bases-mask Y%s,I%d,Y%s", read1Length, indexLength, read2Length));
+            } else if (indexLength != null) {
+                command.append(String.format(" --use-bases-mask Y*,I%d,Y*", indexLength));
             }
 
             if (mismatches != null && mismatches) {
@@ -171,12 +180,28 @@ public class ConfigureBCLToFastq extends Module {
         this.force = force;
     }
 
-    public Integer getBases() {
-        return bases;
+    public Integer getIndexLength() {
+        return indexLength;
     }
 
-    public void setBases(Integer bases) {
-        this.bases = bases;
+    public void setIndexLength(Integer indexLength) {
+        this.indexLength = indexLength;
+    }
+
+    public String getRead1Length() {
+        return read1Length;
+    }
+
+    public void setRead1Length(String read1Length) {
+        this.read1Length = read1Length;
+    }
+
+    public String getRead2Length() {
+        return read2Length;
+    }
+
+    public void setRead2Length(String read2Length) {
+        this.read2Length = read2Length;
     }
 
     public Integer getFastqClusterCount() {
