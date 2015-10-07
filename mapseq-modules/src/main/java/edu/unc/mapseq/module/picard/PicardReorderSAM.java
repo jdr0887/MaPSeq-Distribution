@@ -43,6 +43,9 @@ public class PicardReorderSAM extends Module {
     @InputArgument
     private Integer maxRecordsInRAM = 1000000;
 
+    @InputArgument
+    private Boolean createIndex = Boolean.FALSE;
+
     public PicardReorderSAM() {
         super();
     }
@@ -62,6 +65,7 @@ public class PicardReorderSAM extends Module {
             List<String> argumentList = new ArrayList<String>();
             argumentList.add(String.format("MAX_RECORDS_IN_RAM=%d", maxRecordsInRAM));
             argumentList.add("VALIDATION_STRINGENCY=SILENT");
+            argumentList.add("CREATE_INDEX=" + createIndex.toString());
             argumentList.add(String.format("TMP_DIR=%s/tmp", System.getenv("MAPSEQ_HOME")));
             argumentList.add("REFERENCE=" + referenceSequence.getAbsolutePath());
             argumentList.add("OUTPUT=" + output.getAbsolutePath());
@@ -115,6 +119,14 @@ public class PicardReorderSAM extends Module {
 
     public void setReferenceSequence(File referenceSequence) {
         this.referenceSequence = referenceSequence;
+    }
+
+    public Boolean getCreateIndex() {
+        return createIndex;
+    }
+
+    public void setCreateIndex(Boolean createIndex) {
+        this.createIndex = createIndex;
     }
 
 }
