@@ -67,7 +67,7 @@ public class PicardBuildBAMIndex extends Module {
 
         FileData fm = new FileData();
         fm.setPath(output.getParentFile().getAbsolutePath());
-        fm.setMimeType(MimeType.APPLICATION_BAM_INDEX);
+        fm.setMimeType(MimeType.APPLICATION_BAM);
         fm.setName(output.getName());
         getFileDatas().add(fm);
 
