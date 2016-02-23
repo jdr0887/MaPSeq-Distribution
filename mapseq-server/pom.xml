@@ -54,6 +54,30 @@
       <scope>runtime</scope>
     </dependency>
     <dependency>
+      <groupId>org.apache.karaf.features</groupId>
+      <artifactId>spring</artifactId>
+      <version>${karaf.version}</version>
+      <classifier>features</classifier>
+      <type>xml</type>
+      <scope>runtime</scope>
+    </dependency>    
+    <dependency>
+      <groupId>org.ops4j.pax.cdi</groupId>
+      <artifactId>pax-cdi-features</artifactId>
+      <version>0.12.0</version>
+      <classifier>features</classifier>
+      <type>xml</type>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.ops4j.pax.jdbc</groupId>
+      <artifactId>pax-jdbc-features</artifactId>
+      <version>0.7.0</version>
+      <classifier>features</classifier>
+      <type>xml</type>
+      <scope>runtime</scope>
+    </dependency>                
+    <dependency>
       <groupId>edu.unc.mapseq.distribution</groupId>
       <artifactId>mapseq-features</artifactId>
       <classifier>features</classifier>
@@ -117,23 +141,42 @@
 	  <targetServerDirectory>${assembly.directory}</targetServerDirectory>
           <bootFeatures>
             <feature>standard</feature>
-            <feature>http</feature>
-            <feature>ssh</feature>
+            <feature>feature</feature>	    
+            <feature>shell</feature>
+            <feature>bundle</feature>
             <feature>config</feature>
+            <feature>diagnostic</feature>
+            <feature>instance</feature>
+            <feature>jaas</feature>
+            <feature>log</feature>
+            <feature>package</feature>
+            <feature>service</feature>
+            <feature>system</feature>
+            <feature>ssh</feature>
             <feature>management</feature>
-            <feature>eventadmin</feature>
-	    <feature>jdbc</feature>
-	    <feature>jndi</feature>
-	    <feature>transaction</feature>
-	    <feature>jpa</feature>	    
-	    <feature>openjpa</feature>
-	    <feature>jms</feature>
+            <feature>deployer</feature>
+	    <feature>obr</feature>
+            <feature>http</feature>
 	    <feature>war</feature>
-	    <feature>cxf</feature> 
-	    <feature>activemq</feature> 
-	    <feature>activemq-broker</feature> 
-	    <feature>activemq-blueprint</feature> 
-	    <feature>mapseq</feature>
+	    <feature>jetty</feature>
+	    <feature>scr</feature>
+            <feature>jndi</feature>
+	    <feature>pax-cdi</feature>
+            <feature>aries-blueprint</feature>
+	    <feature>cxf</feature>	    
+            <feature>jdbc</feature>
+	    <feature>transaction-api/1.2.0</feature>
+	    <feature>transaction</feature>
+	    <feature>jpa</feature>
+	    <feature>jms</feature>
+	    <feature>activemq</feature>
+	    <feature>mapseq-shared</feature>
+	    <feature>mapseq-dao</feature>
+	    <feature>mapseq-reports</feature>
+	    <feature>mapseq-commands</feature>
+	    <feature>mapseq-web-services</feature>	    
+	    <feature>mapseq-workflows</feature>
+	    <feature>mapseq-webapp</feature>
           </bootFeatures>
         </configuration>
       </plugin>
