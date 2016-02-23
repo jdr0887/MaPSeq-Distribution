@@ -108,8 +108,8 @@
        <artifactId>maven-compiler-plugin</artifactId>
        <version>${maven.compiler.plugin.version}</version>
        <configuration>
-         <source>1.7</source>
-         <target>1.7</target>
+         <source>1.8</source>
+         <target>1.8</target>
          <compilerArgument>-proc:none</compilerArgument>
        </configuration>
        <executions>
@@ -134,7 +134,7 @@
         <executions>
           <execution>
             <id>1</id>
-           <phase>generate-sources</phase>
+            <phase>generate-sources</phase>
             <goals>
               <goal>generate</goal>
             </goals>
