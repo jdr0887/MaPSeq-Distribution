@@ -18,7 +18,7 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import edu.unc.mapseq.dao.MaPSeqDAOBean;
+import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.model.Attribute;
 import edu.unc.mapseq.dao.model.Flowcell;
@@ -49,7 +49,7 @@ public class CreateFlowcellFromSampleSheet implements Runnable {
         WSDAOManager daoMgr = WSDAOManager.getInstance();
         // RSDAOManager daoMgr = RSDAOManager.getInstance();
 
-        MaPSeqDAOBean maPSeqDAOBean = daoMgr.getMaPSeqDAOBean();
+        MaPSeqDAOBeanService maPSeqDAOBean = daoMgr.getMaPSeqDAOBeanService();
 
         Flowcell flowcell = new Flowcell();
         flowcell.setBaseDirectory(baseDirectory);

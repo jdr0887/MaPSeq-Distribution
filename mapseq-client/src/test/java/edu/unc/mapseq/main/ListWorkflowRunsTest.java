@@ -8,7 +8,6 @@ import java.util.Locale;
 
 import org.junit.Test;
 
-import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.model.WorkflowRun;
 import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
 import edu.unc.mapseq.dao.rs.RSDAOManager;
@@ -19,15 +18,14 @@ public class ListWorkflowRunsTest {
     public void testRun() {
         RSDAOManager daoMgr = RSDAOManager.getInstance();
 
-        MaPSeqDAOBean maPSeqDAOBean = daoMgr.getMaPSeqDAOBean();
-
         try {
             StringBuilder sb = new StringBuilder();
             Formatter formatter = new Formatter(sb, Locale.US);
             formatter.format("%1$-8s %2$-25s %3$-54s %4$-18s %5$-18s %6$-18s %7$s%n", "ID", "Workflow Name",
                     "Workflow Run Name", "Created Date", "Start Date", "End Date", "Status");
 
-            List<WorkflowRunAttempt> attempts = maPSeqDAOBean.getWorkflowRunAttemptDAO().findByWorkflowId(8L);
+            List<WorkflowRunAttempt> attempts = daoMgr.getMaPSeqDAOBeanService().getWorkflowRunAttemptDAO()
+                    .findByWorkflowId(8L);
             if (attempts != null && !attempts.isEmpty()) {
 
                 for (WorkflowRunAttempt attempt : attempts) {
@@ -44,14 +42,14 @@ public class ListWorkflowRunsTest {
                     Date startDate = attempt.getStarted();
                     String formattedStartDate = "";
                     if (startDate != null) {
-                        formattedStartDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(
-                                startDate);
+                        formattedStartDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
+                                .format(startDate);
                     }
                     Date endDate = attempt.getFinished();
                     String formattedEndDate = "";
                     if (endDate != null) {
-                        formattedEndDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(
-                                endDate);
+                        formattedEndDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
+                                .format(endDate);
                     }
                     formatter.format("%1$-8s %2$-25s %3$-54s %4$-18s %5$-18s %6$-18s %7$s%n", workflowRun.getId(),
                             workflowRun.getWorkflow().getName(), workflowRun.getName(), formattedCreatedDate,

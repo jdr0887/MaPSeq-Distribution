@@ -17,7 +17,7 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang.StringUtils;
 
 import edu.unc.mapseq.dao.FlowcellDAO;
-import edu.unc.mapseq.dao.MaPSeqDAOBean;
+import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.SampleDAO;
 import edu.unc.mapseq.dao.model.Flowcell;
@@ -43,9 +43,9 @@ public class ListSamples implements Runnable {
         // WSDAOManager daoMgr = WSDAOManager.getInstance();
         RSDAOManager daoMgr = RSDAOManager.getInstance();
 
-        MaPSeqDAOBean maPSeqDAOBean = daoMgr.getMaPSeqDAOBean();
-        FlowcellDAO flowcellDAO = maPSeqDAOBean.getFlowcellDAO();
-        SampleDAO sampleDAO = maPSeqDAOBean.getSampleDAO();
+        MaPSeqDAOBeanService maPSeqDAOBeanService = daoMgr.getMaPSeqDAOBeanService();
+        FlowcellDAO flowcellDAO = maPSeqDAOBeanService.getFlowcellDAO();
+        SampleDAO sampleDAO = maPSeqDAOBeanService.getSampleDAO();
 
         if (flowcellId == null && StringUtils.isEmpty(name)) {
             System.out.println("sequencerRunId & name can't both be null/empty");

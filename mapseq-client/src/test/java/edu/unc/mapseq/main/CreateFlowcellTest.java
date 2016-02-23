@@ -38,8 +38,8 @@ public class CreateFlowcellTest {
         WSDAOManager daoMgr = WSDAOManager.getInstance();
 
         try {
-            String sampleSheetContent = IOUtils.toString(this.getClass().getClassLoader()
-                    .getResourceAsStream("edu/unc/mapseq/main/SampleSheet.csv"));
+            String sampleSheetContent = IOUtils.toString(
+                    this.getClass().getClassLoader().getResourceAsStream("edu/unc/mapseq/main/SampleSheet.csv"));
             LineNumberReader lnr = new LineNumberReader(new StringReader(sampleSheetContent));
             lnr.readLine();
             String line;
@@ -48,7 +48,7 @@ public class CreateFlowcellTest {
             flowcell.setBaseDirectory("asdfasdf");
 
             try {
-                Long flowcellId = daoMgr.getMaPSeqDAOBean().getFlowcellDAO().save(flowcell);
+                Long flowcellId = daoMgr.getMaPSeqDAOBeanService().getFlowcellDAO().save(flowcell);
                 flowcell.setId(flowcellId);
             } catch (MaPSeqDAOException e1) {
                 e1.printStackTrace();
@@ -68,11 +68,11 @@ public class CreateFlowcellTest {
                 String operator = st[8];
                 String sampleProject = st[9];
 
-                Study study = daoMgr.getMaPSeqDAOBean().getStudyDAO().findByName(sampleProject).get(0);
+                Study study = daoMgr.getMaPSeqDAOBeanService().getStudyDAO().findByName(sampleProject).get(0);
                 if (study == null) {
                     study = new Study();
                     study.setName(sampleProject);
-                    daoMgr.getMaPSeqDAOBean().getStudyDAO().save(study);
+                    daoMgr.getMaPSeqDAOBeanService().getStudyDAO().save(study);
                 }
 
                 Sample sample = new Sample();
@@ -82,7 +82,7 @@ public class CreateFlowcellTest {
                 // sample.setFlowcell(flowcell);
                 sample.setStudy(study);
 
-                daoMgr.getMaPSeqDAOBean().getSampleDAO().save(sample);
+                daoMgr.getMaPSeqDAOBeanService().getSampleDAO().save(sample);
             }
 
         } catch (MaPSeqDAOException e) {

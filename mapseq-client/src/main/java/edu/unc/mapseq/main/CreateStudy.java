@@ -10,7 +10,7 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import edu.unc.mapseq.dao.MaPSeqDAOBean;
+import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.model.Study;
 import edu.unc.mapseq.dao.ws.WSDAOManager;
@@ -31,13 +31,11 @@ public class CreateStudy implements Callable<String> {
     public String call() {
         WSDAOManager daoMgr = WSDAOManager.getInstance();
         // RSDAOManager daoMgr = RSDAOManager.getInstance();
-        MaPSeqDAOBean maPSeqDAOBean = daoMgr.getMaPSeqDAOBean();
+        MaPSeqDAOBeanService maPSeqDAOBeanService = daoMgr.getMaPSeqDAOBeanService();
 
         try {
-            Study study = new Study();
-            study.setName(name);
-            Long id = maPSeqDAOBean.getStudyDAO().save(study);
-            study.setId(id);
+            Study study = new Study(name);
+            study.setId(maPSeqDAOBeanService.getStudyDAO().save(study));
             return study.toString();
         } catch (MaPSeqDAOException e1) {
             e1.printStackTrace();

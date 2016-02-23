@@ -13,8 +13,9 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.collections.CollectionUtils;
 
-import edu.unc.mapseq.dao.MaPSeqDAOBean;
+import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
 import edu.unc.mapseq.dao.WorkflowRunDAO;
 import edu.unc.mapseq.dao.model.WorkflowRun;
@@ -39,11 +40,11 @@ public class ListWorkflowRuns implements Runnable {
         // WSDAOManager daoMgr = WSDAOManager.getInstance();
         RSDAOManager daoMgr = RSDAOManager.getInstance();
 
-        MaPSeqDAOBean maPSeqDAOBean = daoMgr.getMaPSeqDAOBean();
+        MaPSeqDAOBeanService maPSeqDAOBeanService = daoMgr.getMaPSeqDAOBeanService();
 
-        WorkflowRunDAO workflowRunDAO = maPSeqDAOBean.getWorkflowRunDAO();
+        WorkflowRunDAO workflowRunDAO = maPSeqDAOBeanService.getWorkflowRunDAO();
 
-        WorkflowRunAttemptDAO workflowRunAttemptDAO = maPSeqDAOBean.getWorkflowRunAttemptDAO();
+        WorkflowRunAttemptDAO workflowRunAttemptDAO = maPSeqDAOBeanService.getWorkflowRunAttemptDAO();
 
         try {
             StringBuilder sb = new StringBuilder();
@@ -54,7 +55,7 @@ public class ListWorkflowRuns implements Runnable {
 
             List<WorkflowRun> workflowRunList = workflowRunDAO.findByWorkflowId(workflowId);
 
-            if (workflowRunList != null && !workflowRunList.isEmpty()) {
+            if (CollectionUtils.isNotEmpty(workflowRunList)) {
                 for (WorkflowRun workflowRun : workflowRunList) {
 
                     Date createdDate = workflowRun.getCreated();
@@ -74,8 +75,8 @@ public class ListWorkflowRuns implements Runnable {
 
                             createdDate = attempt.getCreated();
                             if (createdDate != null) {
-                                formattedCreatedDate = DateFormat.getDateTimeInstance(DateFormat.SHORT,
-                                        DateFormat.SHORT).format(createdDate);
+                                formattedCreatedDate = DateFormat
+                                        .getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(createdDate);
                             }
 
                             Date startDate = attempt.getStarted();
@@ -92,9 +93,9 @@ public class ListWorkflowRuns implements Runnable {
                             }
 
                             formatter.format("%1$-12s %2$-54s %3$-18s %4$-18s %5$-18s %6$-12s %7$-14s %8$s%n", "--",
-                                    "--", formattedCreatedDate, formattedStartDate, formattedEndDate, attempt
-                                            .getStatus().toString(), attempt.getCondorDAGClusterId(), attempt
-                                            .getSubmitDirectory());
+                                    "--", formattedCreatedDate, formattedStartDate, formattedEndDate,
+                                    attempt.getStatus().toString(), attempt.getCondorDAGClusterId(),
+                                    attempt.getSubmitDirectory());
                             formatter.flush();
 
                         }
@@ -123,8 +124,8 @@ public class ListWorkflowRuns implements Runnable {
     @SuppressWarnings("static-access")
     public static void main(String[] args) {
 
-        cliOptions.addOption(OptionBuilder.withArgName("workflowId").withLongOpt("workflowId").isRequired().hasArg()
-                .create());
+        cliOptions.addOption(
+                OptionBuilder.withArgName("workflowId").withLongOpt("workflowId").isRequired().hasArg().create());
         cliOptions.addOption(OptionBuilder.withArgName("help").withDescription("print this help message")
                 .withLongOpt("help").create("?"));
 

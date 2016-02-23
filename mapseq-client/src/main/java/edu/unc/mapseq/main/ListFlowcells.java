@@ -12,9 +12,10 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.collections.CollectionUtils;
 
 import edu.unc.mapseq.dao.FlowcellDAO;
-import edu.unc.mapseq.dao.MaPSeqDAOBean;
+import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.model.Flowcell;
 import edu.unc.mapseq.dao.rs.RSDAOManager;
 
@@ -33,28 +34,24 @@ public class ListFlowcells implements Runnable {
 
         // WSDAOManager daoMgr = WSDAOManager.getInstance();
         RSDAOManager daoMgr = RSDAOManager.getInstance();
-        MaPSeqDAOBean maPSeqDAOBean = daoMgr.getMaPSeqDAOBean();
+        MaPSeqDAOBeanService maPSeqDAOBeanService = daoMgr.getMaPSeqDAOBeanService();
 
-        List<Flowcell> flowcellList = new ArrayList<Flowcell>();
-        FlowcellDAO flowcellDAO = maPSeqDAOBean.getFlowcellDAO();
         try {
-            flowcellList.addAll(flowcellDAO.findAll());
+            List<Flowcell> flowcellList = maPSeqDAOBeanService.getFlowcellDAO().findAll();
+            if (CollectionUtils.isNotEmpty(flowcellList)) {
+                StringBuilder sb = new StringBuilder();
+                Formatter formatter = new Formatter(sb, Locale.US);
+                formatter.format("%1$-8s %2$-38s %3$-42s%n", "ID", "Name", "Base Directory");
+                for (Flowcell flowcell : flowcellList) {
+                    formatter.format("%1$-8s %2$-38s %3$-42s%n", flowcell.getId(), flowcell.getName(),
+                            flowcell.getBaseDirectory());
+                    formatter.flush();
+                }
+                System.out.println(formatter.toString());
+                formatter.close();
+            }
         } catch (Exception e) {
             e.printStackTrace();
-        }
-
-        if (!flowcellList.isEmpty()) {
-
-            StringBuilder sb = new StringBuilder();
-            Formatter formatter = new Formatter(sb, Locale.US);
-            formatter.format("%1$-8s %2$-38s %3$-42s%n", "ID", "Name", "Base Directory");
-            for (Flowcell flowcell : flowcellList) {
-                formatter.format("%1$-8s %2$-38s %3$-42s%n", flowcell.getId(), flowcell.getName(),
-                        flowcell.getBaseDirectory());
-                formatter.flush();
-            }
-            System.out.println(formatter.toString());
-            formatter.close();
         }
 
     }

@@ -12,8 +12,9 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.collections.CollectionUtils;
 
-import edu.unc.mapseq.dao.MaPSeqDAOBean;
+import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.StudyDAO;
 import edu.unc.mapseq.dao.model.Study;
 import edu.unc.mapseq.dao.rs.RSDAOManager;
@@ -33,26 +34,24 @@ public class ListStudies implements Runnable {
 
         // WSDAOManager daoMgr = WSDAOManager.getInstance();
         RSDAOManager daoMgr = RSDAOManager.getInstance();
-        MaPSeqDAOBean mapseqDAOBean = daoMgr.getMaPSeqDAOBean();
-
-        List<Study> studyList = new ArrayList<Study>();
-        StudyDAO studyDAO = mapseqDAOBean.getStudyDAO();
+        MaPSeqDAOBeanService mapseqDAOBeanService = daoMgr.getMaPSeqDAOBeanService();
 
         try {
-            studyList.addAll(studyDAO.findAll());
-        } catch (Exception e) {
-        }
-
-        if (studyList.size() > 0) {
-            StringBuilder sb = new StringBuilder();
-            Formatter formatter = new Formatter(sb, Locale.US);
-            formatter.format("%1$-8s %2$-40s%n", "ID", "Name");
-            for (Study study : studyList) {
-                formatter.format("%1$-8s %2$-40s%n", study.getId(), study.getName());
-                formatter.flush();
+            List<Study> studyList = mapseqDAOBeanService.getStudyDAO().findAll();
+            if (CollectionUtils.isNotEmpty(studyList)) {
+                StringBuilder sb = new StringBuilder();
+                Formatter formatter = new Formatter(sb, Locale.US);
+                formatter.format("%1$-8s %2$-40s%n", "ID", "Name");
+                for (Study study : studyList) {
+                    formatter.format("%1$-8s %2$-40s%n", study.getId(), study.getName());
+                    formatter.flush();
+                }
+                System.out.println(formatter.toString());
+                formatter.close();
             }
-            System.out.println(formatter.toString());
-            formatter.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }

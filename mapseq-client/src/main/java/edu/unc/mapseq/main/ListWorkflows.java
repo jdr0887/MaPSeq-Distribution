@@ -1,6 +1,5 @@
 package edu.unc.mapseq.main;
 
-import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.List;
 import java.util.Locale;
@@ -13,8 +12,8 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import edu.unc.mapseq.dao.MaPSeqDAOBean;
-import edu.unc.mapseq.dao.WorkflowDAO;
+import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
+import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.model.Workflow;
 import edu.unc.mapseq.dao.rs.RSDAOManager;
 
@@ -33,25 +32,24 @@ public class ListWorkflows implements Runnable {
 
         // WSDAOManager daoMgr = WSDAOManager.getInstance();
         RSDAOManager daoMgr = RSDAOManager.getInstance();
-        MaPSeqDAOBean mapseqDAOBean = daoMgr.getMaPSeqDAOBean();
+        MaPSeqDAOBeanService mapseqDAOBeanService = daoMgr.getMaPSeqDAOBeanService();
 
-        List<Workflow> workflowList = new ArrayList<Workflow>();
-        WorkflowDAO workflowDAO = mapseqDAOBean.getWorkflowDAO();
         try {
-            workflowList.addAll(workflowDAO.findAll());
-        } catch (Exception e) {
-        }
+            List<Workflow> workflowList = mapseqDAOBeanService.getWorkflowDAO().findAll();
 
-        if (workflowList.size() > 0) {
-            StringBuilder sb = new StringBuilder();
-            Formatter formatter = new Formatter(sb, Locale.US);
-            formatter.format("%1$-8s %2$-30s%n", "ID", "Name");
-            for (Workflow workflow : workflowList) {
-                formatter.format("%1$-8s %2$-30s%n", workflow.getId(), workflow.getName());
-                formatter.flush();
+            if (workflowList.size() > 0) {
+                StringBuilder sb = new StringBuilder();
+                Formatter formatter = new Formatter(sb, Locale.US);
+                formatter.format("%1$-8s %2$-30s%n", "ID", "Name");
+                for (Workflow workflow : workflowList) {
+                    formatter.format("%1$-8s %2$-30s%n", workflow.getId(), workflow.getName());
+                    formatter.flush();
+                }
+                System.out.println(formatter.toString());
+                formatter.close();
             }
-            System.out.println(formatter.toString());
-            formatter.close();
+        } catch (MaPSeqDAOException e) {
+            e.printStackTrace();
         }
 
     }
