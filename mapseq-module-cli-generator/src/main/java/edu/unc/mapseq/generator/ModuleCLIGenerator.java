@@ -41,7 +41,7 @@ import com.sun.codemodel.JMod;
 import com.sun.codemodel.JTryBlock;
 import com.sun.codemodel.JVar;
 
-import edu.unc.mapseq.dao.MaPSeqDAOBean;
+import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.ws.WSDAOManager;
 import edu.unc.mapseq.module.DryRunJobObserver;
 import edu.unc.mapseq.module.ModuleExecutor;
@@ -143,7 +143,7 @@ public class ModuleCLIGenerator extends AbstractGenerator {
     private void buildRun(Class<?> clazz, JCodeModel codeModel, JDefinedClass cliClass, JFieldVar appFieldVar,
             JFieldVar cliOptionsFieldVar, JFieldVar helpFormatterVar) {
 
-        JClass mapseqDAOBeanJClass = codeModel.ref(MaPSeqDAOBean.class);
+        JClass mapseqDAOBeanServiceJClass = codeModel.ref(MaPSeqDAOBeanService.class);
         JClass wsDAOManagerJClass = codeModel.ref(WSDAOManager.class);
         JClass moduleExecutorJClass = codeModel.ref(ModuleExecutor.class);
         JClass moduleOutputJClass = codeModel.ref(ModuleOutput.class);
@@ -177,8 +177,8 @@ public class ModuleCLIGenerator extends AbstractGenerator {
         JVar wsDAOManagerVar = dryRunConditionalElseBlock.decl(wsDAOManagerJClass, "daoMgr");
         wsDAOManagerVar.init(wsDAOManagerJClass.staticInvoke("getInstance"));
 
-        JVar mapseqDAOBeanVar = dryRunConditionalElseBlock.decl(mapseqDAOBeanJClass, "daoBean",
-                wsDAOManagerVar.invoke("getMaPSeqDAOBean"));
+        JVar mapseqDAOBeanVar = dryRunConditionalElseBlock.decl(mapseqDAOBeanServiceJClass, "daoBean",
+                wsDAOManagerVar.invoke("getMaPSeqDAOBeanService"));
         dryRunConditionalElseBlock.add(moduleExecutorVar.invoke("setDaoBean").arg(mapseqDAOBeanVar));
         dryRunConditionalElseBlock.add(moduleExecutorVar.invoke("addObserver").arg(
                 JExpr._new(updateJobObserverJClass).arg(mapseqDAOBeanVar)));
