@@ -3,32 +3,38 @@
   <feature name="mapseq-shared" version="${project.version}" resolver="(obr)">
     <bundle>mvn:commons-io/commons-io/${commons.io.version}</bundle>
     <bundle>mvn:commons-cli/commons-cli/${commons.cli.version}</bundle>
-    <bundle>mvn:org.apache.commons/commons-lang3/3.1</bundle>
+    <bundle>mvn:commons-net/commons-net/${commons.net.version}</bundle>
+    <bundle>mvn:commons-pool/commons-pool/${commons.pool.version}</bundle>
+    <bundle>mvn:commons-lang/commons-lang/${commons.lang.version}</bundle>
+    <bundle>mvn:commons-digester/commons-digester/1.8.1</bundle>
     <bundle>mvn:commons-collections/commons-collections/${commons.collections.version}</bundle>
     <bundle>mvn:commons-beanutils/commons-beanutils/${commons.beanutils.version}</bundle>
-    <bundle>mvn:commons-discovery/commons-discovery/${commons.discovery.version}</bundle>
-    <bundle>mvn:org.renci.osgi.bundles/xz-1.0-bundle/0.0.1</bundle>
-    <bundle>mvn:org.apache.xbean/xbean-asm4-shaded/3.16</bundle>
+    <bundle>mvn:commons-discovery/commons-discovery/${commons.discovery.version}</bundle>    
+    <bundle>mvn:org.apache.commons/commons-math3/${commons.math.version}</bundle>
+    <bundle>mvn:org.apache.commons/commons-lang3/${commons.lang3.version}</bundle>
+    <bundle>mvn:org.apache.commons/commons-collections4/${commons.collections4.version}</bundle>    
     <bundle>mvn:org.apache.commons/commons-compress/1.4</bundle>
-    <bundle>mvn:com.itextpdf/itextpdf/5.4.4</bundle>
-    <bundle>mvn:com.google.guava/guava/15.0</bundle>
-    <bundle>mvn:commons-digester/commons-digester/1.8.1</bundle>
-    <bundle>mvn:net.sourceforge.serp/com.springsource.serp/1.13.1</bundle>
-    <bundle>mvn:org.apache.geronimo.specs/geronimo-validation_1.0_spec/1.1</bundle>
-    <bundle>mvn:org.apache.geronimo.javamail/geronimo-javamail_1.4_mail/1.8</bundle>
     <bundle>mvn:org.apache.commons/commons-email/1.3.1</bundle>
+    <bundle>mvn:org.renci.osgi.bundles/xz-1.0-bundle/0.0.1</bundle>    
+    <bundle>mvn:javax.validation/validation-api/1.1.0.Final</bundle>
+    <bundle>mvn:com.fasterxml.jackson.core/jackson-core/${jackson.version}</bundle>
+    <bundle>mvn:com.fasterxml.jackson.core/jackson-annotations/${jackson.version}</bundle>
+    <bundle>mvn:com.fasterxml.jackson.core/jackson-databind/${jackson.version}</bundle>
+    <bundle>mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-base/${jackson.version}</bundle>
+    <bundle>mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-json-provider/${jackson.version}</bundle>
+    <bundle>mvn:com.fasterxml.jackson.module/jackson-module-jaxb-annotations/${jackson.version}</bundle>
+    <bundle>mvn:org.postgresql/postgresql/${postgresql.version}</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.aspectj/1.7.4_1</bundle>    
+    <bundle>mvn:com.itextpdf/itextpdf/5.4.4</bundle>
+    <bundle>mvn:com.google.guava/guava/15.0</bundle>    
+    <bundle>mvn:net.sourceforge.serp/com.springsource.serp/1.13.1</bundle>    
+    <bundle>mvn:org.apache.geronimo.javamail/geronimo-javamail_1.4_mail/1.8</bundle>
     <bundle>mvn:javax.xml.stream/com.springsource.javax.xml.stream/1.0.1</bundle>
     <bundle>mvn:org.xmlpull/com.springsource.org.xmlpull/1.1.4.c</bundle>
     <bundle>mvn:com.thoughtworks.xstream/com.springsource.com.thoughtworks.xstream/1.3.1</bundle>
     <bundle>mvn:com.sleepycat.je/com.springsource.com.sleepycat.je/3.3.87</bundle>
     <bundle>mvn:net.sourceforge.jopt-simple/com.springsource.joptsimple/3.0.0</bundle>
     <bundle>mvn:org.jaxen/com.springsource.org.jaxen/1.1.1</bundle>    
-    <bundle>mvn:com.fasterxml.jackson.core/jackson-core/${jackson.version}</bundle>
-    <bundle>mvn:com.fasterxml.jackson.core/jackson-annotations/${jackson.version}</bundle>
-    <bundle>mvn:com.fasterxml.jackson.module/jackson-module-jaxb-annotations/${jackson.version}</bundle>
-    <bundle>mvn:com.fasterxml.jackson.core/jackson-databind/${jackson.version}</bundle>
-    <bundle>mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-base/${jackson.version}</bundle>
-    <bundle>mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-json-provider/${jackson.version}</bundle>
     <bundle>mvn:org.renci.commons/commons-exec/${renci.commons.version}</bundle>
     <bundle>mvn:org.renci.jlrm/jlrm-api/${renci.jlrm.version}</bundle>
     <bundle>mvn:org.renci.jlrm.jlrm-condor/jlrm-condor-api/${renci.jlrm.version}</bundle>
@@ -37,7 +43,7 @@
     <bundle>mvn:org.renci.converter/converter-core/0.0.2</bundle>
     <bundle>mvn:org.renci/charts/${renci.charts.version}</bundle>
     <bundle>mvn:org.renci/vcf-parser/0.0.2</bundle>
-    <bundle>mvn:org.renci.osgi.bundles/postgresql-9.1-901.jdbc4-bundle/0.0.1</bundle>
+    <bundle>mvn:org.postgresql/postgresql/${postgresql.version}</bundle>
     <bundle>mvn:org.renci.osgi.bundles/jgrapht-0.8.3-bundle/0.0.1</bundle>
     <bundle>mvn:org.renci.osgi.bundles/biojava-3.0.7-bundle/0.0.4</bundle>
     <bundle>mvn:org.renci.osgi.bundles/snappy-1.0.3-rc3-bundle/0.0.1</bundle>
@@ -47,30 +53,26 @@
     <bundle>mvn:org.renci.osgi.bundles/jbzip2-0.9-bundle/0.0.1</bundle>
     <bundle>mvn:org.renci.osgi.bundles/fastqc-0.10.1-bundle/0.0.1</bundle>
     <bundle>mvn:org.renci.osgi.bundles/ubu-1.2-bundle/0.0.1</bundle>
+    <bundle>mvn:edu.unc.mapseq/mapseq-config/${mapseq.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq/mapseq-datasource/${mapseq.version}</bundle>    
   </feature>
 
-  <feature name="mapseq-api" version="${project.version}" resolver="(obr)">
-    <bundle>mvn:edu.unc.mapseq/mapseq-config/${mapseq.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq/mapseq-datasource/${mapseq.version}</bundle>
+  <feature name="mapseq-dao" version="${project.version}" resolver="(obr)">
+    <bundle>mvn:org.apache.geronimo.specs/geronimo-annotation_1.0_spec/1.1.1</bundle>
+    <bundle>mvn:org.apache.geronimo.specs/geronimo-servlet_2.5_spec/1.2</bundle>
+    <bundle>mvn:org.apache.geronimo.specs/geronimo-el_1.0_spec/1.0.1</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-dbcp/1.4_3</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.ant/1.7.0_6</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.serp/1.14.1_1</bundle>
+    <bundle>mvn:org.apache.geronimo.specs/geronimo-jms_1.1_spec/1.1.1</bundle>
+    <bundle>mvn:org.apache.xbean/xbean-asm5-shaded/4.3</bundle>
+    <bundle>mvn:org.renci.osgi.bundles/openjpa-2.4.0-bundle/0.0.1</bundle>    
     <bundle>mvn:edu.unc.mapseq.mapseq-dao/mapseq-dao-api/${mapseq.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.mapseq-dao/mapseq-dao-jpa/${mapseq.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq/mapseq-web-service-api/${mapseq.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq/mapseq-module-api/${mapseq.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq/mapseq-workflow-api/${mapseq.version}</bundle>
   </feature>
 
-  <feature name="mapseq-impl" version="${project.version}" resolver="(obr)">
-    <bundle>mvn:edu.unc.mapseq.distribution/mapseq-workflow-impl/${project.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.distribution/mapseq-reports/${project.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.distribution/mapseq-tasks/${project.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-commands/mapseq-commands-flowcell/${project.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-commands/mapseq-commands-general/${project.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-commands/mapseq-commands-migration/${project.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-commands/mapseq-commands-reports/${project.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-commands/mapseq-commands-sample/${project.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-commands/mapseq-commands-study/${project.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-commands/mapseq-commands-workflow/${project.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-commands/mapseq-commands-workflow-run/${project.version}</bundle>
+  <feature name="mapseq-web-services" version="${project.version}" resolver="(obr)">
+    <bundle>mvn:edu.unc.mapseq/mapseq-web-service-api/${mapseq.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-attribute/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-file-data/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-job/${project.version}</bundle>
@@ -80,15 +82,44 @@
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-workflow/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-workflow-run/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-workflow-run-attempt/${project.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-dao/mapseq-dao-soap/${project.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.distribution/mapseq-modules/${project.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.distribution/mapseq-webapp/${project.version}/war</bundle>
+    <!-- <bundle>mvn:edu.unc.mapseq.distribution.mapseq-dao/mapseq-dao-soap/${project.version}</bundle>         -->
+  </feature>
+
+  <feature name="mapseq-workflows" version="${project.version}" resolver="(obr)">
+    <bundle>mvn:edu.unc.mapseq/mapseq-module-api/${mapseq.version}</bundle>
+    <!-- <bundle>mvn:edu.unc.mapseq.distribution/mapseq-modules/${project.version}</bundle>         -->
+    <bundle>mvn:edu.unc.mapseq/mapseq-workflow-api/${mapseq.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution/mapseq-workflow-impl/${project.version}</bundle>
+  </feature>
+
+  <feature name="mapseq-commands" version="${project.version}" resolver="(obr)">
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-commands/mapseq-commands-flowcell/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-commands/mapseq-commands-general/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-commands/mapseq-commands-migration/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-commands/mapseq-commands-reports/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-commands/mapseq-commands-sample/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-commands/mapseq-commands-study/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-commands/mapseq-commands-workflow/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-commands/mapseq-commands-workflow-run/${project.version}</bundle>
   </feature>		      
 
+  <feature name="mapseq-reports" version="${project.version}" resolver="(obr)">
+    <bundle>mvn:edu.unc.mapseq.distribution/mapseq-reports/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution/mapseq-tasks/${project.version}</bundle>
+  </feature>		      
+
+  <feature name="mapseq-webapp" version="${project.version}" resolver="(obr)">
+    <bundle>mvn:edu.unc.mapseq.distribution/mapseq-webapp/${project.version}/war</bundle>
+  </feature>		      
+  
   <feature name="mapseq" version="${project.version}" resolver="(obr)">
     <feature version="${project.version}">mapseq-shared</feature>
-    <feature version="${project.version}">mapseq-api</feature>
-    <feature version="${project.version}">mapseq-impl</feature>
+    <feature version="${project.version}">mapseq-dao</feature>
+    <feature version="${project.version}">mapseq-reports</feature>    
+    <feature version="${project.version}">mapseq-commands</feature>
+    <feature version="${project.version}">mapseq-workflows</feature>    
+    <feature version="${project.version}">mapseq-web-services</feature>    
+    <feature version="${project.version}">mapseq-webapp</feature>        
   </feature>
 
 </features>
