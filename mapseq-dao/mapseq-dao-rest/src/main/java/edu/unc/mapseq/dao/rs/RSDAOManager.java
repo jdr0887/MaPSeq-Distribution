@@ -2,7 +2,7 @@ package edu.unc.mapseq.dao.rs;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import edu.unc.mapseq.dao.MaPSeqDAOBean;
+import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 
 /**
  * 
@@ -12,7 +12,7 @@ public class RSDAOManager {
 
     private static RSDAOManager instance;
 
-    private MaPSeqDAOBean bean;
+    private MaPSeqDAOBeanService bean;
 
     public static RSDAOManager getInstance() {
         if (instance == null) {
@@ -31,17 +31,17 @@ public class RSDAOManager {
     private RSDAOManager() {
         ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext(
                 "edu/unc/mapseq/dao/rs/mapseq-dao-beans.xml");
-        this.bean = (MaPSeqDAOBean) applicationContext.getBean("mapseqBean", MaPSeqDAOBean.class);
+        this.bean = (MaPSeqDAOBeanService) applicationContext.getBean("mapseqBeanService", MaPSeqDAOBeanService.class);
         applicationContext.close();
     }
 
     private RSDAOManager(String beanXMLFile) {
         ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext(beanXMLFile);
-        this.bean = (MaPSeqDAOBean) applicationContext.getBean("mapseqBean", MaPSeqDAOBean.class);
+        this.bean = (MaPSeqDAOBeanService) applicationContext.getBean("mapseqBeanService", MaPSeqDAOBeanService.class);
         applicationContext.close();
     }
 
-    public MaPSeqDAOBean getMaPSeqDAOBean() {
+    public MaPSeqDAOBeanService getMaPSeqDAOBeanService() {
         return bean;
     }
 

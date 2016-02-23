@@ -2,7 +2,7 @@ package edu.unc.mapseq.dao.ws;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import edu.unc.mapseq.dao.MaPSeqDAOBean;
+import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 
 /**
  * 
@@ -39,8 +39,9 @@ public class WSDAOManager {
         this.applicationContext = new ClassPathXmlApplicationContext(this.beanXMLFile);
     }
 
-    public MaPSeqDAOBean getMaPSeqDAOBean() {
-        MaPSeqDAOBean bean = (MaPSeqDAOBean) applicationContext.getBean("mapseqBean", MaPSeqDAOBean.class);
+    public MaPSeqDAOBeanService getMaPSeqDAOBeanService() {
+        MaPSeqDAOBeanService bean = (MaPSeqDAOBeanService) applicationContext.getBean("mapseqDAOBeanService",
+                MaPSeqDAOBeanService.class);
         return bean;
     }
 
