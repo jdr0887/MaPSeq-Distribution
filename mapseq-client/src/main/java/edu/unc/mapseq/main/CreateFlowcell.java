@@ -13,8 +13,6 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
 
-import edu.unc.mapseq.dao.FlowcellDAO;
-import edu.unc.mapseq.dao.MaPSeqDAOBean;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.model.Flowcell;
 import edu.unc.mapseq.dao.ws.WSDAOManager;
@@ -38,8 +36,6 @@ public class CreateFlowcell implements Callable<String> {
         WSDAOManager daoMgr = WSDAOManager.getInstance();
         // RSDAOManager daoMgr = RSDAOManager.getInstance();
 
-        MaPSeqDAOBean maPSeqDAOBean = daoMgr.getMaPSeqDAOBean();
-
         Pattern pattern = Pattern.compile("^\\d+_.+_\\d+_.+$");
         Matcher matcher = pattern.matcher(name);
         if (!matcher.matches()) {
@@ -49,15 +45,12 @@ public class CreateFlowcell implements Callable<String> {
             return null;
         }
 
-        Flowcell flowcell = new Flowcell();
+        Flowcell flowcell = new Flowcell(this.getName());
         try {
-            flowcell.setName(this.getName());
             if (StringUtils.isNotEmpty(this.baseRunFolder)) {
                 flowcell.setBaseDirectory(this.baseRunFolder);
             }
-            FlowcellDAO flowcellDAO = maPSeqDAOBean.getFlowcellDAO();
-            Long id = flowcellDAO.save(flowcell);
-            flowcell.setId(id);
+            flowcell.setId(daoMgr.getMaPSeqDAOBeanService().getFlowcellDAO().save(flowcell));
             return flowcell.toString();
         } catch (MaPSeqDAOException e1) {
             e1.printStackTrace();
@@ -87,8 +80,10 @@ public class CreateFlowcell implements Callable<String> {
 
     @SuppressWarnings("static-access")
     public static void main(String[] args) {
-        cliOptions.addOption(OptionBuilder.withArgName("name").withLongOpt("name")
-                .withDescription("The flowcell...format should be: <date>_<sequencerID>_<technicianID>_<flowcell>")
+        cliOptions
+                .addOption(OptionBuilder.withArgName("name").withLongOpt("name")
+                        .withDescription(
+                                "The flowcell...format should be: <date>_<sequencerID>_<technicianID>_<flowcell>")
                 .isRequired().hasArg().create());
         cliOptions.addOption(OptionBuilder.withArgName("baseRunFolder").withLongOpt("baseRunFolder").hasArg().create());
         cliOptions.addOption(OptionBuilder.withLongOpt("help").withDescription("print this help message").create("?"));
