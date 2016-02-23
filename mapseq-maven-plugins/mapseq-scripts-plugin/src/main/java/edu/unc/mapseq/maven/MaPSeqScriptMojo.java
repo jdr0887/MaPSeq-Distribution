@@ -2,97 +2,43 @@ package edu.unc.mapseq.maven;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
-import org.apache.maven.artifact.resolver.ArtifactResolutionException;
-import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.eclipse.aether.impl.ArtifactResolver;
 
-/**
- * @goal mapseq-script
- * @phase generate-sources
- * @requiresProject true
- * @requiresDependencyResolution test
- * @description
- * 
- * @author jdr0887
- * 
- */
+@Mojo(name = "mapseq-script", defaultPhase = LifecyclePhase.GENERATE_SOURCES, requiresProject = true, requiresDependencyResolution = ResolutionScope.TEST)
 public class MaPSeqScriptMojo extends AbstractMojo {
 
-    /**
-     * List of Remote Repositories used by the resolver
-     * 
-     * @parameter property="project.remoteArtifactRepositories"
-     * @readonly
-     * @required
-     */
-    protected List<ArtifactRepository> remoteRepos;
+    @Component
+    private MavenProject project;
 
-    /**
-     * @parameter default-value="${project}"
-     * @required
-     * @readonly
-     */
-    protected MavenProject project;
-
-    /**
-     * Location of the local repository.
-     * 
-     * @parameter property="localRepository"
-     * @readonly
-     * @required
-     */
-    protected ArtifactRepository local;
-
-    /**
-     * Used to look up Artifacts in the remote repository.
-     * 
-     * @component
-     */
+    @Component
     protected ArtifactResolver resolver;
 
-    /**
-     * @parameter
-     * @required
-     */
+    @Parameter(required = true)
     protected String outputDir;
 
-    /**
-     * @parameter
-     * @required
-     */
+    @Parameter(required = true)
     public String scriptName;
 
-    /**
-     * @parameter
-     */
+    @Parameter
     public String className = "";
 
     @SuppressWarnings("unchecked")
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         Set<Artifact> artifacts = project.getArtifacts();
-        Set<Artifact> resolvedArtifacts = new HashSet<Artifact>();
-        for (Artifact artifact : artifacts) {
-            try {
-                this.resolver.resolve(artifact, this.remoteRepos, this.getLocal());
-                resolvedArtifacts.add(artifact);
-            } catch (ArtifactResolutionException e) {
-                e.printStackTrace();
-            } catch (ArtifactNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
 
         File runScript = new File(outputDir, getScriptName());
         StringBuilder sb = new StringBuilder();
@@ -102,7 +48,7 @@ public class MaPSeqScriptMojo extends AbstractMojo {
         sb.append("CLASSPATH=.\n");
         sb.append("CLASSPATH=$CLASSPATH:$DIR/../lib/").append(project.getArtifactId()).append("-")
                 .append(project.getVersion()).append(".jar\n");
-        for (Artifact artifact : resolvedArtifacts) {
+        for (Artifact artifact : artifacts) {
             sb.append("CLASSPATH=$CLASSPATH:$DIR/../lib/").append(artifact.getArtifactId()).append("-")
                     .append(artifact.getVersion()).append(".jar\n");
         }
@@ -145,22 +91,6 @@ public class MaPSeqScriptMojo extends AbstractMojo {
 
     public void setOutputDir(String outputDir) {
         this.outputDir = outputDir;
-    }
-
-    public List<ArtifactRepository> getRemoteRepos() {
-        return remoteRepos;
-    }
-
-    public void setRemoteRepos(List<ArtifactRepository> remoteRepos) {
-        this.remoteRepos = remoteRepos;
-    }
-
-    public ArtifactRepository getLocal() {
-        return local;
-    }
-
-    public void setLocal(ArtifactRepository local) {
-        this.local = local;
     }
 
     public String getScriptName() {
