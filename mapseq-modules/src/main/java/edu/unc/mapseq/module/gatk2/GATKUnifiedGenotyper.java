@@ -1,6 +1,7 @@
 package edu.unc.mapseq.module.gatk2;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
@@ -221,6 +222,43 @@ public class GATKUnifiedGenotyper extends Module {
 
     public void setGenotypeLikelihoodsModel(String genotypeLikelihoodsModel) {
         this.genotypeLikelihoodsModel = genotypeLikelihoodsModel;
+    }
+
+    public static void main(String[] args) {
+        GATKUnifiedGenotyper module = new GATKUnifiedGenotyper();
+        module.setWorkflowName("TEST");
+        module.setPhoneHome("NO_ET");
+        module.setDownsamplingType("NONE");
+        module.setReferenceSequence(new File("/tmp", "refseq"));
+        module.setDbsnp(new File("/tmp", "dbsnp"));
+        module.setStandCallConf(30.0);
+        module.setStandEmitConf(0.0);
+        module.setGenotypeLikelihoodsModel("BOTH");
+        module.setInputFile(new File("/tmp", "input"));
+        module.setNumThreads(4);
+        module.setOut(new File("/tmp", "out.vcf"));
+        module.setIntervals(new File("/tmp", "intervals"));
+        module.setOutputMode("EMIT_ALL_SITES");
+        module.setMetrics(new File("/tmp", "metrics"));
+        module.setDownsampleToCoverage(250);
+
+        List<String> annotationList = new ArrayList<String>();
+        annotationList.add("AlleleBalance");
+        annotationList.add("DepthOfCoverage");
+        annotationList.add("HomopolymerRun");
+        annotationList.add("MappingQualityZero");
+        annotationList.add("QualByDepth");
+        annotationList.add("RMSMappingQuality");
+        annotationList.add("HaplotypeScore");
+
+        module.setAnnotation(annotationList);
+
+        try {
+            module.call();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 }
