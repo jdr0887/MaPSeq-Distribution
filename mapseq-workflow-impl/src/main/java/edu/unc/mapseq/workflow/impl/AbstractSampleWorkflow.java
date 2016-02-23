@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import edu.unc.mapseq.config.RunModeType;
 import edu.unc.mapseq.dao.FlowcellDAO;
-import edu.unc.mapseq.dao.MaPSeqDAOBean;
+import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.SampleDAO;
 import edu.unc.mapseq.dao.model.Flowcell;
@@ -62,23 +62,23 @@ public abstract class AbstractSampleWorkflow extends AbstractWorkflow {
                     // this will produce: /proj/seq/mapseq/RENCI/<flowcell>/<lane>_<barcode>
 
                     Study study = sample.getStudy();
-                    if (study != null && StringUtils.isNotEmpty(study.getName()) && !study.getName().equals("NC_GENES")) {
+                    if (study != null && StringUtils.isNotEmpty(study.getName())
+                            && !study.getName().equals("NC_GENES")) {
                         // this will produce: /proj/seq/mapseq/RENCI/<study>/<flowcell>/<lane>_<barcode>
                         File studyDir = new File(outdir, study.getName());
                         flowcellOutputDirectory = new File(studyDir, sample.getFlowcell().getName());
                     }
 
-                    File sampleOutputDir = new File(flowcellOutputDirectory, String.format("L%03d_%s",
-                            sample.getLaneIndex(), sample.getBarcode()));
+                    File sampleOutputDir = new File(flowcellOutputDirectory,
+                            String.format("L%03d_%s", sample.getLaneIndex(), sample.getBarcode()));
                     logger.info("creating sample output directory: {}", sampleOutputDir.getAbsolutePath());
                     sampleOutputDir.mkdirs();
 
-                    if (sample.getOutputDirectory() == null
-                            || (sample.getOutputDirectory() != null && !sample.getOutputDirectory().equals(
-                                    sampleOutputDir.getAbsolutePath()))) {
+                    if (sample.getOutputDirectory() == null || (sample.getOutputDirectory() != null
+                            && !sample.getOutputDirectory().equals(sampleOutputDir.getAbsolutePath()))) {
                         sample.setOutputDirectory(sampleOutputDir.getAbsolutePath());
-                        MaPSeqDAOBean mapseqDAOBean = getWorkflowBeanService().getMaPSeqDAOBean();
-                        mapseqDAOBean.getSampleDAO().save(sample);
+                        MaPSeqDAOBeanService mapseqDAOBeanService = getWorkflowBeanService().getMaPSeqDAOBeanService();
+                        mapseqDAOBeanService.getSampleDAO().save(sample);
                     }
                 } catch (MaPSeqDAOException e) {
                     logger.error("Could not persist Sample");
@@ -102,9 +102,9 @@ public abstract class AbstractSampleWorkflow extends AbstractWorkflow {
 
     protected Set<Sample> getAggregatedSamples() throws WorkflowException {
 
-        MaPSeqDAOBean mapseqDAOBean = getWorkflowBeanService().getMaPSeqDAOBean();
-        SampleDAO sampleDAO = mapseqDAOBean.getSampleDAO();
-        FlowcellDAO flowcellDAO = mapseqDAOBean.getFlowcellDAO();
+        MaPSeqDAOBeanService mapseqDAOBeanService = getWorkflowBeanService().getMaPSeqDAOBeanService();
+        SampleDAO sampleDAO = mapseqDAOBeanService.getSampleDAO();
+        FlowcellDAO flowcellDAO = mapseqDAOBeanService.getFlowcellDAO();
 
         Set<Sample> sampleSet = new HashSet<Sample>();
 

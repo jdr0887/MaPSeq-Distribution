@@ -12,7 +12,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.unc.mapseq.dao.MaPSeqDAOBean;
+import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.model.FileData;
 import edu.unc.mapseq.dao.model.Job;
@@ -49,8 +49,8 @@ public class WorkflowUtil {
         for (FileData fileData : fileDataSet) {
             MimeType mimeType = fileData.getMimeType();
             if (mimeType != null && mimeType.equals(MimeType.FASTQ)) {
-                Pattern patternR1 = Pattern.compile(String.format("^%s.*_L00%d_R1\\.fastq\\.gz$", sequencerRunName,
-                        laneIndex));
+                Pattern patternR1 = Pattern
+                        .compile(String.format("^%s.*_L00%d_R1\\.fastq\\.gz$", sequencerRunName, laneIndex));
                 Matcher matcherR1 = patternR1.matcher(fileData.getName());
                 File file = new File(fileData.getPath(), fileData.getName());
                 if (matcherR1.matches()) {
@@ -58,8 +58,8 @@ public class WorkflowUtil {
                     readPairList.add(file);
                 }
 
-                Pattern patternR2 = Pattern.compile(String.format("^%s.*_L00%d_R2\\.fastq\\.gz$", sequencerRunName,
-                        laneIndex));
+                Pattern patternR2 = Pattern
+                        .compile(String.format("^%s.*_L00%d_R2\\.fastq\\.gz$", sequencerRunName, laneIndex));
                 Matcher matcherR2 = patternR2.matcher(fileData.getName());
                 if (matcherR2.matches()) {
                     logger.debug("found file: {}", file.getAbsolutePath());
@@ -72,8 +72,8 @@ public class WorkflowUtil {
         return readPairList;
     }
 
-    public static File findFileByJobAndMimeTypeAndWorkflowId(MaPSeqDAOBean maPSeqDAOBean, Set<FileData> fileDataSet,
-            Class<?> clazz, MimeType mimeType, Long workflowId) {
+    public static File findFileByJobAndMimeTypeAndWorkflowId(MaPSeqDAOBeanService maPSeqDAOBeanService,
+            Set<FileData> fileDataSet, Class<?> clazz, MimeType mimeType, Long workflowId) {
         logger.debug("ENTERING findFileByJobAndMimeTypeAndWorkflowId(Set<FileData>, Class<?>, MimeType, Long)");
 
         File ret = null;
@@ -89,7 +89,7 @@ public class WorkflowUtil {
             if (fileData.getMimeType().equals(mimeType)) {
                 List<Job> jobList = null;
                 try {
-                    jobList = maPSeqDAOBean.getJobDAO().findByFileDataIdAndWorkflowId(fileData.getId(),
+                    jobList = maPSeqDAOBeanService.getJobDAO().findByFileDataIdAndWorkflowId(fileData.getId(),
                             clazz.getName(), workflowId);
                 } catch (MaPSeqDAOException e) {
                     e.printStackTrace();

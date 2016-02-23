@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import edu.unc.mapseq.config.MaPSeqConfigurationService;
 import edu.unc.mapseq.config.RunModeType;
-import edu.unc.mapseq.dao.MaPSeqDAOBean;
+import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
 import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
@@ -72,8 +72,8 @@ public abstract class AbstractWorkflow implements Workflow {
 
         Set<CondorJob> condorJobSet = graph.vertexSet();
         for (CondorJob condorJob : condorJobSet) {
-            if (StringUtils.isEmpty(condorJob.getSiteName())
-                    && (condorJob.getTransferInputList().size() == 0 && condorJob.getTransferOutputList().size() == 0)) {
+            if (StringUtils.isEmpty(condorJob.getSiteName()) && (condorJob.getTransferInputList().size() == 0
+                    && condorJob.getTransferOutputList().size() == 0)) {
                 throw new WorkflowException("can't have a job where both siteName & list of inputs/outputs are empty");
             }
         }
@@ -178,7 +178,8 @@ public abstract class AbstractWorkflow implements Workflow {
                 jobNode.setCluster(clusterId);
                 jobNode.setJobId(0);
                 hasSubmittedSuccessfully = true;
-                logger.info("jobNode.getSubmitFile().getAbsolutePath() = {}", jobNode.getSubmitFile().getAbsolutePath());
+                logger.info("jobNode.getSubmitFile().getAbsolutePath() = {}",
+                        jobNode.getSubmitFile().getAbsolutePath());
             } catch (Exception e) {
                 ++backOffCount;
                 hasSubmittedSuccessfully = false;
@@ -190,8 +191,8 @@ public abstract class AbstractWorkflow implements Workflow {
         }
 
         if (!hasSubmittedSuccessfully) {
-            throw new WorkflowException(String.format("Backed off %d times & still could not submit to condor",
-                    getBackOffMultiplier()));
+            throw new WorkflowException(
+                    String.format("Backed off %d times & still could not submit to condor", getBackOffMultiplier()));
         }
 
         try {
@@ -210,7 +211,7 @@ public abstract class AbstractWorkflow implements Workflow {
             workflowRunAttempt.setStarted(new Date());
             workflowRunAttempt.setCondorDAGClusterId(jobNode.getCluster());
             workflowRunAttempt.setSubmitDirectory(this.submitDirectory.getAbsolutePath());
-            MaPSeqDAOBean maPSeqDAOBean = getWorkflowBeanService().getMaPSeqDAOBean();
+            MaPSeqDAOBeanService maPSeqDAOBean = getWorkflowBeanService().getMaPSeqDAOBeanService();
             WorkflowRunAttemptDAO workflowRunAttemptDAO = maPSeqDAOBean.getWorkflowRunAttemptDAO();
             workflowRunAttemptDAO.save(workflowRunAttempt);
         } catch (MaPSeqDAOException e) {

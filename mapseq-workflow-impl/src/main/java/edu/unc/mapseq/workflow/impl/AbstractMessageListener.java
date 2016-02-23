@@ -39,7 +39,7 @@ public abstract class AbstractMessageListener implements MessageListener {
 
     protected Flowcell getFlowcell(WorkflowEntity workflowEntity) throws WorkflowException {
         logger.debug("ENTERING getFlowcell(WorkflowEntity)");
-        FlowcellDAO flowcellDAO = workflowBeanService.getMaPSeqDAOBean().getFlowcellDAO();
+        FlowcellDAO flowcellDAO = workflowBeanService.getMaPSeqDAOBeanService().getFlowcellDAO();
 
         Flowcell flowcell = null;
         if (workflowEntity.getId() != null) {
@@ -68,7 +68,7 @@ public abstract class AbstractMessageListener implements MessageListener {
 
     protected Sample getSample(WorkflowEntity workflowEntity) throws WorkflowException {
         logger.debug("ENTERING getSample(WorkflowEntity)");
-        SampleDAO sampleDAO = workflowBeanService.getMaPSeqDAOBean().getSampleDAO();
+        SampleDAO sampleDAO = workflowBeanService.getMaPSeqDAOBeanService().getSampleDAO();
 
         Sample sample = null;
         if (workflowEntity.getId() != null) {
@@ -119,7 +119,7 @@ public abstract class AbstractMessageListener implements MessageListener {
 
     private Set<Attribute> parseAttributes(Set<Attribute> attributeSet, List<WorkflowAttribute> workflowAttributes) {
 
-        AttributeDAO attributeDAO = getWorkflowBeanService().getMaPSeqDAOBean().getAttributeDAO();
+        AttributeDAO attributeDAO = getWorkflowBeanService().getMaPSeqDAOBeanService().getAttributeDAO();
 
         Set<String> attributeNameSet = new HashSet<String>();
         for (Attribute attribute : attributeSet) {

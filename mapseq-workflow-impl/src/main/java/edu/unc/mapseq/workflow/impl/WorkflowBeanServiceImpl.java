@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import edu.unc.mapseq.config.MaPSeqConfigurationService;
-import edu.unc.mapseq.dao.MaPSeqDAOBean;
+import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.workflow.WorkflowBeanService;
 
 public class WorkflowBeanServiceImpl implements WorkflowBeanService {
@@ -13,7 +13,7 @@ public class WorkflowBeanServiceImpl implements WorkflowBeanService {
 
     private int maxPoolSize;
 
-    private MaPSeqDAOBean maPSeqDAOBean;
+    private MaPSeqDAOBeanService maPSeqDAOBeanService;
 
     private MaPSeqConfigurationService maPSeqConfigurationService;
 
@@ -40,12 +40,12 @@ public class WorkflowBeanServiceImpl implements WorkflowBeanService {
         this.maxPoolSize = maxPoolSize;
     }
 
-    public MaPSeqDAOBean getMaPSeqDAOBean() {
-        return maPSeqDAOBean;
+    public MaPSeqDAOBeanService getMaPSeqDAOBeanService() {
+        return maPSeqDAOBeanService;
     }
 
-    public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
-        this.maPSeqDAOBean = maPSeqDAOBean;
+    public void setMaPSeqDAOBeanService(MaPSeqDAOBeanService maPSeqDAOBeanService) {
+        this.maPSeqDAOBeanService = maPSeqDAOBeanService;
     }
 
     public MaPSeqConfigurationService getMaPSeqConfigurationService() {
