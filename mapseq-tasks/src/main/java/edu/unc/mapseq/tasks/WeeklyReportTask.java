@@ -29,7 +29,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import edu.unc.mapseq.dao.JobDAO;
-import edu.unc.mapseq.dao.MaPSeqDAOBean;
+import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
 import edu.unc.mapseq.dao.model.Job;
@@ -41,7 +41,7 @@ public class WeeklyReportTask implements Runnable {
 
     private final Logger logger = LoggerFactory.getLogger(WeeklyReportTask.class);
 
-    private MaPSeqDAOBean maPSeqDAOBean;
+    private MaPSeqDAOBeanService maPSeqDAOBeanService;
 
     private String toEmailAddress;
 
@@ -86,7 +86,7 @@ public class WeeklyReportTask implements Runnable {
             titleCell.setPaddingBottom(10);
             summaryTable.addCell(titleCell);
 
-            WorkflowRunAttemptDAO workflowRunAttemptDAO = maPSeqDAOBean.getWorkflowRunAttemptDAO();
+            WorkflowRunAttemptDAO workflowRunAttemptDAO = maPSeqDAOBeanService.getWorkflowRunAttemptDAO();
             List<WorkflowRunAttempt> workflowRunAttemptList = workflowRunAttemptDAO.findByCreatedDateRange(startDate,
                     endDate);
 
@@ -122,7 +122,7 @@ public class WeeklyReportTask implements Runnable {
                 workflowSet.add(attempt.getWorkflowRun().getWorkflow());
             }
 
-            JobDAO jobDAO = maPSeqDAOBean.getJobDAO();
+            JobDAO jobDAO = maPSeqDAOBeanService.getJobDAO();
 
             Set<Workflow> synchronizedWorkflowSet = Collections.synchronizedSet(workflowSet);
 
@@ -158,8 +158,8 @@ public class WeeklyReportTask implements Runnable {
                 table.addCell(imgCell);
                 workflowJobsPerClusterReportFile.delete();
 
-                List<WorkflowRunAttempt> attempts = workflowRunAttemptDAO.findByCreatedDateRangeAndWorkflowId(
-                        startDate, endDate, workflow.getId());
+                List<WorkflowRunAttempt> attempts = workflowRunAttemptDAO.findByCreatedDateRangeAndWorkflowId(startDate,
+                        endDate, workflow.getId());
                 File workflowRunAttemptReportFile = ReportFactory.createWorkflowRunCountReport(workflow.getName(),
                         attempts, startDate, endDate);
                 img = Image.getInstance(workflowRunAttemptReportFile.getAbsolutePath());
@@ -234,12 +234,12 @@ public class WeeklyReportTask implements Runnable {
         this.toEmailAddress = toEmailAddress;
     }
 
-    public MaPSeqDAOBean getMaPSeqDAOBean() {
-        return maPSeqDAOBean;
+    public MaPSeqDAOBeanService getMaPSeqDAOBeanService() {
+        return maPSeqDAOBeanService;
     }
 
-    public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
-        this.maPSeqDAOBean = maPSeqDAOBean;
+    public void setMaPSeqDAOBeanService(MaPSeqDAOBeanService maPSeqDAOBeanService) {
+        this.maPSeqDAOBeanService = maPSeqDAOBeanService;
     }
 
 }
