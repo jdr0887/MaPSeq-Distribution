@@ -6,30 +6,34 @@ import java.util.Formatter;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.karaf.shell.commands.Argument;
-import org.apache.karaf.shell.commands.Command;
-import org.apache.karaf.shell.console.AbstractAction;
+import org.apache.karaf.shell.api.action.Action;
+import org.apache.karaf.shell.api.action.Argument;
+import org.apache.karaf.shell.api.action.Command;
+import org.apache.karaf.shell.api.action.lifecycle.Reference;
+import org.apache.karaf.shell.api.action.lifecycle.Service;
 
-import edu.unc.mapseq.dao.MaPSeqDAOBean;
+import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
 import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
 
 @Command(scope = "mapseq", name = "list-workflow-run-attempts", description = "List WorkflowRunAttempt instances")
-public class ListWorkflowRunAttemptsAction extends AbstractAction {
+@Service
+public class ListWorkflowRunAttemptsAction implements Action {
 
     @Argument(index = 0, name = "workflowRunId", description = "WorkflowRun identifier", required = true, multiValued = false)
     private Long workflowRunId;
 
-    private MaPSeqDAOBean maPSeqDAOBean;
+    @Reference
+    private MaPSeqDAOBeanService maPSeqDAOBeanService;
 
     public ListWorkflowRunAttemptsAction() {
         super();
     }
 
     @Override
-    public Object doExecute() {
+    public Object execute() {
 
-        WorkflowRunAttemptDAO workflowRunAttemptDAO = maPSeqDAOBean.getWorkflowRunAttemptDAO();
+        WorkflowRunAttemptDAO workflowRunAttemptDAO = maPSeqDAOBeanService.getWorkflowRunAttemptDAO();
 
         try {
             StringBuilder sb = new StringBuilder();
@@ -52,14 +56,14 @@ public class ListWorkflowRunAttemptsAction extends AbstractAction {
                     Date startDate = attempt.getStarted();
                     String formattedStartDate = "";
                     if (startDate != null) {
-                        formattedStartDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(
-                                startDate);
+                        formattedStartDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
+                                .format(startDate);
                     }
                     Date endDate = attempt.getFinished();
                     String formattedEndDate = "";
                     if (endDate != null) {
-                        formattedEndDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(
-                                endDate);
+                        formattedEndDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
+                                .format(endDate);
                     }
 
                     formatter.format(format, attempt.getId(), formattedCreatedDate, formattedStartDate,
@@ -87,14 +91,6 @@ public class ListWorkflowRunAttemptsAction extends AbstractAction {
 
     public void setWorkflowRunId(Long workflowRunId) {
         this.workflowRunId = workflowRunId;
-    }
-
-    public MaPSeqDAOBean getMaPSeqDAOBean() {
-        return maPSeqDAOBean;
-    }
-
-    public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
-        this.maPSeqDAOBean = maPSeqDAOBean;
     }
 
 }

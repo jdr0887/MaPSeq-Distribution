@@ -7,19 +7,23 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.karaf.shell.commands.Command;
-import org.apache.karaf.shell.commands.Option;
-import org.apache.karaf.shell.console.AbstractAction;
+import org.apache.karaf.shell.api.action.Action;
+import org.apache.karaf.shell.api.action.Command;
+import org.apache.karaf.shell.api.action.Option;
+import org.apache.karaf.shell.api.action.lifecycle.Reference;
+import org.apache.karaf.shell.api.action.lifecycle.Service;
 
 import edu.unc.mapseq.dao.FileDataDAO;
-import edu.unc.mapseq.dao.MaPSeqDAOBean;
+import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.model.FileData;
 
 @Command(scope = "mapseq", name = "find-files", description = "Find Files")
-public class FindFilesAction extends AbstractAction {
+@Service
+public class FindFilesAction implements Action {
 
-    private MaPSeqDAOBean maPSeqDAOBean;
+    @Reference
+    private MaPSeqDAOBeanService maPSeqDAOBeanService;
 
     @Option(name = "--path", description = "path", required = false, multiValued = false)
     private String path;
@@ -32,9 +36,9 @@ public class FindFilesAction extends AbstractAction {
     }
 
     @Override
-    public Object doExecute() {
+    public Object execute() {
 
-        FileDataDAO fileDataDAO = maPSeqDAOBean.getFileDataDAO();
+        FileDataDAO fileDataDAO = maPSeqDAOBeanService.getFileDataDAO();
         FileData example = new FileData();
 
         if (StringUtils.isEmpty(name) && StringUtils.isEmpty(path)) {
@@ -77,14 +81,6 @@ public class FindFilesAction extends AbstractAction {
         formatter.close();
 
         return null;
-    }
-
-    public MaPSeqDAOBean getMaPSeqDAOBean() {
-        return maPSeqDAOBean;
-    }
-
-    public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
-        this.maPSeqDAOBean = maPSeqDAOBean;
     }
 
     public String getPath() {

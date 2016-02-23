@@ -5,13 +5,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.apache.karaf.shell.commands.Argument;
-import org.apache.karaf.shell.commands.Command;
-import org.apache.karaf.shell.console.AbstractAction;
+import org.apache.karaf.shell.api.action.Action;
+import org.apache.karaf.shell.api.action.Argument;
+import org.apache.karaf.shell.api.action.Command;
+import org.apache.karaf.shell.api.action.lifecycle.Reference;
+import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.unc.mapseq.dao.MaPSeqDAOBean;
+import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
 import edu.unc.mapseq.dao.WorkflowRunDAO;
@@ -19,11 +21,13 @@ import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
 import edu.unc.mapseq.dao.model.WorkflowRunAttemptStatusType;
 
 @Command(scope = "mapseq", name = "reset-workflow-run", description = "Reset WorkflowRun")
-public class ResetWorkflowRunAction extends AbstractAction {
+@Service
+public class ResetWorkflowRunAction implements Action {
 
     private final Logger logger = LoggerFactory.getLogger(ResetWorkflowRunAction.class);
 
-    private MaPSeqDAOBean maPSeqDAOBean;
+    @Reference
+    private MaPSeqDAOBeanService maPSeqDAOBeanService;
 
     @Argument(index = 0, name = "workflowRunId", description = "Workflow Run Identifier", required = true, multiValued = true)
     private List<Long> workflowRunIdList;
@@ -33,13 +37,13 @@ public class ResetWorkflowRunAction extends AbstractAction {
     }
 
     @Override
-    public Object doExecute() {
+    public Object execute() {
         logger.debug("ENTERING doExecute()");
 
         if (this.workflowRunIdList != null && this.workflowRunIdList.size() > 0) {
 
-            WorkflowRunDAO workflowRunDAO = maPSeqDAOBean.getWorkflowRunDAO();
-            WorkflowRunAttemptDAO workflowRunAttemptDAO = maPSeqDAOBean.getWorkflowRunAttemptDAO();
+            WorkflowRunDAO workflowRunDAO = maPSeqDAOBeanService.getWorkflowRunDAO();
+            WorkflowRunAttemptDAO workflowRunAttemptDAO = maPSeqDAOBeanService.getWorkflowRunAttemptDAO();
 
             for (Long workflowRunId : this.workflowRunIdList) {
                 logger.debug("resetting WorkflowRun: {}", workflowRunId);
@@ -72,14 +76,6 @@ public class ResetWorkflowRunAction extends AbstractAction {
         }
 
         return null;
-    }
-
-    public MaPSeqDAOBean getMaPSeqDAOBean() {
-        return maPSeqDAOBean;
-    }
-
-    public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
-        this.maPSeqDAOBean = maPSeqDAOBean;
     }
 
     public List<Long> getWorkflowRunIdList() {

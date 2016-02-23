@@ -3,20 +3,22 @@ package edu.unc.mapseq.commands.general;
 import java.util.Formatter;
 import java.util.Locale;
 
-import org.apache.karaf.shell.commands.Command;
-import org.apache.karaf.shell.console.AbstractAction;
+import org.apache.karaf.shell.api.action.Action;
+import org.apache.karaf.shell.api.action.Command;
+import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.unc.mapseq.dao.model.MimeType;
 
 @Command(scope = "mapseq", name = "list-mime-types", description = "List MimeTypes")
-public class ListMimeTypesAction extends AbstractAction {
+@Service
+public class ListMimeTypesAction implements Action {
 
-    private final Logger logger = LoggerFactory.getLogger(ListMimeTypesAction.class);
+    private static final Logger logger = LoggerFactory.getLogger(ListMimeTypesAction.class);
 
     @Override
-    protected Object doExecute() throws Exception {
+    public Object execute() throws Exception {
         logger.debug("ENTERING doExecute()");
 
         StringBuilder sb = new StringBuilder();

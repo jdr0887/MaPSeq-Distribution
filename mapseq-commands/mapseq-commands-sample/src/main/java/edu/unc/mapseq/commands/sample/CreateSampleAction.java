@@ -10,11 +10,13 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.karaf.shell.commands.Argument;
-import org.apache.karaf.shell.commands.Command;
-import org.apache.karaf.shell.console.AbstractAction;
+import org.apache.karaf.shell.api.action.Action;
+import org.apache.karaf.shell.api.action.Argument;
+import org.apache.karaf.shell.api.action.Command;
+import org.apache.karaf.shell.api.action.lifecycle.Reference;
+import org.apache.karaf.shell.api.action.lifecycle.Service;
 
-import edu.unc.mapseq.dao.MaPSeqDAOBean;
+import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.SampleDAO;
 import edu.unc.mapseq.dao.model.FileData;
@@ -23,7 +25,8 @@ import edu.unc.mapseq.dao.model.MimeType;
 import edu.unc.mapseq.dao.model.Sample;
 
 @Command(scope = "mapseq", name = "create-sample", description = "Create Sample")
-public class CreateSampleAction extends AbstractAction {
+@Service
+public class CreateSampleAction implements Action {
 
     @Argument(index = 0, name = "flowcellId", description = "Flowcell Identifier", required = true, multiValued = false)
     private Long flowcellId;
@@ -46,130 +49,126 @@ public class CreateSampleAction extends AbstractAction {
     @Argument(index = 6, name = "read2Fastq", description = "Read 2 Fastq File", required = true, multiValued = false)
     private String read2Fastq;
 
-    private MaPSeqDAOBean maPSeqDAOBean;
+    @Reference
+    private MaPSeqDAOBeanService maPSeqDAOBeanService;
 
     public CreateSampleAction() {
         super();
     }
 
     @Override
-    public Object doExecute() {
+    public Object execute() {
 
-        Flowcell flowcell = null;
         try {
-            flowcell = maPSeqDAOBean.getFlowcellDAO().findById(this.flowcellId);
-        } catch (Exception e1) {
-        }
+            Flowcell flowcell = maPSeqDAOBeanService.getFlowcellDAO().findById(this.flowcellId);
 
-        if (flowcell == null) {
-            System.err.println("Flowcell not found: " + this.flowcellId);
-            System.err.println("Please run list-flowcells and use a valid Flowcell Identifier.");
-            return null;
-        }
+            if (flowcell == null) {
+                System.err.println("Flowcell not found: " + this.flowcellId);
+                System.err.println("Please run list-flowcells and use a valid Flowcell Identifier.");
+                return null;
+            }
 
-        File read1FastqFile = new File(read1Fastq);
-        if (!read1FastqFile.getName().startsWith(flowcell.getName())) {
-            System.err.println("Invalid fastq name: " + read1FastqFile.getName());
-            System.err.println("Fastq should start with Flowcell Name");
-            return null;
-        }
+            File read1FastqFile = new File(read1Fastq);
+            if (!read1FastqFile.getName().startsWith(flowcell.getName())) {
+                System.err.println("Invalid fastq name: " + read1FastqFile.getName());
+                System.err.println("Fastq should start with Flowcell Name");
+                return null;
+            }
 
-        File read2FastqFile = new File(read2Fastq);
-        if (read2FastqFile != null && !read2FastqFile.getName().startsWith(flowcell.getName())) {
-            System.err.println("Invalid fastq name: " + read2FastqFile.getName());
-            System.err.println("Fastq should start with Flowcell Name");
-            return null;
-        }
-
-        if (!read1FastqFile.getName().endsWith(".gz")) {
-            System.err.println("Invalid fastq name: " + read1FastqFile.getName());
-            System.err.println("Fastq should end with .gz...is it gzipped?");
-            return null;
-        }
-
-        if (read2Fastq != null && !read2FastqFile.getName().endsWith(".gz")) {
-            System.err.println("Invalid fastq name: " + read2FastqFile.getName());
-            System.err.println("Fastq should end with .gz...is it gzipped?");
-            return null;
-        }
-
-        Pattern pattern = Pattern.compile("^\\d+_.+_\\d+_.+_\\w+_L\\d+_R[1-2]\\.fastq\\.gz$");
-        Matcher matcher = pattern.matcher(read1FastqFile.getName());
-        if (!matcher.matches()) {
-            System.err.println("Invalid fastq name: " + read1FastqFile.getName());
-            System.err
-                    .println("Please use <date>_<machineID>_<technicianID>_<flowcell>_<barcode>_L<paddedLane>_R<read>.fastq.gz");
-            System.err.println("For example: 120110_UNC13-SN749_0141_AD0J7WACXX_ATCACG_L007_R1.fastq.gz");
-            return null;
-        }
-
-        if (read2Fastq != null) {
-            matcher = pattern.matcher(read2FastqFile.getName());
-            if (!matcher.matches()) {
+            File read2FastqFile = new File(read2Fastq);
+            if (read2FastqFile != null && !read2FastqFile.getName().startsWith(flowcell.getName())) {
                 System.err.println("Invalid fastq name: " + read2FastqFile.getName());
-                System.err
-                        .println("Please use <date>_<machineID>_<technicianID>_<flowcell>_<barcode>_L<paddedLane>_R<read>.fastq.gz");
+                System.err.println("Fastq should start with Flowcell Name");
+                return null;
+            }
+
+            if (!read1FastqFile.getName().endsWith(".gz")) {
+                System.err.println("Invalid fastq name: " + read1FastqFile.getName());
+                System.err.println("Fastq should end with .gz...is it gzipped?");
+                return null;
+            }
+
+            if (read2Fastq != null && !read2FastqFile.getName().endsWith(".gz")) {
+                System.err.println("Invalid fastq name: " + read2FastqFile.getName());
+                System.err.println("Fastq should end with .gz...is it gzipped?");
+                return null;
+            }
+
+            Pattern pattern = Pattern.compile("^\\d+_.+_\\d+_.+_\\w+_L\\d+_R[1-2]\\.fastq\\.gz$");
+            Matcher matcher = pattern.matcher(read1FastqFile.getName());
+            if (!matcher.matches()) {
+                System.err.println("Invalid fastq name: " + read1FastqFile.getName());
+                System.err.println(
+                        "Please use <date>_<machineID>_<technicianID>_<flowcell>_<barcode>_L<paddedLane>_R<read>.fastq.gz");
                 System.err.println("For example: 120110_UNC13-SN749_0141_AD0J7WACXX_ATCACG_L007_R1.fastq.gz");
                 return null;
             }
-        }
 
-        String mapseqOutputDir = System.getenv("MAPSEQ_OUTPUT_DIRECTORY");
-        if (StringUtils.isEmpty(mapseqOutputDir)) {
-            System.err.println("MAPSEQ_OUTPUT_DIRECTORY not set in env: " + mapseqOutputDir);
-            return null;
-        }
-
-        File mapseqOutputDirectory = new File(mapseqOutputDir);
-        if (!mapseqOutputDirectory.exists()) {
-            System.err.println("MAPSEQ_OUTPUT_DIRECTORY does not exist: " + mapseqOutputDir);
-            return null;
-        }
-
-        File sequencerRunOutputDir = new File(mapseqOutputDirectory, flowcell.getName());
-        File sampleOutputDir = new File(sequencerRunOutputDir, String.format("L%03d_%s", laneIndex, barcode));
-        File workflowOutputDir = new File(sampleOutputDir, "CASAVA");
-        workflowOutputDir.mkdirs();
-
-        if (!sampleOutputDir.canWrite()) {
-            System.err.println("You don't have permission to write to: " + workflowOutputDir.getAbsolutePath());
-            return null;
-        }
-
-        try {
-            File newR1FastqFile = new File(workflowOutputDir, read1FastqFile.getName());
-            if (!read1FastqFile.getAbsolutePath().equals(newR1FastqFile.getAbsolutePath())) {
-                FileUtils.copyFile(read1FastqFile, newR1FastqFile);
+            if (read2Fastq != null) {
+                matcher = pattern.matcher(read2FastqFile.getName());
+                if (!matcher.matches()) {
+                    System.err.println("Invalid fastq name: " + read2FastqFile.getName());
+                    System.err.println(
+                            "Please use <date>_<machineID>_<technicianID>_<flowcell>_<barcode>_L<paddedLane>_R<read>.fastq.gz");
+                    System.err.println("For example: 120110_UNC13-SN749_0141_AD0J7WACXX_ATCACG_L007_R1.fastq.gz");
+                    return null;
+                }
             }
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
 
-        if (read2Fastq != null) {
+            String mapseqOutputDir = System.getenv("MAPSEQ_OUTPUT_DIRECTORY");
+            if (StringUtils.isEmpty(mapseqOutputDir)) {
+                System.err.println("MAPSEQ_OUTPUT_DIRECTORY not set in env: " + mapseqOutputDir);
+                return null;
+            }
+
+            File mapseqOutputDirectory = new File(mapseqOutputDir);
+            if (!mapseqOutputDirectory.exists()) {
+                System.err.println("MAPSEQ_OUTPUT_DIRECTORY does not exist: " + mapseqOutputDir);
+                return null;
+            }
+
+            File sequencerRunOutputDir = new File(mapseqOutputDirectory, flowcell.getName());
+            File sampleOutputDir = new File(sequencerRunOutputDir, String.format("L%03d_%s", laneIndex, barcode));
+            File workflowOutputDir = new File(sampleOutputDir, "CASAVA");
+            workflowOutputDir.mkdirs();
+
+            if (!sampleOutputDir.canWrite()) {
+                System.err.println("You don't have permission to write to: " + workflowOutputDir.getAbsolutePath());
+                return null;
+            }
+
             try {
-                File newR2FastqFile = new File(workflowOutputDir, read2FastqFile.getName());
-                if (!read2FastqFile.getAbsolutePath().equals(newR2FastqFile.getAbsolutePath())) {
-                    FileUtils.copyFile(read2FastqFile, newR2FastqFile);
+                File newR1FastqFile = new File(workflowOutputDir, read1FastqFile.getName());
+                if (!read1FastqFile.getAbsolutePath().equals(newR1FastqFile.getAbsolutePath())) {
+                    FileUtils.copyFile(read1FastqFile, newR1FastqFile);
                 }
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
-        }
 
-        Set<FileData> fileDataSet = new HashSet<FileData>();
+            if (read2Fastq != null) {
+                try {
+                    File newR2FastqFile = new File(workflowOutputDir, read2FastqFile.getName());
+                    if (!read2FastqFile.getAbsolutePath().equals(newR2FastqFile.getAbsolutePath())) {
+                        FileUtils.copyFile(read2FastqFile, newR2FastqFile);
+                    }
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
 
-        try {
+            Set<FileData> fileDataSet = new HashSet<FileData>();
 
             FileData read1FastqFD = new FileData();
             read1FastqFD.setMimeType(MimeType.FASTQ);
             read1FastqFD.setName(read1FastqFile.getName());
             read1FastqFD.setPath(sampleOutputDir.getAbsolutePath());
 
-            List<FileData> fileDataList = maPSeqDAOBean.getFileDataDAO().findByExample(read1FastqFD);
+            List<FileData> fileDataList = maPSeqDAOBeanService.getFileDataDAO().findByExample(read1FastqFD);
             if (fileDataList != null && fileDataList.size() > 0) {
                 read1FastqFD = fileDataList.get(0);
             } else {
-                Long id = maPSeqDAOBean.getFileDataDAO().save(read1FastqFD);
+                Long id = maPSeqDAOBeanService.getFileDataDAO().save(read1FastqFD);
                 read1FastqFD.setId(id);
             }
             fileDataSet.add(read1FastqFD);
@@ -179,22 +178,22 @@ public class CreateSampleAction extends AbstractAction {
                 read2FastqFD.setMimeType(MimeType.FASTQ);
                 read2FastqFD.setName(read2FastqFile.getName());
                 read2FastqFD.setPath(sampleOutputDir.getAbsolutePath());
-                fileDataList = maPSeqDAOBean.getFileDataDAO().findByExample(read2FastqFD);
+                fileDataList = maPSeqDAOBeanService.getFileDataDAO().findByExample(read2FastqFD);
                 if (fileDataList != null && fileDataList.size() > 0) {
                     read2FastqFD = fileDataList.get(0);
                 } else {
-                    Long id = maPSeqDAOBean.getFileDataDAO().save(read2FastqFD);
+                    Long id = maPSeqDAOBeanService.getFileDataDAO().save(read2FastqFD);
                     read2FastqFD.setId(id);
                 }
                 fileDataSet.add(read2FastqFD);
             }
 
-            SampleDAO sampleDAO = maPSeqDAOBean.getSampleDAO();
+            SampleDAO sampleDAO = maPSeqDAOBeanService.getSampleDAO();
 
             Sample sample = new Sample();
             sample.setName(name);
             sample.setBarcode(barcode);
-            sample.setStudy(maPSeqDAOBean.getStudyDAO().findById(this.studyId));
+            sample.setStudy(maPSeqDAOBeanService.getStudyDAO().findById(this.studyId));
             sample.setLaneIndex(laneIndex);
             sample.setFlowcell(flowcell);
             sample.setId(sampleDAO.save(sample));
@@ -203,18 +202,11 @@ public class CreateSampleAction extends AbstractAction {
 
             System.out.println(sample.toString());
         } catch (MaPSeqDAOException e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
         return null;
-    }
-
-    public MaPSeqDAOBean getMaPSeqDAOBean() {
-        return maPSeqDAOBean;
-    }
-
-    public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
-        this.maPSeqDAOBean = maPSeqDAOBean;
     }
 
     public Long getFlowcellId() {

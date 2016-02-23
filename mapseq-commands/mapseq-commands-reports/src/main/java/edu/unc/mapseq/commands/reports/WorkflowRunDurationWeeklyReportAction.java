@@ -8,14 +8,18 @@ import java.util.List;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.mail.EmailAttachment;
+import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.MultiPartEmail;
-import org.apache.karaf.shell.commands.Argument;
-import org.apache.karaf.shell.commands.Command;
-import org.apache.karaf.shell.console.AbstractAction;
+import org.apache.karaf.shell.api.action.Action;
+import org.apache.karaf.shell.api.action.Argument;
+import org.apache.karaf.shell.api.action.Command;
+import org.apache.karaf.shell.api.action.lifecycle.Reference;
+import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.unc.mapseq.dao.MaPSeqDAOBean;
+import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
+import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
 import edu.unc.mapseq.dao.WorkflowRunDAO;
 import edu.unc.mapseq.dao.model.WorkflowRun;
@@ -23,71 +27,69 @@ import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
 import edu.unc.mapseq.reports.ReportFactory;
 
 @Command(scope = "mapseq", name = "generate-workflow-run-duration-weekly-report", description = "")
-public class WorkflowRunDurationWeeklyReportAction extends AbstractAction {
+@Service
+public class WorkflowRunDurationWeeklyReportAction implements Action {
 
     private final Logger logger = LoggerFactory.getLogger(WorkflowRunDurationWeeklyReportAction.class);
 
-    private MaPSeqDAOBean maPSeqDAOBean;
+    @Reference
+    private MaPSeqDAOBeanService maPSeqDAOBeanService;
 
     @Argument(index = 0, name = "toEmailAddress", description = "To Email Address", required = true, multiValued = false)
     private String toEmailAddress;
 
     @Override
-    protected Object doExecute() throws Exception {
+    public Object execute() {
         logger.debug("ENTERING doExecute()");
 
-        Date endDate = new Date();
-        Calendar c = Calendar.getInstance();
-        c.setTime(endDate);
-        c.add(Calendar.WEEK_OF_YEAR, -1);
-        Date startDate = c.getTime();
+        try {
+            Date endDate = new Date();
+            Calendar c = Calendar.getInstance();
+            c.setTime(endDate);
+            c.add(Calendar.WEEK_OF_YEAR, -1);
+            Date startDate = c.getTime();
 
-        WorkflowRunDAO workflowRunDAO = maPSeqDAOBean.getWorkflowRunDAO();
-        List<WorkflowRun> workflowRunList = workflowRunDAO.findByCreatedDateRange(startDate, endDate);
+            WorkflowRunDAO workflowRunDAO = maPSeqDAOBeanService.getWorkflowRunDAO();
+            List<WorkflowRun> workflowRunList = workflowRunDAO.findByCreatedDateRange(startDate, endDate);
 
-        WorkflowRunAttemptDAO workflowRunAttemptDAO = maPSeqDAOBean.getWorkflowRunAttemptDAO();
-        List<WorkflowRunAttempt> workflowRunAttemptList = new ArrayList<>();
+            WorkflowRunAttemptDAO workflowRunAttemptDAO = maPSeqDAOBeanService.getWorkflowRunAttemptDAO();
+            List<WorkflowRunAttempt> workflowRunAttemptList = new ArrayList<>();
 
-        if (workflowRunList != null && !workflowRunList.isEmpty()) {
-            for (WorkflowRun workflowRun : workflowRunList) {
-                List<WorkflowRunAttempt> toAdd = workflowRunAttemptDAO.findByWorkflowRunId(workflowRun.getId());
-                if (toAdd != null && !toAdd.isEmpty()) {
-                    workflowRunAttemptList.addAll(toAdd);
+            if (workflowRunList != null && !workflowRunList.isEmpty()) {
+                for (WorkflowRun workflowRun : workflowRunList) {
+                    List<WorkflowRunAttempt> toAdd = workflowRunAttemptDAO.findByWorkflowRunId(workflowRun.getId());
+                    if (toAdd != null && !toAdd.isEmpty()) {
+                        workflowRunAttemptList.addAll(toAdd);
+                    }
                 }
             }
+
+            File chartFile = ReportFactory.createWorkflowRunDurationReport(workflowRunAttemptList, startDate, endDate);
+
+            String subject = String.format("MaPSeq : WorkflowRunAttempts (%s - %s)",
+                    DateFormatUtils.format(startDate, "MM/dd"), DateFormatUtils.format(endDate, "MM/dd"));
+
+            EmailAttachment attachment = new EmailAttachment();
+            attachment.setPath(chartFile.getAbsolutePath());
+            attachment.setDisposition(EmailAttachment.ATTACHMENT);
+            attachment.setDescription(subject);
+            attachment.setName(chartFile.getName());
+
+            MultiPartEmail email = new MultiPartEmail();
+            email.setHostName("localhost");
+            email.addTo(toEmailAddress);
+            email.setFrom(String.format("%s@unc.edu", System.getProperty("user.name")));
+            email.setSubject(subject);
+            email.setMsg("See Attached");
+            email.attach(attachment);
+
+            email.send();
+
+            chartFile.delete();
+        } catch (MaPSeqDAOException | EmailException e) {
+            e.printStackTrace();
         }
-
-        File chartFile = ReportFactory.createWorkflowRunDurationReport(workflowRunAttemptList, startDate, endDate);
-
-        String subject = String.format("MaPSeq : WorkflowRunAttempts (%s - %s)",
-                DateFormatUtils.format(startDate, "MM/dd"), DateFormatUtils.format(endDate, "MM/dd"));
-
-        EmailAttachment attachment = new EmailAttachment();
-        attachment.setPath(chartFile.getAbsolutePath());
-        attachment.setDisposition(EmailAttachment.ATTACHMENT);
-        attachment.setDescription(subject);
-        attachment.setName(chartFile.getName());
-
-        MultiPartEmail email = new MultiPartEmail();
-        email.setHostName("localhost");
-        email.addTo(toEmailAddress);
-        email.setFrom(String.format("%s@unc.edu", System.getProperty("user.name")));
-        email.setSubject(subject);
-        email.setMsg("See Attached");
-        email.attach(attachment);
-
-        email.send();
-
-        chartFile.delete();
         return null;
-    }
-
-    public MaPSeqDAOBean getMaPSeqDAOBean() {
-        return maPSeqDAOBean;
-    }
-
-    public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
-        this.maPSeqDAOBean = maPSeqDAOBean;
     }
 
     public String getToEmailAddress() {

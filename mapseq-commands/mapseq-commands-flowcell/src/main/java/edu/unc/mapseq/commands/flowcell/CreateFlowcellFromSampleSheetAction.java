@@ -9,11 +9,13 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.karaf.shell.commands.Argument;
-import org.apache.karaf.shell.commands.Command;
-import org.apache.karaf.shell.console.AbstractAction;
+import org.apache.karaf.shell.api.action.Action;
+import org.apache.karaf.shell.api.action.Argument;
+import org.apache.karaf.shell.api.action.Command;
+import org.apache.karaf.shell.api.action.lifecycle.Reference;
+import org.apache.karaf.shell.api.action.lifecycle.Service;
 
-import edu.unc.mapseq.dao.MaPSeqDAOBean;
+import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.model.Attribute;
 import edu.unc.mapseq.dao.model.Flowcell;
@@ -21,9 +23,11 @@ import edu.unc.mapseq.dao.model.Sample;
 import edu.unc.mapseq.dao.model.Study;
 
 @Command(scope = "mapseq", name = "create-flowcell-from-samplesheet", description = "Create Flowcell from SampleSheet")
-public class CreateFlowcellFromSampleSheetAction extends AbstractAction {
+@Service
+public class CreateFlowcellFromSampleSheetAction implements Action {
 
-    private MaPSeqDAOBean maPSeqDAOBean;
+    @Reference
+    private MaPSeqDAOBeanService maPSeqDAOBeanService;
 
     @Argument(index = 0, name = "baseRunFolder", description = "The folder parent to the flowcell directory", required = true, multiValued = false)
     private String baseRunFolder;
@@ -40,14 +44,14 @@ public class CreateFlowcellFromSampleSheetAction extends AbstractAction {
 
     @SuppressWarnings("unused")
     @Override
-    public Object doExecute() {
+    public Object execute() {
 
         Flowcell flowcell = new Flowcell();
         flowcell.setBaseDirectory(baseRunFolder);
         flowcell.setName(name);
 
         try {
-            Long flowcellId = maPSeqDAOBean.getFlowcellDAO().save(flowcell);
+            Long flowcellId = maPSeqDAOBeanService.getFlowcellDAO().save(flowcell);
             flowcell.setId(flowcellId);
         } catch (MaPSeqDAOException e1) {
             e1.printStackTrace();
@@ -72,7 +76,7 @@ public class CreateFlowcellFromSampleSheetAction extends AbstractAction {
                 String operator = st[8];
                 String sampleProject = st[9];
 
-                List<Study> studyList = maPSeqDAOBean.getStudyDAO().findByName(sampleProject);
+                List<Study> studyList = maPSeqDAOBeanService.getStudyDAO().findByName(sampleProject);
                 if (studyList == null || (studyList != null && studyList.isEmpty())) {
                     System.err.printf("Study doesn't exist...fix your sample sheet for column 9 (sampleProject)");
                     return null;
@@ -97,7 +101,7 @@ public class CreateFlowcellFromSampleSheetAction extends AbstractAction {
                 attributes.add(descAttribute);
                 sample.setAttributes(attributes);
 
-                Long id = maPSeqDAOBean.getSampleDAO().save(sample);
+                Long id = maPSeqDAOBeanService.getSampleDAO().save(sample);
                 sample.setId(id);
 
             }
@@ -112,13 +116,6 @@ public class CreateFlowcellFromSampleSheetAction extends AbstractAction {
         return null;
     }
 
-    public MaPSeqDAOBean getMaPSeqDAOBean() {
-        return maPSeqDAOBean;
-    }
-
-    public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
-        this.maPSeqDAOBean = maPSeqDAOBean;
-    }
 
     public String getBaseRunFolder() {
         return baseRunFolder;

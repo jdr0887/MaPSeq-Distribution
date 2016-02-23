@@ -2,12 +2,14 @@ package edu.unc.mapseq.commands.sample;
 
 import java.util.List;
 
-import org.apache.karaf.shell.commands.Argument;
-import org.apache.karaf.shell.commands.Command;
-import org.apache.karaf.shell.console.AbstractAction;
+import org.apache.karaf.shell.api.action.Action;
+import org.apache.karaf.shell.api.action.Argument;
+import org.apache.karaf.shell.api.action.Command;
+import org.apache.karaf.shell.api.action.lifecycle.Reference;
+import org.apache.karaf.shell.api.action.lifecycle.Service;
 
 import edu.unc.mapseq.dao.JobDAO;
-import edu.unc.mapseq.dao.MaPSeqDAOBean;
+import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.SampleDAO;
 import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
@@ -18,9 +20,11 @@ import edu.unc.mapseq.dao.model.WorkflowRun;
 import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
 
 @Command(scope = "mapseq", name = "delete-sample", description = "Delete Sample")
-public class DeleteSampleAction extends AbstractAction {
+@Service
+public class DeleteSampleAction implements Action {
 
-    private MaPSeqDAOBean maPSeqDAOBean;
+    @Reference
+    private MaPSeqDAOBeanService maPSeqDAOBeanService;
 
     @Argument(index = 0, name = "sampleId", description = "Sample Identifier", required = true, multiValued = true)
     private List<Long> sampleIdList;
@@ -30,14 +34,14 @@ public class DeleteSampleAction extends AbstractAction {
     }
 
     @Override
-    public Object doExecute() {
+    public Object execute() {
 
         if (this.sampleIdList != null && this.sampleIdList.size() > 0) {
 
-            SampleDAO sampleDAO = maPSeqDAOBean.getSampleDAO();
-            WorkflowRunAttemptDAO workflowRunAttemptDAO = maPSeqDAOBean.getWorkflowRunAttemptDAO();
-            WorkflowRunDAO workflowRunDAO = maPSeqDAOBean.getWorkflowRunDAO();
-            JobDAO jobDAO = maPSeqDAOBean.getJobDAO();
+            SampleDAO sampleDAO = maPSeqDAOBeanService.getSampleDAO();
+            WorkflowRunAttemptDAO workflowRunAttemptDAO = maPSeqDAOBeanService.getWorkflowRunAttemptDAO();
+            WorkflowRunDAO workflowRunDAO = maPSeqDAOBeanService.getWorkflowRunDAO();
+            JobDAO jobDAO = maPSeqDAOBeanService.getJobDAO();
 
             for (Long id : this.sampleIdList) {
                 try {
@@ -94,14 +98,6 @@ public class DeleteSampleAction extends AbstractAction {
         }
 
         return null;
-    }
-
-    public MaPSeqDAOBean getMaPSeqDAOBean() {
-        return maPSeqDAOBean;
-    }
-
-    public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
-        this.maPSeqDAOBean = maPSeqDAOBean;
     }
 
     public List<Long> getSampleIdList() {

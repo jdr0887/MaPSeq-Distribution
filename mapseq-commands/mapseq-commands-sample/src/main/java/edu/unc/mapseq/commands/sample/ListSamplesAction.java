@@ -10,18 +10,23 @@ import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.karaf.shell.commands.Command;
-import org.apache.karaf.shell.commands.Option;
-import org.apache.karaf.shell.console.AbstractAction;
+import org.apache.karaf.shell.api.action.Action;
+import org.apache.karaf.shell.api.action.Command;
+import org.apache.karaf.shell.api.action.Option;
+import org.apache.karaf.shell.api.action.lifecycle.Reference;
+import org.apache.karaf.shell.api.action.lifecycle.Service;
 
-import edu.unc.mapseq.dao.MaPSeqDAOBean;
+import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
+import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.SampleDAO;
 import edu.unc.mapseq.dao.model.Sample;
 
 @Command(scope = "mapseq", name = "list-samples", description = "List Samples")
-public class ListSamplesAction extends AbstractAction {
+@Service
+public class ListSamplesAction implements Action {
 
-    private MaPSeqDAOBean maPSeqDAOBean;
+    @Reference
+    private MaPSeqDAOBeanService maPSeqDAOBeanService;
 
     @Option(name = "--flowcellId", description = "Flowcell Identifier", required = false, multiValued = false)
     private Long flowcellId;
@@ -37,65 +42,61 @@ public class ListSamplesAction extends AbstractAction {
     }
 
     @Override
-    public Object doExecute() throws Exception {
+    public Object execute() {
 
-        SampleDAO sampleDAO = maPSeqDAOBean.getSampleDAO();
+        try {
+            SampleDAO sampleDAO = maPSeqDAOBeanService.getSampleDAO();
 
-        Set<Sample> sampleList = new HashSet<Sample>();
+            Set<Sample> sampleList = new HashSet<Sample>();
 
-        if (workflowRunId != null) {
-            List<Sample> samples = sampleDAO.findByWorkflowRunId(workflowRunId);
-            if (CollectionUtils.isNotEmpty(samples)) {
-                sampleList.addAll(samples);
-            }
-        }
-
-        if (flowcellId != null) {
-            List<Sample> samples = sampleDAO.findByFlowcellId(flowcellId);
-            if (CollectionUtils.isNotEmpty(samples)) {
-                sampleList.addAll(samples);
-            }
-        }
-
-        if (StringUtils.isNotEmpty(name)) {
-            List<Sample> samples = sampleDAO.findByName(name);
-            if (CollectionUtils.isNotEmpty(samples)) {
-                sampleList.addAll(samples);
-            }
-        }
-
-        if (CollectionUtils.isNotEmpty(sampleList)) {
-            StringBuilder sb = new StringBuilder();
-            Formatter formatter = new Formatter(sb, Locale.US);
-            String format = "%1$-12s %2$-20s %3$-40s %4$-8s %5$-20s %6$s%n";
-            formatter.format(format, "ID", "Created", "Name", "Lane", "Barcode", "Output Directory");
-
-            for (Sample sample : sampleList) {
-
-                Date created = sample.getCreated();
-                String formattedCreated = "";
-                if (created != null) {
-                    formattedCreated = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(
-                            created);
+            if (workflowRunId != null) {
+                List<Sample> samples = sampleDAO.findByWorkflowRunId(workflowRunId);
+                if (CollectionUtils.isNotEmpty(samples)) {
+                    sampleList.addAll(samples);
                 }
-
-                formatter.format(format, sample.getId(), formattedCreated, sample.getName(), sample.getLaneIndex(),
-                        sample.getBarcode(), sample.getOutputDirectory());
-                formatter.flush();
             }
-            System.out.println(formatter.toString());
-            formatter.close();
+
+            if (flowcellId != null) {
+                List<Sample> samples = sampleDAO.findByFlowcellId(flowcellId);
+                if (CollectionUtils.isNotEmpty(samples)) {
+                    sampleList.addAll(samples);
+                }
+            }
+
+            if (StringUtils.isNotEmpty(name)) {
+                List<Sample> samples = sampleDAO.findByName(name);
+                if (CollectionUtils.isNotEmpty(samples)) {
+                    sampleList.addAll(samples);
+                }
+            }
+
+            if (CollectionUtils.isNotEmpty(sampleList)) {
+                StringBuilder sb = new StringBuilder();
+                Formatter formatter = new Formatter(sb, Locale.US);
+                String format = "%1$-12s %2$-20s %3$-40s %4$-8s %5$-20s %6$s%n";
+                formatter.format(format, "ID", "Created", "Name", "Lane", "Barcode", "Output Directory");
+
+                for (Sample sample : sampleList) {
+
+                    Date created = sample.getCreated();
+                    String formattedCreated = "";
+                    if (created != null) {
+                        formattedCreated = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
+                                .format(created);
+                    }
+
+                    formatter.format(format, sample.getId(), formattedCreated, sample.getName(), sample.getLaneIndex(),
+                            sample.getBarcode(), sample.getOutputDirectory());
+                    formatter.flush();
+                }
+                System.out.println(formatter.toString());
+                formatter.close();
+            }
+        } catch (MaPSeqDAOException e) {
+            e.printStackTrace();
         }
 
         return null;
-    }
-
-    public MaPSeqDAOBean getMaPSeqDAOBean() {
-        return maPSeqDAOBean;
-    }
-
-    public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
-        this.maPSeqDAOBean = maPSeqDAOBean;
     }
 
     public Long getFlowcellId() {

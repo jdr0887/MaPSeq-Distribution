@@ -2,21 +2,25 @@ package edu.unc.mapseq.commands.flowcell;
 
 import java.util.Set;
 
-import org.apache.karaf.shell.commands.Command;
-import org.apache.karaf.shell.commands.Option;
-import org.apache.karaf.shell.console.AbstractAction;
+import org.apache.karaf.shell.api.action.Action;
+import org.apache.karaf.shell.api.action.Command;
+import org.apache.karaf.shell.api.action.Option;
+import org.apache.karaf.shell.api.action.lifecycle.Reference;
+import org.apache.karaf.shell.api.action.lifecycle.Service;
 
 import edu.unc.mapseq.dao.FileDataDAO;
 import edu.unc.mapseq.dao.FlowcellDAO;
-import edu.unc.mapseq.dao.MaPSeqDAOBean;
+import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.model.FileData;
 import edu.unc.mapseq.dao.model.Flowcell;
 
 @Command(scope = "mapseq", name = "add-file-to-flowcell", description = "Add File to Flowcell")
-public class AddFileToFlowcellAction extends AbstractAction {
+@Service
+public class AddFileToFlowcellAction implements Action {
 
-    private MaPSeqDAOBean maPSeqDAOBean;
+    @Reference
+    private MaPSeqDAOBeanService maPSeqDAOBeanService;
 
     @Option(name = "--flowcellId", description = "flowcellId", required = false, multiValued = false)
     private Long flowcellId;
@@ -29,10 +33,10 @@ public class AddFileToFlowcellAction extends AbstractAction {
     }
 
     @Override
-    public Object doExecute() {
+    public Object execute() {
 
-        FlowcellDAO flowcellDAO = maPSeqDAOBean.getFlowcellDAO();
-        FileDataDAO fileDataDAO = maPSeqDAOBean.getFileDataDAO();
+        FlowcellDAO flowcellDAO = maPSeqDAOBeanService.getFlowcellDAO();
+        FileDataDAO fileDataDAO = maPSeqDAOBeanService.getFileDataDAO();
 
         try {
             Flowcell entity = flowcellDAO.findById(flowcellId);
@@ -53,14 +57,6 @@ public class AddFileToFlowcellAction extends AbstractAction {
         }
 
         return null;
-    }
-
-    public MaPSeqDAOBean getMaPSeqDAOBean() {
-        return maPSeqDAOBean;
-    }
-
-    public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
-        this.maPSeqDAOBean = maPSeqDAOBean;
     }
 
     public Long getFlowcellId() {

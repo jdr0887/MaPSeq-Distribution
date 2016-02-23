@@ -5,12 +5,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.karaf.shell.commands.Command;
-import org.apache.karaf.shell.commands.Option;
-import org.apache.karaf.shell.console.AbstractAction;
+import org.apache.karaf.shell.api.action.Action;
+import org.apache.karaf.shell.api.action.Command;
+import org.apache.karaf.shell.api.action.Option;
+import org.apache.karaf.shell.api.action.lifecycle.Reference;
+import org.apache.karaf.shell.api.action.lifecycle.Service;
 
 import edu.unc.mapseq.dao.FlowcellDAO;
-import edu.unc.mapseq.dao.MaPSeqDAOBean;
+import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.SampleDAO;
 import edu.unc.mapseq.dao.model.FileData;
@@ -18,9 +20,11 @@ import edu.unc.mapseq.dao.model.Flowcell;
 import edu.unc.mapseq.dao.model.Sample;
 
 @Command(scope = "mapseq", name = "synchronize-file-data-with-file-system", description = "Synchronize File Data entries with FS")
-public class SynchronizeFileDataWithFSAction extends AbstractAction {
+@Service
+public class SynchronizeFileDataWithFSAction implements Action {
 
-    private MaPSeqDAOBean maPSeqDAOBean;
+    @Reference
+    private MaPSeqDAOBeanService maPSeqDAOBeanService;
 
     @Option(name = "-d", description = "Do not remove file", required = false, multiValued = false)
     private Boolean dryRun = Boolean.FALSE;
@@ -30,11 +34,11 @@ public class SynchronizeFileDataWithFSAction extends AbstractAction {
     }
 
     @Override
-    protected Object doExecute() throws Exception {
+    public Object execute() {
 
-        FlowcellDAO flowcellDAO = maPSeqDAOBean.getFlowcellDAO();
+        FlowcellDAO flowcellDAO = maPSeqDAOBeanService.getFlowcellDAO();
 
-        SampleDAO sampleDAO = maPSeqDAOBean.getSampleDAO();
+        SampleDAO sampleDAO = maPSeqDAOBeanService.getSampleDAO();
 
         try {
 
@@ -112,14 +116,6 @@ public class SynchronizeFileDataWithFSAction extends AbstractAction {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public MaPSeqDAOBean getMaPSeqDAOBean() {
-        return maPSeqDAOBean;
-    }
-
-    public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
-        this.maPSeqDAOBean = maPSeqDAOBean;
     }
 
     public Boolean getDryRun() {

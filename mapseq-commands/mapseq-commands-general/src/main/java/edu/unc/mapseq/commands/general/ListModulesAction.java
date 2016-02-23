@@ -5,22 +5,24 @@ import java.util.Enumeration;
 import java.util.Formatter;
 import java.util.Locale;
 
-import org.apache.karaf.shell.commands.Command;
-import org.apache.karaf.shell.console.AbstractAction;
+import org.apache.karaf.shell.api.action.Action;
+import org.apache.karaf.shell.api.action.Command;
+import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Command(scope = "mapseq", name = "list-modules", description = "List Modules")
-public class ListModulesAction extends AbstractAction {
+@Service
+public class ListModulesAction implements Action {
 
-    private final Logger logger = LoggerFactory.getLogger(ListModulesAction.class);
+    private static final Logger logger = LoggerFactory.getLogger(ListModulesAction.class);
 
     private BundleContext context = null;
 
     @Override
-    protected Object doExecute() throws Exception {
+    public Object execute() {
         logger.debug("ENTERING doExecute()");
         if (context == null) {
             logger.error("context is null");

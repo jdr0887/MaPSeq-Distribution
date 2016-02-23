@@ -2,13 +2,15 @@ package edu.unc.mapseq.commands.flowcell;
 
 import java.util.List;
 
-import org.apache.karaf.shell.commands.Argument;
-import org.apache.karaf.shell.commands.Command;
-import org.apache.karaf.shell.console.AbstractAction;
+import org.apache.karaf.shell.api.action.Action;
+import org.apache.karaf.shell.api.action.Argument;
+import org.apache.karaf.shell.api.action.Command;
+import org.apache.karaf.shell.api.action.lifecycle.Reference;
+import org.apache.karaf.shell.api.action.lifecycle.Service;
 
 import edu.unc.mapseq.dao.FlowcellDAO;
 import edu.unc.mapseq.dao.JobDAO;
-import edu.unc.mapseq.dao.MaPSeqDAOBean;
+import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.SampleDAO;
 import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
@@ -20,9 +22,11 @@ import edu.unc.mapseq.dao.model.WorkflowRun;
 import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
 
 @Command(scope = "mapseq", name = "delete-flowcell", description = "Delete Flowcell")
-public class DeleteFlowcellAction extends AbstractAction {
+@Service
+public class DeleteFlowcellAction implements Action {
 
-    private MaPSeqDAOBean maPSeqDAOBean;
+    @Reference
+    private MaPSeqDAOBeanService maPSeqDAOBeanService;
 
     @Argument(index = 0, name = "flowcellId", description = "Flowcell Identifier", required = true, multiValued = true)
     private List<Long> flowcellIdList;
@@ -32,15 +36,15 @@ public class DeleteFlowcellAction extends AbstractAction {
     }
 
     @Override
-    public Object doExecute() {
+    public Object execute() {
 
         if (this.flowcellIdList != null && !this.flowcellIdList.isEmpty()) {
 
-            FlowcellDAO flowcellDAO = maPSeqDAOBean.getFlowcellDAO();
-            SampleDAO sampleDAO = maPSeqDAOBean.getSampleDAO();
-            WorkflowRunDAO workflowRunDAO = maPSeqDAOBean.getWorkflowRunDAO();
-            WorkflowRunAttemptDAO workflowRunAttemptDAO = maPSeqDAOBean.getWorkflowRunAttemptDAO();
-            JobDAO jobDAO = maPSeqDAOBean.getJobDAO();
+            FlowcellDAO flowcellDAO = maPSeqDAOBeanService.getFlowcellDAO();
+            SampleDAO sampleDAO = maPSeqDAOBeanService.getSampleDAO();
+            WorkflowRunDAO workflowRunDAO = maPSeqDAOBeanService.getWorkflowRunDAO();
+            WorkflowRunAttemptDAO workflowRunAttemptDAO = maPSeqDAOBeanService.getWorkflowRunAttemptDAO();
+            JobDAO jobDAO = maPSeqDAOBeanService.getJobDAO();
 
             for (Long flowcellId : this.flowcellIdList) {
                 try {
@@ -111,14 +115,6 @@ public class DeleteFlowcellAction extends AbstractAction {
         }
 
         return null;
-    }
-
-    public MaPSeqDAOBean getMaPSeqDAOBean() {
-        return maPSeqDAOBean;
-    }
-
-    public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
-        this.maPSeqDAOBean = maPSeqDAOBean;
     }
 
     public List<Long> getFlowcellIdList() {

@@ -3,19 +3,23 @@ package edu.unc.mapseq.commands.flowcell;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.karaf.shell.commands.Argument;
-import org.apache.karaf.shell.commands.Command;
-import org.apache.karaf.shell.console.AbstractAction;
+import org.apache.karaf.shell.api.action.Action;
+import org.apache.karaf.shell.api.action.Argument;
+import org.apache.karaf.shell.api.action.Command;
+import org.apache.karaf.shell.api.action.lifecycle.Reference;
+import org.apache.karaf.shell.api.action.lifecycle.Service;
 
 import edu.unc.mapseq.dao.FlowcellDAO;
-import edu.unc.mapseq.dao.MaPSeqDAOBean;
+import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.model.Flowcell;
 
 @Command(scope = "mapseq", name = "create-flowcell", description = "Create Flowcell")
-public class CreateFlowcellAction extends AbstractAction {
+@Service
+public class CreateFlowcellAction implements Action {
 
-    private MaPSeqDAOBean maPSeqDAOBean;
+    @Reference
+    private MaPSeqDAOBeanService maPSeqDAOBeanService;
 
     @Argument(index = 0, name = "baseRunFolder", description = "The folder parent to the flowcell directory", required = true, multiValued = false)
     private String baseRunFolder;
@@ -28,7 +32,7 @@ public class CreateFlowcellAction extends AbstractAction {
     }
 
     @Override
-    public Object doExecute() {
+    public Object execute() {
 
         Pattern pattern = Pattern.compile("^\\d+_.+_\\d+_.+$");
         Matcher matcher = pattern.matcher(name);
@@ -43,21 +47,13 @@ public class CreateFlowcellAction extends AbstractAction {
         try {
             flowcell.setName(name);
             flowcell.setBaseDirectory(baseRunFolder);
-            FlowcellDAO flowcellDAO = maPSeqDAOBean.getFlowcellDAO();
+            FlowcellDAO flowcellDAO = maPSeqDAOBeanService.getFlowcellDAO();
             Long flowcellId = flowcellDAO.save(flowcell);
             return flowcellId;
         } catch (MaPSeqDAOException e1) {
             e1.printStackTrace();
         }
         return null;
-    }
-
-    public MaPSeqDAOBean getMaPSeqDAOBean() {
-        return maPSeqDAOBean;
-    }
-
-    public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
-        this.maPSeqDAOBean = maPSeqDAOBean;
     }
 
     public String getBaseRunFolder() {

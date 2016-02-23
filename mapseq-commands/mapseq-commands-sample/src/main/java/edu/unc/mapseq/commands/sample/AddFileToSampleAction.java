@@ -2,21 +2,25 @@ package edu.unc.mapseq.commands.sample;
 
 import java.util.Set;
 
-import org.apache.karaf.shell.commands.Command;
-import org.apache.karaf.shell.commands.Option;
-import org.apache.karaf.shell.console.AbstractAction;
+import org.apache.karaf.shell.api.action.Action;
+import org.apache.karaf.shell.api.action.Command;
+import org.apache.karaf.shell.api.action.Option;
+import org.apache.karaf.shell.api.action.lifecycle.Reference;
+import org.apache.karaf.shell.api.action.lifecycle.Service;
 
 import edu.unc.mapseq.dao.FileDataDAO;
-import edu.unc.mapseq.dao.MaPSeqDAOBean;
+import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.SampleDAO;
 import edu.unc.mapseq.dao.model.FileData;
 import edu.unc.mapseq.dao.model.Sample;
 
 @Command(scope = "mapseq", name = "add-file-to-sample", description = "Add File to Sample")
-public class AddFileToSampleAction extends AbstractAction {
+@Service
+public class AddFileToSampleAction implements Action {
 
-    private MaPSeqDAOBean maPSeqDAOBean;
+    @Reference
+    private MaPSeqDAOBeanService maPSeqDAOBeanService;
 
     @Option(name = "--sampleId", description = "sampleId", required = false, multiValued = false)
     private Long sampleId;
@@ -29,10 +33,10 @@ public class AddFileToSampleAction extends AbstractAction {
     }
 
     @Override
-    public Object doExecute() {
+    public Object execute() {
 
-        SampleDAO sampleDAO = maPSeqDAOBean.getSampleDAO();
-        FileDataDAO fileDataDAO = maPSeqDAOBean.getFileDataDAO();
+        SampleDAO sampleDAO = maPSeqDAOBeanService.getSampleDAO();
+        FileDataDAO fileDataDAO = maPSeqDAOBeanService.getFileDataDAO();
 
         try {
             Sample entity = sampleDAO.findById(sampleId);
@@ -53,14 +57,6 @@ public class AddFileToSampleAction extends AbstractAction {
         }
 
         return null;
-    }
-
-    public MaPSeqDAOBean getMaPSeqDAOBean() {
-        return maPSeqDAOBean;
-    }
-
-    public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
-        this.maPSeqDAOBean = maPSeqDAOBean;
     }
 
     public Long getSampleId() {

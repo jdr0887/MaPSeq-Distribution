@@ -2,24 +2,28 @@ package edu.unc.mapseq.commands.workflowrun;
 
 import java.util.Set;
 
-import org.apache.karaf.shell.commands.Argument;
-import org.apache.karaf.shell.commands.Command;
-import org.apache.karaf.shell.console.AbstractAction;
+import org.apache.karaf.shell.api.action.Action;
+import org.apache.karaf.shell.api.action.Argument;
+import org.apache.karaf.shell.api.action.Command;
+import org.apache.karaf.shell.api.action.lifecycle.Reference;
+import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.unc.mapseq.dao.MaPSeqDAOBean;
+import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowRunDAO;
 import edu.unc.mapseq.dao.model.Attribute;
 import edu.unc.mapseq.dao.model.WorkflowRun;
 
 @Command(scope = "mapseq", name = "create-workflow-run-attribute", description = "Create WorkflowRun Attributes")
-public class CreateWorkflowRunAttributeAction extends AbstractAction {
+@Service
+public class CreateWorkflowRunAttributeAction implements Action {
 
     private final Logger logger = LoggerFactory.getLogger(CreateWorkflowRunAttributeAction.class);
 
-    private MaPSeqDAOBean maPSeqDAOBean;
+    @Reference
+    private MaPSeqDAOBeanService maPSeqDAOBeanService;
 
     @Argument(index = 0, name = "workflowRunId", description = "WorkflowRun Identifier", required = true, multiValued = false)
     private Long workflowRunId;
@@ -35,9 +39,9 @@ public class CreateWorkflowRunAttributeAction extends AbstractAction {
     }
 
     @Override
-    public Object doExecute() {
+    public Object execute() {
 
-        WorkflowRunDAO workflowRunDAO = maPSeqDAOBean.getWorkflowRunDAO();
+        WorkflowRunDAO workflowRunDAO = maPSeqDAOBeanService.getWorkflowRunDAO();
         WorkflowRun entity = null;
         try {
             entity = workflowRunDAO.findById(workflowRunId);
@@ -59,14 +63,6 @@ public class CreateWorkflowRunAttributeAction extends AbstractAction {
         }
 
         return null;
-    }
-
-    public MaPSeqDAOBean getMaPSeqDAOBean() {
-        return maPSeqDAOBean;
-    }
-
-    public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
-        this.maPSeqDAOBean = maPSeqDAOBean;
     }
 
     public Long getWorkflowRunId() {

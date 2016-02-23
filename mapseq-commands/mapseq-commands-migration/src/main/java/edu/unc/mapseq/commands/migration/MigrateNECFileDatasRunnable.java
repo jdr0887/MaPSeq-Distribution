@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import edu.unc.mapseq.dao.FileDataDAO;
 import edu.unc.mapseq.dao.FlowcellDAO;
-import edu.unc.mapseq.dao.MaPSeqDAOBean;
+import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.SampleDAO;
 import edu.unc.mapseq.dao.model.FileData;
@@ -26,18 +26,24 @@ public class MigrateNECFileDatasRunnable implements Runnable {
 
     private Boolean dryRun = Boolean.FALSE;
 
-    private MaPSeqDAOBean maPSeqDAOBean;
+    private MaPSeqDAOBeanService maPSeqDAOBeanService;
+
+    public MigrateNECFileDatasRunnable(Boolean dryRun, MaPSeqDAOBeanService maPSeqDAOBeanService) {
+        super();
+        this.dryRun = dryRun;
+        this.maPSeqDAOBeanService = maPSeqDAOBeanService;
+    }
 
     @Override
     public void run() {
         logger.debug("ENTERING run()");
 
-        try {
-            FlowcellDAO flowcellDAO = maPSeqDAOBean.getFlowcellDAO();
-            SampleDAO sampleDAO = maPSeqDAOBean.getSampleDAO();
-            FileDataDAO fileDataDAO = maPSeqDAOBean.getFileDataDAO();
-            BufferedWriter restorationScript = new BufferedWriter(new FileWriter(new File("/tmp",
-                    "mpsNECRestoration.sh")));
+        try (BufferedWriter restorationScript = new BufferedWriter(
+                new FileWriter(new File("/tmp", "mpsNECRestoration.sh")))) {
+            
+            FlowcellDAO flowcellDAO = maPSeqDAOBeanService.getFlowcellDAO();
+            SampleDAO sampleDAO = maPSeqDAOBeanService.getSampleDAO();
+            FileDataDAO fileDataDAO = maPSeqDAOBeanService.getFileDataDAO();
 
             List<Flowcell> flowcells = flowcellDAO.findAll();
 
@@ -68,7 +74,8 @@ public class MigrateNECFileDatasRunnable implements Runnable {
 
                                     if (originalFile.exists()) {
 
-                                        if (!path.startsWith(String.format("%s/%s/NEC", basePath, flowcell.getName()))) {
+                                        if (!path
+                                                .startsWith(String.format("%s/%s/NEC", basePath, flowcell.getName()))) {
                                             continue;
                                         }
 
@@ -141,8 +148,8 @@ public class MigrateNECFileDatasRunnable implements Runnable {
                                             destinationFile.getAbsolutePath());
                                     logger.info(msg);
 
-                                    restorationScript.write(String.format("mv %s %s",
-                                            destinationFile.getAbsolutePath(), file.getAbsolutePath()));
+                                    restorationScript.write(String.format("mv %s %s", destinationFile.getAbsolutePath(),
+                                            file.getAbsolutePath()));
                                     restorationScript.newLine();
                                     restorationScript.flush();
 
@@ -171,22 +178,6 @@ public class MigrateNECFileDatasRunnable implements Runnable {
             e.printStackTrace();
         }
 
-    }
-
-    public Boolean getDryRun() {
-        return dryRun;
-    }
-
-    public void setDryRun(Boolean dryRun) {
-        this.dryRun = dryRun;
-    }
-
-    public MaPSeqDAOBean getMaPSeqDAOBean() {
-        return maPSeqDAOBean;
-    }
-
-    public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
-        this.maPSeqDAOBean = maPSeqDAOBean;
     }
 
 }

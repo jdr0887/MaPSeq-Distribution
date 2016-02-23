@@ -4,20 +4,24 @@ import java.util.Formatter;
 import java.util.Locale;
 import java.util.Set;
 
-import org.apache.karaf.shell.commands.Argument;
-import org.apache.karaf.shell.commands.Command;
-import org.apache.karaf.shell.console.AbstractAction;
+import org.apache.karaf.shell.api.action.Action;
+import org.apache.karaf.shell.api.action.Argument;
+import org.apache.karaf.shell.api.action.Command;
+import org.apache.karaf.shell.api.action.lifecycle.Reference;
+import org.apache.karaf.shell.api.action.lifecycle.Service;
 
-import edu.unc.mapseq.dao.MaPSeqDAOBean;
+import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.SampleDAO;
 import edu.unc.mapseq.dao.model.Attribute;
 import edu.unc.mapseq.dao.model.Sample;
 
 @Command(scope = "mapseq", name = "list-sample-attributes", description = "List Sample Attributes")
-public class ListSampleAttributesAction extends AbstractAction {
+@Service
+public class ListSampleAttributesAction implements Action {
 
-    private MaPSeqDAOBean maPSeqDAOBean;
+    @Reference
+    private MaPSeqDAOBeanService maPSeqDAOBeanService;
 
     @Argument(index = 0, name = "sampleId", description = "Sample Identifier", required = true, multiValued = false)
     private Long sampleId;
@@ -27,9 +31,9 @@ public class ListSampleAttributesAction extends AbstractAction {
     }
 
     @Override
-    public Object doExecute() {
+    public Object execute() {
 
-        SampleDAO sampleDAO = maPSeqDAOBean.getSampleDAO();
+        SampleDAO sampleDAO = maPSeqDAOBeanService.getSampleDAO();
         Sample entity = null;
         try {
             entity = sampleDAO.findById(sampleId);
@@ -56,14 +60,6 @@ public class ListSampleAttributesAction extends AbstractAction {
         formatter.close();
 
         return null;
-    }
-
-    public MaPSeqDAOBean getMaPSeqDAOBean() {
-        return maPSeqDAOBean;
-    }
-
-    public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
-        this.maPSeqDAOBean = maPSeqDAOBean;
     }
 
     public Long getSampleId() {

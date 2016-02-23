@@ -10,16 +10,18 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.time.DateUtils;
-import org.apache.karaf.shell.commands.Argument;
-import org.apache.karaf.shell.commands.Command;
-import org.apache.karaf.shell.console.AbstractAction;
+import org.apache.karaf.shell.api.action.Action;
+import org.apache.karaf.shell.api.action.Argument;
+import org.apache.karaf.shell.api.action.Command;
+import org.apache.karaf.shell.api.action.lifecycle.Reference;
+import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.renci.jlrm.JLRMException;
 import org.renci.jlrm.condor.CondorJobStatusType;
 import org.renci.jlrm.condor.cli.CondorLookupDAGStatusCallable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.unc.mapseq.dao.MaPSeqDAOBean;
+import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
 import edu.unc.mapseq.dao.WorkflowRunDAO;
@@ -29,26 +31,28 @@ import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
 import edu.unc.mapseq.dao.model.WorkflowRunAttemptStatusType;
 
 @Command(scope = "mapseq", name = "synchronize-condor-with-workflow-run", description = "Synchronize Condor with WorkflowRun")
-public class SynchronizeCondorWithWorkflowRunAction extends AbstractAction {
+@Service
+public class SynchronizeCondorWithWorkflowRunAction implements Action {
 
     private final Logger logger = LoggerFactory.getLogger(SynchronizeCondorWithWorkflowRunAction.class);
 
     @Argument(index = 0, name = "workflowRunId", description = "WorkflowRun identifier", required = true, multiValued = true)
     private List<Long> workflowRunIdList;
 
-    private MaPSeqDAOBean maPSeqDAOBean;
+    @Reference
+    private MaPSeqDAOBeanService maPSeqDAOBeanService;
 
     public SynchronizeCondorWithWorkflowRunAction() {
         super();
     }
 
     @Override
-    public Object doExecute() {
+    public Object execute() {
         logger.info("ENTERING doExecute()");
 
         List<WorkflowRun> workflowRunList = new ArrayList<WorkflowRun>();
-        WorkflowRunDAO workflowRunDAO = maPSeqDAOBean.getWorkflowRunDAO();
-        WorkflowRunAttemptDAO workflowRunAttemptDAO = maPSeqDAOBean.getWorkflowRunAttemptDAO();
+        WorkflowRunDAO workflowRunDAO = maPSeqDAOBeanService.getWorkflowRunDAO();
+        WorkflowRunAttemptDAO workflowRunAttemptDAO = maPSeqDAOBeanService.getWorkflowRunAttemptDAO();
 
         try {
             if (workflowRunIdList != null) {
@@ -79,8 +83,8 @@ public class SynchronizeCondorWithWorkflowRunAction extends AbstractAction {
 
                     for (WorkflowRunAttempt attempt : attempts) {
 
-                        File dagOutFile = new File(attempt.getSubmitDirectory(), String.format("%s.dag.dagman.out",
-                                workflow.getName()));
+                        File dagOutFile = new File(attempt.getSubmitDirectory(),
+                                String.format("%s.dag.dagman.out", workflow.getName()));
 
                         if (!dagOutFile.exists()) {
                             System.out.printf("%s doesn't exist%n", dagOutFile.getAbsolutePath());
@@ -150,14 +154,6 @@ public class SynchronizeCondorWithWorkflowRunAction extends AbstractAction {
 
     public void setWorkflowRunIdList(List<Long> workflowRunIdList) {
         this.workflowRunIdList = workflowRunIdList;
-    }
-
-    public MaPSeqDAOBean getMaPSeqDAOBean() {
-        return maPSeqDAOBean;
-    }
-
-    public void setMaPSeqDAOBean(MaPSeqDAOBean maPSeqDAOBean) {
-        this.maPSeqDAOBean = maPSeqDAOBean;
     }
 
 }
