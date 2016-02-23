@@ -2,7 +2,7 @@
   <parent>
     <groupId>edu.unc.mapseq</groupId>
     <artifactId>mapseq</artifactId>
-    <version>0.1.8</version>
+    <version>0.1.9-SNAPSHOT</version>
   </parent>
   <name>MaPSeq :: Distribution</name>
   <modelVersion>4.0.0</modelVersion>
@@ -11,7 +11,7 @@
   <version>0.5.92-SNAPSHOT</version>
   <packaging>pom</packaging>
   <properties>
-    <mapseq.version>0.5.43</mapseq.version>
+    <mapseq.version>0.5.44-SNAPSHOT</mapseq.version>
     <renci.charts.version>0.0.9</renci.charts.version>
     <spring.version>3.2.4.RELEASE</spring.version>
   </properties>
@@ -34,6 +34,16 @@
   </scm>
   <dependencyManagement>
     <dependencies>
+      <dependency>
+	<groupId>org.apache.maven.plugin-tools</groupId>
+	<artifactId>maven-plugin-annotations</artifactId>
+	<version>3.4</version>
+      </dependency>          
+      <dependency>
+	<groupId>org.apache.maven</groupId>
+	<artifactId>maven-core</artifactId>
+	<version>3.3.3</version>
+      </dependency>          
       <dependency>
       	<groupId>org.apache.geronimo.specs</groupId>
       	<artifactId>geronimo-jpa_2.0_spec</artifactId>
@@ -182,12 +192,12 @@
       <dependency>
       	<groupId>org.osgi</groupId>
       	<artifactId>org.osgi.compendium</artifactId>
-      	<version>4.3.1</version>
+      	<version>5.0.0</version>
       </dependency>
       <dependency>
       	<groupId>org.osgi</groupId>
       	<artifactId>org.osgi.core</artifactId>
-      	<version>4.3.1</version>
+      	<version>5.0.0</version>
       	<scope>provided</scope>
       </dependency>
       <dependency>
@@ -285,7 +295,12 @@
 	<groupId>edu.unc.mapseq</groupId>
 	<artifactId>mapseq-config</artifactId>
 	<version>${mapseq.version}</version>
-      </dependency> 
+      </dependency>
+      <dependency>
+      	<groupId>org.apache.maven</groupId>
+      	<artifactId>maven-plugin-api</artifactId>
+      	<version>3.3.9</version>
+      </dependency>      
       <dependency>
 	<groupId>edu.unc.mapseq.distribution</groupId>
 	<artifactId>mapseq-module-cli-generator</artifactId>
@@ -294,6 +309,15 @@
     </dependencies>
   </dependencyManagement>
   <build>
+    <pluginManagement>
+      <plugins>
+	<plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-plugin-plugin</artifactId>
+          <version>3.4</version>
+	</plugin>
+      </plugins>
+    </pluginManagement>    
     <plugins>
       <plugin>
 	<groupId>org.apache.maven.plugins</groupId>
@@ -354,7 +378,6 @@
   <modules>
     <module>mapseq-commands</module>
     <module>mapseq-dao</module>
-    <!-- <module>mapseq-desktop</module> -->
     <module>mapseq-modules</module>
     <module>mapseq-maven-plugins</module>
     <module>mapseq-module-cli-generator</module>
@@ -364,7 +387,7 @@
     <!-- <module>mapseq-server</module> -->
     <module>mapseq-webapp</module>
     <module>mapseq-web-services</module>
+    <module>mapseq-workflow-impl</module>    
     <module>mapseq-client</module>
-    <module>mapseq-workflow-impl</module>
   </modules>
 </project>
