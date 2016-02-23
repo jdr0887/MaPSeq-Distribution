@@ -212,22 +212,23 @@ public class GATKUnifiedGenotyper extends Module {
     }
 
     public static void main(String[] args) {
+        
         GATKUnifiedGenotyper module = new GATKUnifiedGenotyper();
         module.setWorkflowName("TEST");
         module.setPhoneHome("NO_ET");
         module.setDownsamplingType("NONE");
-        module.setReferenceSequence(new File("/tmp", "refseq"));
-        module.setDbsnp(new File("/tmp", "dbsnp"));
         module.setStandCallConf(30.0);
         module.setStandEmitConf(0.0);
+        module.setReferenceSequence(new File("/tmp", "refseq"));
         module.setGenotypeLikelihoodsModel("BOTH");
+        module.setDbsnp(new File("/tmp", "dbsnp"));
         module.setInputFile(new File("/tmp", "input"));
         module.setNumThreads(4);
+        module.setOutputMode("EMIT_ALL_SITES");
+        module.setDownsampleToCoverage(250);
         module.setOut(new File("/tmp", "out.vcf"));
         module.setIntervals(new File("/tmp", "intervals"));
-        module.setOutputMode("EMIT_ALL_SITES");
         module.setMetrics(new File("/tmp", "metrics"));
-        module.setDownsampleToCoverage(250);
 
         List<String> annotationList = new ArrayList<String>();
         annotationList.add("AlleleBalance");
