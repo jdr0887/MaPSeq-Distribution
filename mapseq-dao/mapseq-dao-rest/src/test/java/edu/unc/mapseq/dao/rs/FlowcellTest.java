@@ -22,7 +22,7 @@ public class FlowcellTest {
     public void testFindAll() {
         RSDAOManager daoMgr = RSDAOManager.getInstance("edu/unc/mapseq/dao/rs/mapseq-dao-beans-test.xml");
         try {
-            List<Flowcell> entityList = daoMgr.getMaPSeqDAOBean().getFlowcellDAO().findAll();
+            List<Flowcell> entityList = daoMgr.getMaPSeqDAOBeanService().getFlowcellDAO().findAll();
             if (entityList != null && entityList.size() > 0) {
                 for (Flowcell entity : entityList) {
                     System.out.println(entity.toString());
@@ -49,7 +49,7 @@ public class FlowcellTest {
             Date parsedEndDate = DateUtils.parseDate("2014-07-11",
                     new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
 
-            List<Flowcell> entityList = daoMgr.getMaPSeqDAOBean().getFlowcellDAO()
+            List<Flowcell> entityList = daoMgr.getMaPSeqDAOBeanService().getFlowcellDAO()
                     .findByCreatedDateRange(parsedStartDate, parsedEndDate);
             if (entityList != null && entityList.size() > 0) {
                 for (Flowcell entity : entityList) {
@@ -72,7 +72,7 @@ public class FlowcellTest {
     public void testFindById() {
         RSDAOManager daoMgr = RSDAOManager.getInstance("edu/unc/mapseq/dao/rs/mapseq-dao-beans-test.xml");
         try {
-            Flowcell entity = daoMgr.getMaPSeqDAOBean().getFlowcellDAO().findById(108078L);
+            Flowcell entity = daoMgr.getMaPSeqDAOBeanService().getFlowcellDAO().findById(108078L);
             System.out.println(entity.toString());
         } catch (MaPSeqDAOException e) {
             e.printStackTrace();
@@ -82,7 +82,7 @@ public class FlowcellTest {
     @Test
     public void testSave() {
         RSDAOManager daoMgr = RSDAOManager.getInstance("edu/unc/mapseq/dao/rs/mapseq-dao-beans-test.xml");
-        FlowcellDAO flowcellDAO = daoMgr.getMaPSeqDAOBean().getFlowcellDAO();
+        FlowcellDAO flowcellDAO = daoMgr.getMaPSeqDAOBeanService().getFlowcellDAO();
         try {
             Flowcell entity = new Flowcell();
             entity.setBaseDirectory("adsf");

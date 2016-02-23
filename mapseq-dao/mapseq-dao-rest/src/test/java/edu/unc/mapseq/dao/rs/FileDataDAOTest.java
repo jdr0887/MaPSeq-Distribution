@@ -22,7 +22,7 @@ public class FileDataDAOTest {
 
         RSDAOManager daoMgr = RSDAOManager.getInstance("edu/unc/mapseq/dao/rs/mapseq-dao-beans-test.xml");
 
-        final FileDataDAO fileDataDAO = daoMgr.getMaPSeqDAOBean().getFileDataDAO();
+        final FileDataDAO fileDataDAO = daoMgr.getMaPSeqDAOBeanService().getFileDataDAO();
 
         List<String> fastqNameList = new ArrayList<String>();
 
@@ -90,7 +90,7 @@ public class FileDataDAOTest {
 
         RSDAOManager daoMgr = RSDAOManager.getInstance("edu/unc/mapseq/dao/rs/mapseq-dao-beans-test.xml");
 
-        final FileDataDAO fileDataDAO = daoMgr.getMaPSeqDAOBean().getFileDataDAO();
+        final FileDataDAO fileDataDAO = daoMgr.getMaPSeqDAOBeanService().getFileDataDAO();
 
         FileData fileData = new FileData("asdf.fastq.gz", "/tmp", MimeType.FASTQ);
         try {

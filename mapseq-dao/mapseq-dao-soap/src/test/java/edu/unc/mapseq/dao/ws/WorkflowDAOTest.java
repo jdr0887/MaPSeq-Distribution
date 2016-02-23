@@ -18,7 +18,7 @@ public class WorkflowDAOTest {
 
         WSDAOManager wsDAOMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
         // WSDAOManager wsDAOMgr = WSDAOManager.getInstance();
-        WorkflowDAO workflowDAO = wsDAOMgr.getMaPSeqDAOBean().getWorkflowDAO();
+        WorkflowDAO workflowDAO = wsDAOMgr.getMaPSeqDAOBeanService().getWorkflowDAO();
         try {
             Long id = workflowDAO.save(workflow);
             System.out.println(id);
@@ -32,7 +32,7 @@ public class WorkflowDAOTest {
     public void testFindAll() {
 
         WSDAOManager wsDAOMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
-        WorkflowDAO workflowDAO = wsDAOMgr.getMaPSeqDAOBean().getWorkflowDAO();
+        WorkflowDAO workflowDAO = wsDAOMgr.getMaPSeqDAOBeanService().getWorkflowDAO();
         try {
             List<Workflow> workflowList = workflowDAO.findAll();
             for (Workflow workflow : workflowList) {

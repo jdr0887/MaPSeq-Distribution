@@ -16,7 +16,7 @@ public class SampleTest {
     public void testFindByFlowcellId() {
         RSDAOManager daoMgr = RSDAOManager.getInstance("edu/unc/mapseq/dao/rs/mapseq-dao-beans-test.xml");
         try {
-            List<Sample> entityList = daoMgr.getMaPSeqDAOBean().getSampleDAO().findByFlowcellId(108078L);
+            List<Sample> entityList = daoMgr.getMaPSeqDAOBeanService().getSampleDAO().findByFlowcellId(108078L);
             if (entityList != null && entityList.size() > 0) {
                 for (Sample entity : entityList) {
                     System.out.println(entity.toString());
@@ -31,7 +31,7 @@ public class SampleTest {
     public void testAddFileDataToSample() {
         RSDAOManager daoMgr = RSDAOManager.getInstance("edu/unc/mapseq/dao/rs/mapseq-dao-beans-test.xml");
         try {
-            SampleDAO sampleDAO = daoMgr.getMaPSeqDAOBean().getSampleDAO();
+            SampleDAO sampleDAO = daoMgr.getMaPSeqDAOBeanService().getSampleDAO();
             sampleDAO.addFileDataToSample(2L, 2216370L);
         } catch (MaPSeqDAOException e) {
             e.printStackTrace();
@@ -43,8 +43,8 @@ public class SampleTest {
     public void testAddAttributeToSample() {
         RSDAOManager daoMgr = RSDAOManager.getInstance("edu/unc/mapseq/dao/rs/mapseq-dao-beans-test.xml");
         try {
-            SampleDAO sampleDAO = daoMgr.getMaPSeqDAOBean().getSampleDAO();
-            AttributeDAO attributeDAO = daoMgr.getMaPSeqDAOBean().getAttributeDAO();
+            SampleDAO sampleDAO = daoMgr.getMaPSeqDAOBeanService().getSampleDAO();
+            AttributeDAO attributeDAO = daoMgr.getMaPSeqDAOBeanService().getAttributeDAO();
 
             Sample sample = sampleDAO.findById(2041809L);
             Attribute attribute = new Attribute("fuzz", "buzz");

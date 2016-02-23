@@ -13,7 +13,7 @@ public class AttributeDAOTest {
 
         WSDAOManager daoMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
 
-        final AttributeDAO attributeDAO = daoMgr.getMaPSeqDAOBean().getAttributeDAO();
+        final AttributeDAO attributeDAO = daoMgr.getMaPSeqDAOBeanService().getAttributeDAO();
 
         Attribute attribute = new Attribute("asdf", "asdf");
         try {

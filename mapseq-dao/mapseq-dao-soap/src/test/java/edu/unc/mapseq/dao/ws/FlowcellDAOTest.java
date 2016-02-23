@@ -27,14 +27,14 @@ public class FlowcellDAOTest {
             Date parsedEndDate = DateUtils.parseDate("2014-07-11",
                     new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
 
-            List<Flowcell> entityList = daoMgr.getMaPSeqDAOBean().getFlowcellDAO()
+            List<Flowcell> entityList = daoMgr.getMaPSeqDAOBeanService().getFlowcellDAO()
                     .findByCreatedDateRange(parsedStartDate, parsedEndDate);
             if (entityList != null && entityList.size() > 0) {
                 for (Flowcell flowcell : entityList) {
                     // System.out.println(flowcell.toString());
                     Set<String> attributeNameSet = new HashSet<String>();
 
-                    List<Sample> sampleList = daoMgr.getMaPSeqDAOBean().getSampleDAO()
+                    List<Sample> sampleList = daoMgr.getMaPSeqDAOBeanService().getSampleDAO()
                             .findByFlowcellId(flowcell.getId());
                     for (Sample sample : sampleList) {
                         // System.out.println(sample.toString());

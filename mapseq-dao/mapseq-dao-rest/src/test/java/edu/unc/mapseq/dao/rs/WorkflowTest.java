@@ -13,7 +13,7 @@ public class WorkflowTest {
     public void testFindAll() {
         RSDAOManager daoMgr = RSDAOManager.getInstance("edu/unc/mapseq/dao/rs/mapseq-dao-beans-test.xml");
         try {
-            List<Workflow> entityList = daoMgr.getMaPSeqDAOBean().getWorkflowDAO().findAll();
+            List<Workflow> entityList = daoMgr.getMaPSeqDAOBeanService().getWorkflowDAO().findAll();
             if (entityList != null && entityList.size() > 0) {
                 for (Workflow entity : entityList) {
                     System.out.println(entity.toString());

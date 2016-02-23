@@ -36,7 +36,7 @@ public class FileDataDAOTest {
                     public void run() {
                         WSDAOManager daoMgr = WSDAOManager
                                 .getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
-                        FileDataDAO fileDataDAO = daoMgr.getMaPSeqDAOBean().getFileDataDAO();
+                        FileDataDAO fileDataDAO = daoMgr.getMaPSeqDAOBeanService().getFileDataDAO();
                         FileData fileData = new FileData(fastqName, "/tmp", MimeType.FASTQ);
                         try {
                             fileDataDAO.save(fileData);
@@ -69,7 +69,7 @@ public class FileDataDAOTest {
                         try {
                             WSDAOManager daoMgr = WSDAOManager
                                     .getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
-                            FileDataDAO fileDataDAO = daoMgr.getMaPSeqDAOBean().getFileDataDAO();
+                            FileDataDAO fileDataDAO = daoMgr.getMaPSeqDAOBeanService().getFileDataDAO();
                             fileDataList.addAll(fileDataDAO.findByExample(fileData));
                         } catch (MaPSeqDAOException e) {
                             e.printStackTrace();
@@ -93,7 +93,7 @@ public class FileDataDAOTest {
 
         WSDAOManager daoMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
 
-        final FileDataDAO fileDataDAO = daoMgr.getMaPSeqDAOBean().getFileDataDAO();
+        final FileDataDAO fileDataDAO = daoMgr.getMaPSeqDAOBeanService().getFileDataDAO();
 
         FileData fileData = new FileData("asdf.fastq.gz", "/tmp", MimeType.FASTQ);
         try {

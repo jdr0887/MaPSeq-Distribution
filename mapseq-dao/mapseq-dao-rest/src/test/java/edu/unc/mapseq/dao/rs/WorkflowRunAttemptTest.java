@@ -13,7 +13,7 @@ public class WorkflowRunAttemptTest {
     public void testFindByWorkflowRunId() {
         RSDAOManager daoMgr = RSDAOManager.getInstance("edu/unc/mapseq/dao/rs/mapseq-dao-beans-test.xml");
         try {
-            List<WorkflowRunAttempt> entityList = daoMgr.getMaPSeqDAOBean().getWorkflowRunAttemptDAO()
+            List<WorkflowRunAttempt> entityList = daoMgr.getMaPSeqDAOBeanService().getWorkflowRunAttemptDAO()
                     .findByWorkflowId(10L);
             if (entityList != null && entityList.size() > 0) {
                 for (WorkflowRunAttempt entity : entityList) {

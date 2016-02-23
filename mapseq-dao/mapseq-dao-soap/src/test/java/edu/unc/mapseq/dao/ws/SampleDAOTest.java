@@ -45,10 +45,10 @@ public class SampleDAOTest {
         WSDAOManager daoMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
 
         try {
-            WorkflowRunAttemptDAO workflowRunAttemptDAO = daoMgr.getMaPSeqDAOBean().getWorkflowRunAttemptDAO();
+            WorkflowRunAttemptDAO workflowRunAttemptDAO = daoMgr.getMaPSeqDAOBeanService().getWorkflowRunAttemptDAO();
             WorkflowRunAttempt attempt = workflowRunAttemptDAO.findById(45L);
 
-            SampleDAO sampleDAO = daoMgr.getMaPSeqDAOBean().getSampleDAO();
+            SampleDAO sampleDAO = daoMgr.getMaPSeqDAOBeanService().getSampleDAO();
             List<Sample> samples = sampleDAO.findByWorkflowRunId(attempt.getWorkflowRun().getId());
 
             assertTrue(samples != null);
@@ -65,7 +65,7 @@ public class SampleDAOTest {
         WSDAOManager daoMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
 
         try {
-            SampleDAO sampleDAO = daoMgr.getMaPSeqDAOBean().getSampleDAO();
+            SampleDAO sampleDAO = daoMgr.getMaPSeqDAOBeanService().getSampleDAO();
             sampleDAO.addFileDataToSample(1L, 2216370L);
         } catch (MaPSeqDAOException e) {
             e.printStackTrace();
@@ -89,12 +89,12 @@ public class SampleDAOTest {
             read1FastqFD.setName(read1Fastq.getName());
             read1FastqFD.setPath(read1Fastq.getParentFile().getAbsolutePath());
 
-            List<FileData> fileDataList = daoMgr.getMaPSeqDAOBean().getFileDataDAO().findByExample(read1FastqFD);
+            List<FileData> fileDataList = daoMgr.getMaPSeqDAOBeanService().getFileDataDAO().findByExample(read1FastqFD);
             if (fileDataList != null && fileDataList.size() > 0) {
                 read1FastqFD = fileDataList.get(0);
             } else {
-                Long id = daoMgr.getMaPSeqDAOBean().getFileDataDAO().save(read1FastqFD);
-                read1FastqFD = daoMgr.getMaPSeqDAOBean().getFileDataDAO().findById(id);
+                Long id = daoMgr.getMaPSeqDAOBeanService().getFileDataDAO().save(read1FastqFD);
+                read1FastqFD = daoMgr.getMaPSeqDAOBeanService().getFileDataDAO().findById(id);
             }
             fileDataSet.add(read1FastqFD);
 
@@ -105,24 +105,24 @@ public class SampleDAOTest {
                 read2FastqFD.setMimeType(MimeType.FASTQ);
                 read2FastqFD.setName(read2Fastq.getName());
                 read2FastqFD.setPath(read2Fastq.getParentFile().getAbsolutePath());
-                fileDataList = daoMgr.getMaPSeqDAOBean().getFileDataDAO().findByExample(read2FastqFD);
+                fileDataList = daoMgr.getMaPSeqDAOBeanService().getFileDataDAO().findByExample(read2FastqFD);
                 if (fileDataList != null && fileDataList.size() > 0) {
                     read2FastqFD = fileDataList.get(0);
                 } else {
-                    Long id = daoMgr.getMaPSeqDAOBean().getFileDataDAO().save(read2FastqFD);
-                    read2FastqFD = daoMgr.getMaPSeqDAOBean().getFileDataDAO().findById(id);
+                    Long id = daoMgr.getMaPSeqDAOBeanService().getFileDataDAO().save(read2FastqFD);
+                    read2FastqFD = daoMgr.getMaPSeqDAOBeanService().getFileDataDAO().findById(id);
                 }
                 fileDataSet.add(read2FastqFD);
             }
 
-            SampleDAO sampleDAO = daoMgr.getMaPSeqDAOBean().getSampleDAO();
+            SampleDAO sampleDAO = daoMgr.getMaPSeqDAOBeanService().getSampleDAO();
 
             Sample sample = new Sample();
             sample.setName("asdf");
             sample.setBarcode("ATTCGA");
-            sample.setStudy(daoMgr.getMaPSeqDAOBean().getStudyDAO().findById(45823L));
+            sample.setStudy(daoMgr.getMaPSeqDAOBeanService().getStudyDAO().findById(45823L));
             sample.setLaneIndex(1);
-            sample.setFlowcell(daoMgr.getMaPSeqDAOBean().getFlowcellDAO().findById(48432L));
+            sample.setFlowcell(daoMgr.getMaPSeqDAOBeanService().getFlowcellDAO().findById(48432L));
             sample.setFileDatas(fileDataSet);
 
             try {
@@ -153,7 +153,7 @@ public class SampleDAOTest {
     public void testFindByFlowcellIdAndSampleName() throws Exception {
 
         WSDAOManager daoMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
-        SampleDAO sampleDAO = daoMgr.getMaPSeqDAOBean().getSampleDAO();
+        SampleDAO sampleDAO = daoMgr.getMaPSeqDAOBeanService().getSampleDAO();
         // List<Sample> sampleList = hTSFSampleDAO.findByFlowcellIdAndSampleName(27352L, "NCG_00007%");
         List<Sample> sampleList = sampleDAO.findByFlowcellId(56470L);
         if (sampleList != null && sampleList.size() > 0) {
@@ -181,11 +181,11 @@ public class SampleDAOTest {
 
         WSDAOManager daoMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
 
-        FlowcellDAO flowcellDAO = daoMgr.getMaPSeqDAOBean().getFlowcellDAO();
+        FlowcellDAO flowcellDAO = daoMgr.getMaPSeqDAOBeanService().getFlowcellDAO();
 
         Long flowcellId = 27352L;
         Flowcell flowcell = flowcellDAO.findById(flowcellId);
-        SampleDAO sampleDAO = daoMgr.getMaPSeqDAOBean().getSampleDAO();
+        SampleDAO sampleDAO = daoMgr.getMaPSeqDAOBeanService().getSampleDAO();
 
         List<Sample> sampleList = sampleDAO.findByNameAndFlowcellId("NCG_00142%", flowcellId);
 
@@ -228,7 +228,7 @@ public class SampleDAOTest {
     public void testWorkflowPlan() {
         WSDAOManager daoMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
         List<WorkflowRun> wpList = new ArrayList<WorkflowRun>();
-        WorkflowRunDAO workflowRunDAO = daoMgr.getMaPSeqDAOBean().getWorkflowRunDAO();
+        WorkflowRunDAO workflowRunDAO = daoMgr.getMaPSeqDAOBeanService().getWorkflowRunDAO();
         String sampleName = "NCG_00142%";
 
         try {
@@ -311,8 +311,8 @@ public class SampleDAOTest {
     public void testAddAttributeToSample() {
         WSDAOManager daoMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
         try {
-            SampleDAO sampleDAO = daoMgr.getMaPSeqDAOBean().getSampleDAO();
-            AttributeDAO attributeDAO = daoMgr.getMaPSeqDAOBean().getAttributeDAO();
+            SampleDAO sampleDAO = daoMgr.getMaPSeqDAOBeanService().getSampleDAO();
+            AttributeDAO attributeDAO = daoMgr.getMaPSeqDAOBeanService().getAttributeDAO();
 
             Sample sample = sampleDAO.findById(2041809L);
             Attribute attribute = new Attribute("fuzz1", "buzz1");

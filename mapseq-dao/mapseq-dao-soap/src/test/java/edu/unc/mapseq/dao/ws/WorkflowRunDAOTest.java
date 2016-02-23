@@ -29,7 +29,7 @@ public class WorkflowRunDAOTest {
         workflowRun.setName("test");
 
         WSDAOManager wsDAOMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
-        WorkflowRunDAO workflowRunDAO = wsDAOMgr.getMaPSeqDAOBean().getWorkflowRunDAO();
+        WorkflowRunDAO workflowRunDAO = wsDAOMgr.getMaPSeqDAOBeanService().getWorkflowRunDAO();
         try {
             Long id = workflowRunDAO.save(workflowRun);
             System.out.println(id);
