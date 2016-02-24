@@ -28,16 +28,16 @@ import edu.unc.mapseq.module.annotations.OutputValidations;
 import edu.unc.mapseq.module.constraints.FileIsReadable;
 
 /**
- * Trim adapter segment (and any following sequence) from reads, and get count & % of reads that contain adapter
+ * Trim adapter segment (and any following sequence) from reads, and get count and percent of reads that contain adapter
  * segment.
  * 
  * This module takes a given fastq file and trims all reads to eliminate any adapter contamination. The 'adapter' is the
  * reverse complement of the sequencing primer, which the user must provide. A non-A/C/G/T base in the primer is
  * converted to an N, and all Ns in the adapter are considered matches to any base in the read. (The opposite case is
  * not true -- Ns in read sequences are NOT considered matches to the adapter bases.) Otherwise, no mis-matches are
- * allowed. The minimum length for an adapter/read match is 5 bases. The script checks for internal & terminal adapter
- * segments. The trimmed read (& trimmed base scores) are output in fastq format, unless the effective read length is
- * zero [an adapter dimer]. The module also reports the count & percentage of reads that contain adapter. A collection
+ * allowed. The minimum length for an adapter/read match is 5 bases. The script checks for internal and terminal adapter
+ * segments. The trimmed read (and trimmed base scores) are output in fastq format, unless the effective read length is
+ * zero [an adapter dimer]. The module also reports the count and percentage of reads that contain adapter. A collection
  * of basic trimming statistics is an optional output as well.
  * 
  * Expected output: outfastq (required), outqc (required), outstats (optional)
@@ -166,9 +166,9 @@ public class TrimCountAdapter extends Module {
             }
 
             FileUtils.touch(outQC);
-            FileUtils.writeStringToFile(outQC, String.format(
-                    "run_status\tSUCCESS\nadapter_ct\t%s\nadapter_percent\t%s\nadapter_flat\t%s", adapterReadCount,
-                    percent, flag));
+            FileUtils.writeStringToFile(outQC,
+                    String.format("run_status\tSUCCESS\nadapter_ct\t%s\nadapter_percent\t%s\nadapter_flat\t%s",
+                            adapterReadCount, percent, flag));
 
             FileUtils.touch(outStats);
 
