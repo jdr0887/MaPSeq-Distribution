@@ -58,27 +58,19 @@ public abstract class AbstractSampleWorkflow extends AbstractWorkflow {
                             break;
                     }
 
-                    File flowcellOutputDirectory = new File(outdir, sample.getFlowcell().getName());
-                    // this will produce: /proj/seq/mapseq/RENCI/<flowcell>/<lane>_<barcode>
-
                     Study study = sample.getStudy();
-                    if (study != null && StringUtils.isNotEmpty(study.getName())
-                            && !study.getName().equals("NC_GENES")) {
-                        // this will produce: /proj/seq/mapseq/RENCI/<study>/<flowcell>/<lane>_<barcode>
-                        File studyDir = new File(outdir, study.getName());
-                        flowcellOutputDirectory = new File(studyDir, sample.getFlowcell().getName());
-                    }
-
+                    File studyDir = new File(outdir, study.getName());
+                    File flowcellOutputDirectory = new File(studyDir, sample.getFlowcell().getName());
                     File sampleOutputDir = new File(flowcellOutputDirectory,
                             String.format("L%03d_%s", sample.getLaneIndex(), sample.getBarcode()));
                     logger.info("creating sample output directory: {}", sampleOutputDir.getAbsolutePath());
                     sampleOutputDir.mkdirs();
+                    // this will produce: /proj/seq/mapseq/RENCI/<study>/<flowcell>/<lane>_<barcode>
 
                     if (sample.getOutputDirectory() == null || (sample.getOutputDirectory() != null
                             && !sample.getOutputDirectory().equals(sampleOutputDir.getAbsolutePath()))) {
                         sample.setOutputDirectory(sampleOutputDir.getAbsolutePath());
-                        MaPSeqDAOBeanService mapseqDAOBeanService = getWorkflowBeanService().getMaPSeqDAOBeanService();
-                        mapseqDAOBeanService.getSampleDAO().save(sample);
+                        getWorkflowBeanService().getMaPSeqDAOBeanService().getSampleDAO().save(sample);
                     }
                 } catch (MaPSeqDAOException e) {
                     logger.error("Could not persist Sample");
