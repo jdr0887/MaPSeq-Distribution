@@ -43,7 +43,7 @@ public class ConvertBAMTranscript2Genome extends Module {
     @FileIsReadable(message = "transcriptDB file is not readable", groups = InputValidations.class)
     @InputArgument(description = "data file specifying transcript-to-genome mapping, this is the flat file output of the PrepTranscriptDB module; "
             + "format = each transcript on a new line, tab-delimited, 7 columns: transcript, associated gene, transcript length, "
-            + "genomic coordinates,transcript coordinates, & CDS start and stop in transcript coordinates; "
+            + "genomic coordinates,transcript coordinates, and CDS start and stop in transcript coordinates; "
             + "example: uc004fvz.2{tab}CDY1|9085{tab}2363{tab}chrY:26194161-26192244,26191823-26191379:-{tab}1-1918,1919-2363{tab}327{tab}1991")
     private File transcriptDB;
 
