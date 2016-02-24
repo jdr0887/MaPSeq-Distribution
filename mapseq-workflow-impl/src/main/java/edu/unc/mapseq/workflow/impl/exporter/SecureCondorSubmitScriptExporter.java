@@ -105,12 +105,12 @@ public class SecureCondorSubmitScriptExporter extends DefaultCondorSubmitScriptE
 
                     StringBuilder requirements = new StringBuilder("(Arch == \"X86_64\") && (OpSys == \"LINUX\")");
                     if (includeGlideinRequirements) {
-                        requirements.append(String.format(
-                                " && (TARGET.JLRM_USER == \"%s\") && (TARGET.IS_GLIDEIN == True)",
-                                System.getProperty("user.name")));
+                        requirements
+                                .append(String.format(" && (TARGET.JLRM_USER == \"%s\") && (TARGET.IS_GLIDEIN == True)",
+                                        System.getProperty("user.name")));
                         if (StringUtils.isNotEmpty(job.getSiteName())) {
-                            requirements.append(String.format(" && (TARGET.JLRM_SITE_NAME == \"%s\")",
-                                    job.getSiteName()));
+                            requirements
+                                    .append(String.format(" && (TARGET.JLRM_SITE_NAME == \"%s\")", job.getSiteName()));
                         }
                     }
 
@@ -134,8 +134,8 @@ public class SecureCondorSubmitScriptExporter extends DefaultCondorSubmitScriptE
                                 job.getName(), job.getPostScript()));
                     }
                     if (job.getRetry() != null && job.getRetry() > 1) {
-                        dagFileWriter.write(String.format("%n%1$-10s %2$-10s %3$d%n", "RETRY", job.getName(),
-                                job.getRetry()));
+                        dagFileWriter.write(
+                                String.format("%n%1$-10s %2$-10s %3$d%n", "RETRY", job.getName(), job.getRetry()));
                     }
                     dagFileWriter.flush();
                 }
@@ -172,7 +172,8 @@ public class SecureCondorSubmitScriptExporter extends DefaultCondorSubmitScriptE
         scriptSB.append("if [ -e ~/.bashrc ]; then . ~/.bashrc; fi\n");
         scriptSB.append("if [ -e ~/.mapseqrc ]; then . ~/.mapseqrc; fi\n");
         scriptSB.append("if [ -e ~/.jlrmrc ]; then . ~/.jlrmrc; fi\n");
-        scriptSB.append("if [ \"x$MAPSEQ_HOME\" = \"x\" ]; then echo \"ERROR: MAPSEQ_HOME has to be set\"; exit 1; fi\n");
+        scriptSB.append(
+                "if [ \"x$MAPSEQ_HOME\" = \"x\" ]; then echo \"ERROR: MAPSEQ_HOME has to be set\"; exit 1; fi\n");
         scriptSB.append("/bin/hostname -f; /usr/bin/id; /bin/env\n");
 
         String commandFormat = "%nRC=0; %s; RC=$?%n%sif [ $RC != 0 ]; then exit $RC; fi%n%n";
@@ -231,8 +232,8 @@ public class SecureCondorSubmitScriptExporter extends DefaultCondorSubmitScriptE
 
             if (StringUtils.isEmpty(job.getSiteName()) && StringUtils.isNotEmpty(job.getName())) {
                 transferOutputCommandSB.append(String.format(" --file=%s.xml", job.getName()));
-                removeOutputFilesSB.append(String.format("if [ -e %1$s.xml ]; then /bin/rm %1$s.xml; fi%n",
-                        job.getName()));
+                removeOutputFilesSB
+                        .append(String.format("if [ -e %1$s.xml ]; then /bin/rm %1$s.xml; fi%n", job.getName()));
             }
 
             if (job.getTransferOutputList().size() > 0) {
@@ -255,35 +256,36 @@ public class SecureCondorSubmitScriptExporter extends DefaultCondorSubmitScriptE
         return scriptSB.toString();
     }
 
-    protected File writeSubmitFile(File submitDir, CondorJob job) throws IOException {
+    protected File writeSubmitFile(File submitDir, CondorJob job) {
         logger.debug("ENTERING writeSubmitFile");
         File submitFile = new File(submitDir, String.format("%s.sub", job.getName()));
-        FileWriter submitFileWriter = new FileWriter(submitFile);
-        for (ClassAdvertisement classAd : job.getClassAdvertisments()) {
-
-            if (classAd.getKey().equals(ClassAdvertisementFactory.CLASS_AD_KEY_ARGUMENTS)
-                    || classAd.getKey().equals(ClassAdvertisementFactory.CLASS_AD_KEY_TRANSFER_INPUT_FILES)
-                    || classAd.getKey().equals(ClassAdvertisementFactory.CLASS_AD_KEY_TRANSFER_OUTPUT_FILES)) {
-                continue;
+        try (FileWriter submitFileWriter = new FileWriter(submitFile)) {
+            for (ClassAdvertisement classAd : job.getClassAdvertisments()) {
+                if (classAd.getKey().equals(ClassAdvertisementFactory.CLASS_AD_KEY_ARGUMENTS)
+                        || classAd.getKey().equals(ClassAdvertisementFactory.CLASS_AD_KEY_TRANSFER_INPUT_FILES)
+                        || classAd.getKey().equals(ClassAdvertisementFactory.CLASS_AD_KEY_TRANSFER_OUTPUT_FILES)) {
+                    continue;
+                }
+                switch (classAd.getType()) {
+                    case BOOLEAN:
+                    case EXPRESSION:
+                    case INTEGER:
+                        submitFileWriter.write(String.format("%1$-25s = %2$s%n", classAd.getKey(), classAd.getValue()));
+                        break;
+                    case STRING:
+                    default:
+                        submitFileWriter
+                                .write(String.format("%1$-25s = \"%2$s\"%n", classAd.getKey(), classAd.getValue()));
+                        break;
+                }
+                submitFileWriter.flush();
             }
-
-            switch (classAd.getType()) {
-                case BOOLEAN:
-                case EXPRESSION:
-                case INTEGER:
-                    submitFileWriter.write(String.format("%1$-25s = %2$s%n", classAd.getKey(), classAd.getValue()));
-                    break;
-                case STRING:
-                default:
-                    submitFileWriter.write(String.format("%1$-25s = \"%2$s\"%n", classAd.getKey(), classAd.getValue()));
-                    break;
-            }
+            submitFileWriter.write(String.format("%s%n",
+                    ClassAdvertisementFactory.getClassAd(ClassAdvertisementFactory.CLASS_AD_KEY_QUEUE).getKey()));
             submitFileWriter.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        submitFileWriter.write(String.format("%s%n",
-                ClassAdvertisementFactory.getClassAd(ClassAdvertisementFactory.CLASS_AD_KEY_QUEUE).getKey()));
-        submitFileWriter.flush();
-        submitFileWriter.close();
         return submitFile;
     }
 

@@ -107,12 +107,12 @@ public class DefaultCondorSubmitScriptExporter extends CondorSubmitScriptExporte
 
                     StringBuilder requirements = new StringBuilder("(Arch == \"X86_64\") && (OpSys == \"LINUX\")");
                     if (includeGlideinRequirements) {
-                        requirements.append(String.format(
-                                " && (TARGET.JLRM_USER == \"%s\") && (TARGET.IS_GLIDEIN == True)",
-                                System.getProperty("user.name")));
+                        requirements
+                                .append(String.format(" && (TARGET.JLRM_USER == \"%s\") && (TARGET.IS_GLIDEIN == True)",
+                                        System.getProperty("user.name")));
                         if (StringUtils.isNotEmpty(job.getSiteName())) {
-                            requirements.append(String.format(" && (TARGET.JLRM_SITE_NAME == \"%s\")",
-                                    job.getSiteName()));
+                            requirements
+                                    .append(String.format(" && (TARGET.JLRM_SITE_NAME == \"%s\")", job.getSiteName()));
                         }
                     }
 
@@ -152,8 +152,8 @@ public class DefaultCondorSubmitScriptExporter extends CondorSubmitScriptExporte
                                 job.getName(), job.getPostScript()));
                     }
                     if (job.getRetry() != null && job.getRetry() > 1) {
-                        dagFileWriter.write(String.format("%n%1$-10s %2$-10s %3$d%n", "RETRY", job.getName(),
-                                job.getRetry()));
+                        dagFileWriter.write(
+                                String.format("%n%1$-10s %2$-10s %3$d%n", "RETRY", job.getName(), job.getRetry()));
                     }
                     dagFileWriter.flush();
                 }
@@ -180,33 +180,34 @@ public class DefaultCondorSubmitScriptExporter extends CondorSubmitScriptExporte
         return dagSubmitJob;
     }
 
-    protected File writeSubmitFile(File submitDir, CondorJob job) throws IOException {
+    protected File writeSubmitFile(File submitDir, CondorJob job) {
         logger.debug("ENTERING writeSubmitFile");
         File submitFile = new File(submitDir, String.format("%s.sub", job.getName()));
-        FileWriter submitFileWriter = new FileWriter(submitFile);
-        for (ClassAdvertisement classAd : job.getClassAdvertisments()) {
-
-            if (classAd.getKey().equals(ClassAdvertisementFactory.CLASS_AD_KEY_ARGUMENTS)) {
-                continue;
+        try (FileWriter submitFileWriter = new FileWriter(submitFile)) {
+            for (ClassAdvertisement classAd : job.getClassAdvertisments()) {
+                if (classAd.getKey().equals(ClassAdvertisementFactory.CLASS_AD_KEY_ARGUMENTS)) {
+                    continue;
+                }
+                switch (classAd.getType()) {
+                    case BOOLEAN:
+                    case EXPRESSION:
+                    case INTEGER:
+                        submitFileWriter.write(String.format("%1$-25s = %2$s%n", classAd.getKey(), classAd.getValue()));
+                        break;
+                    case STRING:
+                    default:
+                        submitFileWriter
+                                .write(String.format("%1$-25s = \"%2$s\"%n", classAd.getKey(), classAd.getValue()));
+                        break;
+                }
+                submitFileWriter.flush();
             }
-
-            switch (classAd.getType()) {
-                case BOOLEAN:
-                case EXPRESSION:
-                case INTEGER:
-                    submitFileWriter.write(String.format("%1$-25s = %2$s%n", classAd.getKey(), classAd.getValue()));
-                    break;
-                case STRING:
-                default:
-                    submitFileWriter.write(String.format("%1$-25s = \"%2$s\"%n", classAd.getKey(), classAd.getValue()));
-                    break;
-            }
+            submitFileWriter.write(String.format("%s%n",
+                    ClassAdvertisementFactory.getClassAd(ClassAdvertisementFactory.CLASS_AD_KEY_QUEUE).getKey()));
             submitFileWriter.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        submitFileWriter.write(String.format("%s%n",
-                ClassAdvertisementFactory.getClassAd(ClassAdvertisementFactory.CLASS_AD_KEY_QUEUE).getKey()));
-        submitFileWriter.flush();
-        submitFileWriter.close();
         return submitFile;
     }
 
@@ -222,9 +223,8 @@ public class DefaultCondorSubmitScriptExporter extends CondorSubmitScriptExporte
 
         String commandFormat = "%nRC=0%n%s%nRC=$?; if [ $RC != 0 ]; then exit $RC; fi%n";
 
-        String command = null;
-
         ClassAdvertisement argumentsClassAd = job.getArgumentsClassAd();
+        String command = null;
         if (argumentsClassAd != null && StringUtils.isNotEmpty(argumentsClassAd.getValue())) {
             command = String.format("%s %s", job.getExecutable().getPath(), argumentsClassAd.getValue());
         } else {
