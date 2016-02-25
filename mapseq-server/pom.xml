@@ -89,6 +89,13 @@
   <build>
     <resources>
       <resource>
+        <directory>src/main/resources</directory>
+        <filtering>false</filtering>
+        <includes>
+          <include>**/*</include>
+        </includes>
+      </resource>            
+      <resource>
         <directory>src/main/filtered-resources</directory>
         <filtering>true</filtering>
         <includes>
@@ -109,25 +116,10 @@
 	<artifactId>maven-resources-plugin</artifactId>
 	<executions>
 	  <execution>
-	    <id>copy-resources</id>
-	    <phase>prepare-package</phase>
+	    <id>process-resources</id>
 	    <goals>
-	      <goal>copy-resources</goal>
+	      <goal>resources</goal>
 	    </goals>
-	    <configuration>
-	      <outputDirectory>${project.basedir}/target/assembly</outputDirectory>
-	      <overwrite>true</overwrite>
-	      <resources>
-		<resource>
-		  <directory>${project.basedir}/src/main/assembly</directory>
-		  <filtering>false</filtering>
-		</resource>
-		<resource>
-		  <directory>${project.basedir}/src/main/filtered-assembly</directory>
-		  <filtering>true</filtering>
-		</resource>
-	      </resources>
-	    </configuration>
 	  </execution>
 	</executions>
       </plugin>
