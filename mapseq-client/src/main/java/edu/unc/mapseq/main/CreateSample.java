@@ -21,11 +21,11 @@ import org.apache.commons.lang.StringUtils;
 
 import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.SampleDAO;
+import edu.unc.mapseq.dao.SOAPDAOManager;
 import edu.unc.mapseq.dao.model.FileData;
 import edu.unc.mapseq.dao.model.Flowcell;
 import edu.unc.mapseq.dao.model.MimeType;
 import edu.unc.mapseq.dao.model.Sample;
-import edu.unc.mapseq.dao.ws.WSDAOManager;
 
 public class CreateSample implements Callable<String> {
 
@@ -55,7 +55,7 @@ public class CreateSample implements Callable<String> {
     public String call() {
 
         try {
-            WSDAOManager daoMgr = WSDAOManager.getInstance();
+            SOAPDAOManager daoMgr = SOAPDAOManager.getInstance();
             // RSDAOManager daoMgr = RSDAOManager.getInstance();
 
             MaPSeqDAOBeanService maPSeqDAOBean = daoMgr.getMaPSeqDAOBeanService();

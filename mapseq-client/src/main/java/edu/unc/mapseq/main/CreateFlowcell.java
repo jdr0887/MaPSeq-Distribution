@@ -14,8 +14,8 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
 
 import edu.unc.mapseq.dao.MaPSeqDAOException;
+import edu.unc.mapseq.dao.SOAPDAOManager;
 import edu.unc.mapseq.dao.model.Flowcell;
-import edu.unc.mapseq.dao.ws.WSDAOManager;
 
 public class CreateFlowcell implements Callable<String> {
 
@@ -33,7 +33,7 @@ public class CreateFlowcell implements Callable<String> {
 
     @Override
     public String call() {
-        WSDAOManager daoMgr = WSDAOManager.getInstance();
+        SOAPDAOManager daoMgr = SOAPDAOManager.getInstance();
         // RSDAOManager daoMgr = RSDAOManager.getInstance();
 
         Pattern pattern = Pattern.compile("^\\d+_.+_\\d+_.+$");

@@ -20,11 +20,11 @@ import org.apache.commons.lang3.StringUtils;
 
 import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
+import edu.unc.mapseq.dao.SOAPDAOManager;
 import edu.unc.mapseq.dao.model.Attribute;
 import edu.unc.mapseq.dao.model.Flowcell;
 import edu.unc.mapseq.dao.model.Sample;
 import edu.unc.mapseq.dao.model.Study;
-import edu.unc.mapseq.dao.ws.WSDAOManager;
 
 public class CreateFlowcellFromSampleSheet implements Runnable {
 
@@ -46,7 +46,7 @@ public class CreateFlowcellFromSampleSheet implements Runnable {
     @Override
     public void run() {
 
-        WSDAOManager daoMgr = WSDAOManager.getInstance();
+        SOAPDAOManager daoMgr = SOAPDAOManager.getInstance();
         // RSDAOManager daoMgr = RSDAOManager.getInstance();
 
         MaPSeqDAOBeanService maPSeqDAOBean = daoMgr.getMaPSeqDAOBeanService();

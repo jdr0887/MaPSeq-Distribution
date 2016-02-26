@@ -12,8 +12,8 @@ import org.apache.commons.cli.ParseException;
 
 import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
+import edu.unc.mapseq.dao.SOAPDAOManager;
 import edu.unc.mapseq.dao.model.Study;
-import edu.unc.mapseq.dao.ws.WSDAOManager;
 
 public class CreateStudy implements Callable<String> {
 
@@ -29,7 +29,7 @@ public class CreateStudy implements Callable<String> {
 
     @Override
     public String call() {
-        WSDAOManager daoMgr = WSDAOManager.getInstance();
+        SOAPDAOManager daoMgr = SOAPDAOManager.getInstance();
         // RSDAOManager daoMgr = RSDAOManager.getInstance();
         MaPSeqDAOBeanService maPSeqDAOBeanService = daoMgr.getMaPSeqDAOBeanService();
 

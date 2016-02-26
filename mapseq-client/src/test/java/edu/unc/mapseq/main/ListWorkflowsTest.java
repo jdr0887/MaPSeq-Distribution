@@ -7,8 +7,8 @@ import java.util.Locale;
 import org.junit.Test;
 
 import edu.unc.mapseq.dao.MaPSeqDAOException;
+import edu.unc.mapseq.dao.SOAPDAOManager;
 import edu.unc.mapseq.dao.model.Workflow;
-import edu.unc.mapseq.dao.ws.WSDAOManager;
 
 public class ListWorkflowsTest {
 
@@ -16,7 +16,7 @@ public class ListWorkflowsTest {
     public void testRun() {
 
         try {
-            WSDAOManager daoMgr = WSDAOManager.getInstance();
+            SOAPDAOManager daoMgr = SOAPDAOManager.getInstance();
             List<Workflow> workflowList = daoMgr.getMaPSeqDAOBeanService().getWorkflowDAO().findAll();
 
             if (!workflowList.isEmpty()) {

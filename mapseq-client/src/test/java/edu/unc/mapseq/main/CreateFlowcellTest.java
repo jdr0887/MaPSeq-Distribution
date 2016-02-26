@@ -13,10 +13,10 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 import edu.unc.mapseq.dao.MaPSeqDAOException;
+import edu.unc.mapseq.dao.SOAPDAOManager;
 import edu.unc.mapseq.dao.model.Flowcell;
 import edu.unc.mapseq.dao.model.Sample;
 import edu.unc.mapseq.dao.model.Study;
-import edu.unc.mapseq.dao.ws.WSDAOManager;
 
 public class CreateFlowcellTest {
 
@@ -35,7 +35,7 @@ public class CreateFlowcellTest {
     @Test
     public void testRun() {
 
-        WSDAOManager daoMgr = WSDAOManager.getInstance();
+        SOAPDAOManager daoMgr = SOAPDAOManager.getInstance();
 
         try {
             String sampleSheetContent = IOUtils.toString(
