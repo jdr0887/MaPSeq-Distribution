@@ -11,9 +11,9 @@
   <version>0.6.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <properties>
-    <mapseq.version>0.6.0</mapseq.version>
+    <mapseq.version>0.6.1</mapseq.version>
     <renci.charts.version>0.0.9</renci.charts.version>
-    <spring.version>3.2.14.RELEASE</spring.version>
+    <spring.version>4.2.3.RELEASE</spring.version>    
   </properties>
   <issueManagement>
     <system>GitHub Issues</system>
