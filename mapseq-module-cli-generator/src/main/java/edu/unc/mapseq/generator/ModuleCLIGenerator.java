@@ -42,7 +42,7 @@ import com.sun.codemodel.JTryBlock;
 import com.sun.codemodel.JVar;
 
 import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
-import edu.unc.mapseq.dao.ws.WSDAOManager;
+import edu.unc.mapseq.dao.SOAPDAOManager;
 import edu.unc.mapseq.module.DryRunJobObserver;
 import edu.unc.mapseq.module.ModuleExecutor;
 import edu.unc.mapseq.module.ModuleOutput;
@@ -144,7 +144,7 @@ public class ModuleCLIGenerator extends AbstractGenerator {
             JFieldVar cliOptionsFieldVar, JFieldVar helpFormatterVar) {
 
         JClass mapseqDAOBeanServiceJClass = codeModel.ref(MaPSeqDAOBeanService.class);
-        JClass wsDAOManagerJClass = codeModel.ref(WSDAOManager.class);
+        JClass soapDAOManagerJClass = codeModel.ref(SOAPDAOManager.class);
         JClass moduleExecutorJClass = codeModel.ref(ModuleExecutor.class);
         JClass moduleOutputJClass = codeModel.ref(ModuleOutput.class);
         JClass executorsJClass = codeModel.ref(Executors.class);
@@ -174,14 +174,14 @@ public class ModuleCLIGenerator extends AbstractGenerator {
         JBlock dryRunConditionalBlock = dryRunConditional._then();
         dryRunConditionalBlock.add(moduleExecutorVar.invoke("addObserver").arg(JExpr._new(dryRunObserverJClass)));
         JBlock dryRunConditionalElseBlock = dryRunConditional._else();
-        JVar wsDAOManagerVar = dryRunConditionalElseBlock.decl(wsDAOManagerJClass, "daoMgr");
-        wsDAOManagerVar.init(wsDAOManagerJClass.staticInvoke("getInstance"));
+        JVar wsDAOManagerVar = dryRunConditionalElseBlock.decl(soapDAOManagerJClass, "daoMgr");
+        wsDAOManagerVar.init(soapDAOManagerJClass.staticInvoke("getInstance"));
 
         JVar mapseqDAOBeanVar = dryRunConditionalElseBlock.decl(mapseqDAOBeanServiceJClass, "daoBean",
                 wsDAOManagerVar.invoke("getMaPSeqDAOBeanService"));
         dryRunConditionalElseBlock.add(moduleExecutorVar.invoke("setDaoBean").arg(mapseqDAOBeanVar));
-        dryRunConditionalElseBlock.add(moduleExecutorVar.invoke("addObserver").arg(
-                JExpr._new(updateJobObserverJClass).arg(mapseqDAOBeanVar)));
+        dryRunConditionalElseBlock.add(
+                moduleExecutorVar.invoke("addObserver").arg(JExpr._new(updateJobObserverJClass).arg(mapseqDAOBeanVar)));
 
         JVar executorServiceVar = mainMethodBlock.decl(executorServiceJClass, "executorService");
         executorServiceVar.init(executorsJClass.staticInvoke("newSingleThreadExecutor"));
@@ -189,10 +189,9 @@ public class ModuleCLIGenerator extends AbstractGenerator {
         JVar futureVar = mainMethodBlock.decl(futureJClass.narrow(moduleOutputJClass), "future");
         futureVar.init(executorServiceVar.invoke("submit").arg(moduleExecutorVar));
         mainMethodBlock.add(executorServiceVar.invoke("shutdown"));
-        mainMethodBlock.add(executorServiceVar
-                .invoke("awaitTermination")
-                .arg(longJClass.staticInvoke("valueOf").arg(
-                        JExpr.lit(clazz.getAnnotation(Application.class).wallTime())))
+        mainMethodBlock.add(executorServiceVar.invoke("awaitTermination")
+                .arg(longJClass.staticInvoke("valueOf")
+                        .arg(JExpr.lit(clazz.getAnnotation(Application.class).wallTime())))
                 .arg(timeUnitJClass.staticRef("DAYS")));
         mainMethodBlock.assign(moduleOutputVar, futureVar.invoke("get"));
 
@@ -230,28 +229,28 @@ public class ModuleCLIGenerator extends AbstractGenerator {
 
         Field[] fieldArray = clazz.getDeclaredFields();
 
-        mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption").arg(
-                optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit("workflowRunAttemptId")).invoke("hasArg")
-                        .invoke("withDescription").arg(JExpr.lit("WorkflowRunAttempt identifier"))
+        mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption")
+                .arg(optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit("workflowRunAttemptId"))
+                        .invoke("hasArg").invoke("withDescription").arg(JExpr.lit("WorkflowRunAttempt identifier"))
                         .invoke("withLongOpt").arg(JExpr.lit("workflowRunAttemptId")).invoke("create")));
 
-        mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption").arg(
-                optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit("sampleId")).invoke("hasArg")
+        mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption")
+                .arg(optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit("sampleId")).invoke("hasArg")
                         .invoke("withDescription").arg(JExpr.lit("Sample identifier")).invoke("withLongOpt")
                         .arg(JExpr.lit("sampleId")).invoke("create")));
 
-        mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption").arg(
-                optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit("dryRun")).invoke("withDescription")
+        mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption")
+                .arg(optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit("dryRun")).invoke("withDescription")
                         .arg(JExpr.lit("no web service calls & echo command line without running"))
                         .invoke("withLongOpt").arg(JExpr.lit("dryRun")).invoke("create")));
 
-        mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption").arg(
-                optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit("persistFileData"))
+        mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption")
+                .arg(optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit("persistFileData"))
                         .invoke("withDescription").arg(JExpr.lit("persist FileData's if they exist"))
                         .invoke("withLongOpt").arg(JExpr.lit("persistFileData")).invoke("create")));
 
-        mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption").arg(
-                optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit("serializeFile")).invoke("hasArg")
+        mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption")
+                .arg(optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit("serializeFile")).invoke("hasArg")
                         .invoke("withDescription").arg(JExpr.lit("Serialize File")).invoke("withLongOpt")
                         .arg(JExpr.lit("serializeFile")).invoke("create")));
 
@@ -261,38 +260,38 @@ public class ModuleCLIGenerator extends AbstractGenerator {
 
                 if (field.getType() == Boolean.class) {
 
-                    mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption").arg(
-                            optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit(field.getName()))
-                                    .invoke("withDescription").arg(JExpr.lit(input.description()))
-                                    .invoke("withLongOpt").arg(JExpr.lit(field.getName())).invoke("create")));
+                    mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption")
+                            .arg(optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit(field.getName()))
+                                    .invoke("withDescription").arg(JExpr.lit(input.description())).invoke("withLongOpt")
+                                    .arg(JExpr.lit(field.getName())).invoke("create")));
 
                 } else if (field.getType().isEnum()) {
 
                     String description = String.format("%s...%s", input.description(),
                             Arrays.asList(field.getType().getEnumConstants()));
-                    mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption").arg(
-                            optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit(field.getName()))
+                    mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption")
+                            .arg(optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit(field.getName()))
                                     .invoke("hasArgs").invoke("withDescription").arg(JExpr.lit(description))
                                     .invoke("withLongOpt").arg(JExpr.lit(field.getName())).invoke("create")));
 
                 } else if (field.getType() == List.class) {
 
-                    mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption").arg(
-                            optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit(field.getName()))
+                    mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption")
+                            .arg(optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit(field.getName()))
                                     .invoke("hasArgs").invoke("withDescription").arg(JExpr.lit(input.description()))
                                     .invoke("withLongOpt").arg(JExpr.lit(field.getName())).invoke("create")));
 
                 } else if (field.getType() == Date.class) {
 
-                    mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption").arg(
-                            optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit(field.getName()))
+                    mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption")
+                            .arg(optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit(field.getName()))
                                     .invoke("hasArgs").invoke("withDescription").arg(JExpr.lit(""))
                                     .invoke("withLongOpt").arg(JExpr.lit(field.getName())).invoke("create")));
 
                 } else {
 
-                    mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption").arg(
-                            optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit(field.getName()))
+                    mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption")
+                            .arg(optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit(field.getName()))
                                     .invoke("hasArgs").invoke("withDescription").arg(JExpr.lit(input.description()))
                                     .invoke("withLongOpt").arg(JExpr.lit(field.getName())).invoke("create")));
 
@@ -305,8 +304,8 @@ public class ModuleCLIGenerator extends AbstractGenerator {
 
                 if (field.getType() == Boolean.class) {
 
-                    mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption").arg(
-                            optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit(field.getName()))
+                    mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption")
+                            .arg(optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit(field.getName()))
                                     .invoke("withDescription").arg(JExpr.lit(output.description()))
                                     .invoke("withLongOpt").arg(JExpr.lit(field.getName())).invoke("create")));
 
@@ -314,29 +313,29 @@ public class ModuleCLIGenerator extends AbstractGenerator {
 
                     String description = String.format("%s...%s", output.description(),
                             Arrays.asList(field.getType().getEnumConstants()));
-                    mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption").arg(
-                            optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit(field.getName()))
+                    mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption")
+                            .arg(optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit(field.getName()))
                                     .invoke("hasArgs").invoke("withDescription").arg(JExpr.lit(description))
                                     .invoke("withLongOpt").arg(JExpr.lit(field.getName())).invoke("create")));
 
                 } else if (field.getType() == List.class) {
 
-                    mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption").arg(
-                            optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit(field.getName()))
+                    mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption")
+                            .arg(optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit(field.getName()))
                                     .invoke("hasArgs").invoke("withDescription").arg(JExpr.lit(output.description()))
                                     .invoke("withLongOpt").arg(JExpr.lit(field.getName())).invoke("create")));
 
                 } else if (field.getType() == Date.class) {
 
-                    mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption").arg(
-                            optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit(field.getName()))
+                    mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption")
+                            .arg(optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit(field.getName()))
                                     .invoke("hasArgs").invoke("withDescription").arg(JExpr.lit(""))
                                     .invoke("withLongOpt").arg(JExpr.lit(field.getName())).invoke("create")));
 
                 } else {
 
-                    mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption").arg(
-                            optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit(field.getName()))
+                    mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption")
+                            .arg(optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit(field.getName()))
                                     .invoke("hasArgs").invoke("withDescription").arg(JExpr.lit(output.description()))
                                     .invoke("withLongOpt").arg(JExpr.lit(field.getName())).invoke("create")));
 
@@ -346,8 +345,8 @@ public class ModuleCLIGenerator extends AbstractGenerator {
 
         }
 
-        mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption").arg(
-                optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit("help")).invoke("withDescription")
+        mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption")
+                .arg(optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit("help")).invoke("withDescription")
                         .arg(JExpr.lit("print this help message")).invoke("withLongOpt").arg("help").invoke("create")
                         .arg(JExpr.lit("?"))));
 
@@ -365,8 +364,8 @@ public class ModuleCLIGenerator extends AbstractGenerator {
 
         JConditional conditional = tryBlockBody._if(commandLineVar.invoke("hasOption").arg("?"));
         JBlock conditionalThenBlock = conditional._then();
-        conditionalThenBlock.add(helpFormatterVar.invoke("printHelp").arg(clazz.getSimpleName() + "CLI")
-                .arg(cliOptionsFieldVar));
+        conditionalThenBlock
+                .add(helpFormatterVar.invoke("printHelp").arg(clazz.getSimpleName() + "CLI").arg(cliOptionsFieldVar));
         conditionalThenBlock._return();
 
         String paramName = "workflowRunAttemptId";
@@ -374,34 +373,34 @@ public class ModuleCLIGenerator extends AbstractGenerator {
         JBlock hasOptionConditionalThenBlock = hasOptionConditional._then();
         JVar paramVar = hasOptionConditionalThenBlock.decl(longJClass, paramName);
         paramVar.init(longJClass.staticInvoke("valueOf").arg(commandLineVar.invoke("getOptionValue").arg(paramName)));
-        hasOptionConditionalThenBlock.add(applicationVar.invoke(
-                String.format("set%s", StringUtils.capitalize(paramName))).arg(paramVar));
+        hasOptionConditionalThenBlock
+                .add(applicationVar.invoke(String.format("set%s", StringUtils.capitalize(paramName))).arg(paramVar));
 
         paramName = "sampleId";
         hasOptionConditional = tryBlockBody._if(commandLineVar.invoke("hasOption").arg(paramName));
         hasOptionConditionalThenBlock = hasOptionConditional._then();
         paramVar = hasOptionConditionalThenBlock.decl(longJClass, paramName);
         paramVar.init(longJClass.staticInvoke("valueOf").arg(commandLineVar.invoke("getOptionValue").arg(paramName)));
-        hasOptionConditionalThenBlock.add(applicationVar.invoke(
-                String.format("set%s", StringUtils.capitalize(paramName))).arg(paramVar));
+        hasOptionConditionalThenBlock
+                .add(applicationVar.invoke(String.format("set%s", StringUtils.capitalize(paramName))).arg(paramVar));
 
         paramName = "serializeFile";
         hasOptionConditional = tryBlockBody._if(commandLineVar.invoke("hasOption").arg(paramName));
         hasOptionConditionalThenBlock = hasOptionConditional._then();
         paramVar = hasOptionConditionalThenBlock.decl(fileJClass, paramName);
         paramVar.init(JExpr._new(fileJClass).arg(commandLineVar.invoke("getOptionValue").arg(paramName)));
-        hasOptionConditionalThenBlock.add(applicationVar.invoke(
-                String.format("set%s", StringUtils.capitalize(paramName))).arg(paramVar));
+        hasOptionConditionalThenBlock
+                .add(applicationVar.invoke(String.format("set%s", StringUtils.capitalize(paramName))).arg(paramVar));
 
         hasOptionConditional = tryBlockBody._if(commandLineVar.invoke("hasOption").arg("dryRun"));
         hasOptionConditionalThenBlock = hasOptionConditional._then();
-        hasOptionConditionalThenBlock.add(applicationVar.invoke("set" + StringUtils.capitalize("dryRun")).arg(
-                booleanJClass.staticRef("TRUE")));
+        hasOptionConditionalThenBlock.add(
+                applicationVar.invoke("set" + StringUtils.capitalize("dryRun")).arg(booleanJClass.staticRef("TRUE")));
 
         hasOptionConditional = tryBlockBody._if(commandLineVar.invoke("hasOption").arg("persistFileData"));
         hasOptionConditionalThenBlock = hasOptionConditional._then();
-        hasOptionConditionalThenBlock.add(applicationVar.invoke("set" + StringUtils.capitalize("persistFileData")).arg(
-                booleanJClass.staticRef("TRUE")));
+        hasOptionConditionalThenBlock.add(applicationVar.invoke("set" + StringUtils.capitalize("persistFileData"))
+                .arg(booleanJClass.staticRef("TRUE")));
 
         for (Field field : fieldArray) {
             if (field.isAnnotationPresent(InputArgument.class) || field.isAnnotationPresent(OutputArgument.class)) {
@@ -414,33 +413,32 @@ public class ModuleCLIGenerator extends AbstractGenerator {
                 JClass typeClass = codeModel.ref(field.getType());
                 if (field.getType() == File.class) {
                     paramVar = hasOptionConditionalThenBlock.decl(typeClass, field.getName());
-                    paramVar.init(JExpr._new(typeClass).arg(
-                            commandLineVar.invoke("getOptionValue").arg(field.getName())));
-                    hasOptionConditionalThenBlock.add(applicationVar.invoke(
-                            String.format("set%s", capitalizedFieldName)).arg(paramVar));
+                    paramVar.init(
+                            JExpr._new(typeClass).arg(commandLineVar.invoke("getOptionValue").arg(field.getName())));
+                    hasOptionConditionalThenBlock
+                            .add(applicationVar.invoke(String.format("set%s", capitalizedFieldName)).arg(paramVar));
                 } else if (field.getType() == String.class) {
                     paramVar = hasOptionConditionalThenBlock.decl(typeClass.array(), field.getName());
                     paramVar.init(commandLineVar.invoke("getOptionValues").arg(field.getName()));
-                    hasOptionConditionalThenBlock.add(applicationVar.invoke(
-                            String.format("set%s", capitalizedFieldName)).arg(
-                            stringUtilsJClass.staticInvoke("join").arg(paramVar).arg(JExpr.lit(" "))));
+                    hasOptionConditionalThenBlock
+                            .add(applicationVar.invoke(String.format("set%s", capitalizedFieldName))
+                                    .arg(stringUtilsJClass.staticInvoke("join").arg(paramVar).arg(JExpr.lit(" "))));
                 } else if (field.getType() == Date.class) {
                     paramVar = hasOptionConditionalThenBlock.decl(typeClass, field.getName());
-                    paramVar.init(JExpr._new(dateJClass).arg(
-                            longJClass.staticInvoke("valueOf").arg(
-                                    commandLineVar.invoke("getOptionValue").arg(field.getName()))));
-                    hasOptionConditionalThenBlock.add(applicationVar.invoke(
-                            String.format("set%s", capitalizedFieldName)).arg(paramVar));
+                    paramVar.init(JExpr._new(dateJClass).arg(longJClass.staticInvoke("valueOf")
+                            .arg(commandLineVar.invoke("getOptionValue").arg(field.getName()))));
+                    hasOptionConditionalThenBlock
+                            .add(applicationVar.invoke(String.format("set%s", capitalizedFieldName)).arg(paramVar));
                 } else if (field.getType().isEnum()) {
 
                     JTryBlock enumCastTryBlock = hasOptionConditionalThenBlock._try();
                     JBlock enumCastTryBlockBody = enumCastTryBlock.body();
 
                     paramVar = enumCastTryBlockBody.decl(typeClass, field.getName());
-                    paramVar.init(typeClass.staticInvoke("valueOf").arg(
-                            commandLineVar.invoke("getOptionValue").arg(field.getName())));
-                    enumCastTryBlockBody.add(applicationVar.invoke(String.format("set%s", capitalizedFieldName)).arg(
-                            paramVar));
+                    paramVar.init(typeClass.staticInvoke("valueOf")
+                            .arg(commandLineVar.invoke("getOptionValue").arg(field.getName())));
+                    enumCastTryBlockBody
+                            .add(applicationVar.invoke(String.format("set%s", capitalizedFieldName)).arg(paramVar));
 
                     JCatchBlock catchBlock = enumCastTryBlock._catch(exceptionJClass);
                     JVar exceptionVar = catchBlock.param("e");
@@ -448,13 +446,11 @@ public class ModuleCLIGenerator extends AbstractGenerator {
                     JClass typeJClass = codeModel.ref(field.getType());
                     JClass arraysJClass = codeModel.ref(Arrays.class);
 
-                    catchBlockBody.add(systemJClass
-                            .staticRef("err")
-                            .invoke("format")
+                    catchBlockBody.add(systemJClass.staticRef("err").invoke("format")
                             .arg(JExpr.lit("Enum name:  %s%nEnum constants:  %s%n"))
                             .arg(typeJClass.staticRef("class").invoke("getName"))
-                            .arg(arraysJClass.staticInvoke("asList").arg(
-                                    typeJClass.staticRef("class").invoke("getEnumConstants"))));
+                            .arg(arraysJClass.staticInvoke("asList")
+                                    .arg(typeJClass.staticRef("class").invoke("getEnumConstants"))));
 
                     catchBlockBody.add(systemJClass.staticRef("err").invoke("println")
                             .arg(JExpr.lit("Parsing Failed: ").plus(exceptionVar.invoke("getMessage"))));
@@ -466,29 +462,29 @@ public class ModuleCLIGenerator extends AbstractGenerator {
                     ParameterizedType listType = (ParameterizedType) field.getGenericType();
                     Class<?> listTypeClass = (Class<?>) listType.getActualTypeArguments()[0];
                     JClass typeJClass = codeModel.ref(listTypeClass);
-                    paramVar = hasOptionConditionalThenBlock.decl(listJClass.narrow(typeJClass), field.getName()
-                            + "List");
+                    paramVar = hasOptionConditionalThenBlock.decl(listJClass.narrow(typeJClass),
+                            field.getName() + "List");
                     paramVar.init(JExpr._new(linkedListJClass.narrow(listTypeClass)));
 
-                    JForEach paramForEach = hasOptionConditionalThenBlock.forEach(stringJClass, "a", commandLineVar
-                            .invoke("getOptionValues").arg(field.getName()));
+                    JForEach paramForEach = hasOptionConditionalThenBlock.forEach(stringJClass, "a",
+                            commandLineVar.invoke("getOptionValues").arg(field.getName()));
                     JBlock paramForEachBody = paramForEach.body();
 
                     paramForEachBody.add(paramVar.invoke("add").arg(JExpr._new(typeJClass).arg(paramForEach.var())));
-                    hasOptionConditionalThenBlock.add(applicationVar.invoke(
-                            String.format("set%s", capitalizedFieldName)).arg(paramVar));
+                    hasOptionConditionalThenBlock
+                            .add(applicationVar.invoke(String.format("set%s", capitalizedFieldName)).arg(paramVar));
 
                 } else if (field.getType() == Boolean.class) {
 
-                    hasOptionConditionalThenBlock.add(applicationVar.invoke(
-                            String.format("set%s", capitalizedFieldName)).arg(booleanJClass.staticRef("TRUE")));
+                    hasOptionConditionalThenBlock.add(applicationVar
+                            .invoke(String.format("set%s", capitalizedFieldName)).arg(booleanJClass.staticRef("TRUE")));
 
                 } else {
                     paramVar = hasOptionConditionalThenBlock.decl(typeClass, field.getName());
-                    paramVar.init(typeClass.staticInvoke("valueOf").arg(
-                            commandLineVar.invoke("getOptionValue").arg(field.getName())));
-                    hasOptionConditionalThenBlock.add(applicationVar.invoke(
-                            String.format("set%s", capitalizedFieldName)).arg(paramVar));
+                    paramVar.init(typeClass.staticInvoke("valueOf")
+                            .arg(commandLineVar.invoke("getOptionValue").arg(field.getName())));
+                    hasOptionConditionalThenBlock
+                            .add(applicationVar.invoke(String.format("set%s", capitalizedFieldName)).arg(paramVar));
                 }
 
             }
@@ -499,8 +495,8 @@ public class ModuleCLIGenerator extends AbstractGenerator {
         JBlock catchBlockBody = catchBlock.body();
         catchBlockBody.add(systemJClass.staticRef("err").invoke("println")
                 .arg(JExpr.lit("Parsing Failed: ").plus(exceptionVar.invoke("getMessage"))));
-        catchBlockBody.add(helpFormatterVar.invoke("printHelp").arg(clazz.getSimpleName() + "CLI")
-                .arg(cliOptionsFieldVar));
+        catchBlockBody
+                .add(helpFormatterVar.invoke("printHelp").arg(clazz.getSimpleName() + "CLI").arg(cliOptionsFieldVar));
 
         catchBlockBody.add(systemJClass.staticInvoke("exit").arg(JExpr.lit(-1)));
 
@@ -516,17 +512,17 @@ public class ModuleCLIGenerator extends AbstractGenerator {
         catchBlock = tryBlock._catch(exceptionJClass);
         exceptionVar = catchBlock.param("e");
         catchBlockBody = catchBlock.body();
-        catchBlockBody.add(systemJClass.staticRef("err").invoke("println").arg(exceptionVar.invoke("getMessage")));
-        catchBlockBody.add(helpFormatterVar.invoke("printHelp").arg(clazz.getSimpleName() + "CLI")
-                .arg(cliOptionsFieldVar));
+        catchBlockBody.add(exceptionVar.invoke("printStackTrace"));
+        catchBlockBody
+                .add(helpFormatterVar.invoke("printHelp").arg(clazz.getSimpleName() + "CLI").arg(cliOptionsFieldVar));
         catchBlockBody.add(systemJClass.staticInvoke("exit").arg(JExpr.lit(-1)));
 
         JConditional nullModuleOutputConditional = mainMethodBlock._if(moduleOutputVar.eq(JExpr._null()));
         JBlock nullModuleOutputConditionalThenBlock = nullModuleOutputConditional._then();
-        nullModuleOutputConditionalThenBlock.add(systemJClass.staticRef("err").invoke("println")
-                .arg(JExpr.lit("moduleOutput is null")));
-        nullModuleOutputConditionalThenBlock.add(helpFormatterVar.invoke("printHelp")
-                .arg(clazz.getSimpleName() + "CLI").arg(cliOptionsFieldVar));
+        nullModuleOutputConditionalThenBlock
+                .add(systemJClass.staticRef("err").invoke("println").arg(JExpr.lit("moduleOutput is null")));
+        nullModuleOutputConditionalThenBlock
+                .add(helpFormatterVar.invoke("printHelp").arg(clazz.getSimpleName() + "CLI").arg(cliOptionsFieldVar));
         nullModuleOutputConditionalThenBlock.add(systemJClass.staticInvoke("exit").arg(JExpr.lit(-1)));
 
         mainMethodBlock.add(systemJClass.staticInvoke("exit").arg(moduleOutputVar.invoke("getExitCode")));
