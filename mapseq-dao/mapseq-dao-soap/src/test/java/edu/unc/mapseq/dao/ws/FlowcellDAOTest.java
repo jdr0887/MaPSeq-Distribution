@@ -11,6 +11,7 @@ import org.apache.commons.lang.time.DateUtils;
 import org.junit.Test;
 
 import edu.unc.mapseq.dao.MaPSeqDAOException;
+import edu.unc.mapseq.dao.SOAPDAOManager;
 import edu.unc.mapseq.dao.model.Attribute;
 import edu.unc.mapseq.dao.model.Flowcell;
 import edu.unc.mapseq.dao.model.Sample;
@@ -19,7 +20,7 @@ public class FlowcellDAOTest {
 
     @Test
     public void testFindByCreationDateRange() {
-        WSDAOManager daoMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
+        SOAPDAOManager daoMgr = SOAPDAOManager.getInstance();
         try {
 
             Date parsedStartDate = DateUtils.parseDate("2014-07-01",

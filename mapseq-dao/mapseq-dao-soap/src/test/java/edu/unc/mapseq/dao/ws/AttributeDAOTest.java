@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import edu.unc.mapseq.dao.AttributeDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
+import edu.unc.mapseq.dao.SOAPDAOManager;
 import edu.unc.mapseq.dao.model.Attribute;
 
 public class AttributeDAOTest {
@@ -11,7 +12,7 @@ public class AttributeDAOTest {
     @Test
     public void save() {
 
-        WSDAOManager daoMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
+        SOAPDAOManager daoMgr = SOAPDAOManager.getInstance();
 
         final AttributeDAO attributeDAO = daoMgr.getMaPSeqDAOBeanService().getAttributeDAO();
 

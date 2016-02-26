@@ -27,6 +27,7 @@ import edu.unc.mapseq.dao.AttributeDAO;
 import edu.unc.mapseq.dao.FlowcellDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.SampleDAO;
+import edu.unc.mapseq.dao.SOAPDAOManager;
 import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
 import edu.unc.mapseq.dao.WorkflowRunDAO;
 import edu.unc.mapseq.dao.model.Attribute;
@@ -42,7 +43,7 @@ public class SampleDAOTest {
     @Test
     public void testFindByWorkflowRunId() {
 
-        WSDAOManager daoMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
+        SOAPDAOManager daoMgr = SOAPDAOManager.getInstance();
 
         try {
             WorkflowRunAttemptDAO workflowRunAttemptDAO = daoMgr.getMaPSeqDAOBeanService().getWorkflowRunAttemptDAO();
@@ -62,7 +63,7 @@ public class SampleDAOTest {
     @Test
     public void testAddFileDataToSample() {
 
-        WSDAOManager daoMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
+        SOAPDAOManager daoMgr = SOAPDAOManager.getInstance();
 
         try {
             SampleDAO sampleDAO = daoMgr.getMaPSeqDAOBeanService().getSampleDAO();
@@ -76,7 +77,7 @@ public class SampleDAOTest {
     @Test
     public void testSave() {
 
-        WSDAOManager daoMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
+        SOAPDAOManager daoMgr = SOAPDAOManager.getInstance();
 
         Set<FileData> fileDataSet = new HashSet<FileData>();
 
@@ -152,7 +153,7 @@ public class SampleDAOTest {
     @Test
     public void testFindByFlowcellIdAndSampleName() throws Exception {
 
-        WSDAOManager daoMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
+        SOAPDAOManager daoMgr = SOAPDAOManager.getInstance();
         SampleDAO sampleDAO = daoMgr.getMaPSeqDAOBeanService().getSampleDAO();
         // List<Sample> sampleList = hTSFSampleDAO.findByFlowcellIdAndSampleName(27352L, "NCG_00007%");
         List<Sample> sampleList = sampleDAO.findByFlowcellId(56470L);
@@ -179,7 +180,7 @@ public class SampleDAOTest {
     @Test
     public void testFileDataRegex() throws Exception {
 
-        WSDAOManager daoMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
+        SOAPDAOManager daoMgr = SOAPDAOManager.getInstance();
 
         FlowcellDAO flowcellDAO = daoMgr.getMaPSeqDAOBeanService().getFlowcellDAO();
 
@@ -226,7 +227,7 @@ public class SampleDAOTest {
 
     @Test
     public void testWorkflowPlan() {
-        WSDAOManager daoMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
+        SOAPDAOManager daoMgr = SOAPDAOManager.getInstance();
         List<WorkflowRun> wpList = new ArrayList<WorkflowRun>();
         WorkflowRunDAO workflowRunDAO = daoMgr.getMaPSeqDAOBeanService().getWorkflowRunDAO();
         String sampleName = "NCG_00142%";
@@ -309,7 +310,7 @@ public class SampleDAOTest {
 
     @Test
     public void testAddAttributeToSample() {
-        WSDAOManager daoMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
+        SOAPDAOManager daoMgr = SOAPDAOManager.getInstance();
         try {
             SampleDAO sampleDAO = daoMgr.getMaPSeqDAOBeanService().getSampleDAO();
             AttributeDAO attributeDAO = daoMgr.getMaPSeqDAOBeanService().getAttributeDAO();

@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import edu.unc.mapseq.dao.FileDataDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
+import edu.unc.mapseq.dao.SOAPDAOManager;
 import edu.unc.mapseq.dao.model.FileData;
 import edu.unc.mapseq.dao.model.MimeType;
 
@@ -34,8 +35,7 @@ public class FileDataDAOTest {
                 executorService.submit(new Runnable() {
                     @Override
                     public void run() {
-                        WSDAOManager daoMgr = WSDAOManager
-                                .getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
+                        SOAPDAOManager daoMgr = SOAPDAOManager.getInstance();
                         FileDataDAO fileDataDAO = daoMgr.getMaPSeqDAOBeanService().getFileDataDAO();
                         FileData fileData = new FileData(fastqName, "/tmp", MimeType.FASTQ);
                         try {
@@ -67,8 +67,7 @@ public class FileDataDAOTest {
                         FileData fileData = new FileData(fastqName, "/tmp", MimeType.FASTQ);
 
                         try {
-                            WSDAOManager daoMgr = WSDAOManager
-                                    .getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
+                            SOAPDAOManager daoMgr = SOAPDAOManager.getInstance();
                             FileDataDAO fileDataDAO = daoMgr.getMaPSeqDAOBeanService().getFileDataDAO();
                             fileDataList.addAll(fileDataDAO.findByExample(fileData));
                         } catch (MaPSeqDAOException e) {
@@ -91,7 +90,7 @@ public class FileDataDAOTest {
     @Test
     public void save() {
 
-        WSDAOManager daoMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
+        SOAPDAOManager daoMgr = SOAPDAOManager.getInstance();
 
         final FileDataDAO fileDataDAO = daoMgr.getMaPSeqDAOBeanService().getFileDataDAO();
 

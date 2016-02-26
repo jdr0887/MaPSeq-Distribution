@@ -5,6 +5,7 @@ import java.util.List;
 import org.junit.Test;
 
 import edu.unc.mapseq.dao.MaPSeqDAOException;
+import edu.unc.mapseq.dao.SOAPDAOManager;
 import edu.unc.mapseq.dao.WorkflowDAO;
 import edu.unc.mapseq.dao.model.Workflow;
 
@@ -16,7 +17,7 @@ public class WorkflowDAOTest {
         Workflow workflow = new Workflow();
         workflow.setName("test");
 
-        WSDAOManager wsDAOMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
+        SOAPDAOManager wsDAOMgr = SOAPDAOManager.getInstance();
         // WSDAOManager wsDAOMgr = WSDAOManager.getInstance();
         WorkflowDAO workflowDAO = wsDAOMgr.getMaPSeqDAOBeanService().getWorkflowDAO();
         try {
@@ -31,7 +32,7 @@ public class WorkflowDAOTest {
     @Test
     public void testFindAll() {
 
-        WSDAOManager wsDAOMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
+        SOAPDAOManager wsDAOMgr = SOAPDAOManager.getInstance();
         WorkflowDAO workflowDAO = wsDAOMgr.getMaPSeqDAOBeanService().getWorkflowDAO();
         try {
             List<Workflow> workflowList = workflowDAO.findAll();

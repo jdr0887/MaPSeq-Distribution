@@ -16,6 +16,7 @@ import javax.xml.ws.soap.SOAPBinding;
 import org.junit.Test;
 
 import edu.unc.mapseq.dao.MaPSeqDAOException;
+import edu.unc.mapseq.dao.SOAPDAOManager;
 import edu.unc.mapseq.dao.WorkflowRunDAO;
 import edu.unc.mapseq.dao.model.WorkflowRun;
 import edu.unc.mapseq.ws.WorkflowRunService;
@@ -28,7 +29,7 @@ public class WorkflowRunDAOTest {
         WorkflowRun workflowRun = new WorkflowRun();
         workflowRun.setName("test");
 
-        WSDAOManager wsDAOMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
+        SOAPDAOManager wsDAOMgr = SOAPDAOManager.getInstance();
         WorkflowRunDAO workflowRunDAO = wsDAOMgr.getMaPSeqDAOBeanService().getWorkflowRunDAO();
         try {
             Long id = workflowRunDAO.save(workflowRun);
@@ -44,9 +45,8 @@ public class WorkflowRunDAOTest {
         QName serviceQName = new QName("http://ws.mapseq.unc.edu", "WorkflowRunService");
         QName portQName = new QName("http://ws.mapseq.unc.edu", "WorkflowRunPort");
         Service service = Service.create(serviceQName);
-        String host = "biodev2.its.unc.edu";
         service.addPort(portQName, SOAPBinding.SOAP11HTTP_BINDING,
-                String.format("http://%s:%d/cxf/WorkflowRunService", host, 8181));
+                String.format("http://%s:%d/cxf/WorkflowRunService", "152.19.198.146", 8181));
         WorkflowRunService workflowRunService = service.getPort(WorkflowRunService.class);
 
         List<WorkflowRun> workflowRunList = workflowRunService.findByName("NCG_00112_Baseline%");
@@ -56,8 +56,8 @@ public class WorkflowRunDAOTest {
                 JAXBContext context = JAXBContext.newInstance(WorkflowRun.class);
                 Marshaller m = context.createMarshaller();
                 m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-                File moduleClassXMLFile = new File("/tmp", String.format("%s-%d.xml", "WorkflowRun",
-                        workflowRun.getId()));
+                File moduleClassXMLFile = new File("/tmp",
+                        String.format("%s-%d.xml", "WorkflowRun", workflowRun.getId()));
                 FileWriter fw = new FileWriter(moduleClassXMLFile);
                 m.marshal(workflowRun, fw);
             } catch (IOException e1) {

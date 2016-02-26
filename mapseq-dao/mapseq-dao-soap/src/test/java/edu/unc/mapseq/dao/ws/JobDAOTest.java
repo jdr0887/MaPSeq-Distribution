@@ -8,10 +8,12 @@ import org.junit.Test;
 
 import edu.unc.mapseq.dao.JobDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
+import edu.unc.mapseq.dao.SOAPDAOManager;
 import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
 import edu.unc.mapseq.dao.model.Job;
 import edu.unc.mapseq.dao.model.JobStatusType;
 import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
+import edu.unc.mapseq.dao.soap.JobDAOImpl;
 
 public class JobDAOTest {
 
@@ -36,8 +38,8 @@ public class JobDAOTest {
         job.setStarted(new Date());
         job.setStatus(JobStatusType.RUNNING);
 
-        WSDAOManager wsDAOMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
-        JobDAO jobDAO = wsDAOMgr.getMaPSeqDAOBeanService().getJobDAO();
+        SOAPDAOManager daoMgr = SOAPDAOManager.getInstance();
+        JobDAO jobDAO = daoMgr.getMaPSeqDAOBeanService().getJobDAO();
 
         try {
             Long id = jobDAO.save(job);
@@ -50,7 +52,7 @@ public class JobDAOTest {
 
     @Test
     public void testSaveWithWorkflowRun() throws MaPSeqDAOException {
-        WSDAOManager wsDAOMgr = WSDAOManager.getInstance();
+        SOAPDAOManager wsDAOMgr = SOAPDAOManager.getInstance();
         WorkflowRunAttemptDAO workflowRunAttemptDAO = wsDAOMgr.getMaPSeqDAOBeanService().getWorkflowRunAttemptDAO();
         WorkflowRunAttempt workflowRunAttempt = workflowRunAttemptDAO.findById(1267L);
 
@@ -74,7 +76,7 @@ public class JobDAOTest {
 
     @Test
     public void testSaveMTOM() throws MaPSeqDAOException {
-        WSDAOManager wsDAOMgr = WSDAOManager.getInstance("edu/unc/mapseq/dao/ws/mapseq-dao-beans-test.xml");
+        SOAPDAOManager wsDAOMgr = SOAPDAOManager.getInstance();
 
         Job job = new Job();
         job.setStdout("\u0007a");
