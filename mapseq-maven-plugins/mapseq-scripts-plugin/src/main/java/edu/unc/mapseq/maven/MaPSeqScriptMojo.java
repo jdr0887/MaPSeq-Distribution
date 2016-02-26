@@ -55,7 +55,8 @@ public class MaPSeqScriptMojo extends AbstractMojo {
         sb.append("if [ ! -d \"$DIR/../tmp\" ]; then mkdir $DIR/../tmp; fi\n");
         sb.append("if [ ! -d \"$DIR/../logs\" ]; then mkdir $DIR/../logs; fi\n");
         sb.append("export CLASSPATH\n");
-        sb.append("export JAVA_OPTS=\"-XX:MaxPermSize=512m -XX:-UseSplitVerifier -Xmx4g\"\n");
+        // sb.append("export JAVA_OPTS=\"-XX:MaxPermSize=512m -XX:-UseSplitVerifier -Xmx4g\"\n");
+        sb.append("export JAVA_OPTS=\"-Xmx4g -Xms4g\"\n");
         sb.append(
                 "CMD=\"$JAVA_HOME/bin/java $JAVA_OPTS -Djava.io.tmpdir=$DIR/../tmp -Dmapseq.log.dir=$DIR/../logs -cp $CLASSPATH ")
                 .append(getClassName()).append(" $@\"\n");
