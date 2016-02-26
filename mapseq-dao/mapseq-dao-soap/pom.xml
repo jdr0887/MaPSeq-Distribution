@@ -78,7 +78,7 @@
         <configuration>
           <instructions>
             <Private-Package />
-            <Export-Package>edu.unc.mapseq.dao.ws.*</Export-Package>
+            <Export-Package>edu.unc.mapseq.dao.*</Export-Package>
             <Import-Package>*</Import-Package>
           </instructions>
         </configuration>
