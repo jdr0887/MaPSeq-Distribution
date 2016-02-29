@@ -23,7 +23,7 @@ public class SOAPDAOManager {
 
     private SOAPDAOManager() {
         try (ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext(
-                String.format("classpath:/%s", "edu/unc/mapseq/dao/soap/mapseq-dao-beans.xml"))) {
+                "classpath:/edu/unc/mapseq/dao/soap/mapseq-dao-beans.xml")) {
             this.maPSeqDAOBeanService = applicationContext.getBean(MaPSeqDAOBeanService.class);
         } catch (Exception e) {
             e.printStackTrace();
