@@ -10,4 +10,6 @@
   <context:component-scan base-package="edu.unc.mapseq.dao.soap" />
   <context:annotation-config />
 
+  <bean id="configurationService" class="edu.unc.mapseq.config.MaPSeqConfigurationServiceImpl" />
+
 </beans>

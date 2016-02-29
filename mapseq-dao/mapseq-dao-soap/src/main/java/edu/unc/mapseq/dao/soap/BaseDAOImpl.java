@@ -7,6 +7,8 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 import javax.xml.ws.soap.SOAPBinding;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import edu.unc.mapseq.config.MaPSeqConfigurationService;
 import edu.unc.mapseq.dao.BaseDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
@@ -14,6 +16,7 @@ import edu.unc.mapseq.dao.model.Persistable;
 
 public abstract class BaseDAOImpl<T extends Persistable, ID extends Serializable> implements BaseDAO<T, ID> {
 
+    @Autowired
     private MaPSeqConfigurationService configurationService;
 
     private Class<T> persistentClass;
