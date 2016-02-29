@@ -36,7 +36,7 @@ import edu.unc.mapseq.workflow.impl.exporter.SecureCondorSubmitScriptExporter;
 
 public abstract class AbstractWorkflow implements Workflow {
 
-    private final Logger logger = LoggerFactory.getLogger(AbstractWorkflow.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractWorkflow.class);
 
     private WorkflowRunAttempt workflowRunAttempt;
 
