@@ -16,11 +16,11 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.collections.CollectionUtils;
 
 import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
+import edu.unc.mapseq.dao.RESTDAOManager;
 import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
 import edu.unc.mapseq.dao.WorkflowRunDAO;
 import edu.unc.mapseq.dao.model.WorkflowRun;
 import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
-import edu.unc.mapseq.dao.rs.RSDAOManager;
 
 public class ListWorkflowRuns implements Runnable {
 
@@ -38,7 +38,7 @@ public class ListWorkflowRuns implements Runnable {
     public void run() {
 
         // WSDAOManager daoMgr = WSDAOManager.getInstance();
-        RSDAOManager daoMgr = RSDAOManager.getInstance();
+        RESTDAOManager daoMgr = RESTDAOManager.getInstance();
 
         MaPSeqDAOBeanService maPSeqDAOBeanService = daoMgr.getMaPSeqDAOBeanService();
 

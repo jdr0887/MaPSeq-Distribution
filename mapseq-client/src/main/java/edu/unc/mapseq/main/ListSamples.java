@@ -19,10 +19,10 @@ import org.apache.commons.lang.StringUtils;
 import edu.unc.mapseq.dao.FlowcellDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
+import edu.unc.mapseq.dao.RESTDAOManager;
 import edu.unc.mapseq.dao.SampleDAO;
 import edu.unc.mapseq.dao.model.Flowcell;
 import edu.unc.mapseq.dao.model.Sample;
-import edu.unc.mapseq.dao.rs.RSDAOManager;
 
 public class ListSamples implements Runnable {
 
@@ -41,7 +41,7 @@ public class ListSamples implements Runnable {
     @Override
     public void run() {
         // WSDAOManager daoMgr = WSDAOManager.getInstance();
-        RSDAOManager daoMgr = RSDAOManager.getInstance();
+        RESTDAOManager daoMgr = RESTDAOManager.getInstance();
 
         MaPSeqDAOBeanService maPSeqDAOBeanService = daoMgr.getMaPSeqDAOBeanService();
         FlowcellDAO flowcellDAO = maPSeqDAOBeanService.getFlowcellDAO();

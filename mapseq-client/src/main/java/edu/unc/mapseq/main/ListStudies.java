@@ -15,9 +15,9 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.collections.CollectionUtils;
 
 import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
+import edu.unc.mapseq.dao.RESTDAOManager;
 import edu.unc.mapseq.dao.StudyDAO;
 import edu.unc.mapseq.dao.model.Study;
-import edu.unc.mapseq.dao.rs.RSDAOManager;
 
 public class ListStudies implements Runnable {
 
@@ -33,7 +33,7 @@ public class ListStudies implements Runnable {
     public void run() {
 
         // WSDAOManager daoMgr = WSDAOManager.getInstance();
-        RSDAOManager daoMgr = RSDAOManager.getInstance();
+        RESTDAOManager daoMgr = RESTDAOManager.getInstance();
         MaPSeqDAOBeanService mapseqDAOBeanService = daoMgr.getMaPSeqDAOBeanService();
 
         try {

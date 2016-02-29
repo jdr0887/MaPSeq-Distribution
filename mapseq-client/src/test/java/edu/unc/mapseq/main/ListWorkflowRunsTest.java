@@ -8,15 +8,15 @@ import java.util.Locale;
 
 import org.junit.Test;
 
+import edu.unc.mapseq.dao.RESTDAOManager;
 import edu.unc.mapseq.dao.model.WorkflowRun;
 import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
-import edu.unc.mapseq.dao.rs.RSDAOManager;
 
 public class ListWorkflowRunsTest {
 
     @Test
     public void testRun() {
-        RSDAOManager daoMgr = RSDAOManager.getInstance();
+        RESTDAOManager daoMgr = RESTDAOManager.getInstance();
 
         try {
             StringBuilder sb = new StringBuilder();

@@ -14,8 +14,8 @@ import org.apache.commons.cli.ParseException;
 
 import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
+import edu.unc.mapseq.dao.RESTDAOManager;
 import edu.unc.mapseq.dao.model.Workflow;
-import edu.unc.mapseq.dao.rs.RSDAOManager;
 
 public class ListWorkflows implements Runnable {
 
@@ -31,7 +31,7 @@ public class ListWorkflows implements Runnable {
     public void run() {
 
         // WSDAOManager daoMgr = WSDAOManager.getInstance();
-        RSDAOManager daoMgr = RSDAOManager.getInstance();
+        RESTDAOManager daoMgr = RESTDAOManager.getInstance();
         MaPSeqDAOBeanService mapseqDAOBeanService = daoMgr.getMaPSeqDAOBeanService();
 
         try {
