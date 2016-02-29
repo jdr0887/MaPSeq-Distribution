@@ -2,13 +2,13 @@
   <parent>
     <groupId>edu.unc.mapseq.distribution</groupId>
     <artifactId>mapseq-commands</artifactId>
-    <version>0.6.3</version>
+    <version>0.6.4-SNAPSHOT</version>
   </parent>
   <name>MaPSeq :: Distribution :: Commands :: Workflow</name>
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.unc.mapseq.distribution.mapseq-commands</groupId>
   <artifactId>mapseq-commands-workflow</artifactId>
-  <version>0.6.3</version>
+  <version>0.6.4-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <build>
     <plugins>
