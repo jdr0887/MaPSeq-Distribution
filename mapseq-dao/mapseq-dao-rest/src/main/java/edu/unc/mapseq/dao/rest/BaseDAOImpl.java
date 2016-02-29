@@ -4,11 +4,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 
 import edu.unc.mapseq.config.MaPSeqConfigurationService;
-import edu.unc.mapseq.config.MaPSeqConfigurationServiceImpl;
 import edu.unc.mapseq.dao.BaseDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.model.Persistable;
@@ -19,11 +20,11 @@ public abstract class BaseDAOImpl<T extends Persistable, ID extends Serializable
 
     private final List<Object> providers = new ArrayList<Object>();
 
+    @Autowired
     private MaPSeqConfigurationService configurationService;
 
     public BaseDAOImpl() {
         super();
-        this.configurationService = new MaPSeqConfigurationServiceImpl();
         JacksonJaxbJsonProvider provider = new JacksonJaxbJsonProvider();
         ObjectMapper mapper = new ObjectMapper();
         mapper.getDeserializationConfig().useRootWrapping();
