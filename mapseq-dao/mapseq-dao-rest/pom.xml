@@ -76,7 +76,7 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context-support</artifactId>
-    </dependency>
+    </dependency>    
     <dependency>
       <groupId>edu.unc.mapseq</groupId>
       <artifactId>mapseq-web-service-api</artifactId>
@@ -85,10 +85,6 @@
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-frontend-jaxrs</artifactId>
     </dependency>
-    <!-- <dependency> -->
-    <!--   <groupId>org.apache.cxf</groupId> -->
-    <!--   <artifactId>cxf-bundle</artifactId> -->
-    <!-- </dependency> -->
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-rs-client</artifactId>
