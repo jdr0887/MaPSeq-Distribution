@@ -8,6 +8,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,10 +93,8 @@ public abstract class AbstractSampleWorkflow extends AbstractWorkflow {
     public void preRun() throws WorkflowException {
         super.preRun();
         Map<String, String> attributes = getWorkflowBeanService().getAttributes();
-        if (attributes != null && !attributes.isEmpty()) {
-            for (String key : attributes.keySet()) {
-                logger.info("{}: {}", key, attributes.get(key));
-            }
+        if (MapUtils.isNotEmpty(attributes)) {
+            attributes.forEach((key, value) -> logger.info("{}: {}", key, attributes.get(key)));
         }
     }
 
@@ -109,14 +109,14 @@ public abstract class AbstractSampleWorkflow extends AbstractWorkflow {
         WorkflowRun workflowRun = getWorkflowRunAttempt().getWorkflowRun();
         try {
             List<Sample> samples = sampleDAO.findByWorkflowRunId(workflowRun.getId());
-            if (samples != null && !samples.isEmpty()) {
+            if (CollectionUtils.isNotEmpty(samples)) {
                 sampleSet.addAll(samples);
             }
             List<Flowcell> flowcells = flowcellDAO.findByWorkflowRunId(workflowRun.getId());
-            if (flowcells != null && !flowcells.isEmpty()) {
+            if (CollectionUtils.isNotEmpty(flowcells)) {
                 for (Flowcell flowcell : flowcells) {
                     List<Sample> sampleList = sampleDAO.findByFlowcellId(flowcell.getId());
-                    if (sampleList != null && !sampleList.isEmpty()) {
+                    if (CollectionUtils.isNotEmpty(sampleList)) {
                         sampleSet.addAll(sampleList);
                     }
                 }
