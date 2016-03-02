@@ -36,6 +36,7 @@
     <bundle>mvn:net.sourceforge.jopt-simple/com.springsource.joptsimple/3.0.0</bundle>
     <bundle>mvn:org.jaxen/com.springsource.org.jaxen/1.1.1</bundle>    
     <bundle>mvn:org.renci.commons/commons-exec/${renci.commons.version}</bundle>
+    <bundle>mvn:org.jgrapht/jgrapht/0.9.1</bundle>    
     <bundle>mvn:org.renci.jlrm/jlrm-api/${renci.jlrm.version}</bundle>
     <bundle>mvn:org.renci.jlrm.jlrm-condor/jlrm-condor-api/${renci.jlrm.version}</bundle>
     <bundle>mvn:org.renci.jlrm.jlrm-condor/jlrm-condor-cli/${renci.jlrm.version}</bundle>
@@ -43,8 +44,6 @@
     <bundle>mvn:org.renci.converter/converter-core/0.0.2</bundle>
     <bundle>mvn:org.renci/charts/${renci.charts.version}</bundle>
     <bundle>mvn:org.renci/vcf-parser/0.0.2</bundle>
-    <bundle>mvn:org.postgresql/postgresql/${postgresql.version}</bundle>
-    <bundle>mvn:org.renci.osgi.bundles/jgrapht-0.8.3-bundle/0.0.1</bundle>
     <bundle>mvn:org.renci.osgi.bundles/biojava-3.0.7-bundle/0.0.4</bundle>
     <bundle>mvn:org.renci.osgi.bundles/snappy-1.0.3-rc3-bundle/0.0.1</bundle>
     <bundle>mvn:org.renci.osgi.bundles/picard-1.55-bundle/0.0.1</bundle>
