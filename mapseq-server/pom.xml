@@ -3,13 +3,13 @@
   <parent>
     <groupId>edu.unc.mapseq</groupId>
     <artifactId>distribution</artifactId>
-    <version>0.5.92-SNAPSHOT</version>
+    <version>0.6.4-SNAPSHOT</version>
   </parent>
   <name>MaPSeq :: Distribution :: Server</name>
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.unc.mapseq.distribution</groupId>
   <artifactId>mapseq-server</artifactId>
-  <version>0.5.92-SNAPSHOT</version>
+  <version>0.6.4-SNAPSHOT</version>
   <packaging>karaf-assembly</packaging>
   <properties>
     <assembly.directory>${project.build.directory}/assembly</assembly.directory>
@@ -76,12 +76,20 @@
       <classifier>features</classifier>
       <type>xml</type>
       <scope>runtime</scope>
-    </dependency>                
+    </dependency>
+    <dependency>
+      <groupId>org.renci.gate</groupId>
+      <artifactId>gate-features</artifactId>
+      <classifier>features</classifier>
+      <version>0.2.17</version>
+      <type>xml</type>
+      <scope>runtime</scope>
+    </dependency>        
     <dependency>
       <groupId>edu.unc.mapseq.distribution</groupId>
       <artifactId>mapseq-features</artifactId>
       <classifier>features</classifier>
-      <version>0.5.92-SNAPSHOT</version>
+      <version>0.6.4-SNAPSHOT</version>
       <type>xml</type>
       <scope>runtime</scope>
     </dependency>
@@ -162,6 +170,8 @@
 	    <feature>jpa</feature>
 	    <feature>jms</feature>
 	    <feature>activemq</feature>
+	    <feature>gate-common</feature>
+	    <feature>gate-engine</feature>	    	    
 	    <feature>mapseq-shared</feature>
 	    <feature>mapseq-dao</feature>
 	    <feature>mapseq-reports</feature>
