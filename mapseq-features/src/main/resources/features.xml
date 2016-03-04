@@ -1,6 +1,6 @@
 <features name="mapseq-${project.version}">
 
-  <feature name="mapseq-shared" version="${project.version}" resolver="(obr)">
+  <feature name="mapseq-common" version="${project.version}" resolver="(obr)">
     <bundle>mvn:commons-io/commons-io/${commons.io.version}</bundle>
     <bundle>mvn:commons-cli/commons-cli/${commons.cli.version}</bundle>
     <bundle>mvn:commons-net/commons-net/${commons.net.version}</bundle>
