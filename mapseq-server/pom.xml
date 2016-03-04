@@ -3,13 +3,13 @@
   <parent>
     <groupId>edu.unc.mapseq</groupId>
     <artifactId>distribution</artifactId>
-    <version>0.6.4-SNAPSHOT</version>
+    <version>0.6.5-SNAPSHOT</version>
   </parent>
   <name>MaPSeq :: Distribution :: Server</name>
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.unc.mapseq.distribution</groupId>
   <artifactId>mapseq-server</artifactId>
-  <version>0.6.4-SNAPSHOT</version>
+  <version>0.6.5-SNAPSHOT</version>
   <packaging>karaf-assembly</packaging>
   <properties>
     <assembly.directory>${project.build.directory}/assembly</assembly.directory>
@@ -81,7 +81,7 @@
       <groupId>org.renci.gate</groupId>
       <artifactId>gate-features</artifactId>
       <classifier>features</classifier>
-      <version>0.2.17</version>
+      <version>0.2.18</version>
       <type>xml</type>
       <scope>runtime</scope>
     </dependency>        
@@ -89,7 +89,7 @@
       <groupId>edu.unc.mapseq.distribution</groupId>
       <artifactId>mapseq-features</artifactId>
       <classifier>features</classifier>
-      <version>0.6.4-SNAPSHOT</version>
+      <version>0.6.5-SNAPSHOT</version>
       <type>xml</type>
       <scope>runtime</scope>
     </dependency>
@@ -141,25 +141,15 @@
 	  <targetServerDirectory>${assembly.directory}</targetServerDirectory>
           <bootFeatures>
             <feature>standard</feature>
-            <feature>feature</feature>	    
-            <feature>shell</feature>
-            <feature>bundle</feature>
             <feature>config</feature>
-            <feature>diagnostic</feature>
-            <feature>instance</feature>
-            <feature>jaas</feature>
-            <feature>log</feature>
+	    <feature>kar</feature>
             <feature>package</feature>
             <feature>service</feature>
             <feature>system</feature>
-            <feature>ssh</feature>
             <feature>management</feature>
-            <feature>deployer</feature>
 	    <feature>obr</feature>
             <feature>http</feature>
 	    <feature>war</feature>
-	    <feature>jetty</feature>
-	    <feature>scr</feature>
             <feature>jndi</feature>
 	    <feature>pax-cdi</feature>
             <feature>aries-blueprint</feature>
@@ -171,12 +161,12 @@
 	    <feature>jms</feature>
 	    <feature>activemq</feature>
 	    <feature>gate-common</feature>
-	    <feature>gate-engine</feature>	    	    
-	    <feature>mapseq-shared</feature>
+	    <feature>gate-engine</feature>
+	    <feature>mapseq-common</feature>
 	    <feature>mapseq-dao</feature>
 	    <feature>mapseq-reports</feature>
 	    <feature>mapseq-commands</feature>
-	    <feature>mapseq-web-services</feature>	    
+	    <feature>mapseq-web-services</feature>
 	    <feature>mapseq-workflows</feature>
 	    <feature>mapseq-webapp</feature>
           </bootFeatures>
