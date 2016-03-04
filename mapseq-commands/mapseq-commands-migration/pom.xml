@@ -13,6 +13,10 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>org.apache.karaf.tooling</groupId>
+        <artifactId>karaf-services-maven-plugin</artifactId>
+      </plugin>            
+      <plugin>
 	<groupId>org.apache.felix</groupId>
 	<artifactId>maven-bundle-plugin</artifactId>
 	<configuration>
@@ -20,6 +24,7 @@
 	    <Private-Package />
 	    <Export-Package>edu.unc.mapseq.commands.migration*</Export-Package>
 	    <Import-Package>*</Import-Package>
+            <Karaf-Commands>edu.unc.mapseq.commands.migration</Karaf-Commands>	    
 	  </instructions>
 	</configuration>
       </plugin>
