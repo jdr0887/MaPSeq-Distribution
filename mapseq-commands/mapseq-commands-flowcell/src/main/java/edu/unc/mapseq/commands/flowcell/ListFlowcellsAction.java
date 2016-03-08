@@ -1,12 +1,14 @@
 package edu.unc.mapseq.commands.flowcell;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Formatter;
 import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.Option;
@@ -31,21 +33,30 @@ public class ListFlowcellsAction implements Action {
     @Option(name = "--workflowRunId", description = "WorkflowRun Identifier", required = false, multiValued = false)
     private Long workflowRunId;
 
+    @Option(name = "--studyName", description = "Study Name", required = false, multiValued = false)
+    private String studyName;
+
     public ListFlowcellsAction() {
         super();
     }
 
     @Override
     public Object execute() {
-        logger.debug("ENTERING doExecute()");
+        logger.debug("ENTERING execute()");
 
         try {
 
-            List<Flowcell> flowcells = null;
+            List<Flowcell> flowcells = new ArrayList<Flowcell>();
 
             if (workflowRunId != null) {
-                flowcells = flowcellDAO.findByWorkflowRunId(workflowRunId);
-            } else {
+                flowcells.addAll(flowcellDAO.findByWorkflowRunId(workflowRunId));
+            }
+
+            if (StringUtils.isNotEmpty(studyName)) {
+                flowcells.addAll(flowcellDAO.findByStudyName(studyName));
+            }
+
+            if (CollectionUtils.isEmpty(flowcells)) {
                 flowcells = flowcellDAO.findAll();
             }
 
@@ -86,6 +97,14 @@ public class ListFlowcellsAction implements Action {
 
     public void setWorkflowRunId(Long workflowRunId) {
         this.workflowRunId = workflowRunId;
+    }
+
+    public String getStudyName() {
+        return studyName;
+    }
+
+    public void setStudyName(String studyName) {
+        this.studyName = studyName;
     }
 
 }
