@@ -15,8 +15,9 @@ import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.Option;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.SampleDAO;
 import edu.unc.mapseq.dao.model.Sample;
@@ -25,8 +26,10 @@ import edu.unc.mapseq.dao.model.Sample;
 @Service
 public class ListSamplesAction implements Action {
 
+    private static final Logger logger = LoggerFactory.getLogger(ListSamplesAction.class);
+
     @Reference
-    private MaPSeqDAOBeanService maPSeqDAOBeanService;
+    private SampleDAO sampleDAO;
 
     @Option(name = "--flowcellId", description = "Flowcell Identifier", required = false, multiValued = false)
     private Long flowcellId;
@@ -43,9 +46,9 @@ public class ListSamplesAction implements Action {
 
     @Override
     public Object execute() {
+        logger.debug("ENTERING execute()");
 
         try {
-            SampleDAO sampleDAO = maPSeqDAOBeanService.getSampleDAO();
 
             Set<Sample> sampleList = new HashSet<Sample>();
 

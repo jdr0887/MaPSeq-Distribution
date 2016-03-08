@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.unc.mapseq.dao.AttributeDAO;
-import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.SampleDAO;
 import edu.unc.mapseq.dao.model.Attribute;
@@ -21,10 +20,13 @@ import edu.unc.mapseq.dao.model.Sample;
 @Service
 public class CreateSampleAttributeAction implements Action {
 
-    private final Logger logger = LoggerFactory.getLogger(CreateSampleAttributeAction.class);
+    private static final Logger logger = LoggerFactory.getLogger(CreateSampleAttributeAction.class);
 
     @Reference
-    private MaPSeqDAOBeanService maPSeqDAOBeanService;
+    private AttributeDAO attributeDAO;
+
+    @Reference
+    private SampleDAO sampleDAO;
 
     @Argument(index = 0, name = "sampleId", description = "Sample Identifier", required = true, multiValued = false)
     private Long sampleId;
@@ -41,29 +43,24 @@ public class CreateSampleAttributeAction implements Action {
 
     @Override
     public Object execute() {
+        logger.debug("ENTERING execute()");
 
-        AttributeDAO attributeDAO = maPSeqDAOBeanService.getAttributeDAO();
-        SampleDAO sampleDAO = maPSeqDAOBeanService.getSampleDAO();
-        Sample entity = null;
         try {
-            entity = sampleDAO.findById(sampleId);
-        } catch (MaPSeqDAOException e) {
-        }
-        if (entity == null) {
-            System.out.println("Sample was not found");
-            return null;
-        }
+            Sample entity = sampleDAO.findById(sampleId);
+            if (entity == null) {
+                System.out.println("Sample was not found");
+                return null;
+            }
 
-        Set<Attribute> attributeSet = entity.getAttributes();
-        if (attributeSet != null) {
-            try {
+            Set<Attribute> attributeSet = entity.getAttributes();
+            if (attributeSet != null) {
                 Attribute attribute = new Attribute(name, value);
                 attribute.setId(attributeDAO.save(attribute));
                 attributeSet.add(attribute);
                 sampleDAO.save(entity);
-            } catch (MaPSeqDAOException e) {
-                logger.error("MaPSeqDAOException", e);
             }
+        } catch (MaPSeqDAOException e) {
+            logger.error("MaPSeqDAOException", e);
         }
 
         return null;

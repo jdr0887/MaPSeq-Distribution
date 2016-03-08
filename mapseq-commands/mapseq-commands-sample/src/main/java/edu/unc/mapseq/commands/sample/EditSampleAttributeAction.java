@@ -2,6 +2,7 @@ package edu.unc.mapseq.commands.sample;
 
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
@@ -10,7 +11,7 @@ import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
+import edu.unc.mapseq.dao.AttributeDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.SampleDAO;
 import edu.unc.mapseq.dao.model.Attribute;
@@ -20,10 +21,13 @@ import edu.unc.mapseq.dao.model.Sample;
 @Service
 public class EditSampleAttributeAction implements Action {
 
-    private final Logger logger = LoggerFactory.getLogger(EditSampleAttributeAction.class);
+    private static final Logger logger = LoggerFactory.getLogger(EditSampleAttributeAction.class);
 
     @Reference
-    private MaPSeqDAOBeanService maPSeqDAOBeanService;
+    private SampleDAO sampleDAO;
+
+    @Reference
+    private AttributeDAO attributeDAO;
 
     @Argument(index = 0, name = "sampleId", description = "Sample Identifier", required = true, multiValued = false)
     private Long sampleId;
@@ -40,35 +44,32 @@ public class EditSampleAttributeAction implements Action {
 
     @Override
     public Object execute() {
+        logger.debug("ENTERING execute()");
 
-        SampleDAO sampleDAO = maPSeqDAOBeanService.getSampleDAO();
-        Sample entity = null;
         try {
-            entity = sampleDAO.findById(sampleId);
-        } catch (MaPSeqDAOException e) {
-        }
+            Sample entity = sampleDAO.findById(sampleId);
 
-        if (entity == null) {
-            System.out.println("Sample was not found");
-            return null;
-        }
+            if (entity == null) {
+                System.out.println("Sample was not found");
+                return null;
+            }
 
-        Set<Attribute> attributeSet = entity.getAttributes();
-        if (attributeSet != null && !attributeSet.isEmpty()) {
-            for (Attribute attribute : attributeSet) {
-                if (attribute.getName().equals(name)) {
-                    attribute.setValue(value);
-                    try {
-                        maPSeqDAOBeanService.getAttributeDAO().save(attribute);
-                    } catch (MaPSeqDAOException e) {
-                        logger.error("MaPSeqDAOException", e);
+            Set<Attribute> attributeSet = entity.getAttributes();
+            if (CollectionUtils.isNotEmpty(attributeSet)) {
+                for (Attribute attribute : attributeSet) {
+                    if (attribute.getName().equals(name)) {
+                        attribute.setValue(value);
+                        attributeDAO.save(attribute);
+                        break;
                     }
-                    break;
                 }
             }
+        } catch (MaPSeqDAOException e) {
+            logger.error("MaPSeqDAOException", e);
         }
 
         return null;
+
     }
 
     public Long getSampleId() {

@@ -2,11 +2,14 @@ package edu.unc.mapseq.commands.sample;
 
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.unc.mapseq.dao.JobDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
@@ -23,6 +26,8 @@ import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
 @Service
 public class DeleteSampleAction implements Action {
 
+    private static final Logger logger = LoggerFactory.getLogger(DeleteSampleAction.class);
+
     @Reference
     private MaPSeqDAOBeanService maPSeqDAOBeanService;
 
@@ -35,66 +40,67 @@ public class DeleteSampleAction implements Action {
 
     @Override
     public Object execute() {
+        logger.debug("ENTERING execute()");
 
-        if (this.sampleIdList != null && this.sampleIdList.size() > 0) {
+        SampleDAO sampleDAO = maPSeqDAOBeanService.getSampleDAO();
+        WorkflowRunAttemptDAO workflowRunAttemptDAO = maPSeqDAOBeanService.getWorkflowRunAttemptDAO();
+        WorkflowRunDAO workflowRunDAO = maPSeqDAOBeanService.getWorkflowRunDAO();
+        JobDAO jobDAO = maPSeqDAOBeanService.getJobDAO();
 
-            SampleDAO sampleDAO = maPSeqDAOBeanService.getSampleDAO();
-            WorkflowRunAttemptDAO workflowRunAttemptDAO = maPSeqDAOBeanService.getWorkflowRunAttemptDAO();
-            WorkflowRunDAO workflowRunDAO = maPSeqDAOBeanService.getWorkflowRunDAO();
-            JobDAO jobDAO = maPSeqDAOBeanService.getJobDAO();
+        if (CollectionUtils.isEmpty(sampleIdList)) {
+            logger.warn("Sample list is empty");
+            return null;
+        }
+
+        try {
 
             for (Long id : this.sampleIdList) {
-                try {
-                    Sample sample = sampleDAO.findById(id);
-                    List<WorkflowRun> workflowRunList = workflowRunDAO.findBySampleId(sample.getId());
+                Sample sample = sampleDAO.findById(id);
+                List<WorkflowRun> workflowRunList = workflowRunDAO.findBySampleId(sample.getId());
 
-                    if (workflowRunList != null && !workflowRunList.isEmpty()) {
-
-                        for (WorkflowRun workflowRun : workflowRunList) {
-
-                            List<WorkflowRunAttempt> attempts = workflowRunAttemptDAO.findByWorkflowRunId(workflowRun
-                                    .getId());
-
-                            if (attempts != null && !attempts.isEmpty()) {
-                                for (WorkflowRunAttempt attempt : workflowRun.getAttempts()) {
-                                    List<Job> jobList = jobDAO.findByWorkflowRunAttemptId(attempt.getId());
-                                    if (jobList != null && !jobList.isEmpty()) {
-                                        for (Job job : jobList) {
-                                            job.setAttributes(null);
-                                            job.setFileDatas(null);
-                                            jobDAO.save(job);
-                                        }
-                                        jobDAO.delete(jobList);
-                                        System.out.printf("%d Jobs deleted%n", jobList.size());
-                                    }
-                                }
-                                workflowRunAttemptDAO.delete(attempts);
-                                System.out.printf("%d WorkflowRunAttempts deleted%n", attempts.size());
-
-                            }
-                            workflowRun.setAttributes(null);
-                            workflowRun.setFileDatas(null);
-                            workflowRunDAO.save(workflowRun);
-
-                        }
-
-                        workflowRunDAO.delete(workflowRunList);
-                        System.out.printf("%d WorkflowRuns deleted%n", workflowRunList.size());
-
-                    }
-
-                    sample.setAttributes(null);
-                    sample.setFileDatas(null);
-                    sampleDAO.save(sample);
-
-                    sampleDAO.delete(sample);
-                    System.out.printf("Deleted Sample: %s", id);
-
-                } catch (MaPSeqDAOException e) {
-                    e.printStackTrace();
+                if (CollectionUtils.isEmpty(workflowRunList)) {
+                    logger.warn("No WorkflowRuns found");
+                    continue;
                 }
-            }
 
+                for (WorkflowRun workflowRun : workflowRunList) {
+                    List<WorkflowRunAttempt> attempts = workflowRunAttemptDAO.findByWorkflowRunId(workflowRun.getId());
+                    if (CollectionUtils.isEmpty(attempts)) {
+                        logger.warn("No WorkflowRunAttempts found");
+                        continue;
+                    }
+                    for (WorkflowRunAttempt attempt : workflowRun.getAttempts()) {
+                        List<Job> jobList = jobDAO.findByWorkflowRunAttemptId(attempt.getId());
+                        if (CollectionUtils.isNotEmpty(jobList)) {
+                            for (Job job : jobList) {
+                                job.setAttributes(null);
+                                job.setFileDatas(null);
+                                jobDAO.save(job);
+                            }
+                            jobDAO.delete(jobList);
+                            logger.info("Number of Jobs deleted: {}", jobList.size());
+                        }
+                    }
+                    workflowRunAttemptDAO.delete(attempts);
+                    logger.info("Number of WorkflowRunAttempts deleted: {}", attempts.size());
+
+                    workflowRun.setAttributes(null);
+                    workflowRun.setFileDatas(null);
+                    workflowRunDAO.save(workflowRun);
+                }
+                workflowRunDAO.delete(workflowRunList);
+                logger.info("Number of WorkflowRuns deleted: {}", workflowRunList.size());
+
+                sample.setAttributes(null);
+                sample.setFileDatas(null);
+                sampleDAO.save(sample);
+
+                logger.info("Deleting Sample: {}", sample.toString());
+                sampleDAO.delete(sample);
+
+            }
+        } catch (MaPSeqDAOException e) {
+            e.printStackTrace();
         }
 
         return null;

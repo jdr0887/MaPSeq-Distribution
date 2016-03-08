@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.karaf.shell.api.action.Action;
@@ -15,10 +16,14 @@ import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
+import edu.unc.mapseq.dao.FileDataDAO;
+import edu.unc.mapseq.dao.FlowcellDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.SampleDAO;
+import edu.unc.mapseq.dao.StudyDAO;
 import edu.unc.mapseq.dao.model.FileData;
 import edu.unc.mapseq.dao.model.Flowcell;
 import edu.unc.mapseq.dao.model.MimeType;
@@ -27,6 +32,8 @@ import edu.unc.mapseq.dao.model.Sample;
 @Command(scope = "mapseq", name = "create-sample", description = "Create Sample")
 @Service
 public class CreateSampleAction implements Action {
+
+    private static final Logger logger = LoggerFactory.getLogger(CreateSampleAction.class);
 
     @Argument(index = 0, name = "flowcellId", description = "Flowcell Identifier", required = true, multiValued = false)
     private Long flowcellId;
@@ -50,7 +57,16 @@ public class CreateSampleAction implements Action {
     private String read2Fastq;
 
     @Reference
-    private MaPSeqDAOBeanService maPSeqDAOBeanService;
+    private FlowcellDAO flowcellDAO;
+
+    @Reference
+    private FileDataDAO fileDataDAO;
+
+    @Reference
+    private SampleDAO sampleDAO;
+
+    @Reference
+    private StudyDAO studyDAO;
 
     public CreateSampleAction() {
         super();
@@ -58,9 +74,10 @@ public class CreateSampleAction implements Action {
 
     @Override
     public Object execute() {
+        logger.debug("ENTERING execute()");
 
         try {
-            Flowcell flowcell = maPSeqDAOBeanService.getFlowcellDAO().findById(this.flowcellId);
+            Flowcell flowcell = flowcellDAO.findById(this.flowcellId);
 
             if (flowcell == null) {
                 System.err.println("Flowcell not found: " + this.flowcellId);
@@ -142,19 +159,15 @@ public class CreateSampleAction implements Action {
                 if (!read1FastqFile.getAbsolutePath().equals(newR1FastqFile.getAbsolutePath())) {
                     FileUtils.copyFile(read1FastqFile, newR1FastqFile);
                 }
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
 
-            if (read2Fastq != null) {
-                try {
+                if (read2Fastq != null) {
                     File newR2FastqFile = new File(workflowOutputDir, read2FastqFile.getName());
                     if (!read2FastqFile.getAbsolutePath().equals(newR2FastqFile.getAbsolutePath())) {
                         FileUtils.copyFile(read2FastqFile, newR2FastqFile);
                     }
-                } catch (IOException e1) {
-                    e1.printStackTrace();
                 }
+            } catch (IOException e1) {
+                e1.printStackTrace();
             }
 
             Set<FileData> fileDataSet = new HashSet<FileData>();
@@ -164,12 +177,11 @@ public class CreateSampleAction implements Action {
             read1FastqFD.setName(read1FastqFile.getName());
             read1FastqFD.setPath(sampleOutputDir.getAbsolutePath());
 
-            List<FileData> fileDataList = maPSeqDAOBeanService.getFileDataDAO().findByExample(read1FastqFD);
+            List<FileData> fileDataList = fileDataDAO.findByExample(read1FastqFD);
             if (fileDataList != null && fileDataList.size() > 0) {
                 read1FastqFD = fileDataList.get(0);
             } else {
-                Long id = maPSeqDAOBeanService.getFileDataDAO().save(read1FastqFD);
-                read1FastqFD.setId(id);
+                read1FastqFD.setId(fileDataDAO.save(read1FastqFD));
             }
             fileDataSet.add(read1FastqFD);
 
@@ -178,22 +190,18 @@ public class CreateSampleAction implements Action {
                 read2FastqFD.setMimeType(MimeType.FASTQ);
                 read2FastqFD.setName(read2FastqFile.getName());
                 read2FastqFD.setPath(sampleOutputDir.getAbsolutePath());
-                fileDataList = maPSeqDAOBeanService.getFileDataDAO().findByExample(read2FastqFD);
-                if (fileDataList != null && fileDataList.size() > 0) {
+                fileDataList = fileDataDAO.findByExample(read2FastqFD);
+                if (CollectionUtils.isNotEmpty(fileDataList)) {
                     read2FastqFD = fileDataList.get(0);
                 } else {
-                    Long id = maPSeqDAOBeanService.getFileDataDAO().save(read2FastqFD);
-                    read2FastqFD.setId(id);
+                    read2FastqFD.setId(fileDataDAO.save(read2FastqFD));
                 }
                 fileDataSet.add(read2FastqFD);
             }
 
-            SampleDAO sampleDAO = maPSeqDAOBeanService.getSampleDAO();
-
-            Sample sample = new Sample();
-            sample.setName(name);
+            Sample sample = new Sample(name);
             sample.setBarcode(barcode);
-            sample.setStudy(maPSeqDAOBeanService.getStudyDAO().findById(this.studyId));
+            sample.setStudy(studyDAO.findById(this.studyId));
             sample.setLaneIndex(laneIndex);
             sample.setFlowcell(flowcell);
             sample.setId(sampleDAO.save(sample));
@@ -202,7 +210,6 @@ public class CreateSampleAction implements Action {
 
             System.out.println(sample.toString());
         } catch (MaPSeqDAOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 

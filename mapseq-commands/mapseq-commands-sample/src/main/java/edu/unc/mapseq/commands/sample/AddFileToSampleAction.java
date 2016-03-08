@@ -7,9 +7,10 @@ import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.Option;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.unc.mapseq.dao.FileDataDAO;
-import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.SampleDAO;
 import edu.unc.mapseq.dao.model.FileData;
@@ -19,8 +20,13 @@ import edu.unc.mapseq.dao.model.Sample;
 @Service
 public class AddFileToSampleAction implements Action {
 
+    private static final Logger logger = LoggerFactory.getLogger(AddFileToSampleAction.class);
+
     @Reference
-    private MaPSeqDAOBeanService maPSeqDAOBeanService;
+    private SampleDAO sampleDAO;
+
+    @Reference
+    private FileDataDAO fileDataDAO;
 
     @Option(name = "--sampleId", description = "sampleId", required = false, multiValued = false)
     private Long sampleId;
@@ -34,9 +40,7 @@ public class AddFileToSampleAction implements Action {
 
     @Override
     public Object execute() {
-
-        SampleDAO sampleDAO = maPSeqDAOBeanService.getSampleDAO();
-        FileDataDAO fileDataDAO = maPSeqDAOBeanService.getFileDataDAO();
+        logger.debug("ENTERING execute()");
 
         try {
             Sample entity = sampleDAO.findById(sampleId);
