@@ -14,7 +14,6 @@ import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.WorkflowDAO;
 import edu.unc.mapseq.dao.model.Workflow;
 
@@ -25,7 +24,7 @@ public class ListWorkflowsAction implements Action {
     private static final Logger logger = LoggerFactory.getLogger(ListWorkflowsAction.class);
 
     @Reference
-    private MaPSeqDAOBeanService maPSeqDAOBeanService;
+    private WorkflowDAO workflowDAO;
 
     public ListWorkflowsAction() {
         super();
@@ -33,9 +32,8 @@ public class ListWorkflowsAction implements Action {
 
     @Override
     public Object execute() {
-        logger.debug("ENTERING doExecute()");
+        logger.debug("ENTERING execute()");
 
-        WorkflowDAO workflowDAO = maPSeqDAOBeanService.getWorkflowDAO();
         try {
             List<Workflow> workflowList = workflowDAO.findAll();
 
