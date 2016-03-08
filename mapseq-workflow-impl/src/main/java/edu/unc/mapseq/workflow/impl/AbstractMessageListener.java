@@ -41,8 +41,7 @@ public abstract class AbstractMessageListener implements MessageListener {
         WorkflowRun workflowRun = null;
         if (StringUtils.isNotEmpty(workflowEntity.getName())) {
 
-            workflowRun = new WorkflowRun();
-            workflowRun.setName(workflowEntity.getName());
+            workflowRun = new WorkflowRun(workflowEntity.getName());
             workflowRun.setWorkflow(workflow);
 
             Set<Attribute> attributes = parseAttributes(workflowRun.getAttributes(), workflowEntity.getAttributes());
