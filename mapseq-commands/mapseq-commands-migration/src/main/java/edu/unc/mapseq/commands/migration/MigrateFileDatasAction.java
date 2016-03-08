@@ -16,13 +16,13 @@ import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 @Service
 public class MigrateFileDatasAction implements Action {
 
-    private final Logger logger = LoggerFactory.getLogger(MigrateFileDatasAction.class);
-
-    @Option(name = "--dryRun", description = "Don't move anything", required = false, multiValued = false)
-    private Boolean dryRun = Boolean.FALSE;
+    private static final Logger logger = LoggerFactory.getLogger(MigrateFileDatasAction.class);
 
     @Reference
     private MaPSeqDAOBeanService maPSeqDAOBeanService;
+
+    @Option(name = "--dryRun", description = "Don't move anything", required = false, multiValued = false)
+    private Boolean dryRun = Boolean.FALSE;
 
     @Override
     public Object execute() {
