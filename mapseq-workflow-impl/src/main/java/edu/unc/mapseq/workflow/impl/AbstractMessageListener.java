@@ -11,9 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.unc.mapseq.dao.AttributeDAO;
-import edu.unc.mapseq.dao.FlowcellDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
-import edu.unc.mapseq.dao.SampleDAO;
 import edu.unc.mapseq.dao.model.Attribute;
 import edu.unc.mapseq.dao.model.Flowcell;
 import edu.unc.mapseq.dao.model.Sample;
@@ -35,64 +33,6 @@ public abstract class AbstractMessageListener implements MessageListener {
 
     public AbstractMessageListener() {
         super();
-    }
-
-    protected Flowcell getFlowcell(WorkflowEntity workflowEntity) throws WorkflowException {
-        logger.debug("ENTERING getFlowcell(WorkflowEntity)");
-        FlowcellDAO flowcellDAO = workflowBeanService.getMaPSeqDAOBeanService().getFlowcellDAO();
-
-        Flowcell flowcell = null;
-        if (workflowEntity.getId() != null) {
-            try {
-                flowcell = flowcellDAO.findById(workflowEntity.getId());
-            } catch (MaPSeqDAOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        if (flowcell == null) {
-            throw new WorkflowException("No Flowcell found");
-        }
-
-        Set<Attribute> attributes = parseAttributes(flowcell.getAttributes(), workflowEntity.getAttributes());
-        flowcell.setAttributes(attributes);
-        try {
-            flowcellDAO.save(flowcell);
-        } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
-        }
-
-        logger.debug("Found Flowcell: {}", flowcell.toString());
-        return flowcell;
-    }
-
-    protected Sample getSample(WorkflowEntity workflowEntity) throws WorkflowException {
-        logger.debug("ENTERING getSample(WorkflowEntity)");
-        SampleDAO sampleDAO = workflowBeanService.getMaPSeqDAOBeanService().getSampleDAO();
-
-        Sample sample = null;
-        if (workflowEntity.getId() != null) {
-            try {
-                sample = sampleDAO.findById(workflowEntity.getId());
-            } catch (MaPSeqDAOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        if (sample == null) {
-            throw new WorkflowException("No Sample found");
-        }
-
-        Set<Attribute> attributes = parseAttributes(sample.getAttributes(), workflowEntity.getAttributes());
-        sample.setAttributes(attributes);
-        try {
-            sampleDAO.save(sample);
-        } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
-        }
-
-        logger.debug("Found Sample: {}", sample.toString());
-        return sample;
     }
 
     protected WorkflowRun getWorkflowRun(Workflow workflow, WorkflowEntity workflowEntity) throws WorkflowException {
@@ -117,7 +57,7 @@ public abstract class AbstractMessageListener implements MessageListener {
         return workflowRun;
     }
 
-    private Set<Attribute> parseAttributes(Set<Attribute> attributeSet, List<WorkflowAttribute> workflowAttributes) {
+    protected Set<Attribute> parseAttributes(Set<Attribute> attributeSet, List<WorkflowAttribute> workflowAttributes) {
 
         AttributeDAO attributeDAO = getWorkflowBeanService().getMaPSeqDAOBeanService().getAttributeDAO();
 
@@ -161,27 +101,6 @@ public abstract class AbstractMessageListener implements MessageListener {
         Set<Flowcell> flowcellSet = new HashSet<Flowcell>();
         Set<Sample> sampleSet = new HashSet<Sample>();
         WorkflowRun workflowRun = null;
-
-        for (WorkflowEntity entity : workflowMessage.getEntities()) {
-            if (StringUtils.isNotEmpty(entity.getEntityType())
-                    && Flowcell.class.getSimpleName().equals(entity.getEntityType())) {
-                Flowcell flowcell = getFlowcell(entity);
-                flowcellSet.add(flowcell);
-            }
-        }
-
-        for (WorkflowEntity entity : workflowMessage.getEntities()) {
-            if (StringUtils.isNotEmpty(entity.getEntityType())
-                    && Sample.class.getSimpleName().equals(entity.getEntityType())) {
-                Sample sample = getSample(entity);
-                sampleSet.add(sample);
-            }
-        }
-
-        if (flowcellSet.isEmpty() && sampleSet.isEmpty()) {
-            logger.warn("flowcellSet & sampleSet are both empty...not running anything");
-            throw new WorkflowException("flowcellSet & sampleSet are both empty...not running anything");
-        }
 
         for (WorkflowEntity entity : workflowMessage.getEntities()) {
             if (StringUtils.isNotEmpty(entity.getEntityType())
