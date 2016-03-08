@@ -9,8 +9,9 @@ import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowRunDAO;
 import edu.unc.mapseq.dao.model.Attribute;
@@ -20,8 +21,10 @@ import edu.unc.mapseq.dao.model.WorkflowRun;
 @Service
 public class ListWorkflowRunAttributesAction implements Action {
 
+    private static final Logger logger = LoggerFactory.getLogger(ListWorkflowRunAttributesAction.class);
+
     @Reference
-    private MaPSeqDAOBeanService maPSeqDAOBeanService;
+    private WorkflowRunDAO workflowRunDAO;
 
     @Argument(index = 0, name = "workflowRunId", description = "WorkflowRun Identifier", required = true, multiValued = false)
     private Long workflowRunId;
@@ -32,33 +35,32 @@ public class ListWorkflowRunAttributesAction implements Action {
 
     @Override
     public Object execute() {
+        logger.debug("ENTERING execute()");
 
-        WorkflowRunDAO workflowRunDAO = maPSeqDAOBeanService.getWorkflowRunDAO();
-        WorkflowRun entity = null;
         try {
-            entity = workflowRunDAO.findById(workflowRunId);
+            WorkflowRun entity = workflowRunDAO.findById(workflowRunId);
+            if (entity == null) {
+                System.out.println("WorkflowRun was not found");
+                return null;
+            }
+
+            StringBuilder sb = new StringBuilder();
+            String format = "%1$-12s %2$-40s %3$s%n";
+
+            Formatter formatter = new Formatter(sb, Locale.US);
+            formatter.format(format, "ID", "Name", "Value");
+
+            Set<Attribute> attributeSet = entity.getAttributes();
+            if (attributeSet != null && !attributeSet.isEmpty()) {
+                for (Attribute attribute : attributeSet) {
+                    formatter.format(format, attribute.getId(), attribute.getName(), attribute.getValue());
+                    formatter.flush();
+                }
+            }
+            System.out.println(formatter.toString());
+            formatter.close();
         } catch (MaPSeqDAOException e) {
         }
-        if (entity == null) {
-            System.out.println("WorkflowRun was not found");
-            return null;
-        }
-
-        StringBuilder sb = new StringBuilder();
-        String format = "%1$-12s %2$-40s %3$s%n";
-
-        Formatter formatter = new Formatter(sb, Locale.US);
-        formatter.format(format, "ID", "Name", "Value");
-
-        Set<Attribute> attributeSet = entity.getAttributes();
-        if (attributeSet != null && !attributeSet.isEmpty()) {
-            for (Attribute attribute : attributeSet) {
-                formatter.format(format, attribute.getId(), attribute.getName(), attribute.getValue());
-                formatter.flush();
-            }
-        }
-        System.out.println(formatter.toString());
-        formatter.close();
 
         return null;
     }

@@ -7,6 +7,8 @@ import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.unc.mapseq.dao.JobDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
@@ -21,6 +23,8 @@ import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
 @Service
 public class DeleteWorkflowRunAction implements Action {
 
+    private static final Logger logger = LoggerFactory.getLogger(DeleteWorkflowRunAction.class);
+
     @Reference
     private MaPSeqDAOBeanService maPSeqDAOBeanService;
 
@@ -33,6 +37,7 @@ public class DeleteWorkflowRunAction implements Action {
 
     @Override
     public Object execute() {
+        logger.debug("ENTERING execute()");
 
         if (workflowRunIdList != null && !workflowRunIdList.isEmpty()) {
 

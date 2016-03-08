@@ -10,7 +10,6 @@ import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowRunDAO;
 import edu.unc.mapseq.dao.model.Attribute;
@@ -20,10 +19,10 @@ import edu.unc.mapseq.dao.model.WorkflowRun;
 @Service
 public class CreateWorkflowRunAttributeAction implements Action {
 
-    private final Logger logger = LoggerFactory.getLogger(CreateWorkflowRunAttributeAction.class);
+    private static final Logger logger = LoggerFactory.getLogger(CreateWorkflowRunAttributeAction.class);
 
     @Reference
-    private MaPSeqDAOBeanService maPSeqDAOBeanService;
+    private WorkflowRunDAO workflowRunDAO;
 
     @Argument(index = 0, name = "workflowRunId", description = "WorkflowRun Identifier", required = true, multiValued = false)
     private Long workflowRunId;
@@ -40,26 +39,22 @@ public class CreateWorkflowRunAttributeAction implements Action {
 
     @Override
     public Object execute() {
+        logger.debug("ENTERING execute()");
 
-        WorkflowRunDAO workflowRunDAO = maPSeqDAOBeanService.getWorkflowRunDAO();
-        WorkflowRun entity = null;
         try {
-            entity = workflowRunDAO.findById(workflowRunId);
-        } catch (MaPSeqDAOException e) {
-        }
-        if (entity == null) {
-            System.out.println("WorkflowRun was not found");
-            return null;
-        }
-
-        Set<Attribute> attributeSet = entity.getAttributes();
-        if (attributeSet != null) {
-            attributeSet.add(new Attribute(name, value));
-            try {
-                workflowRunDAO.save(entity);
-            } catch (MaPSeqDAOException e) {
-                logger.error("MaPSeqDAOException", e);
+            WorkflowRun entity = workflowRunDAO.findById(workflowRunId);
+            if (entity == null) {
+                logger.warn("WorkflowRun was not found");
+                return null;
             }
+
+            Set<Attribute> attributeSet = entity.getAttributes();
+            if (attributeSet != null) {
+                attributeSet.add(new Attribute(name, value));
+                workflowRunDAO.save(entity);
+            }
+        } catch (MaPSeqDAOException e) {
+            e.printStackTrace();
         }
 
         return null;

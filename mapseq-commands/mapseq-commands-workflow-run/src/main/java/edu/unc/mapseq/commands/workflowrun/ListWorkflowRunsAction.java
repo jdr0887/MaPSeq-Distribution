@@ -11,8 +11,9 @@ import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
 import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
 
@@ -20,11 +21,13 @@ import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
 @Service
 public class ListWorkflowRunsAction implements Action {
 
+    private static final Logger logger = LoggerFactory.getLogger(ListWorkflowRunsAction.class);
+
     @Argument(index = 0, name = "workflowId", description = "Workflow identifier", required = true, multiValued = false)
     private Long workflowId;
 
     @Reference
-    private MaPSeqDAOBeanService maPSeqDAOBeanService;
+    private WorkflowRunAttemptDAO workflowRunAttemptDAO;
 
     public ListWorkflowRunsAction() {
         super();
@@ -32,8 +35,7 @@ public class ListWorkflowRunsAction implements Action {
 
     @Override
     public Object execute() {
-
-        WorkflowRunAttemptDAO workflowRunAttemptDAO = maPSeqDAOBeanService.getWorkflowRunAttemptDAO();
+        logger.debug("ENTERING execute()");
 
         try {
             StringBuilder sb = new StringBuilder();

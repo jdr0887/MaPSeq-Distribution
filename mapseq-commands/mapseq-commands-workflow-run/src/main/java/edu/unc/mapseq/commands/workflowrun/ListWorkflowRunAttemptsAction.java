@@ -6,13 +6,15 @@ import java.util.Formatter;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
 import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
 
@@ -20,11 +22,13 @@ import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
 @Service
 public class ListWorkflowRunAttemptsAction implements Action {
 
+    private static final Logger logger = LoggerFactory.getLogger(ListWorkflowRunAttemptsAction.class);
+
     @Argument(index = 0, name = "workflowRunId", description = "WorkflowRun identifier", required = true, multiValued = false)
     private Long workflowRunId;
 
     @Reference
-    private MaPSeqDAOBeanService maPSeqDAOBeanService;
+    private WorkflowRunAttemptDAO workflowRunAttemptDAO;
 
     public ListWorkflowRunAttemptsAction() {
         super();
@@ -32,8 +36,7 @@ public class ListWorkflowRunAttemptsAction implements Action {
 
     @Override
     public Object execute() {
-
-        WorkflowRunAttemptDAO workflowRunAttemptDAO = maPSeqDAOBeanService.getWorkflowRunAttemptDAO();
+        logger.debug("ENTERING execute()");
 
         try {
             StringBuilder sb = new StringBuilder();
@@ -43,7 +46,7 @@ public class ListWorkflowRunAttemptsAction implements Action {
 
             List<WorkflowRunAttempt> attempts = workflowRunAttemptDAO.findByWorkflowRunId(workflowRunId);
 
-            if (attempts != null && !attempts.isEmpty()) {
+            if (CollectionUtils.isNotEmpty(attempts)) {
                 for (WorkflowRunAttempt attempt : attempts) {
 
                     Date createdDate = attempt.getCreated();

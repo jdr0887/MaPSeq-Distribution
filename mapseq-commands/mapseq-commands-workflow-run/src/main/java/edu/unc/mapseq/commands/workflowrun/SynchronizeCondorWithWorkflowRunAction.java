@@ -3,8 +3,6 @@ package edu.unc.mapseq.commands.workflowrun;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -21,8 +19,6 @@ import org.renci.jlrm.condor.cli.CondorLookupDAGStatusCallable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
-import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
 import edu.unc.mapseq.dao.WorkflowRunDAO;
 import edu.unc.mapseq.dao.model.Workflow;
@@ -34,13 +30,16 @@ import edu.unc.mapseq.dao.model.WorkflowRunAttemptStatusType;
 @Service
 public class SynchronizeCondorWithWorkflowRunAction implements Action {
 
-    private final Logger logger = LoggerFactory.getLogger(SynchronizeCondorWithWorkflowRunAction.class);
+    private static final Logger logger = LoggerFactory.getLogger(SynchronizeCondorWithWorkflowRunAction.class);
 
     @Argument(index = 0, name = "workflowRunId", description = "WorkflowRun identifier", required = true, multiValued = true)
     private List<Long> workflowRunIdList;
 
     @Reference
-    private MaPSeqDAOBeanService maPSeqDAOBeanService;
+    private WorkflowRunDAO workflowRunDAO;
+
+    @Reference
+    private WorkflowRunAttemptDAO workflowRunAttemptDAO;
 
     public SynchronizeCondorWithWorkflowRunAction() {
         super();
@@ -50,29 +49,16 @@ public class SynchronizeCondorWithWorkflowRunAction implements Action {
     public Object execute() {
         logger.info("ENTERING doExecute()");
 
-        List<WorkflowRun> workflowRunList = new ArrayList<WorkflowRun>();
-        WorkflowRunDAO workflowRunDAO = maPSeqDAOBeanService.getWorkflowRunDAO();
-        WorkflowRunAttemptDAO workflowRunAttemptDAO = maPSeqDAOBeanService.getWorkflowRunAttemptDAO();
-
         try {
+            List<WorkflowRun> workflowRunList = new ArrayList<WorkflowRun>();
             if (workflowRunIdList != null) {
                 for (Long id : workflowRunIdList) {
                     workflowRunList.add(workflowRunDAO.findById(id));
                 }
             }
-        } catch (MaPSeqDAOException e) {
-        }
-
-        try {
 
             if (workflowRunList != null && workflowRunList.size() > 0) {
-
-                Collections.sort(workflowRunList, new Comparator<WorkflowRun>() {
-                    @Override
-                    public int compare(WorkflowRun wr1, WorkflowRun wr2) {
-                        return wr1.getId().compareTo(wr2.getId());
-                    }
-                });
+                workflowRunList.sort((a, b) -> a.getId().compareTo(b.getId()));
 
                 for (WorkflowRun workflowRun : workflowRunList) {
 

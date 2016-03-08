@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.unc.mapseq.dao.AttributeDAO;
-import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowRunDAO;
 import edu.unc.mapseq.dao.model.Attribute;
@@ -21,10 +20,13 @@ import edu.unc.mapseq.dao.model.WorkflowRun;
 @Service
 public class EditWorkflowRunAttributeAction implements Action {
 
-    private final Logger logger = LoggerFactory.getLogger(EditWorkflowRunAttributeAction.class);
+    private static final Logger logger = LoggerFactory.getLogger(EditWorkflowRunAttributeAction.class);
 
     @Reference
-    private MaPSeqDAOBeanService maPSeqDAOBeanService;
+    private WorkflowRunDAO workflowRunDAO;
+
+    @Reference
+    private AttributeDAO attributeDAO;
 
     @Argument(index = 0, name = "workflowRunId", description = "WorkflowRun Identifier", required = true, multiValued = false)
     private Long workflowRunId;
@@ -41,33 +43,30 @@ public class EditWorkflowRunAttributeAction implements Action {
 
     @Override
     public Object execute() {
+        logger.debug("ENTERING execute()");
 
-        AttributeDAO attributeDAO = maPSeqDAOBeanService.getAttributeDAO();
-        WorkflowRunDAO workflowRunDAO = maPSeqDAOBeanService.getWorkflowRunDAO();
-
-        WorkflowRun entity = null;
         try {
-            entity = workflowRunDAO.findById(workflowRunId);
-        } catch (MaPSeqDAOException e) {
-        }
-        if (entity == null) {
-            System.out.println("WorkflowRun was not found");
-            return null;
-        }
+            WorkflowRun entity = workflowRunDAO.findById(workflowRunId);
+            if (entity == null) {
+                System.out.println("WorkflowRun was not found");
+                return null;
+            }
 
-        Set<Attribute> attributeSet = entity.getAttributes();
-        if (attributeSet != null && attributeSet.size() > 0) {
-            for (Attribute attribute : attributeSet) {
-                if (attribute.getName().equals(name)) {
-                    attribute.setValue(value);
-                    try {
-                        attributeDAO.save(attribute);
-                    } catch (MaPSeqDAOException e) {
-                        logger.error("MaPSeqDAOException", e);
+            Set<Attribute> attributeSet = entity.getAttributes();
+            if (attributeSet != null && attributeSet.size() > 0) {
+                for (Attribute attribute : attributeSet) {
+                    if (attribute.getName().equals(name)) {
+                        attribute.setValue(value);
+                        try {
+                            attributeDAO.save(attribute);
+                        } catch (MaPSeqDAOException e) {
+                            logger.error("MaPSeqDAOException", e);
+                        }
+                        break;
                     }
-                    break;
                 }
             }
+        } catch (MaPSeqDAOException e) {
         }
 
         return null;
