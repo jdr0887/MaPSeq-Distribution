@@ -6,6 +6,7 @@ import java.util.Formatter;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Command;
@@ -14,7 +15,6 @@ import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 
 import edu.unc.mapseq.dao.FileDataDAO;
-import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.model.FileData;
 
@@ -23,7 +23,7 @@ import edu.unc.mapseq.dao.model.FileData;
 public class FindFilesAction implements Action {
 
     @Reference
-    private MaPSeqDAOBeanService maPSeqDAOBeanService;
+    private FileDataDAO fileDataDAO;
 
     @Option(name = "--path", description = "path", required = false, multiValued = false)
     private String path;
@@ -38,7 +38,6 @@ public class FindFilesAction implements Action {
     @Override
     public Object execute() {
 
-        FileDataDAO fileDataDAO = maPSeqDAOBeanService.getFileDataDAO();
         FileData example = new FileData();
 
         if (StringUtils.isEmpty(name) && StringUtils.isEmpty(path)) {
@@ -61,13 +60,13 @@ public class FindFilesAction implements Action {
 
         try {
             List<FileData> fileDataSet = fileDataDAO.findByExample(example);
-            if (fileDataSet != null && !fileDataSet.isEmpty()) {
+            if (CollectionUtils.isNotEmpty(fileDataSet)) {
                 for (FileData fileData : fileDataSet) {
                     Date created = fileData.getCreated();
                     String formattedCreated = "";
                     if (created != null) {
-                        formattedCreated = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(
-                                created);
+                        formattedCreated = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
+                                .format(created);
                     }
                     formatter.format(format, fileData.getId(), formattedCreated, fileData.getMimeType(),
                             fileData.getPath(), fileData.getName());

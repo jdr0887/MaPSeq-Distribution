@@ -7,6 +7,7 @@ import java.util.Locale;
 
 import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Command;
+import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -19,11 +20,12 @@ public class ListModulesAction implements Action {
 
     private static final Logger logger = LoggerFactory.getLogger(ListModulesAction.class);
 
-    private BundleContext context = null;
+    @Reference
+    private BundleContext context;
 
     @Override
     public Object execute() {
-        logger.debug("ENTERING doExecute()");
+        logger.debug("ENTERING execute()");
         if (context == null) {
             logger.error("context is null");
             return null;
@@ -51,14 +53,6 @@ public class ListModulesAction implements Action {
         formatter.close();
 
         return null;
-    }
-
-    public BundleContext getContext() {
-        return context;
-    }
-
-    public void setContext(BundleContext context) {
-        this.context = context;
     }
 
 }
