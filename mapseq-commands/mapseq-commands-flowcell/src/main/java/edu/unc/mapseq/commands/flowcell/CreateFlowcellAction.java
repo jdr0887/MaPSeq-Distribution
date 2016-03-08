@@ -10,7 +10,6 @@ import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 
 import edu.unc.mapseq.dao.FlowcellDAO;
-import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.model.Flowcell;
 
@@ -19,7 +18,7 @@ import edu.unc.mapseq.dao.model.Flowcell;
 public class CreateFlowcellAction implements Action {
 
     @Reference
-    private MaPSeqDAOBeanService maPSeqDAOBeanService;
+    private FlowcellDAO flowcellDAO;
 
     @Argument(index = 0, name = "baseRunFolder", description = "The folder parent to the flowcell directory", required = true, multiValued = false)
     private String baseRunFolder;
@@ -43,11 +42,9 @@ public class CreateFlowcellAction implements Action {
             return null;
         }
 
-        Flowcell flowcell = new Flowcell();
         try {
-            flowcell.setName(name);
+            Flowcell flowcell = new Flowcell(name);
             flowcell.setBaseDirectory(baseRunFolder);
-            FlowcellDAO flowcellDAO = maPSeqDAOBeanService.getFlowcellDAO();
             Long flowcellId = flowcellDAO.save(flowcell);
             return flowcellId;
         } catch (MaPSeqDAOException e1) {

@@ -15,8 +15,10 @@ import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 
-import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
+import edu.unc.mapseq.dao.FlowcellDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
+import edu.unc.mapseq.dao.SampleDAO;
+import edu.unc.mapseq.dao.StudyDAO;
 import edu.unc.mapseq.dao.model.Attribute;
 import edu.unc.mapseq.dao.model.Flowcell;
 import edu.unc.mapseq.dao.model.Sample;
@@ -27,7 +29,13 @@ import edu.unc.mapseq.dao.model.Study;
 public class CreateFlowcellFromSampleSheetAction implements Action {
 
     @Reference
-    private MaPSeqDAOBeanService maPSeqDAOBeanService;
+    private FlowcellDAO flowcellDAO;
+
+    @Reference
+    private StudyDAO studyDAO;
+
+    @Reference
+    private SampleDAO sampleDAO;
 
     @Argument(index = 0, name = "baseRunFolder", description = "The folder parent to the flowcell directory", required = true, multiValued = false)
     private String baseRunFolder;
@@ -46,18 +54,11 @@ public class CreateFlowcellFromSampleSheetAction implements Action {
     @Override
     public Object execute() {
 
-        Flowcell flowcell = new Flowcell();
-        flowcell.setBaseDirectory(baseRunFolder);
-        flowcell.setName(name);
-
         try {
-            Long flowcellId = maPSeqDAOBeanService.getFlowcellDAO().save(flowcell);
-            flowcell.setId(flowcellId);
-        } catch (MaPSeqDAOException e1) {
-            e1.printStackTrace();
-        }
+            Flowcell flowcell = new Flowcell(name);
+            flowcell.setBaseDirectory(baseRunFolder);
+            flowcell.setId(flowcellDAO.save(flowcell));
 
-        try {
             LineNumberReader lnr = new LineNumberReader(new StringReader(FileUtils.readFileToString(sampleSheet)));
             lnr.readLine();
             String line;
@@ -76,7 +77,7 @@ public class CreateFlowcellFromSampleSheetAction implements Action {
                 String operator = st[8];
                 String sampleProject = st[9];
 
-                List<Study> studyList = maPSeqDAOBeanService.getStudyDAO().findByName(sampleProject);
+                List<Study> studyList = studyDAO.findByName(sampleProject);
                 if (studyList == null || (studyList != null && studyList.isEmpty())) {
                     System.err.printf("Study doesn't exist...fix your sample sheet for column 9 (sampleProject)");
                     return null;
@@ -84,10 +85,9 @@ public class CreateFlowcellFromSampleSheetAction implements Action {
 
                 Study study = studyList.get(0);
 
-                Sample sample = new Sample();
+                Sample sample = new Sample(sampleId);
                 sample.setBarcode(index);
                 sample.setLaneIndex(Integer.valueOf(laneIndex));
-                sample.setName(sampleId);
                 sample.setFlowcell(flowcell);
                 sample.setStudy(study);
 
@@ -95,16 +95,14 @@ public class CreateFlowcellFromSampleSheetAction implements Action {
                 if (attributes == null) {
                     attributes = new HashSet<Attribute>();
                 }
-                Attribute descAttribute = new Attribute();
-                descAttribute.setName("production.id.description");
-                descAttribute.setValue(description);
+                Attribute descAttribute = new Attribute("production.id.description", description);
                 attributes.add(descAttribute);
                 sample.setAttributes(attributes);
 
-                Long id = maPSeqDAOBeanService.getSampleDAO().save(sample);
-                sample.setId(id);
+                sample.setId(sampleDAO.save(sample));
 
             }
+            System.out.println("Flowcell ID: " + flowcell.getId());
 
         } catch (MaPSeqDAOException e) {
             e.printStackTrace();
@@ -112,10 +110,8 @@ public class CreateFlowcellFromSampleSheetAction implements Action {
             e.printStackTrace();
         }
 
-        System.out.println("Flowcell ID: " + flowcell.getId());
         return null;
     }
-
 
     public String getBaseRunFolder() {
         return baseRunFolder;

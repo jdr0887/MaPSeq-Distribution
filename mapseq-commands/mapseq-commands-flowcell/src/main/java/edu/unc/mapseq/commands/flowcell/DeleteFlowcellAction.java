@@ -2,6 +2,7 @@ package edu.unc.mapseq.commands.flowcell;
 
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
@@ -38,7 +39,7 @@ public class DeleteFlowcellAction implements Action {
     @Override
     public Object execute() {
 
-        if (this.flowcellIdList != null && !this.flowcellIdList.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(this.flowcellIdList)) {
 
             FlowcellDAO flowcellDAO = maPSeqDAOBeanService.getFlowcellDAO();
             SampleDAO sampleDAO = maPSeqDAOBeanService.getSampleDAO();
@@ -51,19 +52,19 @@ public class DeleteFlowcellAction implements Action {
                     Flowcell flowcell = flowcellDAO.findById(flowcellId);
                     List<WorkflowRun> workflowRunList = workflowRunDAO.findByFlowcellId(flowcell.getId());
 
-                    if (workflowRunList != null && !workflowRunList.isEmpty()) {
+                    if (CollectionUtils.isNotEmpty(workflowRunList)) {
 
                         for (WorkflowRun workflowRun : workflowRunList) {
 
-                            List<WorkflowRunAttempt> attempts = workflowRunAttemptDAO.findByWorkflowRunId(workflowRun
-                                    .getId());
+                            List<WorkflowRunAttempt> attempts = workflowRunAttemptDAO
+                                    .findByWorkflowRunId(workflowRun.getId());
 
-                            if (attempts != null && !attempts.isEmpty()) {
+                            if (CollectionUtils.isNotEmpty(attempts)) {
 
                                 for (WorkflowRunAttempt attempt : attempts) {
 
                                     List<Job> jobList = jobDAO.findByWorkflowRunAttemptId(attempt.getId());
-                                    if (jobList != null && !jobList.isEmpty()) {
+                                    if (CollectionUtils.isNotEmpty(jobList)) {
                                         for (Job job : jobList) {
                                             job.setAttributes(null);
                                             job.setFileDatas(null);
@@ -90,7 +91,7 @@ public class DeleteFlowcellAction implements Action {
 
                     List<Sample> sampleList = sampleDAO.findByFlowcellId(flowcell.getId());
 
-                    if (sampleList != null && sampleList.size() > 0) {
+                    if (CollectionUtils.isNotEmpty(sampleList)) {
                         for (Sample sample : sampleList) {
                             sample.setAttributes(null);
                             sample.setFileDatas(null);

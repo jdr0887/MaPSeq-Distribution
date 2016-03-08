@@ -10,7 +10,6 @@ import org.apache.karaf.shell.api.action.lifecycle.Service;
 
 import edu.unc.mapseq.dao.FileDataDAO;
 import edu.unc.mapseq.dao.FlowcellDAO;
-import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.model.FileData;
 import edu.unc.mapseq.dao.model.Flowcell;
@@ -20,7 +19,10 @@ import edu.unc.mapseq.dao.model.Flowcell;
 public class AddFileToFlowcellAction implements Action {
 
     @Reference
-    private MaPSeqDAOBeanService maPSeqDAOBeanService;
+    private FlowcellDAO flowcellDAO;
+
+    @Reference
+    private FileDataDAO fileDataDAO;
 
     @Option(name = "--flowcellId", description = "flowcellId", required = false, multiValued = false)
     private Long flowcellId;
@@ -34,9 +36,6 @@ public class AddFileToFlowcellAction implements Action {
 
     @Override
     public Object execute() {
-
-        FlowcellDAO flowcellDAO = maPSeqDAOBeanService.getFlowcellDAO();
-        FileDataDAO fileDataDAO = maPSeqDAOBeanService.getFileDataDAO();
 
         try {
             Flowcell entity = flowcellDAO.findById(flowcellId);
