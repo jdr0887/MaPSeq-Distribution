@@ -18,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.unc.mapseq.dao.JobDAO;
-import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowDAO;
 import edu.unc.mapseq.dao.model.Job;
@@ -29,10 +28,13 @@ import edu.unc.mapseq.reports.ReportFactory;
 @Service
 public class WorkflowJobsWeeklyReportAction implements Action {
 
-    private final Logger logger = LoggerFactory.getLogger(WorkflowJobsWeeklyReportAction.class);
+    private static final Logger logger = LoggerFactory.getLogger(WorkflowJobsWeeklyReportAction.class);
 
     @Reference
-    private MaPSeqDAOBeanService maPSeqDAOBeanService;
+    private WorkflowDAO workflowDAO;
+
+    @Reference
+    private JobDAO jobDAO;
 
     @Argument(index = 0, name = "workflowId", description = "Workflow Id", required = true, multiValued = false)
     private Long workflowId;
@@ -45,7 +47,6 @@ public class WorkflowJobsWeeklyReportAction implements Action {
         logger.debug("ENTERING doExecute()");
 
         try {
-            WorkflowDAO workflowDAO = maPSeqDAOBeanService.getWorkflowDAO();
             Workflow workflow = workflowDAO.findById(workflowId);
 
             Date endDate = new Date();
@@ -54,7 +55,6 @@ public class WorkflowJobsWeeklyReportAction implements Action {
             c.add(Calendar.WEEK_OF_YEAR, -1);
             Date startDate = c.getTime();
 
-            JobDAO jobDAO = maPSeqDAOBeanService.getJobDAO();
             List<Job> jobList = jobDAO.findByWorkflowIdAndCreatedDateRange(workflow.getId(), startDate, endDate);
 
             File chartFile = ReportFactory.createWorkflowJobsReport(jobList, workflow, startDate, endDate);

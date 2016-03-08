@@ -10,14 +10,14 @@ import org.apache.commons.mail.EmailAttachment;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.MultiPartEmail;
 import org.apache.karaf.shell.api.action.Action;
-import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.Argument;
+import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
+import edu.unc.mapseq.dao.JobDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowDAO;
 import edu.unc.mapseq.dao.model.Job;
@@ -31,7 +31,10 @@ public class WorkflowJobCountPerClusterWeeklyReportAction implements Action {
     private final Logger logger = LoggerFactory.getLogger(WorkflowJobCountPerClusterWeeklyReportAction.class);
 
     @Reference
-    private MaPSeqDAOBeanService maPSeqDAOBeanService;
+    private WorkflowDAO workflowDAO;
+
+    @Reference
+    private JobDAO jobDAO;
 
     @Argument(index = 0, name = "workflowId", description = "Workflow Id", required = true, multiValued = false)
     private Long workflowId;
@@ -41,10 +44,9 @@ public class WorkflowJobCountPerClusterWeeklyReportAction implements Action {
 
     @Override
     public Object execute() {
-        logger.debug("ENTERING doExecute()");
+        logger.debug("ENTERING execute()");
 
         try {
-            WorkflowDAO workflowDAO = maPSeqDAOBeanService.getWorkflowDAO();
             Workflow workflow = workflowDAO.findById(workflowId);
 
             Date endDate = new Date();
@@ -53,8 +55,7 @@ public class WorkflowJobCountPerClusterWeeklyReportAction implements Action {
             c.add(Calendar.WEEK_OF_YEAR, -1);
             Date startDate = c.getTime();
 
-            List<Job> jobList = maPSeqDAOBeanService.getJobDAO().findByWorkflowIdAndCreatedDateRange(workflow.getId(),
-                    startDate, endDate);
+            List<Job> jobList = jobDAO.findByWorkflowIdAndCreatedDateRange(workflow.getId(), startDate, endDate);
 
             File chartFile = ReportFactory.createWorkflowJobCountPerClusterReport(jobList, workflow, startDate,
                     endDate);

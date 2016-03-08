@@ -21,7 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.unc.mapseq.dao.JobDAO;
-import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.model.Job;
 import edu.unc.mapseq.reports.ReportFactory;
@@ -30,10 +29,10 @@ import edu.unc.mapseq.reports.ReportFactory;
 @Service
 public class JobPerClusterReportAction implements Action {
 
-    private final Logger logger = LoggerFactory.getLogger(JobPerClusterReportAction.class);
+    private static final Logger logger = LoggerFactory.getLogger(JobPerClusterReportAction.class);
 
     @Reference
-    private MaPSeqDAOBeanService maPSeqDAOBeanService;
+    private JobDAO jobDAO;
 
     @Argument(index = 0, name = "name", description = "Job name (ie, GATKUnifiedGenotyper, SAMToolsIndex, PicardAddOrReplaceReadGroups)", required = true, multiValued = false)
     private String name;
@@ -52,7 +51,6 @@ public class JobPerClusterReportAction implements Action {
             c.add(Calendar.WEEK_OF_YEAR, -1);
             Date startDate = c.getTime();
 
-            JobDAO jobDAO = maPSeqDAOBeanService.getJobDAO();
             List<Job> jobList = jobDAO.findByCreatedDateRange(startDate, endDate);
             Set<String> jobNameSet = new HashSet<String>();
             for (Job job : jobList) {

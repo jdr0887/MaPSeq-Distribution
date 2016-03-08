@@ -18,7 +18,6 @@ import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
 import edu.unc.mapseq.dao.WorkflowRunDAO;
@@ -33,7 +32,10 @@ public class WorkflowRunCountMonthlyReportAction implements Action {
     private final Logger logger = LoggerFactory.getLogger(WorkflowRunCountMonthlyReportAction.class);
 
     @Reference
-    private MaPSeqDAOBeanService maPSeqDAOBeanService;
+    private WorkflowRunDAO workflowRunDAO;
+
+    @Reference
+    private WorkflowRunAttemptDAO workflowRunAttemptDAO;
 
     @Argument(index = 0, name = "toEmailAddress", description = "To Email Address", required = true, multiValued = false)
     private String toEmailAddress;
@@ -49,8 +51,6 @@ public class WorkflowRunCountMonthlyReportAction implements Action {
             c.add(Calendar.WEEK_OF_YEAR, -4);
             Date startDate = c.getTime();
 
-            WorkflowRunDAO workflowRunDAO = maPSeqDAOBeanService.getWorkflowRunDAO();
-            WorkflowRunAttemptDAO workflowRunAttemptDAO = maPSeqDAOBeanService.getWorkflowRunAttemptDAO();
             List<WorkflowRun> workflowRunList = workflowRunDAO.findByCreatedDateRange(startDate, endDate);
             List<WorkflowRunAttempt> workflowRunAttemptList = new ArrayList<>();
 

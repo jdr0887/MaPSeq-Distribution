@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.mail.EmailAttachment;
 import org.apache.commons.mail.EmailException;
@@ -18,7 +19,6 @@ import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
 import edu.unc.mapseq.dao.WorkflowRunDAO;
@@ -33,7 +33,10 @@ public class WorkflowRunCountWeeklyReportAction implements Action {
     private final Logger logger = LoggerFactory.getLogger(WorkflowRunCountWeeklyReportAction.class);
 
     @Reference
-    private MaPSeqDAOBeanService maPSeqDAOBeanService;
+    private WorkflowRunDAO workflowRunDAO;
+
+    @Reference
+    private WorkflowRunAttemptDAO workflowRunAttemptDAO;
 
     @Argument(index = 0, name = "toEmailAddress", description = "To Email Address", required = true, multiValued = false)
     private String toEmailAddress;
@@ -49,15 +52,13 @@ public class WorkflowRunCountWeeklyReportAction implements Action {
             c.add(Calendar.WEEK_OF_YEAR, -1);
             Date startDate = c.getTime();
 
-            WorkflowRunDAO workflowRunDAO = maPSeqDAOBeanService.getWorkflowRunDAO();
-            WorkflowRunAttemptDAO workflowRunAttemptDAO = maPSeqDAOBeanService.getWorkflowRunAttemptDAO();
             List<WorkflowRun> workflowRunList = workflowRunDAO.findByCreatedDateRange(startDate, endDate);
             List<WorkflowRunAttempt> workflowRunAttemptList = new ArrayList<>();
 
-            if (workflowRunList != null && !workflowRunList.isEmpty()) {
+            if (CollectionUtils.isNotEmpty(workflowRunList)) {
                 for (WorkflowRun workflowRun : workflowRunList) {
                     List<WorkflowRunAttempt> toAdd = workflowRunAttemptDAO.findByWorkflowRunId(workflowRun.getId());
-                    if (toAdd != null && !toAdd.isEmpty()) {
+                    if (CollectionUtils.isNotEmpty(toAdd)) {
                         workflowRunAttemptList.addAll(toAdd);
                     }
                 }
