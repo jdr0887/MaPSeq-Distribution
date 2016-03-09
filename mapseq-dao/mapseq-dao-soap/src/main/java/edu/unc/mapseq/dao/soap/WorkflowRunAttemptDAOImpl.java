@@ -3,6 +3,8 @@ package edu.unc.mapseq.dao.soap;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
@@ -33,6 +35,7 @@ public class WorkflowRunAttemptDAOImpl extends BaseDAOImpl<WorkflowRunAttempt, L
         super(WorkflowRunAttempt.class);
     }
 
+    @PostConstruct
     public void init() {
         workflowRunAttemptService = getService().getPort(WorkflowRunAttemptService.class);
         Client cl = ClientProxy.getClient(workflowRunAttemptService);

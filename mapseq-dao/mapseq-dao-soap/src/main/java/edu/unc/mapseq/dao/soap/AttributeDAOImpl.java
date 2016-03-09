@@ -1,5 +1,7 @@
 package edu.unc.mapseq.dao.soap;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.transport.http.HTTPConduit;
@@ -28,6 +30,7 @@ public class AttributeDAOImpl extends BaseDAOImpl<Attribute, Long> implements At
         super(Attribute.class);
     }
 
+    @PostConstruct
     public void init() {
         this.attributeService = getService().getPort(AttributeService.class);
         Client cl = ClientProxy.getClient(attributeService);

@@ -2,6 +2,8 @@ package edu.unc.mapseq.dao.soap;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.transport.http.HTTPConduit;
@@ -30,6 +32,7 @@ public class FileDataDAOImpl extends BaseDAOImpl<FileData, Long> implements File
         super(FileData.class);
     }
 
+    @PostConstruct
     public void init() {
         this.fileDataService = getService().getPort(FileDataService.class);
         Client cl = ClientProxy.getClient(fileDataService);

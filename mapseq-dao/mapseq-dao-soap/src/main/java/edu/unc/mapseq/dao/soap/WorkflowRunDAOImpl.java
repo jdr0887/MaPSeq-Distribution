@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
@@ -33,6 +35,7 @@ public class WorkflowRunDAOImpl extends NamedEntityDAOImpl<WorkflowRun, Long> im
         super(WorkflowRun.class);
     }
 
+    @PostConstruct
     public void init() {
         workflowRunService = getService().getPort(WorkflowRunService.class);
         Client cl = ClientProxy.getClient(workflowRunService);

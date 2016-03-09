@@ -3,6 +3,8 @@ package edu.unc.mapseq.dao.soap;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.cxf.endpoint.Client;
@@ -33,6 +35,7 @@ public class JobDAOImpl extends NamedEntityDAOImpl<Job, Long> implements JobDAO 
         super(Job.class);
     }
 
+    @PostConstruct
     public void init() {
         jobService = getService().getPort(JobService.class);
         Client cl = ClientProxy.getClient(jobService);

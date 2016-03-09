@@ -3,6 +3,8 @@ package edu.unc.mapseq.dao.soap;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
@@ -32,6 +34,7 @@ public class SampleDAOImpl extends NamedEntityDAOImpl<Sample, Long> implements S
         super(Sample.class);
     }
 
+    @PostConstruct
     public void init() {
         sampleService = getService().getPort(SampleService.class);
         Client cl = ClientProxy.getClient(sampleService);
