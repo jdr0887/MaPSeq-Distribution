@@ -10,11 +10,9 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.unc.mapseq.config.RunModeType;
 import edu.unc.mapseq.dao.FlowcellDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
@@ -23,7 +21,6 @@ import edu.unc.mapseq.dao.model.FileData;
 import edu.unc.mapseq.dao.model.Flowcell;
 import edu.unc.mapseq.dao.model.MimeType;
 import edu.unc.mapseq.dao.model.Sample;
-import edu.unc.mapseq.dao.model.Study;
 import edu.unc.mapseq.dao.model.WorkflowRun;
 import edu.unc.mapseq.workflow.WorkflowException;
 
@@ -43,40 +40,22 @@ public abstract class AbstractSampleWorkflow extends AbstractWorkflow {
 
         Set<Sample> samples = getAggregatedSamples();
 
-        if (samples != null && !samples.isEmpty()) {
+        String outputDirectory = System.getenv("MAPSEQ_OUTPUT_DIRECTORY");
 
-            RunModeType runMode = RunModeType.PROD;
-            String version = getVersion();
-            if (StringUtils.isEmpty(version) || (StringUtils.isNotEmpty(version) && version.contains("SNAPSHOT"))) {
-                runMode = RunModeType.DEV;
-            }
+        if (CollectionUtils.isNotEmpty(samples)) {
 
             for (Sample sample : samples) {
                 try {
-
-                    File outdir;
-                    switch (runMode) {
-                        case DEV:
-                        case STAGING:
-                            outdir = new File(getBaseOutputDirectory(), runMode.toString().toLowerCase());
-                            break;
-                        case PROD:
-                        default:
-                            outdir = getBaseOutputDirectory();
-                            break;
-                    }
-
-                    Study study = sample.getStudy();
-                    File studyDir = new File(outdir, study.getName());
-                    File flowcellOutputDirectory = new File(studyDir, sample.getFlowcell().getName());
-                    File sampleOutputDir = new File(flowcellOutputDirectory,
+                    File studyDirectory = new File(outputDirectory, sample.getStudy().getName());
+                    File analysisDirectory = new File(studyDirectory, "analysis");
+                    File flowcellDirectory = new File(analysisDirectory, sample.getFlowcell().getName());
+                    File sampleOutputDir = new File(flowcellDirectory,
                             String.format("L%03d_%s", sample.getLaneIndex(), sample.getBarcode()));
-                    logger.info("creating sample output directory: {}", sampleOutputDir.getAbsolutePath());
                     sampleOutputDir.mkdirs();
-                    // this will produce: /proj/seq/mapseq/RENCI/<study>/<flowcell>/<lane>_<barcode>
 
                     if (sample.getOutputDirectory() == null || (sample.getOutputDirectory() != null
                             && !sample.getOutputDirectory().equals(sampleOutputDir.getAbsolutePath()))) {
+                        logger.info("creating sample output directory: {}", sampleOutputDir.getAbsolutePath());
                         sample.setOutputDirectory(sampleOutputDir.getAbsolutePath());
                         getWorkflowBeanService().getMaPSeqDAOBeanService().getSampleDAO().save(sample);
                     }
