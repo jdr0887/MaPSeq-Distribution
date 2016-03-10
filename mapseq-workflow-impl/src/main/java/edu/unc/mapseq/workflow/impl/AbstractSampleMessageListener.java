@@ -90,7 +90,6 @@ public abstract class AbstractSampleMessageListener extends AbstractMessageListe
         logger.debug("ENTERING createWorkflowRun(WorkflowMessage, Workflow)");
 
         Set<Flowcell> flowcellSet = new HashSet<Flowcell>();
-        Set<Sample> sampleSet = new HashSet<Sample>();
         WorkflowRun workflowRun = null;
 
         for (WorkflowEntity entity : workflowMessage.getEntities()) {
@@ -101,6 +100,7 @@ public abstract class AbstractSampleMessageListener extends AbstractMessageListe
             }
         }
 
+        Set<Sample> sampleSet = new HashSet<Sample>();
         for (WorkflowEntity entity : workflowMessage.getEntities()) {
             if (StringUtils.isNotEmpty(entity.getEntityType())
                     && Sample.class.getSimpleName().equals(entity.getEntityType())) {
