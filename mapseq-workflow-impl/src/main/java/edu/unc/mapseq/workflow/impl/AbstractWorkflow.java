@@ -97,15 +97,15 @@ public abstract class AbstractWorkflow implements Workflow {
             throw new WorkflowException("workflowRunAttempt is null");
         }
 
-        String mapseqHome = System.getenv("MAPSEQ_HOME");
+        String mapseqHome = System.getenv("MAPSEQ_CLIENT_HOME");
         if (StringUtils.isEmpty(mapseqHome)) {
-            logger.error("MAPSEQ_HOME not set in env: {}", mapseqHome);
-            throw new WorkflowException("MAPSEQ_HOME not set in env");
+            logger.error("MAPSEQ_CLIENT_HOME not set in env: {}", mapseqHome);
+            throw new WorkflowException("MAPSEQ_CLIENT_HOME not set in env");
         }
         File homeDirectory = new File(mapseqHome);
         if (!homeDirectory.exists()) {
-            logger.error("MAPSEQ_HOME does not exist: {}", mapseqHome);
-            throw new WorkflowException("MAPSEQ_HOME does not exist");
+            logger.error("MAPSEQ_CLIENT_HOME does not exist: {}", mapseqHome);
+            throw new WorkflowException("MAPSEQ_CLIENT_HOME does not exist");
         }
 
         logger.debug("homeDirectory = {}", homeDirectory.getAbsolutePath());
