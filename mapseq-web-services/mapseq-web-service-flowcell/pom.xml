@@ -2,13 +2,13 @@
   <parent>
     <groupId>edu.unc.mapseq.distribution</groupId>
     <artifactId>mapseq-web-services</artifactId>
-    <version>0.6.12</version>
+    <version>0.6.13-SNAPSHOT</version>
   </parent>
   <name>MaPSeq :: Distribution :: Web Services :: Flowcell</name>
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.unc.mapseq.distribution.mapseq-web-services</groupId>
   <artifactId>mapseq-web-service-flowcell</artifactId>
-  <version>0.6.12</version>
+  <version>0.6.13-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <build>
     <plugins>
