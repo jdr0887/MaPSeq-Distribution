@@ -42,13 +42,15 @@ public abstract class AbstractWorkflow implements Workflow {
 
     private Integer backOffMultiplier = 5;
 
-    private File baseOutputDirectory;
+    private File outputDirectory;
 
     private File submitDirectory;
 
     private WorkflowBeanService workflowBeanService;
 
     private Graph<CondorJob, CondorJobEdge> graph;
+
+    private RunModeType runMode = RunModeType.PROD;
 
     public AbstractWorkflow() {
         super();
@@ -116,8 +118,8 @@ public abstract class AbstractWorkflow implements Workflow {
             throw new WorkflowException("MAPSEQ_OUTPUT_DIRECTORY not set in env");
         }
 
-        this.baseOutputDirectory = new File(outputDir);
-        if (!baseOutputDirectory.exists()) {
+        this.outputDirectory = new File(outputDir);
+        if (!outputDirectory.exists()) {
             logger.error("MAPSEQ_OUTPUT_DIRECTORY does not exist: {}", outputDir);
             throw new WorkflowException("MAPSEQ_OUTPUT_DIRECTORY does not exist");
         }
@@ -129,6 +131,12 @@ public abstract class AbstractWorkflow implements Workflow {
         this.submitDirectory.mkdirs();
 
         logger.debug("submitDirectory = {}", this.submitDirectory.getAbsolutePath());
+
+        String version = getVersion();
+        if (StringUtils.isEmpty(version) || (StringUtils.isNotEmpty(version) && version.contains("SNAPSHOT"))) {
+            this.runMode = RunModeType.DEV;
+        }
+
     }
 
     @Override
@@ -283,12 +291,12 @@ public abstract class AbstractWorkflow implements Workflow {
         this.workflowRunAttempt = workflowRunAttempt;
     }
 
-    public File getBaseOutputDirectory() {
-        return baseOutputDirectory;
+    public File getOutputDirectory() {
+        return outputDirectory;
     }
 
-    public void setBaseOutputDirectory(File baseOutputDirectory) {
-        this.baseOutputDirectory = baseOutputDirectory;
+    public void setOutputDirectory(File outputDirectory) {
+        this.outputDirectory = outputDirectory;
     }
 
     public File getSubmitDirectory() {
@@ -313,6 +321,14 @@ public abstract class AbstractWorkflow implements Workflow {
 
     public void setBackOffMultiplier(Integer backOffMultiplier) {
         this.backOffMultiplier = backOffMultiplier;
+    }
+
+    public RunModeType getRunMode() {
+        return runMode;
+    }
+
+    public void setRunMode(RunModeType runMode) {
+        this.runMode = runMode;
     }
 
 }
