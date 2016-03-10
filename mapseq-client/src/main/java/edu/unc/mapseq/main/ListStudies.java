@@ -1,6 +1,5 @@
 package edu.unc.mapseq.main;
 
-import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.List;
 import java.util.Locale;
@@ -16,7 +15,6 @@ import org.apache.commons.collections.CollectionUtils;
 
 import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.RESTDAOManager;
-import edu.unc.mapseq.dao.StudyDAO;
 import edu.unc.mapseq.dao.model.Study;
 
 public class ListStudies implements Runnable {
