@@ -20,8 +20,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 
 import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
-import edu.unc.mapseq.dao.SampleDAO;
 import edu.unc.mapseq.dao.SOAPDAOManager;
+import edu.unc.mapseq.dao.SampleDAO;
 import edu.unc.mapseq.dao.model.FileData;
 import edu.unc.mapseq.dao.model.Flowcell;
 import edu.unc.mapseq.dao.model.MimeType;
@@ -65,7 +65,7 @@ public class CreateSample implements Callable<String> {
             if (flowcell == null) {
                 System.err.println("Flowcell not found: " + this.flowcellId);
                 System.err.println(
-                        "Please run <MAPSEQ_HOME>/bin/mapseq-list-flowcells.sh and use a valid Flowcell Identifier.");
+                        "Please run <MAPSEQ_CLIENT_HOME>/bin/mapseq-list-flowcells.sh and use a valid Flowcell Identifier.");
                 return null;
             }
 
