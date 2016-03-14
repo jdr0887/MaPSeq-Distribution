@@ -3,4 +3,5 @@ edu.unc.mapseq.commands.flowcell.CreateFlowcellAction
 edu.unc.mapseq.commands.flowcell.CreateFlowcellFromSampleSheetAction
 edu.unc.mapseq.commands.flowcell.DeleteFlowcellAction
 edu.unc.mapseq.commands.flowcell.ListFlowcellFilesAction
+edu.unc.mapseq.commands.flowcell.ListFlowcellAttributesAction
 edu.unc.mapseq.commands.flowcell.ListFlowcellsAction
