@@ -104,4 +104,17 @@ public class CopyFile extends Module {
         this.mimeType = mimeType;
     }
 
+    public static void main(String[] args) {
+        CopyFile module = new CopyFile();
+        module.setWorkflowName("TEST");
+        module.setSource(new File("/tmp", "asdf.txt"));
+        module.setDestination(new File("/tmp", "qwer.txt"));
+        try {
+            module.call();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+    
 }

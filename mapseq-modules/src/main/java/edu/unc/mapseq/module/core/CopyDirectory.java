@@ -96,4 +96,17 @@ public class CopyDirectory extends Module {
         this.mimeType = mimeType;
     }
 
+    public static void main(String[] args) {
+        CopyDirectory module = new CopyDirectory();
+        module.setWorkflowName("TEST");
+        module.setSource(new File("/tmp", "asdf"));
+        module.setDestination(new File("/tmp", "qwer"));
+        try {
+            module.call();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
 }
