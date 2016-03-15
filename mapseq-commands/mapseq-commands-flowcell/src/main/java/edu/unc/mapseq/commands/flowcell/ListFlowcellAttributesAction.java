@@ -1,7 +1,5 @@
 package edu.unc.mapseq.commands.flowcell;
 
-import java.text.DateFormat;
-import java.util.Date;
 import java.util.Formatter;
 import java.util.Locale;
 import java.util.Set;
