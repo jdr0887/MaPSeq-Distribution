@@ -2,7 +2,7 @@
   <parent>
     <groupId>edu.unc.mapseq</groupId>
     <artifactId>mapseq</artifactId>
-    <version>0.1.18</version>
+    <version>0.1.19</version>
   </parent>
   <name>MaPSeq :: Distribution</name>
   <modelVersion>4.0.0</modelVersion>
@@ -11,7 +11,7 @@
   <version>0.6.16-SNAPSHOT</version>
   <packaging>pom</packaging>
   <properties>
-    <mapseq.version>0.6.7</mapseq.version>
+    <mapseq.version>0.6.8</mapseq.version>
     <renci.charts.version>0.0.9</renci.charts.version>
     <spring.version>4.2.3.RELEASE</spring.version>    
   </properties>
@@ -292,62 +292,6 @@
 	</plugin>      		
       </plugins>
     </pluginManagement>    
-    <plugins>
-      <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-javadoc-plugin</artifactId>
-	<version>${maven.javadoc.plugin.version}</version>
-	<!-- <configuration> -->
-	<!--   <additionalparam>-Xdoclint:none</additionalparam> -->
-	<!-- </configuration> -->
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-site-plugin</artifactId>
-        <version>${maven.site.plugin.version}</version>
-        <configuration>
-	  <reportPlugins>
-	    <plugin>
-	      <groupId>org.apache.maven.plugins</groupId>
-	      <artifactId>maven-project-info-reports-plugin</artifactId>
-	      <version>${maven.project.info.reports.plugin.version}</version>
-	      <configuration>
-		<dependencyDetailsEnabled>true</dependencyDetailsEnabled>
-		<dependencyLocationsEnabled>false</dependencyLocationsEnabled>
-	      </configuration>
-	      <reports>
-	      </reports>
-	    </plugin>
-	    <plugin>
-	      <groupId>org.apache.maven.plugins</groupId>
-	      <artifactId>maven-javadoc-plugin</artifactId>
-	      <version>${maven.javadoc.plugin.version}</version>
-	      <!-- <configuration> -->
-	      <!-- 	<additionalparam>-Xdoclint:none</additionalparam> -->
-	      <!-- </configuration> -->
-	    </plugin>
-	    <plugin>
-	      <groupId>org.apache.maven.plugins</groupId>
-	      <artifactId>maven-jxr-plugin</artifactId>
-	      <version>${maven.jxr.plugin.version}</version>
-	      <configuration>
-		<aggregate>true</aggregate>
-	      </configuration>
-	    </plugin>
-	    <plugin>
-	      <groupId>org.apache.maven.plugins</groupId>
-	      <artifactId>maven-surefire-report-plugin</artifactId>
-	      <version>${maven.surefire.report.plugin.version}</version>
-	    </plugin>
-	    <plugin>
-	      <groupId>org.apache.maven.plugins</groupId>
-	      <artifactId>maven-checkstyle-plugin</artifactId>
-	      <version>${maven.checkstyle.plugin.version}</version>
-	    </plugin>
-	  </reportPlugins>
-        </configuration>
-      </plugin>
-    </plugins>
   </build>
   <modules>
     <module>mapseq-commands</module>
