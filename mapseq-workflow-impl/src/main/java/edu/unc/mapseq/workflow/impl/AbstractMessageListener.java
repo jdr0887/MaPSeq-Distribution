@@ -23,7 +23,7 @@ import edu.unc.mapseq.workflow.model.WorkflowMessage;
 
 public abstract class AbstractMessageListener implements MessageListener {
 
-    public static final Logger logger = LoggerFactory.getLogger(AbstractMessageListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractMessageListener.class);
 
     private WorkflowBeanService workflowBeanService;
 
