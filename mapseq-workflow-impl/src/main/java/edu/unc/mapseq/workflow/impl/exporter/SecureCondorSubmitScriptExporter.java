@@ -173,7 +173,7 @@ public class SecureCondorSubmitScriptExporter extends DefaultCondorSubmitScriptE
         scriptSB.append("if [ -e ~/.mapseqrc ]; then . ~/.mapseqrc; fi\n");
         scriptSB.append("if [ -e ~/.jlrmrc ]; then . ~/.jlrmrc; fi\n");
         scriptSB.append(
-                "if [ \"x$MAPSEQ_HOME\" = \"x\" ]; then echo \"ERROR: MAPSEQ_HOME has to be set\"; exit 1; fi\n");
+                "if [ \"x$MAPSEQ_CLIENT_HOME\" = \"x\" ]; then echo \"ERROR: MAPSEQ_CLIENT_HOME has to be set\"; exit 1; fi\n");
         scriptSB.append("/bin/hostname -f; /usr/bin/id; /bin/env\n");
 
         String commandFormat = "%nRC=0; %s; RC=$?%n%sif [ $RC != 0 ]; then exit $RC; fi%n%n";
@@ -223,7 +223,7 @@ public class SecureCondorSubmitScriptExporter extends DefaultCondorSubmitScriptE
         if (job.getInitialDirectory() != null) {
 
             StringBuilder transferOutputCommandSB = new StringBuilder();
-            transferOutputCommandSB.append("$MAPSEQ_HOME/bin/mapseq-transfer-output-files.sh --host=$DATA_MOVER");
+            transferOutputCommandSB.append("$MAPSEQ_CLIENT_HOME/bin/mapseq-transfer-output-files.sh --host=$DATA_MOVER");
             transferOutputCommandSB.append(String.format(" --username=%s", username));
             String initialDir = job.getInitialDirectory();
             transferOutputCommandSB.append(String.format(" --remoteDirectory=%s", initialDir));
