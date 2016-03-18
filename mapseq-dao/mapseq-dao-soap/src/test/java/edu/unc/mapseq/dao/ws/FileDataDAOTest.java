@@ -89,13 +89,10 @@ public class FileDataDAOTest {
 
     @Test
     public void save() {
-
-        SOAPDAOManager daoMgr = SOAPDAOManager.getInstance();
-
-        final FileDataDAO fileDataDAO = daoMgr.getMaPSeqDAOBeanService().getFileDataDAO();
-
-        FileData fileData = new FileData("asdf.fastq.gz", "/tmp", MimeType.FASTQ);
         try {
+            SOAPDAOManager daoMgr = SOAPDAOManager.getInstance();
+            FileDataDAO fileDataDAO = daoMgr.getMaPSeqDAOBeanService().getFileDataDAO();
+            FileData fileData = new FileData("asdf.fastq.gz", "/tmp", MimeType.FASTQ);
             fileDataDAO.save(fileData);
         } catch (MaPSeqDAOException e) {
             e.printStackTrace();
