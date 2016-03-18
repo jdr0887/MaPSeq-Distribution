@@ -6,7 +6,6 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.commons.io.FileUtils;
 
-import edu.unc.mapseq.dao.model.MimeType;
 import edu.unc.mapseq.module.DefaultModuleOutput;
 import edu.unc.mapseq.module.Module;
 import edu.unc.mapseq.module.ModuleException;
@@ -34,9 +33,6 @@ public class CopyDirectory extends Module {
     @FileIsNotEmpty(message = "invalid output file", groups = OutputValidations.class)
     @InputArgument
     private File destination;
-
-    @InputArgument
-    private MimeType mimeType;
 
     public CopyDirectory() {
         super();
@@ -88,14 +84,6 @@ public class CopyDirectory extends Module {
         this.destination = destination;
     }
 
-    public MimeType getMimeType() {
-        return mimeType;
-    }
-
-    public void setMimeType(MimeType mimeType) {
-        this.mimeType = mimeType;
-    }
-
     public static void main(String[] args) {
         CopyDirectory module = new CopyDirectory();
         module.setWorkflowName("TEST");
@@ -106,7 +94,6 @@ public class CopyDirectory extends Module {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
 }
