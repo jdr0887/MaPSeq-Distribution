@@ -61,13 +61,11 @@ public class SampleDAOTest {
     }
 
     @Test
-    public void testAddFileDataToSample() {
-
-        SOAPDAOManager daoMgr = SOAPDAOManager.getInstance();
-
+    public void testAddFileData() {
         try {
+            SOAPDAOManager daoMgr = SOAPDAOManager.getInstance();
             SampleDAO sampleDAO = daoMgr.getMaPSeqDAOBeanService().getSampleDAO();
-            sampleDAO.addFileData(1L, 2216370L);
+            sampleDAO.addFileData(18L, 122L);
         } catch (MaPSeqDAOException e) {
             e.printStackTrace();
         }
