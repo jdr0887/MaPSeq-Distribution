@@ -105,8 +105,8 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Private-Package />
-            <Export-Package>edu.unc.mapseq.dao.*</Export-Package>
+            <Private-Package>edu.unc.mapseq.dao.rest.*</Private-Package>
+            <Export-Package>edu.unc.mapseq.dao.rest*</Export-Package>
             <Import-Package>*</Import-Package>
           </instructions>
         </configuration>
