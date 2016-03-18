@@ -100,10 +100,10 @@ public class JobDAOImpl extends NamedEntityDAOImpl<Job, Long> implements JobDAO 
     }
 
     @Override
-    public void addFileDataToJob(Long fileDataId, Long jobId) throws MaPSeqDAOException {
-        logger.debug("ENTERING addFileDataToJob(Long, Long)");
+    public void addFileData(Long fileDataId, Long jobId) throws MaPSeqDAOException {
+        logger.debug("ENTERING addFileData(Long, Long)");
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
-        client.path("/addFileDataToJob/{fileDataId}/{jobId}", fileDataId, jobId).post(null);
+        client.path("/addFileData/{fileDataId}/{jobId}", fileDataId, jobId).post(null);
     }
 
 }

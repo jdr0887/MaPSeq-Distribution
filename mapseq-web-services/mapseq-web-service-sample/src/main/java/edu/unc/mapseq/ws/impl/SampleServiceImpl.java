@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.ws.rs.core.Response;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
@@ -175,10 +173,10 @@ public class SampleServiceImpl implements SampleService {
     }
 
     @Override
-    public void addFileDataToSample(Long fileDataId, Long sampleId) {
-        logger.debug("ENTERING addFileDataToSample(Long, Long)");
+    public void addFileData(Long fileDataId, Long sampleId) {
+        logger.debug("ENTERING addFileData(Long, Long)");
         try {
-            sampleDAO.addFileDataToSample(fileDataId, sampleId);
+            sampleDAO.addFileData(fileDataId, sampleId);
         } catch (MaPSeqDAOException e) {
             logger.error("Error", e);
         }

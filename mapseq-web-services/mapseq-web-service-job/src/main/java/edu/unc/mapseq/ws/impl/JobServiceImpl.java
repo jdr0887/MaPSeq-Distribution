@@ -130,10 +130,10 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public void addFileDataToJob(Long fileDataId, Long jobId) {
-        logger.debug("ENTERING addFileDataToJob(Long, Long)");
+    public void addFileData(Long fileDataId, Long jobId) {
+        logger.debug("ENTERING addFileData(Long, Long)");
         try {
-            jobDAO.addFileDataToJob(fileDataId, jobId);
+            jobDAO.addFileData(fileDataId, jobId);
         } catch (MaPSeqDAOException e) {
             logger.error("Error", e);
         }

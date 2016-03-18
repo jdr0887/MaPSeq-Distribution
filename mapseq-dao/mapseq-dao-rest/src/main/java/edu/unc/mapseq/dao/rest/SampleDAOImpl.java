@@ -88,10 +88,10 @@ public class SampleDAOImpl extends NamedEntityDAOImpl<Sample, Long> implements S
     }
 
     @Override
-    public void addFileDataToSample(Long fileDataId, Long sampleId) throws MaPSeqDAOException {
-        logger.debug("ENTERING addFileDataToSample(Long, Long)");
+    public void addFileData(Long fileDataId, Long sampleId) throws MaPSeqDAOException {
+        logger.debug("ENTERING addFileData(Long, Long)");
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
-        client.path("/addFileDataToSample/{fileDataId}/{sampleId}", fileDataId, sampleId).post(null);
+        client.path("/addFileData/{fileDataId}/{sampleId}", fileDataId, sampleId).post(null);
     }
 
 }

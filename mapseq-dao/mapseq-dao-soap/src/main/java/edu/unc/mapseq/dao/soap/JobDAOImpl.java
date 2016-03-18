@@ -128,9 +128,9 @@ public class JobDAOImpl extends NamedEntityDAOImpl<Job, Long> implements JobDAO 
     }
 
     @Override
-    public void addFileDataToJob(Long fileDataId, Long jobId) throws MaPSeqDAOException {
+    public void addFileData(Long fileDataId, Long jobId) throws MaPSeqDAOException {
         logger.debug("ENTERING addFileDataToJob(Long, Long)");
-        jobService.addFileDataToJob(fileDataId, jobId);
+        jobService.addFileData(fileDataId, jobId);
     }
 
 }

@@ -67,7 +67,7 @@ public class SampleDAOTest {
 
         try {
             SampleDAO sampleDAO = daoMgr.getMaPSeqDAOBeanService().getSampleDAO();
-            sampleDAO.addFileDataToSample(1L, 2216370L);
+            sampleDAO.addFileData(1L, 2216370L);
         } catch (MaPSeqDAOException e) {
             e.printStackTrace();
         }
@@ -200,16 +200,16 @@ public class SampleDAOTest {
                     for (FileData fileData : sample.getFileDatas()) {
                         MimeType mimeType = fileData.getMimeType();
                         if (mimeType != null && mimeType.equals(MimeType.FASTQ)) {
-                            Pattern patternR1 = Pattern.compile("^" + flowcell.getName() + ".*_L00"
-                                    + sample.getLaneIndex() + "_R1\\.fastq\\.gz$");
+                            Pattern patternR1 = Pattern.compile(
+                                    "^" + flowcell.getName() + ".*_L00" + sample.getLaneIndex() + "_R1\\.fastq\\.gz$");
                             Matcher matcherR1 = patternR1.matcher(fileData.getName());
                             File file = new File(fileData.getPath(), fileData.getName());
                             if (matcherR1.matches()) {
                                 readPairList.add(file.getAbsolutePath());
                             }
 
-                            Pattern patternR2 = Pattern.compile("^" + flowcell.getName() + ".*_L00"
-                                    + sample.getLaneIndex() + "_R2\\.fastq\\.gz$");
+                            Pattern patternR2 = Pattern.compile(
+                                    "^" + flowcell.getName() + ".*_L00" + sample.getLaneIndex() + "_R2\\.fastq\\.gz$");
                             Matcher matcherR2 = patternR2.matcher(fileData.getName());
                             if (matcherR2.matches()) {
                                 readPairList.add(file.getAbsolutePath());
@@ -288,17 +288,17 @@ public class SampleDAOTest {
                     Date startDate = workflowRunAttempt.getStarted();
                     String formattedStartDate = "";
                     if (startDate != null) {
-                        formattedStartDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(
-                                workflowRunAttempt.getStarted());
+                        formattedStartDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
+                                .format(workflowRunAttempt.getStarted());
                     }
                     Date endDate = workflowRunAttempt.getFinished();
                     String formattedEndDate = "";
                     if (endDate != null) {
-                        formattedEndDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(
-                                workflowRunAttempt.getFinished());
+                        formattedEndDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
+                                .format(workflowRunAttempt.getFinished());
                     }
-                    formatter.format("%1$-18s %2$-20s %3$-24s %4$s%n", wr.getWorkflow().getName(), workflowRunAttempt
-                            .getStatus().getState(), formattedStartDate, formattedEndDate);
+                    formatter.format("%1$-18s %2$-20s %3$-24s %4$s%n", wr.getWorkflow().getName(),
+                            workflowRunAttempt.getStatus().getState(), formattedStartDate, formattedEndDate);
                 }
                 formatter.flush();
             }

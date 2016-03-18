@@ -33,7 +33,7 @@ public class SampleTest {
         RESTDAOManager daoMgr = RESTDAOManager.getInstance();
         try {
             SampleDAO sampleDAO = daoMgr.getMaPSeqDAOBeanService().getSampleDAO();
-            sampleDAO.addFileDataToSample(2L, 2216370L);
+            sampleDAO.addFileData(2L, 2216370L);
         } catch (MaPSeqDAOException e) {
             e.printStackTrace();
         }
