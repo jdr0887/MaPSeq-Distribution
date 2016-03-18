@@ -12,9 +12,9 @@ import org.junit.Test;
 
 import edu.unc.mapseq.dao.FileDataDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
-import edu.unc.mapseq.dao.SOAPDAOManager;
 import edu.unc.mapseq.dao.model.FileData;
 import edu.unc.mapseq.dao.model.MimeType;
+import edu.unc.mapseq.dao.soap.SOAPDAOManager;
 
 public class FileDataDAOTest {
 

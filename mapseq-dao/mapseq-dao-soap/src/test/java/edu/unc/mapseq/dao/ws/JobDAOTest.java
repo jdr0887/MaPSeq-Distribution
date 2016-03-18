@@ -8,12 +8,12 @@ import org.junit.Test;
 
 import edu.unc.mapseq.dao.JobDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
-import edu.unc.mapseq.dao.SOAPDAOManager;
 import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
 import edu.unc.mapseq.dao.model.Job;
 import edu.unc.mapseq.dao.model.JobStatusType;
 import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
 import edu.unc.mapseq.dao.soap.JobDAOImpl;
+import edu.unc.mapseq.dao.soap.SOAPDAOManager;
 
 public class JobDAOTest {
 

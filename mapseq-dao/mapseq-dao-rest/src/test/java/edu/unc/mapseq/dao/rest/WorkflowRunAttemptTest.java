@@ -5,7 +5,6 @@ import java.util.List;
 import org.junit.Test;
 
 import edu.unc.mapseq.dao.MaPSeqDAOException;
-import edu.unc.mapseq.dao.RESTDAOManager;
 import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
 
 public class WorkflowRunAttemptTest {

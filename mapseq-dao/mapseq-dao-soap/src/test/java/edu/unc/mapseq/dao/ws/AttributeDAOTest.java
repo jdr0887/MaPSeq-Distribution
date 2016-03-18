@@ -4,8 +4,8 @@ import org.junit.Test;
 
 import edu.unc.mapseq.dao.AttributeDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
-import edu.unc.mapseq.dao.SOAPDAOManager;
 import edu.unc.mapseq.dao.model.Attribute;
+import edu.unc.mapseq.dao.soap.SOAPDAOManager;
 
 public class AttributeDAOTest {
 
