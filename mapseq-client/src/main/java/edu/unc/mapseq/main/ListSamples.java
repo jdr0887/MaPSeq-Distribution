@@ -19,10 +19,10 @@ import org.apache.commons.lang.StringUtils;
 import edu.unc.mapseq.dao.FlowcellDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
-import edu.unc.mapseq.dao.RESTDAOManager;
 import edu.unc.mapseq.dao.SampleDAO;
 import edu.unc.mapseq.dao.model.Flowcell;
 import edu.unc.mapseq.dao.model.Sample;
+import edu.unc.mapseq.dao.rest.RESTDAOManager;
 
 public class ListSamples implements Runnable {
 

@@ -14,8 +14,8 @@ import org.apache.commons.cli.ParseException;
 
 import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
-import edu.unc.mapseq.dao.RESTDAOManager;
 import edu.unc.mapseq.dao.model.Workflow;
+import edu.unc.mapseq.dao.rest.RESTDAOManager;
 
 public class ListWorkflows implements Runnable {
 

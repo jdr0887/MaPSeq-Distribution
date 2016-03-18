@@ -14,8 +14,8 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang.StringUtils;
 
 import edu.unc.mapseq.dao.MaPSeqDAOException;
-import edu.unc.mapseq.dao.SOAPDAOManager;
 import edu.unc.mapseq.dao.model.Flowcell;
+import edu.unc.mapseq.dao.soap.SOAPDAOManager;
 
 public class CreateFlowcell implements Callable<String> {
 

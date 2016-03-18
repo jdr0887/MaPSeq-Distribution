@@ -16,11 +16,11 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.collections.CollectionUtils;
 
 import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
-import edu.unc.mapseq.dao.RESTDAOManager;
 import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
 import edu.unc.mapseq.dao.WorkflowRunDAO;
 import edu.unc.mapseq.dao.model.WorkflowRun;
 import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
+import edu.unc.mapseq.dao.rest.RESTDAOManager;
 
 public class ListWorkflowRuns implements Runnable {
 

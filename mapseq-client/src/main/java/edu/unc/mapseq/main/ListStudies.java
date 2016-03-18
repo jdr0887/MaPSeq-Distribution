@@ -14,8 +14,8 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.collections.CollectionUtils;
 
 import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
-import edu.unc.mapseq.dao.RESTDAOManager;
 import edu.unc.mapseq.dao.model.Study;
+import edu.unc.mapseq.dao.rest.RESTDAOManager;
 
 public class ListStudies implements Runnable {
 
