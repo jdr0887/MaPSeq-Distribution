@@ -8,9 +8,9 @@ import java.util.Locale;
 
 import org.junit.Test;
 
-import edu.unc.mapseq.dao.RESTDAOManager;
 import edu.unc.mapseq.dao.model.WorkflowRun;
 import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
+import edu.unc.mapseq.dao.rest.RESTDAOManager;
 
 public class ListWorkflowRunsTest {
 

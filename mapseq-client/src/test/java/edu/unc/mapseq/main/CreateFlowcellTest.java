@@ -13,10 +13,10 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 import edu.unc.mapseq.dao.MaPSeqDAOException;
-import edu.unc.mapseq.dao.SOAPDAOManager;
 import edu.unc.mapseq.dao.model.Flowcell;
 import edu.unc.mapseq.dao.model.Sample;
 import edu.unc.mapseq.dao.model.Study;
+import edu.unc.mapseq.dao.soap.SOAPDAOManager;
 
 public class CreateFlowcellTest {
 
