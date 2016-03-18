@@ -23,8 +23,6 @@ public abstract class AbstractSampleMessageListener extends AbstractMessageListe
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractSampleMessageListener.class);
 
-    private String studyName;
-
     public AbstractSampleMessageListener() {
         super();
     }
@@ -137,14 +135,6 @@ public abstract class AbstractSampleMessageListener extends AbstractMessageListe
         }
 
         return workflowRun;
-    }
-
-    public String getStudyName() {
-        return studyName;
-    }
-
-    public void setStudyName(String studyName) {
-        this.studyName = studyName;
     }
 
 }
