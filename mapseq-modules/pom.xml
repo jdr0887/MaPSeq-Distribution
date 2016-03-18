@@ -35,6 +35,7 @@
     <dependency>
       <groupId>edu.unc.mapseq</groupId>
       <artifactId>mapseq-module-api</artifactId>
+      <scope>provided</scope>      
     </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
@@ -118,7 +119,7 @@
            <phase>generate-sources</phase>
            <configuration>
              <includes>
-               <include>**/module/**/*.java</include>
+               <include>**/module/impl/**/*.java</include>
              </includes>
            </configuration>
            <goals>
@@ -159,6 +160,16 @@
          </execution>
        </executions>
       </plugin>
+      <plugin>
+	<groupId>org.apache.felix</groupId>
+	<artifactId>maven-bundle-plugin</artifactId>
+	<configuration>
+	  <instructions>
+	    <Export-Package>edu.unc.mapseq.module.impl*</Export-Package>
+	    <Import-Package>*</Import-Package>
+	  </instructions>
+	</configuration>
+      </plugin>      
     </plugins>
   </build>
 </project>
