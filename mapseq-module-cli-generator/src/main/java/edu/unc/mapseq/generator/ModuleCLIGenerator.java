@@ -42,7 +42,7 @@ import com.sun.codemodel.JTryBlock;
 import com.sun.codemodel.JVar;
 
 import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
-import edu.unc.mapseq.dao.SOAPDAOManager;
+import edu.unc.mapseq.dao.soap.SOAPDAOManager;
 import edu.unc.mapseq.module.DryRunJobObserver;
 import edu.unc.mapseq.module.ModuleExecutor;
 import edu.unc.mapseq.module.ModuleOutput;
