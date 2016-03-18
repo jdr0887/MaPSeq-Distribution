@@ -70,6 +70,7 @@
     <bundle>mvn:edu.unc.mapseq/mapseq-datasource/${mapseq.version}</bundle>        
     <bundle>mvn:edu.unc.mapseq.mapseq-dao/mapseq-dao-api/${mapseq.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.mapseq-dao/mapseq-dao-jpa/${mapseq.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-dao/mapseq-dao-soap/${project.version}</bundle>    
   </feature>
 
   <feature name="mapseq-web-services" version="${project.version}" resolver="(obr)">
@@ -83,7 +84,6 @@
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-workflow/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-workflow-run/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-workflow-run-attempt/${project.version}</bundle>
-    <!-- <bundle>mvn:edu.unc.mapseq.distribution.mapseq-dao/mapseq-dao-soap/${project.version}</bundle>         -->
   </feature>
 
   <feature name="mapseq-workflows" version="${project.version}" resolver="(obr)">
