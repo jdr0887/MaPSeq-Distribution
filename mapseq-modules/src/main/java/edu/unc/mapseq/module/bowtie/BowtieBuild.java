@@ -29,8 +29,8 @@ public class BowtieBuild extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     public File getInput() {
@@ -47,6 +47,11 @@ public class BowtieBuild extends Module {
 
     public void setPrefix(String prefix) {
         this.prefix = prefix;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("BowtieBuild [input=%s, prefix=%s, toString()=%s]", input, prefix, super.toString());
     }
 
 }

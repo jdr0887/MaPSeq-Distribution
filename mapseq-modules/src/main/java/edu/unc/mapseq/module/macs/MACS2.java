@@ -109,8 +109,8 @@ public class MACS2 extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     @Override
@@ -455,6 +455,15 @@ public class MACS2 extends Module {
 
     public void setWorkDir(File workDir) {
         this.workDir = workDir;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "MACS2 [treatment=%s, control=%s, name=%s, format=%s, genomeSize=%s, tagSize=%s, bandWidth=%s, qValue=%s, pValue=%s, mFold=%s, noLambda=%s, smallLocal=%s, largeLocal=%s, autoBiModal=%s, noModal=%s, shiftSize=%s, keepDuplicates=%s, toLarge=%s, downSample=%s, shiftControl=%s, halfExtends=%s, bedGraph=%s, broad=%s, broadCutoff=%s, workDir=%s, toString()=%s]",
+                treatment, control, name, format, genomeSize, tagSize, bandWidth, qValue, pValue, mFold, noLambda,
+                smallLocal, largeLocal, autoBiModal, noModal, shiftSize, keepDuplicates, toLarge, downSample,
+                shiftControl, halfExtends, bedGraph, broad, broadCutoff, workDir, super.toString());
     }
 
 }

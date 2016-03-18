@@ -85,4 +85,9 @@ public class Postcript2PDF extends Module {
         this.output = output;
     }
 
+    @Override
+    public String toString() {
+        return String.format("Postcript2PDF [input=%s, output=%s, toString()=%s]", input, output, super.toString());
+    }
+
 }

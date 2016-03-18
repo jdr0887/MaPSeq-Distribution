@@ -69,8 +69,8 @@ public class GATKApplyRecalibration extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     public String getPhoneHome() {
@@ -167,6 +167,14 @@ public class GATKApplyRecalibration extends Module {
 
     public void setTsFilterLevel(Double tsFilterLevel) {
         this.tsFilterLevel = tsFilterLevel;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "GATKApplyRecalibration [input=%s, referenceSequence=%s, numThreads=%s, out=%s, recalFile=%s, tranchesFile=%s, phoneHome=%s, downsamplingType=%s, validationStrictness=%s, intervals=%s, mode=%s, tsFilterLevel=%s, toString()=%s]",
+                input, referenceSequence, numThreads, out, recalFile, tranchesFile, phoneHome, downsamplingType,
+                validationStrictness, intervals, mode, tsFilterLevel, super.toString());
     }
 
     public static void main(String[] args) {

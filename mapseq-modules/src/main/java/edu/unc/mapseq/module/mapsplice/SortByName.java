@@ -25,8 +25,8 @@ public class SortByName extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     public File getClusterDirectory() {
@@ -35,6 +35,11 @@ public class SortByName extends Module {
 
     public void setClusterDirectory(File clusterDirectory) {
         this.clusterDirectory = clusterDirectory;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("SortByName [clusterDirectory=%s, toString()=%s]", clusterDirectory, super.toString());
     }
 
 }

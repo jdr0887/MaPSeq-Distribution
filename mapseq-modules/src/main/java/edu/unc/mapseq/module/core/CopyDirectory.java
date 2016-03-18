@@ -84,6 +84,12 @@ public class CopyDirectory extends Module {
         this.destination = destination;
     }
 
+    @Override
+    public String toString() {
+        return String.format("CopyDirectory [source=%s, destination=%s, toString()=%s]", source, destination,
+                super.toString());
+    }
+
     public static void main(String[] args) {
         CopyDirectory module = new CopyDirectory();
         module.setWorkflowName("TEST");

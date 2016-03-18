@@ -146,4 +146,10 @@ public class RandomSampleFastq extends Module {
         this.propertiesFile = propertiesFile;
     }
 
+    @Override
+    public String toString() {
+        return String.format("RandomSampleFastq [fastq=%s, outFile=%s, propertiesFile=%s, toString()=%s]", fastq,
+                outFile, propertiesFile, super.toString());
+    }
+
 }

@@ -60,8 +60,8 @@ public class FusionSAM2JunctionFilterAnchorNewFormat extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     @Override
@@ -132,6 +132,13 @@ public class FusionSAM2JunctionFilterAnchorNewFormat extends Module {
 
     public void setReferenceSequenceDirectory(File referenceSequenceDirectory) {
         this.referenceSequenceDirectory = referenceSequenceDirectory;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "FusionSAM2JunctionFilterAnchorNewFormat [logger=%s, sam=%s, junction=%s, readLength=%s, minimumAnchor=%s, referenceSequenceDirectory=%s, toString()=%s]",
+                logger, sam, junction, readLength, minimumAnchor, referenceSequenceDirectory, super.toString());
     }
 
 }

@@ -80,6 +80,11 @@ public class StripTrailingTabs extends Module {
         this.output = output;
     }
 
+    @Override
+    public String toString() {
+        return String.format("StripTrailingTabs [input=%s, output=%s, toString()=%s]", input, output, super.toString());
+    }
+
     public static void main(String[] args) {
         StripTrailingTabs runner = new StripTrailingTabs();
         runner.setInput(new File("/home/jdr0887/tmp/rsem.isoforms.results"));

@@ -117,4 +117,10 @@ public class TranscriptCoverageTrend extends Module {
         this.outFile = outFile;
     }
 
+    @Override
+    public String toString() {
+        return String.format("TranscriptCoverageTrend [inFile=%s, outFile=%s, toString()=%s]", inFile, outFile,
+                super.toString());
+    }
+
 }

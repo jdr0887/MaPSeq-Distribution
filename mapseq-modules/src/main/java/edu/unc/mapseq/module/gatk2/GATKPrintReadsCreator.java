@@ -53,8 +53,8 @@ public class GATKPrintReadsCreator extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     public File getKey() {
@@ -105,13 +105,20 @@ public class GATKPrintReadsCreator extends Module {
         this.phoneHome = phoneHome;
     }
 
+    @Override
+    public String toString() {
+        return String.format(
+                "GATKPrintReadsCreator [key=%s, inputFile=%s, referenceSequence=%s, out=%s, baseQualityScoreRecalibrationFile=%s, phoneHome=%s, toString()=%s]",
+                key, inputFile, referenceSequence, out, baseQualityScoreRecalibrationFile, phoneHome, super.toString());
+    }
+
     public static void main(String[] args) {
 
         GATKPrintReadsCreator module = new GATKPrintReadsCreator();
         module.setReferenceSequence(new File(
                 "$NIDAUCSFVARIANTCALLING_REFERENCES_DIRECTORY/BUILD.37.1/bwa061sam0118/BUILD.37.1.sorted.shortid.fa"));
-        module.setKey(new File(
-                "$NIDAUCSFVARIANTCALLING_SEQUENCE_ANALYSIS_RESOURCES_DIRECTORY/gatk/key/xiao_renci.org.key"));
+        module.setKey(
+                new File("$NIDAUCSFVARIANTCALLING_SEQUENCE_ANALYSIS_RESOURCES_DIRECTORY/gatk/key/xiao_renci.org.key"));
         module.setPhoneHome(GATKPhoneHomeType.NO_ET.toString());
 
         try {

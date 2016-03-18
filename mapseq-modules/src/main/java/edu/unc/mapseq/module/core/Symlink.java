@@ -119,4 +119,10 @@ public class Symlink extends Module {
         this.sleepDuration = sleepDuration;
     }
 
+    @Override
+    public String toString() {
+        return String.format("Symlink [link=%s, target=%s, sleepDuration=%s, prefix=%s, toString()=%s]", link, target,
+                sleepDuration, prefix, super.toString());
+    }
+
 }

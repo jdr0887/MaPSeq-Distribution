@@ -68,8 +68,8 @@ public class BWASAMPairedEnd extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     public File getFastq1() {
@@ -118,6 +118,13 @@ public class BWASAMPairedEnd extends Module {
 
     public void setFastaDB(File fastaDB) {
         this.fastaDB = fastaDB;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "BWASAMPairedEnd [fastq1=%s, fastq2=%s, sai1=%s, sai2=%s, fastaDB=%s, outFile=%s, toString()=%s]",
+                fastq1, fastq2, sai1, sai2, fastaDB, outFile, super.toString());
     }
 
     public static void main(String[] args) {

@@ -103,6 +103,12 @@ public class Make extends Module {
         this.workDir = workDir;
     }
 
+    @Override
+    public String toString() {
+        return String.format("Make [target=%s, threads=%s, workDir=%s, toString()=%s]", target, threads, workDir,
+                super.toString());
+    }
+
     public static void main(String[] args) {
         Make module = new Make();
 

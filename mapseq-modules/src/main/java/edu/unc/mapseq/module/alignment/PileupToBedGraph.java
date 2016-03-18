@@ -179,4 +179,10 @@ public class PileupToBedGraph extends Module {
         this.chromosomeSizes = chromosomeSizes;
     }
 
+    @Override
+    public String toString() {
+        return String.format("PileupToBedGraph [inFile=%s, outFile=%s, chromosomeSizes=%s, toString()=%s]", inFile,
+                outFile, chromosomeSizes, super.toString());
+    }
+
 }

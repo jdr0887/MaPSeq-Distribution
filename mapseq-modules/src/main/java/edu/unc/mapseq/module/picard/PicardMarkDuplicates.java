@@ -127,4 +127,11 @@ public class PicardMarkDuplicates extends Module {
         this.metricsFile = metricsFile;
     }
 
+    @Override
+    public String toString() {
+        return String.format(
+                "PicardMarkDuplicates [input=%s, output=%s, metricsFile=%s, maxRecordsInRAM=%s, toString()=%s]", input,
+                output, metricsFile, maxRecordsInRAM, super.toString());
+    }
+
 }

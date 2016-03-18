@@ -76,4 +76,9 @@ public class DetermineMedian extends Module {
         this.output = output;
     }
 
+    @Override
+    public String toString() {
+        return String.format("DetermineMedian [input=%s, output=%s, toString()=%s]", input, output, super.toString());
+    }
+
 }

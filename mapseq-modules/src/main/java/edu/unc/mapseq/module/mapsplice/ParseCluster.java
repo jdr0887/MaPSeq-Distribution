@@ -42,8 +42,8 @@ public class ParseCluster extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     @Override
@@ -82,6 +82,12 @@ public class ParseCluster extends Module {
 
     public void setOutputDirectory(File outputDirectory) {
         this.outputDirectory = outputDirectory;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("ParseCluster [logger=%s, input=%s, outputDirectory=%s, toString()=%s]", logger, input,
+                outputDirectory, super.toString());
     }
 
 }

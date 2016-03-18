@@ -102,9 +102,8 @@ public class CoverageAcrossTranscript extends Module {
                 String coordinate = tokenizer.nextToken();
                 String referenceBase = tokenizer.nextToken();
                 String readBases = tokenizer.nextToken();
-                pileupMap.get(chromosomeName).add(
-                        new PileupBean(Integer.valueOf(coordinate.trim()), null, Integer.valueOf(readBases.trim()),
-                                null, null));
+                pileupMap.get(chromosomeName).add(new PileupBean(Integer.valueOf(coordinate.trim()), null,
+                        Integer.valueOf(readBases.trim()), null, null));
             }
             br.close();
 
@@ -201,6 +200,12 @@ public class CoverageAcrossTranscript extends Module {
 
     public void setPileupFile(File pileupFile) {
         this.pileupFile = pileupFile;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("CoverageAcrossTranscript [pileupFile=%s, outFile=%s, mapFile=%s, toString()=%s]",
+                pileupFile, outFile, mapFile, super.toString());
     }
 
 }

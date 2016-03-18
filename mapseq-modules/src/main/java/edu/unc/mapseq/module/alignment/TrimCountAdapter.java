@@ -275,4 +275,11 @@ public class TrimCountAdapter extends Module {
         this.outStats = outStats;
     }
 
+    @Override
+    public String toString() {
+        return String.format(
+                "TrimCountAdapter [inFastq=%s, primerSeq=%s, outFastq=%s, outQC=%s, outStats=%s, toString()=%s]",
+                inFastq, primerSeq, outFastq, outQC, outStats, super.toString());
+    }
+
 }

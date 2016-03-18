@@ -55,8 +55,8 @@ public class FastqQualityBoxplotGraph extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     @Override
@@ -132,6 +132,13 @@ public class FastqQualityBoxplotGraph extends Module {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "FastqQualityBoxplotGraph [input=%s, output=%s, generatePostcript=%s, title=%s, toString()=%s]", input,
+                output, generatePostcript, title, super.toString());
     }
 
     public static void main(String[] args) {

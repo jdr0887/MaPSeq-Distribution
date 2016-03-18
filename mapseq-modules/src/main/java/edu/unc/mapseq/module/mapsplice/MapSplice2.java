@@ -101,8 +101,8 @@ public class MapSplice2 extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     public File getFastqR1() {
@@ -311,6 +311,16 @@ public class MapSplice2 extends Module {
 
     public void setSegmentMismatches(Integer segmentMismatches) {
         this.segmentMismatches = segmentMismatches;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "MapSplice2 [fastqR1=%s, fastqR2=%s, chromosomeFilesDirectory=%s, allChromosomeFiles=%s, bowtieIndexPath=%s, threads=%s, outputDirectory=%s, minIntronLength=%s, maxIntronLength=%s, readsFormat=%s, pairend=%s, nonCanonical=%s, semiCanonical=%s, fusion=%s, minAnchor=%s, spliceMismatches=%s, readWidth=%s, fastaFilesExt=%s, numseq=%s, seqLength=%s, fullRunning=%s, searchWholeChromosome=%s, mapSegmentsDirectly=%s, runMapPER=%s, notREMTemp=%s, segmentMismatches=%s, toString()=%s]",
+                fastqR1, fastqR2, chromosomeFilesDirectory, allChromosomeFiles, bowtieIndexPath, threads,
+                outputDirectory, minIntronLength, maxIntronLength, readsFormat, pairend, nonCanonical, semiCanonical,
+                fusion, minAnchor, spliceMismatches, readWidth, fastaFilesExt, numseq, seqLength, fullRunning,
+                searchWholeChromosome, mapSegmentsDirectly, runMapPER, notREMTemp, segmentMismatches, super.toString());
     }
 
 }

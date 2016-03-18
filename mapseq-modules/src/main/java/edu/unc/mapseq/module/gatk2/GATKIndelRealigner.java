@@ -78,8 +78,8 @@ public class GATKIndelRealigner extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     @Override
@@ -121,7 +121,8 @@ public class GATKIndelRealigner extends Module {
                 commandOutput.setExitCode(-1);
             }
             if (!commandOutput.getStdout().toString().contains("reads were filtered out")) {
-                // commandOutput.setDescription("The stdout file seems not have a line for the number of \"reads were filtered out\"");
+                // commandOutput.setDescription("The stdout file seems not have a line for the number of \"reads were
+                // filtered out\"");
                 commandOutput.setExitCode(-1);
             }
         } catch (ExecutorException e) {
@@ -208,6 +209,14 @@ public class GATKIndelRealigner extends Module {
 
     public void setOut(File out) {
         this.out = out;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "GATKIndelRealigner [key=%s, input=%s, referenceSequence=%s, targetIntervals=%s, known=%s, standardCovs=%s, out=%s, phoneHome=%s, downsamplingType=%s, toString()=%s]",
+                key, input, referenceSequence, targetIntervals, known, standardCovs, out, phoneHome, downsamplingType,
+                super.toString());
     }
 
 }

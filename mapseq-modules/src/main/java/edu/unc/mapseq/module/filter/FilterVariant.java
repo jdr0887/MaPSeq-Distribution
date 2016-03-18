@@ -202,6 +202,12 @@ public class FilterVariant extends Module {
         this.withMissing = withMissing;
     }
 
+    @Override
+    public String toString() {
+        return String.format("FilterVariant [intervalList=%s, input=%s, output=%s, withMissing=%s, toString()=%s]",
+                intervalList, input, output, withMissing, super.toString());
+    }
+
     public static void main(String[] args) {
         FilterVariant module = new FilterVariant();
 

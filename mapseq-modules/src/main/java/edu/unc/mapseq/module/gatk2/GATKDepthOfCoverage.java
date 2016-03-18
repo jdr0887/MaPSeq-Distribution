@@ -69,8 +69,8 @@ public class GATKDepthOfCoverage extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     @Override
@@ -203,6 +203,14 @@ public class GATKDepthOfCoverage extends Module {
 
     public void setWorkDirectory(File workDirectory) {
         this.workDirectory = workDirectory;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "GATKDepthOfCoverage [key=%s, inputFile=%s, referenceSequence=%s, phoneHome=%s, downsamplingType=%s, outputPrefix=%s, omitDepthOutputAtEachBase=%s, validationStrictness=%s, intervals=%s, workDirectory=%s, toString()=%s]",
+                key, inputFile, referenceSequence, phoneHome, downsamplingType, outputPrefix, omitDepthOutputAtEachBase,
+                validationStrictness, intervals, workDirectory, super.toString());
     }
 
 }

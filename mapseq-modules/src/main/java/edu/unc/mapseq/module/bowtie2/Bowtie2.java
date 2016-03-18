@@ -168,8 +168,8 @@ public class Bowtie2 extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     public File getFastq1() {
@@ -538,6 +538,21 @@ public class Bowtie2 extends Module {
 
     public void setNonDeterministic(Boolean nonDeterministic) {
         this.nonDeterministic = nonDeterministic;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "Bowtie2 [fastq1=%s, fastq2=%s, index=%s, sam=%s, queryInputFiles=%s, skipNReads=%s, stopAfterNReads=%s, phred33QualityScore=%s, phred64QualityScore=%s, intQualityScore=%s, doNotAlignToForwardReferenceStrand=%s, doNotAlignToReverseComplementReferenceStrand=%s, reportAllAlignmentsPerRead=%s, reportGoodAlignmentsPerRead=%s, threads=%s, offRateOfIndex=%s, minimumInsertSize=%s, maximumInsertSize=%s, seed=%s, quiet=%s, suppressSQHeader=%s, suppressHeaderLines=%s, printWallClockTimeTakenBySearchPhases=%s, writeAlignedReads=%s, writeUnAlignedReads=%s, matchReadOrder=%s, qSeqFormat=%s, maxNMismatches=%s, lengthOfSeedSubstrings=%s, ignoreQuals=%s, veryFast=%s, fast=%s, sensitive=%s, verySensitive=%s, matchBonus=%s, maxPenalty=%s, penaltyForNonDNARead=%s, giveUpExtending=%s, repetitiveSeeds=%s, noMixed=%s, noDiscordant=%s, noDovetail=%s, noContain=%s, noOverlap=%s, qcFilter=%s, nonDeterministic=%s, toString()=%s]",
+                fastq1, fastq2, index, sam, queryInputFiles, skipNReads, stopAfterNReads, phred33QualityScore,
+                phred64QualityScore, intQualityScore, doNotAlignToForwardReferenceStrand,
+                doNotAlignToReverseComplementReferenceStrand, reportAllAlignmentsPerRead, reportGoodAlignmentsPerRead,
+                threads, offRateOfIndex, minimumInsertSize, maximumInsertSize, seed, quiet, suppressSQHeader,
+                suppressHeaderLines, printWallClockTimeTakenBySearchPhases, writeAlignedReads, writeUnAlignedReads,
+                matchReadOrder, qSeqFormat, maxNMismatches, lengthOfSeedSubstrings, ignoreQuals, veryFast, fast,
+                sensitive, verySensitive, matchBonus, maxPenalty, penaltyForNonDNARead, giveUpExtending,
+                repetitiveSeeds, noMixed, noDiscordant, noDovetail, noContain, noOverlap, qcFilter, nonDeterministic,
+                super.toString());
     }
 
     public static void main(String[] args) {

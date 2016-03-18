@@ -93,8 +93,8 @@ public class GATKVariantRecalibrator extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     @Override
@@ -313,6 +313,15 @@ public class GATKVariantRecalibrator extends Module {
         this.percentBadVariants = percentBadVariants;
     }
 
+    @Override
+    public String toString() {
+        return String.format(
+                "GATKVariantRecalibrator [logger=%s, input=%s, referenceSequence=%s, recalFile=%s, numThreads=%s, maxGaussians=%s, validationStrictness=%s, intervals=%s, percentBadVariants=%s, useAnnotation=%s, resource=%s, mode=%s, tranchesFile=%s, rscriptFile=%s, phoneHome=%s, downsamplingType=%s, toString()=%s]",
+                logger, input, referenceSequence, recalFile, numThreads, maxGaussians, validationStrictness, intervals,
+                percentBadVariants, useAnnotation, resource, mode, tranchesFile, rscriptFile, phoneHome,
+                downsamplingType, super.toString());
+    }
+
     public static void main(String[] args) {
 
         GATKVariantRecalibrator module = new GATKVariantRecalibrator();
@@ -327,20 +336,19 @@ public class GATKVariantRecalibrator extends Module {
         module.setMode("SNP");
         module.setRecalFile(new File("/proj/seq/mapseq/RENCI/150106_UNC10-SN254_0682_BHBEF1ADXX/L002_TGACCA/NCGenes",
                 "150106_UNC10-SN254_0682_BHBEF1ADXX_TGACCA_L002.fixed-rg.deduped.realign.fixmate.recal.variant.recal"));
-        module.setTranchesFile(new File(
-                "/proj/seq/mapseq/RENCI/150106_UNC10-SN254_0682_BHBEF1ADXX/L002_TGACCA/NCGenes",
+        module.setTranchesFile(new File("/proj/seq/mapseq/RENCI/150106_UNC10-SN254_0682_BHBEF1ADXX/L002_TGACCA/NCGenes",
                 "150106_UNC10-SN254_0682_BHBEF1ADXX_TGACCA_L002.fixed-rg.deduped.realign.fixmate.recal.variant.tranches"));
         module.setRscriptFile(new File("/proj/seq/mapseq/RENCI/150106_UNC10-SN254_0682_BHBEF1ADXX/L002_TGACCA/NCGenes",
                 "150106_UNC10-SN254_0682_BHBEF1ADXX_TGACCA_L002.fixed-rg.deduped.realign.fixmate.recal.variant.plots.R"));
         module.setPercentBadVariants(0.05);
 
         List<String> resourceList = new ArrayList<String>();
-        resourceList
-                .add(":hapmap,known=false,training=true,truth=true,prior=15.0^/proj/renci/sequence_analysis/resources/gatk/bundle/1.2/b37/hapmap_3.3.b37.sites.renci.shortid.vcf");
-        resourceList
-                .add(":omni,known=false,training=true,truth=false,prior=12.0^/proj/renci/sequence_analysis/resources/gatk/bundle/1.2/b37/1000G_omni2.5.b37.sites.renci.shortid.vcf");
-        resourceList
-                .add(":dbsnp,known=true,training=false,truth=false,prior=8.0^/proj/renci/sequence_analysis/resources/gatk/bundle/1.2/b37/dbsnp_132.b37.renci.shortid.vcf");
+        resourceList.add(
+                ":hapmap,known=false,training=true,truth=true,prior=15.0^/proj/renci/sequence_analysis/resources/gatk/bundle/1.2/b37/hapmap_3.3.b37.sites.renci.shortid.vcf");
+        resourceList.add(
+                ":omni,known=false,training=true,truth=false,prior=12.0^/proj/renci/sequence_analysis/resources/gatk/bundle/1.2/b37/1000G_omni2.5.b37.sites.renci.shortid.vcf");
+        resourceList.add(
+                ":dbsnp,known=true,training=false,truth=false,prior=8.0^/proj/renci/sequence_analysis/resources/gatk/bundle/1.2/b37/dbsnp_132.b37.renci.shortid.vcf");
         module.setResource(resourceList);
         List<String> useAnnotationList = new ArrayList<String>();
         useAnnotationList.add("QD");

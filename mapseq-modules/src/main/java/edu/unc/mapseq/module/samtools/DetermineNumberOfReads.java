@@ -76,4 +76,10 @@ public class DetermineNumberOfReads extends Module {
         this.output = output;
     }
 
+    @Override
+    public String toString() {
+        return String.format("DetermineNumberOfReads [flagstatInput=%s, output=%s, toString()=%s]", flagstatInput,
+                output, super.toString());
+    }
+
 }

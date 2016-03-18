@@ -68,8 +68,8 @@ public class IlluminaToSRF extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     @Override
@@ -144,6 +144,13 @@ public class IlluminaToSRF extends Module {
 
     public void setOutput(File output) {
         this.output = output;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "IlluminaToSRF [qSeqPath=%s, lane=%s, numberOfQSeqFiles=%s, numberOfReads=%s, barcode=%s, output=%s, toString()=%s]",
+                qSeqPath, lane, numberOfQSeqFiles, numberOfReads, barcode, output, super.toString());
     }
 
 }

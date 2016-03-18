@@ -44,8 +44,8 @@ public class FlattenVCF extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     public File getVcf() {
@@ -86,6 +86,12 @@ public class FlattenVCF extends Module {
 
     public void setHeader(Boolean header) {
         this.header = header;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("FlattenVCF [vcf=%s, output=%s, intervalList=%s, sample=%s, header=%s, toString()=%s]",
+                vcf, output, intervalList, sample, header, super.toString());
     }
 
 }

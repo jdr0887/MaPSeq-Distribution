@@ -163,8 +163,8 @@ public class Bowtie extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     public File getFastq1() {
@@ -525,6 +525,22 @@ public class Bowtie extends Module {
 
     public void setOffRateOfIndex(Integer offRateOfIndex) {
         this.offRateOfIndex = offRateOfIndex;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "Bowtie [fastq1=%s, fastq2=%s, index=%s, hits=%s, queryInputFiles=%s, seedLength=%s, noMAQRound=%s, best=%s, quiet=%s, threads=%s, seed=%s, samFormat=%s, phred33QualityScore=%s, phred64QualityScore=%s, solexaQualityScore=%s, solexa13QualityScore=%s, integerQualityScore=%s, seedMaximumMismatches=%s, maxSumOfMismatchQuals=%s, reportEndToEndHits=%s, minimumInsertSize=%s, maximumInsertSize=%s, reportGoodAlignmentsPerRead=%s, suppressAlignments=%s, quals=%s, skipNReads=%s, stopAfterNReads=%s, doNotAlignToForwardReferenceStrand=%s, doNotAlignToReverseComplementReferenceStrand=%s, maxNBacktracks=%s, maxAttemptsToFindMate=%s, tryHardToFindValidAlignments=%s, maxMemoryForBestFirstSearch=%s, reportAllAlignmentsPerRead=%s, printWallClockTimeTakenBySearchPhases=%s, leftMostRefOffset=%s, writeAlignmentsToMapFilePerReference=%s, useZeroBasedIndex=%s, writeAlignedReads=%s, writeUnAlignedReads=%s, writeEntireRefName=%s, mappingQuality=%s, suppressHeaderLines=%s, suppressSQHeader=%s, offRateOfIndex=%s, toString()=%s]",
+                fastq1, fastq2, index, hits, queryInputFiles, seedLength, noMAQRound, best, quiet, threads, seed,
+                samFormat, phred33QualityScore, phred64QualityScore, solexaQualityScore, solexa13QualityScore,
+                integerQualityScore, seedMaximumMismatches, maxSumOfMismatchQuals, reportEndToEndHits,
+                minimumInsertSize, maximumInsertSize, reportGoodAlignmentsPerRead, suppressAlignments, quals,
+                skipNReads, stopAfterNReads, doNotAlignToForwardReferenceStrand,
+                doNotAlignToReverseComplementReferenceStrand, maxNBacktracks, maxAttemptsToFindMate,
+                tryHardToFindValidAlignments, maxMemoryForBestFirstSearch, reportAllAlignmentsPerRead,
+                printWallClockTimeTakenBySearchPhases, leftMostRefOffset, writeAlignmentsToMapFilePerReference,
+                useZeroBasedIndex, writeAlignedReads, writeUnAlignedReads, writeEntireRefName, mappingQuality,
+                suppressHeaderLines, suppressSQHeader, offRateOfIndex, super.toString());
     }
 
     public static void main(String[] args) {

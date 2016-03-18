@@ -83,6 +83,11 @@ public class Cat extends Module {
         this.output = output;
     }
 
+    @Override
+    public String toString() {
+        return String.format("Cat [files=%s, output=%s, toString()=%s]", files, output, super.toString());
+    }
+
     public static void main(String[] args) {
 
         Cat module = new Cat();

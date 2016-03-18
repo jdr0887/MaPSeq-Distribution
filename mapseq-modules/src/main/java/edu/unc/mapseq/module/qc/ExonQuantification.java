@@ -205,4 +205,11 @@ public class ExonQuantification extends Module {
 
     }
 
+    @Override
+    public String toString() {
+        return String.format(
+                "ExonQuantification [numberOfReads=%s, median=%s, compositeExons=%s, pileup=%s, output=%s, toString()=%s]",
+                numberOfReads, median, compositeExons, pileup, output, super.toString());
+    }
+
 }

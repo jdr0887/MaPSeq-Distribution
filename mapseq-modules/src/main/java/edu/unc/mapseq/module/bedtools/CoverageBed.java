@@ -50,8 +50,8 @@ public class CoverageBed extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     public File getInput() {
@@ -86,11 +86,17 @@ public class CoverageBed extends Module {
         this.splitBed = splitBed;
     }
 
+    @Override
+    public String toString() {
+        return String.format("CoverageBed [input=%s, bed=%s, output=%s, splitBed=%s, toString()=%s]", input, bed,
+                output, splitBed, super.toString());
+    }
+
     public static void main(String[] args) {
 
         CoverageBed module = new CoverageBed();
-        module.setBed(new File("/proj/seq/LBG/tier1data/nextgenseq/seqware-analysis/mapsplice_rsem",
-                "composite_exons.bed"));
+        module.setBed(
+                new File("/proj/seq/LBG/tier1data/nextgenseq/seqware-analysis/mapsplice_rsem", "composite_exons.bed"));
 
         // module.setInput(new
         // File("/proj/seq/mapseq/LBG/CMPSeq/150514_UNC11-SN627_0400_AC5J46ACXX/L005_GTCCGC/RNASeq/",

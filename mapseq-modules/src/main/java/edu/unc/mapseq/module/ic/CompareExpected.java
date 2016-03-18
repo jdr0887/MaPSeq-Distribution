@@ -37,8 +37,8 @@ public class CompareExpected extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     public File getOutput() {
@@ -63,6 +63,12 @@ public class CompareExpected extends Module {
 
     public void setExpectedEC2HTSFMap(File expectedEC2HTSFMap) {
         this.expectedEC2HTSFMap = expectedEC2HTSFMap;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("CompareExpected [output=%s, maximumLikelihood=%s, expectedEC2HTSFMap=%s, toString()=%s]",
+                output, maximumLikelihood, expectedEC2HTSFMap, super.toString());
     }
 
     public static void main(String[] args) {

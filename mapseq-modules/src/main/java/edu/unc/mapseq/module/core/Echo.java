@@ -55,6 +55,11 @@ public class Echo extends Module {
         this.output = output;
     }
 
+    @Override
+    public String toString() {
+        return String.format("Echo [greeting=%s, output=%s, toString()=%s]", greeting, output, super.toString());
+    }
+
     public static void main(String[] args) {
         Echo module = new Echo();
         module.setGreeting("Hello");

@@ -37,8 +37,8 @@ public class SubsetVCF extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     public File getVcf() {
@@ -63,6 +63,12 @@ public class SubsetVCF extends Module {
 
     public void setIntervalList(File intervalList) {
         this.intervalList = intervalList;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("SubsetVCF [vcf=%s, output=%s, intervalList=%s, toString()=%s]", vcf, output, intervalList,
+                super.toString());
     }
 
 }

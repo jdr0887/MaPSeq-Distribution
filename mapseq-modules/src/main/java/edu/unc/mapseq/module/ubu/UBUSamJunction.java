@@ -97,4 +97,10 @@ public class UBUSamJunction extends Module {
         this.output = output;
     }
 
+    @Override
+    public String toString() {
+        return String.format("UBUSamJunction [junctions=%s, input=%s, output=%s, toString()=%s]", junctions, input,
+                output, super.toString());
+    }
+
 }

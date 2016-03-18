@@ -66,6 +66,12 @@ public class Sed extends Module {
         this.output = output;
     }
 
+    @Override
+    public String toString() {
+        return String.format("Sed [regularExpression=%s, source=%s, output=%s, toString()=%s]", regularExpression,
+                source, output, super.toString());
+    }
+
     public static void main(String[] args) {
         Sed module = new Sed();
         module.setRegularExpression("s/world/sed/");

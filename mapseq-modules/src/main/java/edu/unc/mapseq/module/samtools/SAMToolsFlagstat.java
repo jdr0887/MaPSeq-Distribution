@@ -40,8 +40,8 @@ public class SAMToolsFlagstat extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     public File getInput() {
@@ -58,6 +58,11 @@ public class SAMToolsFlagstat extends Module {
 
     public void setOutput(File output) {
         this.output = output;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("SAMToolsFlagstat [input=%s, output=%s, toString()=%s]", input, output, super.toString());
     }
 
 }

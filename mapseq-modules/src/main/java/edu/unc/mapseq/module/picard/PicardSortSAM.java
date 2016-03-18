@@ -121,4 +121,10 @@ public class PicardSortSAM extends Module {
         this.sortOrder = sortOrder;
     }
 
+    @Override
+    public String toString() {
+        return String.format("PicardSortSAM [input=%s, output=%s, sortOrder=%s, maxRecordsInRAM=%s, toString()=%s]",
+                input, output, sortOrder, maxRecordsInRAM, super.toString());
+    }
+
 }

@@ -56,8 +56,8 @@ public class BWASAMSingleEnd extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     public File getFastq() {
@@ -90,6 +90,12 @@ public class BWASAMSingleEnd extends Module {
 
     public void setFastaDB(File fastaDB) {
         this.fastaDB = fastaDB;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("BWASAMSingleEnd [fastq=%s, sai=%s, fastaDB=%s, outFile=%s, toString()=%s]", fastq, sai,
+                fastaDB, outFile, super.toString());
     }
 
     public static void main(String[] args) {

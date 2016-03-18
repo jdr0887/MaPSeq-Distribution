@@ -132,8 +132,8 @@ public class MapSpliceMultiThread extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     @Override
@@ -505,6 +505,18 @@ public class MapSpliceMultiThread extends Module {
 
     public void setMinimumMapLength(Integer minimumMapLength) {
         this.minimumMapLength = minimumMapLength;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "MapSpliceMultiThread [logger=%s, fastq1=%s, fastq2=%s, index=%s, mapspliceOut=%s, output=%s, qualityScale=%s, minimumLength=%s, segmentLength=%s, minimumIntron=%s, suppressAlignmentsOver=%s, maximumIntronSingle=%s, maximumIntronDouble=%s, spliceMismatches=%s, maximumAppendMismatches=%s, maximumInsertions=%s, maximumDeletions=%s, reportUpToNAlignmentsPerRead=%s, threads=%s, chromosomeSize=%s, referenceSequenceDirectory=%s, spliceOnly=%s, optimizeRepeats=%s, outputUnMapped=%s, doubleAnchorNonCanonical=%s, minimumMapLength=%s, fastqReadFormat=%s, clusterRegion=%s, fusion=%s, junctionIndex=%s, fusionIndex=%s, toString()=%s]",
+                logger, fastq1, fastq2, index, mapspliceOut, output, qualityScale, minimumLength, segmentLength,
+                minimumIntron, suppressAlignmentsOver, maximumIntronSingle, maximumIntronDouble, spliceMismatches,
+                maximumAppendMismatches, maximumInsertions, maximumDeletions, reportUpToNAlignmentsPerRead, threads,
+                chromosomeSize, referenceSequenceDirectory, spliceOnly, optimizeRepeats, outputUnMapped,
+                doubleAnchorNonCanonical, minimumMapLength, fastqReadFormat, clusterRegion, fusion, junctionIndex,
+                fusionIndex, super.toString());
     }
 
     public static void main(String[] args) {

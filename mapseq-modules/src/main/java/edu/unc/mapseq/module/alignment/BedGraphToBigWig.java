@@ -40,8 +40,8 @@ public class BedGraphToBigWig extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     public File getInFile() {
@@ -66,6 +66,12 @@ public class BedGraphToBigWig extends Module {
 
     public void setChromosomeSizes(File chromosomeSizes) {
         this.chromosomeSizes = chromosomeSizes;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("BedGraphToBigWig [inFile=%s, chromosomeSizes=%s, outFile=%s, toString()=%s]", inFile,
+                chromosomeSizes, outFile, super.toString());
     }
 
     public static void main(String[] args) {

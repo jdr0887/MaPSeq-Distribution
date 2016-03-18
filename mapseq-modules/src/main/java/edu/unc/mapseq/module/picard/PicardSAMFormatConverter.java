@@ -105,4 +105,10 @@ public class PicardSAMFormatConverter extends Module {
         this.output = output;
     }
 
+    @Override
+    public String toString() {
+        return String.format("PicardSAMFormatConverter [input=%s, output=%s, maxRecordsInRAM=%s, toString()=%s]", input,
+                output, maxRecordsInRAM, super.toString());
+    }
+
 }

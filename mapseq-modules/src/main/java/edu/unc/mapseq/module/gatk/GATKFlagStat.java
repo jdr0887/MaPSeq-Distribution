@@ -50,8 +50,8 @@ public class GATKFlagStat extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     public File getInputFile() {
@@ -100,6 +100,13 @@ public class GATKFlagStat extends Module {
 
     public void setIntervals(File intervals) {
         this.intervals = intervals;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "GATKFlagStat [inputFile=%s, referenceSequence=%s, out=%s, intervals=%s, phoneHome=%s, downsamplingType=%s, toString()=%s]",
+                inputFile, referenceSequence, out, intervals, phoneHome, downsamplingType, super.toString());
     }
 
     public static void main(String[] args) {

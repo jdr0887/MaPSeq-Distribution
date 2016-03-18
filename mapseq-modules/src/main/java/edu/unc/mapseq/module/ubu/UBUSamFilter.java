@@ -129,4 +129,10 @@ public class UBUSamFilter extends Module {
         this.mapq = mapq;
     }
 
+    @Override
+    public String toString() {
+        return String.format("UBUSamFilter [input=%s, output=%s, stripIndels=%s, maxInsert=%s, mapq=%s, toString()=%s]",
+                input, output, stripIndels, maxInsert, mapq, super.toString());
+    }
+
 }

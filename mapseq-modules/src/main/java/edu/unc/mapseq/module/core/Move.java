@@ -111,6 +111,12 @@ public class Move extends Module {
         this.mimeType = mimeType;
     }
 
+    @Override
+    public String toString() {
+        return String.format("Move [source=%s, destination=%s, mimeType=%s, toString()=%s]", source, destination,
+                mimeType, super.toString());
+    }
+
     public static void main(String[] args) {
         Move move = new Move();
         List<File> fileList = new ArrayList<File>();

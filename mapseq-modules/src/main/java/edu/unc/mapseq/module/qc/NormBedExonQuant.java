@@ -146,13 +146,19 @@ public class NormBedExonQuant extends Module {
         this.outFile = outFile;
     }
 
+    @Override
+    public String toString() {
+        return String.format("NormBedExonQuant [logger=%s, compositeBed=%s, inFile=%s, outFile=%s, toString()=%s]",
+                logger, compositeBed, inFile, outFile, super.toString());
+    }
+
     public static void main(String[] args) {
         NormBedExonQuant module = new NormBedExonQuant();
         module.setWorkflowName("TEST");
         module.setDryRun(Boolean.TRUE);
         module.setCompositeBed(new File("/tmp", "composite_exons.bed"));
-        module.setInFile(new File("/tmp",
-                "150514_UNC11-SN627_0400_AC5J46ACXX_GTCCGC_L005.fixed-rg.sorted.coverageBedOut.txt"));
+        module.setInFile(
+                new File("/tmp", "150514_UNC11-SN627_0400_AC5J46ACXX_GTCCGC_L005.fixed-rg.sorted.coverageBedOut.txt"));
         module.setOutFile(new File("/tmp",
                 "150514_UNC11-SN627_0400_AC5J46ACXX_GTCCGC_L005.fixed-rg.sorted.normBedExonQuantOut.txt"));
 

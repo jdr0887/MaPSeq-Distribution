@@ -98,4 +98,10 @@ public class PicardBuildBAMIndex extends Module {
         this.output = output;
     }
 
+    @Override
+    public String toString() {
+        return String.format("PicardBuildBAMIndex [input=%s, output=%s, maxRecordsInRAM=%s, toString()=%s]", input,
+                output, maxRecordsInRAM, super.toString());
+    }
+
 }

@@ -76,8 +76,8 @@ public class GATKTableRecalibration extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     public File getKey() {
@@ -190,6 +190,15 @@ public class GATKTableRecalibration extends Module {
 
     public void setSmoothing(Integer smoothing) {
         this.smoothing = smoothing;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "GATKTableRecalibration [key=%s, inputFile=%s, referenceSequence=%s, numThreads=%s, recalFile=%s, out=%s, contextSize=%s, homopolymerNBack=%s, doNotWriteOriginalQuals=%s, maxQualityScore=%s, preserveQScoreLessThan=%s, smoothing=%s, phoneHome=%s, downsamplingType=%s, toString()=%s]",
+                key, inputFile, referenceSequence, numThreads, recalFile, out, contextSize, homopolymerNBack,
+                doNotWriteOriginalQuals, maxQualityScore, preserveQScoreLessThan, smoothing, phoneHome,
+                downsamplingType, super.toString());
     }
 
 }

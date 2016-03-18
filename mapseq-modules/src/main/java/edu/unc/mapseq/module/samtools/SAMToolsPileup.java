@@ -69,8 +69,8 @@ public class SAMToolsPileup extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     public List<File> getInput() {
@@ -161,13 +161,22 @@ public class SAMToolsPileup extends Module {
         this.region = region;
     }
 
+    @Override
+    public String toString() {
+        return String.format(
+                "SAMToolsPileup [input=%s, output=%s, disableProbabilisticRealignment=%s, mappingQualityCoefficient=%s, readsPerInput=%s, extendedBAQComputation=%s, referenceFile=%s, positionListFile=%s, minimumMappingQuality=%s, minimumBaseQuality=%s, region=%s, toString()=%s]",
+                input, output, disableProbabilisticRealignment, mappingQualityCoefficient, readsPerInput,
+                extendedBAQComputation, referenceFile, positionListFile, minimumMappingQuality, minimumBaseQuality,
+                region, super.toString());
+    }
+
     public static void main(String[] args) {
         SAMToolsPileup runner = new SAMToolsPileup();
-        runner.setOutput(new File(
-                "/home/jdr0887/tmp/120731_UNC14-SN744_0253_AD135LACXX_GTTTCG_L008.fixed-rg.sorted.pileup"));
+        runner.setOutput(
+                new File("/home/jdr0887/tmp/120731_UNC14-SN744_0253_AD135LACXX_GTTTCG_L008.fixed-rg.sorted.pileup"));
         List<File> pileupInputList = new ArrayList<File>();
-        pileupInputList.add(new File(
-                "/home/jdr0887/tmp/120731_UNC14-SN744_0253_AD135LACXX_GTTTCG_L008.fixed-rg.sorted.bam"));
+        pileupInputList
+                .add(new File("/home/jdr0887/tmp/120731_UNC14-SN744_0253_AD135LACXX_GTTTCG_L008.fixed-rg.sorted.bam"));
         runner.setInput(pileupInputList);
         runner.setWorkflowName("NCGenes");
         try {

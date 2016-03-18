@@ -38,8 +38,8 @@ public class Cluster extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     @Override
@@ -66,6 +66,12 @@ public class Cluster extends Module {
 
     public void setClusterDirectory(File clusterDirectory) {
         this.clusterDirectory = clusterDirectory;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Cluster [logger=%s, clusterDirectory=%s, toString()=%s]", logger, clusterDirectory,
+                super.toString());
     }
 
 }

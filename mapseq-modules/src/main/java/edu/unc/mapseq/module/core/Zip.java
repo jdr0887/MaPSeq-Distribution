@@ -92,6 +92,11 @@ public class Zip extends Module {
         this.entry = entry;
     }
 
+    @Override
+    public String toString() {
+        return String.format("Zip [output=%s, entry=%s, toString()=%s]", output, entry, super.toString());
+    }
+
     public static void main(String[] args) {
 
     }

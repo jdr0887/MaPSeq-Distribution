@@ -285,8 +285,8 @@ public class GSNAP extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     public File getFastq() {
@@ -975,6 +975,27 @@ public class GSNAP extends Module {
 
     public void setReadGroupPlatform(String readGroupPlatform) {
         this.readGroupPlatform = readGroupPlatform;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "GSNAP [fastq=%s, output=%s, genomeDirectory=%s, genomeDatabase=%s, kmerSize=%s, baseSize=%s, sampling=%s, part=%s, inputBufferSize=%s, barcodeLength=%s, orientation=%s, fastqIdStart=%s, fastqIdEnd=%s, filterChastity=%s, gunzip=%s, batch=%s, maxMismatches=%s, queryUnkMismatch=%s, genomeUnkMismatch=%s, terminalThreshold=%s, indelPenalty=%s, indelEndLength=%s, maxMiddleInsertions=%s, maxMiddleDeletions=%s, maxEndInsertions=%s, maxEndDeletions=%s, subOptimalLevels=%s, adapterStrip=%s, trimMismatchScore=%s, trimIndelScore=%s, snpsDirectory=%s, useSnps=%s, cmetDirectory=%s, atoiDirectory=%s, mode=%s, tallyDirectory=%s, useTally=%s, runLengthDirectory=%s, useRunLength=%s, threads=%s, gmapMode=%s, triggerScoreForGmap=%s, gmapMinCoverage=%s, maxGmapPairSearch=%s, maxGmapTerminal=%s, maxGmapImprovement=%s, microExonSpliceProbability=%s, novelSplicing=%s, splicingDirectory=%s, useSplicing=%s, ambigSpliceNoClip=%s, localSpliceDistance=%s, localSplicePenalty=%s, distantSplicePenalty=%s, distantSpliceEndLength=%s, shortendSpliceEndLength=%s, distantSpliceIdentity=%s, antiStrandedPenalty=%s, mergeDistantSameChromosome=%s, pairMaxDNA=%s, pairMaxRNA=%s, pairExpect=%s, pairDeviation=%s, qualityProtocol=%s, qualityZeroScore=%s, qualityPrintShift=%s, numberOfPaths=%s, quietIfExcessive=%s, ordered=%s, showReferenceDifferences=%s, clipOverlap=%s, printSNPS=%s, failsOnly=%s, noFails=%s, failsAsInput=%s, format=%s, splitOutput=%s, outputBufferSize=%s, noSAMHeaders=%s, SAMHeadersBatch=%s, SAMUseOM=%s, SAMMultiplePrimaries=%s, readGroupId=%s, readGroupName=%s, readGroupLibrary=%s, readGroupPlatform=%s, toString()=%s]",
+                fastq, output, genomeDirectory, genomeDatabase, kmerSize, baseSize, sampling, part, inputBufferSize,
+                barcodeLength, orientation, fastqIdStart, fastqIdEnd, filterChastity, gunzip, batch, maxMismatches,
+                queryUnkMismatch, genomeUnkMismatch, terminalThreshold, indelPenalty, indelEndLength,
+                maxMiddleInsertions, maxMiddleDeletions, maxEndInsertions, maxEndDeletions, subOptimalLevels,
+                adapterStrip, trimMismatchScore, trimIndelScore, snpsDirectory, useSnps, cmetDirectory, atoiDirectory,
+                mode, tallyDirectory, useTally, runLengthDirectory, useRunLength, threads, gmapMode,
+                triggerScoreForGmap, gmapMinCoverage, maxGmapPairSearch, maxGmapTerminal, maxGmapImprovement,
+                microExonSpliceProbability, novelSplicing, splicingDirectory, useSplicing, ambigSpliceNoClip,
+                localSpliceDistance, localSplicePenalty, distantSplicePenalty, distantSpliceEndLength,
+                shortendSpliceEndLength, distantSpliceIdentity, antiStrandedPenalty, mergeDistantSameChromosome,
+                pairMaxDNA, pairMaxRNA, pairExpect, pairDeviation, qualityProtocol, qualityZeroScore, qualityPrintShift,
+                numberOfPaths, quietIfExcessive, ordered, showReferenceDifferences, clipOverlap, printSNPS, failsOnly,
+                noFails, failsAsInput, format, splitOutput, outputBufferSize, noSAMHeaders, SAMHeadersBatch, SAMUseOM,
+                SAMMultiplePrimaries, readGroupId, readGroupName, readGroupLibrary, readGroupPlatform,
+                super.toString());
     }
 
     public static void main(String[] args) {

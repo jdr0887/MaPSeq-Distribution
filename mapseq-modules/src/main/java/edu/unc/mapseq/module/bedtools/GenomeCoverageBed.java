@@ -50,8 +50,8 @@ public class GenomeCoverageBed extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     public File getInput() {
@@ -84,6 +84,13 @@ public class GenomeCoverageBed extends Module {
 
     public void setReportDepthInBedGraphFormat(Boolean reportDepthInBedGraphFormat) {
         this.reportDepthInBedGraphFormat = reportDepthInBedGraphFormat;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "GenomeCoverageBed [input=%s, genome=%s, outFile=%s, reportDepthInBedGraphFormat=%s, toString()=%s]",
+                input, genome, outFile, reportDepthInBedGraphFormat, super.toString());
     }
 
     public static void main(String[] args) {

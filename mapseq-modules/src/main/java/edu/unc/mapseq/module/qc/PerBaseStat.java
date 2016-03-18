@@ -108,4 +108,9 @@ public class PerBaseStat extends Module {
         this.outFile = outFile;
     }
 
+    @Override
+    public String toString() {
+        return String.format("PerBaseStat [inFile=%s, outFile=%s, toString()=%s]", inFile, outFile, super.toString());
+    }
+
 }

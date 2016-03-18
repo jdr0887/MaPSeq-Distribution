@@ -210,4 +210,12 @@ public class PicardAddOrReplaceReadGroups extends Module {
         this.readGroupCenterName = readGroupCenterName;
     }
 
+    @Override
+    public String toString() {
+        return String.format(
+                "PicardAddOrReplaceReadGroups [logger=%s, input=%s, output=%s, sortOrder=%s, readGroupId=%s, readGroupLibrary=%s, readGroupPlatform=%s, readGroupPlatformUnit=%s, readGroupSampleName=%s, readGroupCenterName=%s, maxRecordsInRAM=%s, toString()=%s]",
+                logger, input, output, sortOrder, readGroupId, readGroupLibrary, readGroupPlatform,
+                readGroupPlatformUnit, readGroupSampleName, readGroupCenterName, maxRecordsInRAM, super.toString());
+    }
+
 }

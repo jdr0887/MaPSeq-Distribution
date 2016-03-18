@@ -84,8 +84,8 @@ public class GATKUnifiedGenotyper extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     public File getKey() {
@@ -222,6 +222,15 @@ public class GATKUnifiedGenotyper extends Module {
 
     public void setGenotypeLikelihoodsModel(String genotypeLikelihoodsModel) {
         this.genotypeLikelihoodsModel = genotypeLikelihoodsModel;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "GATKUnifiedGenotyper [key=%s, inputFile=%s, referenceSequence=%s, numThreads=%s, out=%s, validationStrictness=%s, intervals=%s, metrics=%s, annotation=%s, dbsnp=%s, outputMode=%s, standCallConf=%s, standEmitConf=%s, genotypeLikelihoodsModel=%s, downsampleToCoverage=%s, phoneHome=%s, downsamplingType=%s, toString()=%s]",
+                key, inputFile, referenceSequence, numThreads, out, validationStrictness, intervals, metrics,
+                annotation, dbsnp, outputMode, standCallConf, standEmitConf, genotypeLikelihoodsModel,
+                downsampleToCoverage, phoneHome, downsamplingType, super.toString());
     }
 
     public static void main(String[] args) {

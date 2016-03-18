@@ -142,4 +142,11 @@ public class UBUSamTranslate extends Module {
         this.reverse = reverse;
     }
 
+    @Override
+    public String toString() {
+        return String.format(
+                "UBUSamTranslate [bed=%s, input=%s, output=%s, order=%s, xgTags=%s, reverse=%s, toString()=%s]", bed,
+                input, output, order, xgTags, reverse, super.toString());
+    }
+
 }

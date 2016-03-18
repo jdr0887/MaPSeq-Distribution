@@ -256,4 +256,12 @@ public class WriteVCFHeader extends Module {
         this.mergedBAMFile = mergedBAMFile;
     }
 
+    @Override
+    public String toString() {
+        return String.format(
+                "WriteVCFHeader [output=%s, labName=%s, studyName=%s, studyId=%s, experimentName=%s, experimentId=%s, libraryName=%s, run=%s, lane=%s, sampleName=%s, participantId=%s, barcode=%s, flowcell=%s, filter=%s, mergedBAMFile=%s, toString()=%s]",
+                output, labName, studyName, studyId, experimentName, experimentId, libraryName, run, lane, sampleName,
+                participantId, barcode, flowcell, filter, mergedBAMFile, super.toString());
+    }
+
 }

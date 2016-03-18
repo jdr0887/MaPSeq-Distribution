@@ -70,8 +70,8 @@ public class GATKRealignerTargetCreator extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     public String getPhoneHome() {
@@ -168,6 +168,14 @@ public class GATKRealignerTargetCreator extends Module {
 
     public void setMaxIntervalSize(Integer maxIntervalSize) {
         this.maxIntervalSize = maxIntervalSize;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "GATKRealignerTargetCreator [key=%s, inputFile=%s, referenceSequence=%s, numThreads=%s, out=%s, known=%s, phoneHome=%s, downsamplingType=%s, windowSize=%s, mismatchFraction=%s, minReadsAtLocus=%s, maxIntervalSize=%s, toString()=%s]",
+                key, inputFile, referenceSequence, numThreads, out, known, phoneHome, downsamplingType, windowSize,
+                mismatchFraction, minReadsAtLocus, maxIntervalSize, super.toString());
     }
 
 }

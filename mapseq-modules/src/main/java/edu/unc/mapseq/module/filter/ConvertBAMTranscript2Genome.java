@@ -114,4 +114,11 @@ public class ConvertBAMTranscript2Genome extends Module {
         this.sqHeader = sqHeader;
     }
 
+    @Override
+    public String toString() {
+        return String.format(
+                "ConvertBAMTranscript2Genome [inFile=%s, outFile=%s, transcriptDB=%s, sqHeader=%s, toString()=%s]",
+                inFile, outFile, transcriptDB, sqHeader, super.toString());
+    }
+
 }

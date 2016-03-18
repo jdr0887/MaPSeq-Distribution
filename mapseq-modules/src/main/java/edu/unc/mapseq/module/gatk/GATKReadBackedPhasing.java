@@ -70,8 +70,8 @@ public class GATKReadBackedPhasing extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     @Override
@@ -205,6 +205,15 @@ public class GATKReadBackedPhasing extends Module {
 
     public void setDownsamplingType(String downsamplingType) {
         this.downsamplingType = downsamplingType;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "GATKReadBackedPhasing [out=%s, variant=%s, referenceSequence=%s, input=%s, intervals=%s, cacheWindowSize=%s, enableMergeToMNP=%s, maxGenomicDistanceForMNP=%s, maxPhaseSites=%s, minBaseQualityScore=%s, minMappingQualityScore=%s, phaseQualityThresh=%s, respectPhaseInInput=%s, sampleToPhase=%s, phoneHome=%s, downsamplingType=%s, toString()=%s]",
+                out, variant, referenceSequence, input, intervals, cacheWindowSize, enableMergeToMNP,
+                maxGenomicDistanceForMNP, maxPhaseSites, minBaseQualityScore, minMappingQualityScore,
+                phaseQualityThresh, respectPhaseInInput, sampleToPhase, phoneHome, downsamplingType, super.toString());
     }
 
 }

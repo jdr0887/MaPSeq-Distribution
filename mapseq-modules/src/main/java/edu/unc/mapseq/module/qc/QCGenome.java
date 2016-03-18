@@ -165,4 +165,10 @@ public class QCGenome extends Module {
         this.outFile = outFile;
     }
 
+    @Override
+    public String toString() {
+        return String.format("QCGenome [samFile=%s, qcdbkey=%s, outFile=%s, toString()=%s]", samFile, qcdbkey, outFile,
+                super.toString());
+    }
+
 }

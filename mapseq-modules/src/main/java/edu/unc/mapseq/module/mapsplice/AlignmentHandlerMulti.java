@@ -149,8 +149,8 @@ public class AlignmentHandlerMulti extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     @Override
@@ -443,6 +443,18 @@ public class AlignmentHandlerMulti extends Module {
 
     public void setMinimumEncompassCount(Integer minimumEncompassCount) {
         this.minimumEncompassCount = minimumEncompassCount;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "AlignmentHandlerMulti [logger=%s, junctionFile=%s, chromosomeDirectory=%s, maximumMateDistance=%s, maximumHits=%s, filteredAlignmentBase=%s, filteredAlignmentAppend=%s, readLengthProperties=%s, filterFlag=%s, minimumInsertion=%s, maximumDeletion=%s, minimumAnchor=%s, minimumJunctionAnchor=%s, minimumMismatch=%s, addSoftClip=%s, mateDistanceSD=%s, maximumAnchorDiff=%s, intronDistanceSD=%s, chromosomeSizeFile=%s, encompassingFusionRegionExtension=%s, input=%s, minimumCoverage=%s, fragmentLength=%s, fragmentLengthSD=%s, averageFragmentLength=%s, boundary=%s, minimumEncompassCount=%s, minimumEntropy=%s, threads=%s, toString()=%s]",
+                logger, junctionFile, chromosomeDirectory, maximumMateDistance, maximumHits, filteredAlignmentBase,
+                filteredAlignmentAppend, readLengthProperties, filterFlag, minimumInsertion, maximumDeletion,
+                minimumAnchor, minimumJunctionAnchor, minimumMismatch, addSoftClip, mateDistanceSD, maximumAnchorDiff,
+                intronDistanceSD, chromosomeSizeFile, encompassingFusionRegionExtension, input, minimumCoverage,
+                fragmentLength, fragmentLengthSD, averageFragmentLength, boundary, minimumEncompassCount,
+                minimumEntropy, threads, super.toString());
     }
 
     public static void main(String[] args) {

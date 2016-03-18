@@ -65,4 +65,10 @@ public class PruneISOFormsFromGeneQuantFile extends Module {
         this.origGeneResults = origGeneResults;
     }
 
+    @Override
+    public String toString() {
+        return String.format("PruneISOFormsFromGeneQuantFile [geneResults=%s, origGeneResults=%s, toString()=%s]",
+                geneResults, origGeneResults, super.toString());
+    }
+
 }

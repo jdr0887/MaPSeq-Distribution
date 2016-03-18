@@ -52,8 +52,8 @@ public class GATKBaseRecalibrator extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     public File getKey() {
@@ -102,6 +102,13 @@ public class GATKBaseRecalibrator extends Module {
 
     public void setKnownSites(List<File> knownSites) {
         this.knownSites = knownSites;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "GATKBaseRecalibrator [key=%s, inputFile=%s, referenceSequence=%s, out=%s, knownSites=%s, phoneHome=%s, toString()=%s]",
+                key, inputFile, referenceSequence, out, knownSites, phoneHome, super.toString());
     }
 
     public static void main(String[] args) {

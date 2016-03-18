@@ -73,16 +73,15 @@ public class FastQC extends Module {
                 public void analysisUpdated(SequenceFile file, int sequencesProcessed, int percentComplete) {
                     if (percentComplete % 5 == 0) {
                         if (percentComplete == 105) {
-                            moduleOutput
-                                    .getError()
-                                    .append("It seems our guess for the total number of records wasn't very good.  Sorry about that.\n");
+                            moduleOutput.getError().append(
+                                    "It seems our guess for the total number of records wasn't very good.  Sorry about that.\n");
                         }
                         if (percentComplete > 100) {
                             moduleOutput.getError().append("Still going at ").append(percentComplete)
                                     .append("% complete for ").append(file.name()).append("\n");
                         } else {
-                            moduleOutput.getOutput().append("Approx ").append(percentComplete)
-                                    .append("% complete for ").append(file.name()).append("\n");
+                            moduleOutput.getOutput().append("Approx ").append(percentComplete).append("% complete for ")
+                                    .append(file.name()).append("\n");
                         }
                     }
                 }
@@ -150,6 +149,12 @@ public class FastQC extends Module {
 
     public void setOutput(File output) {
         this.output = output;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("FastQC [logger=%s, input=%s, ignore=%s, output=%s, toString()=%s]", logger, input, ignore,
+                output, super.toString());
     }
 
 }

@@ -195,4 +195,11 @@ public class FastqAlignmentPrep extends Module {
         this.fastqUnpairedReadsOutput = fastqUnpairedReadsOutput;
     }
 
+    @Override
+    public String toString() {
+        return String.format(
+                "FastqAlignmentPrep [r1Fastq=%s, r2Fastq=%s, r1FastqOutput=%s, r2FastqOutput=%s, fastqUnpairedReadsOutput=%s, toString()=%s]",
+                r1Fastq, r2Fastq, r1FastqOutput, r2FastqOutput, fastqUnpairedReadsOutput, super.toString());
+    }
+
 }

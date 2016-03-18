@@ -66,6 +66,12 @@ public class UnZip extends Module {
         this.overwrite = overwrite;
     }
 
+    @Override
+    public String toString() {
+        return String.format("UnZip [zip=%s, extract=%s, overwrite=%s, toString()=%s]", zip, extract, overwrite,
+                super.toString());
+    }
+
     public static void main(String[] args) {
         UnZip module = new UnZip();
         module.setZip(new File("/tmp", "asdf.zip"));

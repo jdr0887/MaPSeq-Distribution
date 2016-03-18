@@ -89,8 +89,8 @@ public class SAMToolsView extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     @Override
@@ -285,6 +285,16 @@ public class SAMToolsView extends Module {
 
     public void setRegionsFile(File regionsFile) {
         this.regionsFile = regionsFile;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "SAMToolsView [input=%s, output=%s, includeHeader=%s, outputHeaderOnly=%s, bamFormat=%s, samInputFormat=%s, outputAlignmentsWithBitsPresentInFlag=%s, skipAlignmentsWithBitsPresentInFlag=%s, onlyOutputReadsInLibrary=%s, skipAlignmentsWithMAPQ=%s, onlyOutputReadsInReadGroup=%s, outputReadsInReadGroups=%s, regionsFile=%s, referenceSequence=%s, toString()=%s]",
+                input, output, includeHeader, outputHeaderOnly, bamFormat, samInputFormat,
+                outputAlignmentsWithBitsPresentInFlag, skipAlignmentsWithBitsPresentInFlag, onlyOutputReadsInLibrary,
+                skipAlignmentsWithMAPQ, onlyOutputReadsInReadGroup, outputReadsInReadGroups, regionsFile,
+                referenceSequence, super.toString());
     }
 
 }

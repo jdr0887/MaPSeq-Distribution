@@ -54,8 +54,8 @@ public class BWAIndex extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     @Override
@@ -114,6 +114,12 @@ public class BWAIndex extends Module {
 
     public void setSymlinkFile(File symlinkFile) {
         this.symlinkFile = symlinkFile;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("BWAIndex [fastaDB=%s, symlinkFile=%s, workDir=%s, algorithm=%s, toString()=%s]", fastaDB,
+                symlinkFile, workDir, algorithm, super.toString());
     }
 
 }

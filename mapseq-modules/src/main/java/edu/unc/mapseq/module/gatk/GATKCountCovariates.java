@@ -69,8 +69,8 @@ public class GATKCountCovariates extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     public String getPhoneHome() {
@@ -175,6 +175,15 @@ public class GATKCountCovariates extends Module {
 
     public void setValidationStrictness(String validationStrictness) {
         this.validationStrictness = validationStrictness;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "GATKCountCovariates [inputFile=%s, referenceSequence=%s, numThreads=%s, recalFile=%s, contextSize=%s, covariate=%s, dontSortOutput=%s, homopolymerNBack=%s, knownSites=%s, standardCovs=%s, validationStrictness=%s, phoneHome=%s, downsamplingType=%s, toString()=%s]",
+                inputFile, referenceSequence, numThreads, recalFile, contextSize, covariate, dontSortOutput,
+                homopolymerNBack, knownSites, standardCovs, validationStrictness, phoneHome, downsamplingType,
+                super.toString());
     }
 
 }

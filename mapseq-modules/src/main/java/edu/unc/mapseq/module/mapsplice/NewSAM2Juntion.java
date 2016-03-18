@@ -69,8 +69,8 @@ public class NewSAM2Juntion extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     @Override
@@ -160,6 +160,14 @@ public class NewSAM2Juntion extends Module {
 
     public void setInput(List<File> input) {
         this.input = input;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "NewSAM2Juntion [logger=%s, junctionFile=%s, readLength=%s, chromosomeFilesDirectory=%s, minimumIntron=%s, maximumIntron=%s, minimumAnchor=%s, input=%s, toString()=%s]",
+                logger, junctionFile, readLength, chromosomeFilesDirectory, minimumIntron, maximumIntron, minimumAnchor,
+                input, super.toString());
     }
 
 }

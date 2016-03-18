@@ -39,8 +39,8 @@ public class FastxClipper extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     public File getInFile() {
@@ -57,6 +57,11 @@ public class FastxClipper extends Module {
 
     public void setOutFile(File outFile) {
         this.outFile = outFile;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("FastxClipper [inFile=%s, outFile=%s, toString()=%s]", inFile, outFile, super.toString());
     }
 
 }

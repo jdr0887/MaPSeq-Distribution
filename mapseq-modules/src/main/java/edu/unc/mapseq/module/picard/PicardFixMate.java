@@ -120,4 +120,10 @@ public class PicardFixMate extends Module {
         this.sortOrder = sortOrder;
     }
 
+    @Override
+    public String toString() {
+        return String.format("PicardFixMate [input=%s, output=%s, sortOrder=%s, maxRecordsInRAM=%s, toString()=%s]",
+                input, output, sortOrder, maxRecordsInRAM, super.toString());
+    }
+
 }

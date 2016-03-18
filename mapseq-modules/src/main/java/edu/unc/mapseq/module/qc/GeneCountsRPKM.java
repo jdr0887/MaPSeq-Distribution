@@ -238,4 +238,11 @@ public class GeneCountsRPKM extends Module {
         this.outGENE = outGENE;
     }
 
+    @Override
+    public String toString() {
+        return String.format(
+                "GeneCountsRPKM [samFile=%s, transcriptDB=%s, geneLength=%s, outTR=%s, outGENE=%s, toString()=%s]",
+                samFile, transcriptDB, geneLength, outTR, outGENE, super.toString());
+    }
+
 }

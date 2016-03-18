@@ -64,8 +64,8 @@ public class DetermineReadLength extends Module {
             final AtomicInteger minLength = new AtomicInteger(0);
 
             for (File f : input) {
-                InputSupplier<InputStreamReader> inputSupplier = Files
-                        .newReaderSupplier(f, Charset.forName("US-ASCII"));
+                InputSupplier<InputStreamReader> inputSupplier = Files.newReaderSupplier(f,
+                        Charset.forName("US-ASCII"));
 
                 fastqReader.stream(inputSupplier, new StreamListener() {
                     @Override
@@ -115,6 +115,12 @@ public class DetermineReadLength extends Module {
 
     public void setOutput(File output) {
         this.output = output;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("DetermineReadLength [logger=%s, input=%s, output=%s, toString()=%s]", logger, input,
+                output, super.toString());
     }
 
     public static void main(String[] args) {

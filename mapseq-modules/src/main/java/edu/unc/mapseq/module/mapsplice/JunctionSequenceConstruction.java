@@ -63,8 +63,8 @@ public class JunctionSequenceConstruction extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     @Override
@@ -140,6 +140,14 @@ public class JunctionSequenceConstruction extends Module {
 
     public void setOutput(File output) {
         this.output = output;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "JunctionSequenceConstruction [logger=%s, minimumAnchor=%s, maximumAnchor=%s, maximumSequenceThreshold=%s, junction=%s, referenceSequenceDirectory=%s, output=%s, toString()=%s]",
+                logger, minimumAnchor, maximumAnchor, maximumSequenceThreshold, junction, referenceSequenceDirectory,
+                output, super.toString());
     }
 
     public static void main(String[] args) {

@@ -117,4 +117,11 @@ public class NormalizeQuartile extends Module {
         this.input = input;
     }
 
+    @Override
+    public String toString() {
+        return String.format(
+                "NormalizeQuartile [column=%s, quantile=%s, target=%s, output=%s, input=%s, toString()=%s]", column,
+                quantile, target, output, input, super.toString());
+    }
+
 }

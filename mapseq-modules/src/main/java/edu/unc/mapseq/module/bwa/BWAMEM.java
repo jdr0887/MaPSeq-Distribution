@@ -119,8 +119,8 @@ public class BWAMEM extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     public File getFastq1() {
@@ -321,6 +321,16 @@ public class BWAMEM extends Module {
 
     public void setVerbosity(Integer verbosity) {
         this.verbosity = verbosity;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "BWAMEM [fastq1=%s, fastq2=%s, outFile=%s, fastaDB=%s, threads=%s, minimumSeedLength=%s, bandWidth=%s, offDiagonalXDropoff=%s, reSeeding=%s, discardMEM=%s, performSW=%s, matchingScore=%s, mismatchPenalty=%s, gapOpenPenalty=%s, gapExtensionPenalty=%s, clippingPenalty=%s, unpairedReadPairPenalty=%s, interleavePE=%s, headerLine=%s, lowerAlignmentThreshold=%s, outputAllAlignments=%s, appendComment=%s, hardClipping=%s, markShorterSplitHits=%s, verbosity=%s, toString()=%s]",
+                fastq1, fastq2, outFile, fastaDB, threads, minimumSeedLength, bandWidth, offDiagonalXDropoff, reSeeding,
+                discardMEM, performSW, matchingScore, mismatchPenalty, gapOpenPenalty, gapExtensionPenalty,
+                clippingPenalty, unpairedReadPairPenalty, interleavePE, headerLine, lowerAlignmentThreshold,
+                outputAllAlignments, appendComment, hardClipping, markShorterSplitHits, verbosity, super.toString());
     }
 
     public static void main(String[] args) {

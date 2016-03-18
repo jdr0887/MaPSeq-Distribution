@@ -44,8 +44,8 @@ public class FilterOriginalFusion extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     public File getJunction() {
@@ -86,6 +86,13 @@ public class FilterOriginalFusion extends Module {
 
     public void setFilteredJunctions(File filteredJunctions) {
         this.filteredJunctions = filteredJunctions;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "FilterOriginalFusion [junction=%s, minimumMismatches=%s, minimumLPQ=%s, remainingJunctions=%s, filteredJunctions=%s, toString()=%s]",
+                junction, minimumMismatches, minimumLPQ, remainingJunctions, filteredJunctions, super.toString());
     }
 
 }

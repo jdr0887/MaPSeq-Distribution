@@ -44,8 +44,8 @@ public class Filter1Hits extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     public File getJunctionFile() {
@@ -86,6 +86,14 @@ public class Filter1Hits extends Module {
 
     public void setNonCanonicalJunctionOutput(File nonCanonicalJunctionOutput) {
         this.nonCanonicalJunctionOutput = nonCanonicalJunctionOutput;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "Filter1Hits [junctionFile=%s, minimumMismatch=%s, minimumLPQ=%s, canonicalJunctionOutput=%s, nonCanonicalJunctionOutput=%s, toString()=%s]",
+                junctionFile, minimumMismatch, minimumLPQ, canonicalJunctionOutput, nonCanonicalJunctionOutput,
+                super.toString());
     }
 
 }

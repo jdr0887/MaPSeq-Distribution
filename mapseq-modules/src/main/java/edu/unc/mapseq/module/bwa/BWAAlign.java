@@ -53,8 +53,8 @@ public class BWAAlign extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     public File getFastq() {
@@ -87,6 +87,12 @@ public class BWAAlign extends Module {
 
     public void setFastaDB(File fastaDB) {
         this.fastaDB = fastaDB;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("BWAAlign [fastq=%s, outFile=%s, fastaDB=%s, threads=%s, toString()=%s]", fastq, outFile,
+                fastaDB, threads, super.toString());
     }
 
     public static void main(String[] args) {

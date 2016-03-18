@@ -51,8 +51,8 @@ public class ReadsToUnmappedSAM extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     @Override
@@ -99,6 +99,12 @@ public class ReadsToUnmappedSAM extends Module {
 
     public void setFastq(Boolean fastq) {
         this.fastq = fastq;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("ReadsToUnmappedSAM [logger=%s, output=%s, input=%s, fastq=%s, toString()=%s]", logger,
+                output, input, fastq, super.toString());
     }
 
     public static void main(String[] args) {

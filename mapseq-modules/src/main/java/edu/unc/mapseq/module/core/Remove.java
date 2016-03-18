@@ -62,6 +62,11 @@ public class Remove extends Module {
         this.file = file;
     }
 
+    @Override
+    public String toString() {
+        return String.format("Remove [file=%s, toString()=%s]", file, super.toString());
+    }
+
     public static void main(String[] args) {
         Remove module = new Remove();
         List<File> fileList = new ArrayList<File>();

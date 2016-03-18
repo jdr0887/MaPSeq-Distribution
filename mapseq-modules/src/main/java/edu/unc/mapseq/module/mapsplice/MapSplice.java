@@ -91,8 +91,8 @@ public class MapSplice extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     public File getFastqR1() {
@@ -269,6 +269,15 @@ public class MapSplice extends Module {
 
     public void setAllChromosomeFiles(File allChromosomeFiles) {
         this.allChromosomeFiles = allChromosomeFiles;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "MapSplice [fastqR1=%s, fastqR2=%s, chromosomeDirectory=%s, allChromosomeFiles=%s, bowtieIndexPath=%s, threads=%s, output=%s, bam=%s, keepIntermediateFiles=%s, segmentLength=%s, minimumMapLength=%s, minimumLength=%s, spliceMis=%s, maxAppendMis=%s, maxHits=%s, minIntron=%s, maxIntron=%s, qualScale=%s, del=%s, ins=%s, nonCanonical=%s, fusionNonCanonical=%s, toString()=%s]",
+                fastqR1, fastqR2, chromosomeDirectory, allChromosomeFiles, bowtieIndexPath, threads, output, bam,
+                keepIntermediateFiles, segmentLength, minimumMapLength, minimumLength, spliceMis, maxAppendMis, maxHits,
+                minIntron, maxIntron, qualScale, del, ins, nonCanonical, fusionNonCanonical, super.toString());
     }
 
 }

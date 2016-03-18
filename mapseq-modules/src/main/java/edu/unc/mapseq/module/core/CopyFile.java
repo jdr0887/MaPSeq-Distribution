@@ -104,11 +104,18 @@ public class CopyFile extends Module {
         this.mimeType = mimeType;
     }
 
+    @Override
+    public String toString() {
+        return String.format("CopyFile [source=%s, destination=%s, mimeType=%s, toString()=%s]", source, destination,
+                mimeType, super.toString());
+    }
+
     public static void main(String[] args) {
         CopyFile module = new CopyFile();
         module.setWorkflowName("TEST");
         module.setSource(new File("/tmp", "asdf.txt"));
         module.setDestination(new File("/tmp", "qwer.txt"));
+        System.out.println(module.toString());
         try {
             module.call();
         } catch (Exception e) {
@@ -116,5 +123,5 @@ public class CopyFile extends Module {
         }
 
     }
-    
+
 }

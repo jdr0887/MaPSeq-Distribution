@@ -64,8 +64,8 @@ public class FilterJunctionByROCarguNonCanonical extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     public File getJunctionFile() {
@@ -146,6 +146,14 @@ public class FilterJunctionByROCarguNonCanonical extends Module {
 
     public void setNonCanonicalJunctionOutput(File nonCanonicalJunctionOutput) {
         this.nonCanonicalJunctionOutput = nonCanonicalJunctionOutput;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "FilterJunctionByROCarguNonCanonical [junctionFile=%s, entropyWeight=%s, lpqWeight=%s, aveMismatchWeight=%s, intronWeight=%s, sumLengthWeight=%s, minScore=%s, minFlankCase=%s, canonicalJunctionOutput=%s, nonCanonicalJunctionOutput=%s, toString()=%s]",
+                junctionFile, entropyWeight, lpqWeight, aveMismatchWeight, intronWeight, sumLengthWeight, minScore,
+                minFlankCase, canonicalJunctionOutput, nonCanonicalJunctionOutput, super.toString());
     }
 
 }

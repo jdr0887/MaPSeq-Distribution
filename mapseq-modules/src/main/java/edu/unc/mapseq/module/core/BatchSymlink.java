@@ -77,6 +77,11 @@ public class BatchSymlink extends Module {
         this.targetLinkPair = targetLinkPair;
     }
 
+    @Override
+    public String toString() {
+        return String.format("BatchSymlink [targetLinkPair=%s, toString()=%s]", targetLinkPair, super.toString());
+    }
+
     public static void main(String[] args) {
         BatchSymlink module = new BatchSymlink();
         List<String> linkTargetPair = new ArrayList<String>();
@@ -85,6 +90,7 @@ public class BatchSymlink extends Module {
         linkTargetPair.add("/home/jdr0887/.emacs,/home/jdr0887/tmp/.emacs");
         linkTargetPair.add("/home/jdr0887,/home/jdr0887/tmp");
         module.setTargetLinkPair(linkTargetPair);
+        System.out.println(module.toString());
         try {
             module.call();
         } catch (ModuleException e) {

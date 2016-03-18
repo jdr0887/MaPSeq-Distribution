@@ -105,8 +105,8 @@ public class GATKDepthOfCoverage extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     @Override
@@ -388,6 +388,17 @@ public class GATKDepthOfCoverage extends Module {
 
     public void setWorkDirectory(File workDirectory) {
         this.workDirectory = workDirectory;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "GATKDepthOfCoverage [inputFile=%s, referenceSequence=%s, numThreads=%s, outputPrefix=%s, workDirectory=%s, intervalMerging=%s, calculateCoverageOverGenes=%s, maxBaseQuality=%s, maxMappingQuality=%s, minBaseQuality=%s, minMappingQuality=%s, omitDepthOutputAtEachBase=%s, omitIntervalStatistics=%s, omitLocusTable=%s, omitPerSampleStats=%s, outputFormat=%s, printBaseCounts=%s, validationStrictness=%s, intervals=%s, summaryCoverageThreshold=%s, phoneHome=%s, downsamplingType=%s, toString()=%s]",
+                inputFile, referenceSequence, numThreads, outputPrefix, workDirectory, intervalMerging,
+                calculateCoverageOverGenes, maxBaseQuality, maxMappingQuality, minBaseQuality, minMappingQuality,
+                omitDepthOutputAtEachBase, omitIntervalStatistics, omitLocusTable, omitPerSampleStats, outputFormat,
+                printBaseCounts, validationStrictness, intervals, summaryCoverageThreshold, phoneHome, downsamplingType,
+                super.toString());
     }
 
     public static void main(String[] args) {

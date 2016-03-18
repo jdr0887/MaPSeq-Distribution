@@ -64,4 +64,10 @@ public class SequenceReadQualityFilter extends Module {
         this.outFile = outFile;
     }
 
+    @Override
+    public String toString() {
+        return String.format("SequenceReadQualityFilter [inFile=%s, outFile=%s, toString()=%s]", inFile, outFile,
+                super.toString());
+    }
+
 }

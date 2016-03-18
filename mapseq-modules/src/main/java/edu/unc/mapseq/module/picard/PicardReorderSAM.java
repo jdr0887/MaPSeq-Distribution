@@ -129,4 +129,11 @@ public class PicardReorderSAM extends Module {
         this.createIndex = createIndex;
     }
 
+    @Override
+    public String toString() {
+        return String.format(
+                "PicardReorderSAM [input=%s, output=%s, referenceSequence=%s, maxRecordsInRAM=%s, createIndex=%s, toString()=%s]",
+                input, output, referenceSequence, maxRecordsInRAM, createIndex, super.toString());
+    }
+
 }

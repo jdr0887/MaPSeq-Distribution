@@ -53,6 +53,12 @@ public class GUnZip extends Module {
         this.extractFile = extractFile;
     }
 
+    @Override
+    public String toString() {
+        return String.format("GUnZip [gzFile=%s, extractFile=%s, toString()=%s]", gzFile, extractFile,
+                super.toString());
+    }
+
     public static void main(String[] args) {
         GUnZip module = new GUnZip();
         module.setGzFile(new File("/tmp", "gzipFile.gz"));

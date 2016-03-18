@@ -31,8 +31,8 @@ public class SetUnmappedBitFlag extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     public File getUnmappedSAM() {
@@ -49,6 +49,12 @@ public class SetUnmappedBitFlag extends Module {
 
     public void setUnmappedSetBit(File unmappedSetBit) {
         this.unmappedSetBit = unmappedSetBit;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("SetUnmappedBitFlag [unmappedSAM=%s, unmappedSetBit=%s, toString()=%s]", unmappedSAM,
+                unmappedSetBit, super.toString());
     }
 
 }

@@ -122,6 +122,12 @@ public class PicardMergeSAM extends Module {
         this.sortOrder = sortOrder;
     }
 
+    @Override
+    public String toString() {
+        return String.format("PicardMergeSAM [input=%s, output=%s, sortOrder=%s, maxRecordsInRAM=%s, toString()=%s]",
+                input, output, sortOrder, maxRecordsInRAM, super.toString());
+    }
+
     public static void main(String[] args) {
         PicardMergeSAM module = new PicardMergeSAM();
         module.setWorkflowName("TEST");

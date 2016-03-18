@@ -37,8 +37,8 @@ public class CalculateMaximumLikelihoods extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     public File getFlatVCF() {
@@ -63,6 +63,12 @@ public class CalculateMaximumLikelihoods extends Module {
 
     public void setEcData(File ecData) {
         this.ecData = ecData;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("CalculateMaximumLikelihoods [flatVCF=%s, output=%s, ecData=%s, toString()=%s]", flatVCF,
+                output, ecData, super.toString());
     }
 
 }

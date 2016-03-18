@@ -26,7 +26,7 @@ import edu.unc.mapseq.module.annotations.InputValidations;
 @Application(name = "RegexRemove", isWorkflowRunIdOptional = true)
 public class RegexRemove extends Module {
 
-    private final Logger logger = LoggerFactory.getLogger(RegexCat.class);
+    private static final Logger logger = LoggerFactory.getLogger(RegexCat.class);
 
     @NotNull(message = "directory is required", groups = InputValidations.class)
     @InputArgument
@@ -77,6 +77,11 @@ public class RegexRemove extends Module {
 
     public void setRegex(String regex) {
         this.regex = regex;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("RegexRemove [directory=%s, regex=%s, toString()=%s]", directory, regex, super.toString());
     }
 
     public static void main(String[] args) {

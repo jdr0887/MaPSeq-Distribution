@@ -71,6 +71,12 @@ public class GenericCommandRunner extends Module {
         this.argument = argument;
     }
 
+    @Override
+    public String toString() {
+        return String.format("GenericCommandRunner [executable=%s, argument=%s, toString()=%s]", executable, argument,
+                super.toString());
+    }
+
     public static void main(String[] args) {
         GenericCommandRunner runner = new GenericCommandRunner();
         runner.setExecutable("/bin/echo");

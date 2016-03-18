@@ -122,4 +122,11 @@ public class ZCat extends Module {
         this.mimeType = mimeType;
     }
 
+    @Override
+    public String toString() {
+        return String.format(
+                "ZCat [logger=%s, outputFile=%s, directory=%s, regularExpression=%s, mimeType=%s, toString()=%s]",
+                logger, outputFile, directory, regularExpression, mimeType, super.toString());
+    }
+
 }

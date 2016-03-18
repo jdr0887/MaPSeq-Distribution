@@ -109,9 +109,11 @@ public class GenomeSampleQC extends Module {
 
             String sampleTotal = props.getProperty("sampleTotal");
             FileUtils.touch(outFile);
-            FileUtils.writeStringToFile(outFile, String.format(
-                    "%s.count = %d\n%s.sampleTotal = %s\n%s.percentile = %d", key, count, key, sampleTotal, key,
-                    Float.valueOf(100 * count / Integer.valueOf(sampleTotal))), true);
+            FileUtils
+                    .writeStringToFile(
+                            outFile, String.format("%s.count = %d\n%s.sampleTotal = %s\n%s.percentile = %d", key, count,
+                                    key, sampleTotal, key, Float.valueOf(100 * count / Integer.valueOf(sampleTotal))),
+                    true);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -156,6 +158,12 @@ public class GenomeSampleQC extends Module {
 
     public void setPropertiesFile(File propertiesFile) {
         this.propertiesFile = propertiesFile;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("GenomeSampleQC [samFile=%s, outFile=%s, key=%s, propertiesFile=%s, toString()=%s]",
+                samFile, outFile, key, propertiesFile, super.toString());
     }
 
 }

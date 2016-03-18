@@ -116,6 +116,13 @@ public class UBUFastqFormatter extends Module {
         this.strip = strip;
     }
 
+    @Override
+    public String toString() {
+        return String.format(
+                "UBUFastqFormatter [input=%s, output=%s, suffix=%s, phred33to64=%s, strip=%s, toString()=%s]", input,
+                output, suffix, phred33to64, strip, super.toString());
+    }
+
     public static void main(String[] args) {
         UBUFastqFormatter module = new UBUFastqFormatter();
 
@@ -125,8 +132,8 @@ public class UBUFastqFormatter extends Module {
         // "130913_UNC12-SN629_0330_AD2E14ACXX_AGTTCC_L006_R1.filtered.fastq"));
         // module.setSuffix("/1");
 
-        module.setInput(new File("/home/jdr0887/data/mapsplice",
-                "130913_UNC12-SN629_0330_AD2E14ACXX_AGTTCC_L006_R2.fastq"));
+        module.setInput(
+                new File("/home/jdr0887/data/mapsplice", "130913_UNC12-SN629_0330_AD2E14ACXX_AGTTCC_L006_R2.fastq"));
         module.setOutput(new File("/home/jdr0887/data/mapsplice",
                 "130913_UNC12-SN629_0330_AD2E14ACXX_AGTTCC_L006_R2.filtered.fastq"));
         module.setSuffix("/2");

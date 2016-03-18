@@ -48,8 +48,8 @@ public class ReadChromoSize extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     public File getChromosomeIndex() {
@@ -90,6 +90,14 @@ public class ReadChromoSize extends Module {
 
     public void setSamFile(List<File> samFile) {
         this.samFile = samFile;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "ReadChromoSize [chromosomeIndex=%s, chromosomeHeadOutput=%s, chromosomeSizesOutput=%s, chromosomeNamesOutput=%s, samFile=%s, toString()=%s]",
+                chromosomeIndex, chromosomeHeadOutput, chromosomeSizesOutput, chromosomeNamesOutput, samFile,
+                super.toString());
     }
 
 }

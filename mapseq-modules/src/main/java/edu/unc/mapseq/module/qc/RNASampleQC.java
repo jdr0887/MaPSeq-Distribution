@@ -117,9 +117,11 @@ public class RNASampleQC extends Module {
 
             String sampleTotal = props.getProperty("sampleTotal");
             FileUtils.touch(outFile);
-            FileUtils.writeStringToFile(outFile, String.format(
-                    "%s.count = %d\n%s.sampleTotal = %s\n%s.percentile = %d", key, count, key, sampleTotal, key,
-                    Float.valueOf(100 * count / Integer.valueOf(sampleTotal))), true);
+            FileUtils
+                    .writeStringToFile(
+                            outFile, String.format("%s.count = %d\n%s.sampleTotal = %s\n%s.percentile = %d", key, count,
+                                    key, sampleTotal, key, Float.valueOf(100 * count / Integer.valueOf(sampleTotal))),
+                    true);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -172,6 +174,12 @@ public class RNASampleQC extends Module {
 
     public void setPropertiesFile(File propertiesFile) {
         this.propertiesFile = propertiesFile;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("RNASampleQC [fastq=%s, fastaDB=%s, outFile=%s, key=%s, propertiesFile=%s, toString()=%s]",
+                fastq, fastaDB, outFile, key, propertiesFile, super.toString());
     }
 
 }

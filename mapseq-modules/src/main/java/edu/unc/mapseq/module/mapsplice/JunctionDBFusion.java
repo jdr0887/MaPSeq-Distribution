@@ -70,8 +70,8 @@ public class JunctionDBFusion extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     @Override
@@ -169,6 +169,14 @@ public class JunctionDBFusion extends Module {
 
     public void setOutput(File output) {
         this.output = output;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "JunctionDBFusion [logger=%s, minimumAnchorWidth=%s, maximumAnchor=%s, maximumThresholdEach=%s, maximumThresholdTotal=%s, junction=%s, fusionJunction=%s, referenceSequenceDirectory=%s, output=%s, toString()=%s]",
+                logger, minimumAnchorWidth, maximumAnchor, maximumThresholdEach, maximumThresholdTotal, junction,
+                fusionJunction, referenceSequenceDirectory, output, super.toString());
     }
 
 }

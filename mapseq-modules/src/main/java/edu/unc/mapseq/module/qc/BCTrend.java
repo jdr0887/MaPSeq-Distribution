@@ -183,4 +183,10 @@ public class BCTrend extends Module {
         this.flagFile = flagFile;
     }
 
+    @Override
+    public String toString() {
+        return String.format("BCTrend [inFile=%s, outFile=%s, trendPlot=%s, flagFile=%s, toString()=%s]", inFile,
+                outFile, trendPlot, flagFile, super.toString());
+    }
+
 }

@@ -49,7 +49,8 @@ public class SRF2Fastq extends Module {
     @Contains(message = "Invalid sequencer", values = { "Solexa 1G Genome Analyzer", "Illumina Genome Analyzer",
             "Illumina Genome Analyzer II", "Illumina Genome Analyzer IIx", "Illumina HiSeq 2000", "Illumina HiScan SQ",
             "Illumina HiSeq 1000", "AB SOLiD System", "AB SOLiD System 2.0", "AB SOLiD System 3.0",
-            "AB SOLiD System 3 Plus", "AB SOLiD System 4", "AB SOLiD System PI", "AB SOLiD 5500xl", "AB SOLiD 5500" }, groups = InputValidations.class)
+            "AB SOLiD System 3 Plus", "AB SOLiD System 4", "AB SOLiD System PI", "AB SOLiD 5500xl",
+            "AB SOLiD 5500" }, groups = InputValidations.class)
     @InputArgument(flag = "-p")
     private String platform;
 
@@ -149,8 +150,8 @@ public class SRF2Fastq extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     @Override
@@ -344,6 +345,14 @@ public class SRF2Fastq extends Module {
 
     public void setOutputFiles(List<File> outputFiles) {
         this.outputFiles = outputFiles;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "SRF2Fastq [aligner=%s, platform=%s, input=%s, outputPrefix=%s, ends=%s, numberOfOutputFiles=%s, filter=%s, outputFiles=%s, toString()=%s]",
+                aligner, platform, input, outputPrefix, ends, numberOfOutputFiles, filter, outputFiles,
+                super.toString());
     }
 
 }

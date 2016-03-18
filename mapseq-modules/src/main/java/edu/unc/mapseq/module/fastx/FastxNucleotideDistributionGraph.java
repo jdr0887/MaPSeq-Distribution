@@ -51,8 +51,8 @@ public class FastxNucleotideDistributionGraph extends Module {
 
     @Override
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName()
-                .toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
+                getWorkflowName().toUpperCase());
     }
 
     @Override
@@ -112,6 +112,13 @@ public class FastxNucleotideDistributionGraph extends Module {
 
     public void setGeneratePostcript(Boolean generatePostcript) {
         this.generatePostcript = generatePostcript;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "FastxNucleotideDistributionGraph [input=%s, output=%s, generatePostcript=%s, toString()=%s]", input,
+                output, generatePostcript, super.toString());
     }
 
 }

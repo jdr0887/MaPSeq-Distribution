@@ -190,4 +190,12 @@ public class GATKDepthOfCoverage extends Module {
         this.partitionType = partitionType;
     }
 
+    @Override
+    public String toString() {
+        return String.format(
+                "GATKDepthOfCoverage [key=%s, inputFile=%s, referenceSequence=%s, phoneHome=%s, outputPrefix=%s, intervals=%s, workDirectory=%s, outputFormat=%s, partitionType=%s, toString()=%s]",
+                key, inputFile, referenceSequence, phoneHome, outputPrefix, intervals, workDirectory, outputFormat,
+                partitionType, super.toString());
+    }
+
 }

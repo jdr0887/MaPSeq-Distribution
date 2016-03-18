@@ -32,7 +32,7 @@ import edu.unc.mapseq.module.constraints.FileIsReadable;
 @Application(name = "RegexCat", isWorkflowRunIdOptional = true)
 public class RegexCat extends Module {
 
-    private final Logger logger = LoggerFactory.getLogger(RegexCat.class);
+    private static final Logger logger = LoggerFactory.getLogger(RegexCat.class);
 
     @NotNull(message = "directory is required", groups = InputValidations.class)
     @InputArgument
@@ -99,6 +99,12 @@ public class RegexCat extends Module {
 
     public void setOutput(File output) {
         this.output = output;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("RegexCat [directory=%s, regex=%s, output=%s, toString()=%s]", directory, regex, output,
+                super.toString());
     }
 
     public static void main(String[] args) {

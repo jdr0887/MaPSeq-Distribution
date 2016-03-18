@@ -140,6 +140,13 @@ public class Sort extends Module {
         this.key = key;
     }
 
+    @Override
+    public String toString() {
+        return String.format(
+                "Sort [logger=%s, input=%s, output=%s, tmpDirectory=%s, bufferSize=%s, key=%s, toString()=%s]", logger,
+                input, output, tmpDirectory, bufferSize, key, super.toString());
+    }
+
     public static void main(String[] args) {
         Sort module = new Sort();
         List<File> inputList = new ArrayList<File>();
