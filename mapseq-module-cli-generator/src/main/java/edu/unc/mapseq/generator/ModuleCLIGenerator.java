@@ -538,7 +538,7 @@ public class ModuleCLIGenerator extends AbstractGenerator {
         List<Class<?>> filteredClassList = new ArrayList<Class<?>>();
         List<Class<?>> classList = new ArrayList<Class<?>>();
 
-        String pkg = "edu.unc.mapseq.module";
+        String pkg = "edu.unc.mapseq.module.impl";
         classList.addAll(reflectionManager.lookupClassList(pkg, null, Application.class));
 
         for (Class<?> c : classList) {
