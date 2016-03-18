@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.ws.rs.core.Response;
-
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.cxf.common.util.StringUtils;
@@ -125,6 +123,16 @@ public class FlowcellServiceImpl implements FlowcellService {
             logger.error("MaPSeqDAOException", e);
         }
         return null;
+    }
+
+    @Override
+    public void addFileData(Long fileDataId, Long flowcellId) {
+        logger.debug("ENTERING addFileData(Long, Long)");
+        try {
+            flowcellDAO.addFileData(fileDataId, flowcellId);
+        } catch (MaPSeqDAOException e) {
+            logger.error("Error", e);
+        }
     }
 
     public FlowcellDAO getFlowcellDAO() {
