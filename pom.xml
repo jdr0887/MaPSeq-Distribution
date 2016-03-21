@@ -2,7 +2,7 @@
   <parent>
     <groupId>edu.unc.mapseq</groupId>
     <artifactId>mapseq</artifactId>
-    <version>0.1.20</version>
+    <version>0.1.21</version>
   </parent>
   <name>MaPSeq :: Distribution</name>
   <modelVersion>4.0.0</modelVersion>
@@ -11,8 +11,7 @@
   <version>0.6.22-SNAPSHOT</version>
   <packaging>pom</packaging>
   <properties>
-    <mapseq.version>0.6.10</mapseq.version>
-    <renci.charts.version>0.0.9</renci.charts.version>
+    <mapseq.version>0.6.12</mapseq.version>
     <spring.version>4.2.3.RELEASE</spring.version>    
   </properties>
   <issueManagement>
@@ -143,11 +142,6 @@
       	<groupId>edu.unc.mapseq.mapseq-dao</groupId>
       	<artifactId>mapseq-dao-jpa</artifactId>
       	<version>${mapseq.version}</version>
-      </dependency>
-      <dependency>
-      	<groupId>org.renci</groupId>
-      	<artifactId>charts</artifactId>
-      	<version>${renci.charts.version}</version>
       </dependency>
       <dependency>
       	<groupId>org.apache.commons</groupId>
