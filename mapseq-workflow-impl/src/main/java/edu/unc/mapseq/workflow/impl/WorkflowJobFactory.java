@@ -34,7 +34,7 @@ public class WorkflowJobFactory {
         logger.debug("ENTERING createJob(int, Class<?>, WorkflowPlan, boolean, Integer)");
         logger.debug("moduleClass.getSimpleName(): {}", moduleClass.getSimpleName());
 
-        File executable = new File("$MAPSEQ_HOME/bin/mapseq-run-module.sh");
+        File executable = new File("$MAPSEQ_CLIENT_HOME/bin/mapseq-run-module.sh");
         String jobName = String.format("%s_%d", moduleClass.getSimpleName(), count);
         CondorJobBuilder builder = new CondorJobBuilder().name(jobName).executable(executable).retry(retry);
 
@@ -71,7 +71,7 @@ public class WorkflowJobFactory {
         logger.debug("ENTERING createDryRunJob(int, Class<?>)");
         logger.debug("moduleClass.getSimpleName(): {}", moduleClass.getSimpleName());
 
-        File executable = new File("$MAPSEQ_HOME/bin/mapseq-run-module.sh");
+        File executable = new File("$MAPSEQ_CLIENT_HOME/bin/mapseq-run-module.sh");
         String jobName = String.format("%s_%d", moduleClass.getSimpleName(), count);
         CondorJobBuilder builder = new CondorJobBuilder().name(jobName).executable(executable);
 

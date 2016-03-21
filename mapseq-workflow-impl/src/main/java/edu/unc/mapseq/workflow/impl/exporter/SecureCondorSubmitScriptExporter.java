@@ -186,7 +186,7 @@ public class SecureCondorSubmitScriptExporter extends DefaultCondorSubmitScriptE
         }
 
         if (job.getInitialDirectory() != null && job.getTransferInputList().size() > 0) {
-            transferInputCommandSB.append("$MAPSEQ_HOME/bin/mapseq-transfer-input-files.sh --host=$DATA_MOVER");
+            transferInputCommandSB.append("$MAPSEQ_CLIENT_HOME/bin/mapseq-transfer-input-files.sh --host=$DATA_MOVER");
             transferInputCommandSB.append(String.format(" --username=%s", username));
             String initialDir = job.getInitialDirectory();
             transferInputCommandSB.append(String.format(" --remoteDirectory=%s", initialDir));
