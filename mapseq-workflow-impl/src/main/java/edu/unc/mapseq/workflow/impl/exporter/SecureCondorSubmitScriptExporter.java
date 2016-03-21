@@ -180,13 +180,20 @@ public class SecureCondorSubmitScriptExporter extends DefaultCondorSubmitScriptE
 
         StringBuilder transferInputCommandSB = new StringBuilder();
 
+        String externalDataMover = System.getenv("MAPSEQ_DATA_MOVER_EXTERNAL");
+        String internalDataMover = System.getenv("MAPSEQ_DATA_MOVER_INTERNAL");
+        String jlrmSiteName = System.getenv("JLRM_SITE_NAME");
         if (job.getInitialDirectory() != null && StringUtils.isEmpty(job.getSiteName())) {
-            scriptSB.append("DATA_MOVER=172.26.128.18\n");
-            scriptSB.append("if [ $JLRM_SITE_NAME != \"Kure\" ]; then DATA_MOVER=152.19.197.219; fi\n");
+            scriptSB.append("MAPSEQ_DATA_MOVER=").append(externalDataMover).append("\n");
+            if (StringUtils.isNotEmpty(jlrmSiteName)) {
+                scriptSB.append("if [ \"$JLRM_SITE_NAME\" == \"").append(jlrmSiteName)
+                        .append("\" ]; then MAPSEQ_DATA_MOVER=").append(internalDataMover).append("; fi\n");
+            }
         }
 
         if (job.getInitialDirectory() != null && job.getTransferInputList().size() > 0) {
-            transferInputCommandSB.append("$MAPSEQ_CLIENT_HOME/bin/mapseq-transfer-input-files.sh --host=$DATA_MOVER");
+            transferInputCommandSB
+                    .append("$MAPSEQ_CLIENT_HOME/bin/mapseq-transfer-input-files.sh --host=$MAPSEQ_DATA_MOVER");
             transferInputCommandSB.append(String.format(" --username=%s", username));
             String initialDir = job.getInitialDirectory();
             transferInputCommandSB.append(String.format(" --remoteDirectory=%s", initialDir));
@@ -220,10 +227,11 @@ public class SecureCondorSubmitScriptExporter extends DefaultCondorSubmitScriptE
             scriptSB.append(removeInputFilesSB.toString());
         }
 
-        if (job.getInitialDirectory() != null) {
+        if (job.getInitialDirectory() != null && StringUtils.isEmpty(job.getSiteName())) {
 
             StringBuilder transferOutputCommandSB = new StringBuilder();
-            transferOutputCommandSB.append("$MAPSEQ_CLIENT_HOME/bin/mapseq-transfer-output-files.sh --host=$DATA_MOVER");
+            transferOutputCommandSB
+                    .append("$MAPSEQ_CLIENT_HOME/bin/mapseq-transfer-output-files.sh --host=$MAPSEQ_DATA_MOVER");
             transferOutputCommandSB.append(String.format(" --username=%s", username));
             String initialDir = job.getInitialDirectory();
             transferOutputCommandSB.append(String.format(" --remoteDirectory=%s", initialDir));
