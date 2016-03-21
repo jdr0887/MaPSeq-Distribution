@@ -234,7 +234,7 @@ public abstract class AbstractWorkflow implements Workflow {
     public void cleanUp() throws WorkflowException {
         logger.debug("ENTERING cleanUp()");
 
-        String mapseqHome = System.getenv("MAPSEQ_HOME");
+        String mapseqHome = System.getenv("MAPSEQ_CLIENT_HOME");
         if (StringUtils.isNotEmpty(mapseqHome)) {
             File tmpDir = new File(mapseqHome, "tmp");
             File tmpWorkflowDir = new File(tmpDir, getName());
