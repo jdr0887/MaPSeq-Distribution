@@ -29,7 +29,7 @@ import edu.unc.mapseq.module.constraints.FileIsReadable;
  * @author jdr0887
  * 
  */
-@Application(name = "GATKIndelRealigner", executable = "$JAVA_HOME/bin/java -Xmx4g -Djava.io.tmpdir=$MAPSEQ_HOME/tmp -jar $%s_GATK_HOME/GenomeAnalysisTK.jar --analysis_type IndelRealigner")
+@Application(name = "GATKIndelRealigner", executable = "$JAVA_HOME/bin/java -Xmx4g -Djava.io.tmpdir=$MAPSEQ_CLIENT_HOME/tmp -jar $%s_GATK_HOME/GenomeAnalysisTK.jar --analysis_type IndelRealigner")
 public class GATKIndelRealigner extends Module {
 
     @NotNull(message = "inFile is required", groups = InputValidations.class)

@@ -72,7 +72,7 @@ public class BWAIndex extends Module {
             command.append(" ").append(symlinkFile.getAbsolutePath());
 
             CommandInput commandInput = new CommandInput();
-            File mapseqTmpDir = new File(System.getenv("MAPSEQ_HOME"), "tmp");
+            File mapseqTmpDir = new File(System.getenv("MAPSEQ_CLIENT_HOME"), "tmp");
             commandInput.setWorkDir(mapseqTmpDir);
             commandInput.setCommand(command.toString());
             Executor executor = BashExecutor.getInstance();

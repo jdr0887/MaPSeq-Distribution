@@ -65,7 +65,7 @@ public class PicardMarkDuplicates extends Module {
             argumentList.add(String.format("MAX_RECORDS_IN_RAM=%d", maxRecordsInRAM));
             argumentList.add("VALIDATION_STRINGENCY=SILENT");
             argumentList.add("REMOVE_DUPLICATES=true");
-            argumentList.add(String.format("TMP_DIR=%s/tmp", System.getenv("MAPSEQ_HOME")));
+            argumentList.add(String.format("TMP_DIR=%s/tmp", System.getenv("MAPSEQ_CLIENT_HOME")));
             argumentList.add("OUTPUT=" + output.getAbsolutePath());
             argumentList.add("INPUT=" + input.getAbsolutePath());
             argumentList.add("METRICS_FILE=" + metricsFile.getAbsolutePath());

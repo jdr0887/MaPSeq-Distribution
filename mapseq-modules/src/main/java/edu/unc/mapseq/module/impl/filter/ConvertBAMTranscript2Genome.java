@@ -26,7 +26,7 @@ import edu.unc.mapseq.module.constraints.FileIsReadable;
  * @author jdr0887
  * 
  */
-@Application(name = "ConvertBAMTranscript2Genome", executable = "perl $MAPSEQ_HOME/bin/sw_module_ConvertBAMTranscript2Genome.pl")
+@Application(name = "ConvertBAMTranscript2Genome", executable = "perl $MAPSEQ_CLIENT_HOME/bin/sw_module_ConvertBAMTranscript2Genome.pl")
 public class ConvertBAMTranscript2Genome extends Module {
 
     @NotNull(message = "inFile is required", groups = InputValidations.class)

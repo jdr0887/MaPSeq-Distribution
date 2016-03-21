@@ -12,7 +12,7 @@ import edu.unc.mapseq.module.annotations.OutputArgument;
 import edu.unc.mapseq.module.annotations.OutputValidations;
 import edu.unc.mapseq.module.constraints.FileIsReadable;
 
-@Application(name = "SortByReferenceAndName", executable = "perl $MAPSEQ_HOME/bin/sort_bam_by_reference_and_name.pl --samtools $%s_SAMTOOLS_HOME/bin/samtools --temp-dir $MAPSEQ_HOME/tmp")
+@Application(name = "SortByReferenceAndName", executable = "perl $MAPSEQ_CLIENT_HOME/bin/sort_bam_by_reference_and_name.pl --samtools $%s_SAMTOOLS_HOME/bin/samtools --temp-dir $MAPSEQ_CLIENT_HOME/tmp")
 public class SortByReferenceAndName extends Module {
 
     @NotNull(message = "flagstatInput is required", groups = InputValidations.class)

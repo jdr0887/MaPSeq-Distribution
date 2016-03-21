@@ -26,7 +26,7 @@ import edu.unc.mapseq.module.constraints.FileIsReadable;
  * @author jdr0887
  * 
  */
-@Application(name = "NormalizeQuartile", executable = "perl $MAPSEQ_HOME/bin/quartile_norm.pl")
+@Application(name = "NormalizeQuartile", executable = "perl $MAPSEQ_CLIENT_HOME/bin/quartile_norm.pl")
 public class NormalizeQuartile extends Module {
 
     @NotNull(message = "column is required", groups = InputValidations.class)

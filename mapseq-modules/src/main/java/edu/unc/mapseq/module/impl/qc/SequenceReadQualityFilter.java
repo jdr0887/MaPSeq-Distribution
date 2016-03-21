@@ -13,7 +13,7 @@ import edu.unc.mapseq.module.ShellModuleOutput;
 import edu.unc.mapseq.module.annotations.Application;
 import edu.unc.mapseq.module.annotations.InputArgument;
 
-@Application(name = "SequenceReadQualityFilter", executable = "perl $MAPSEQ_HOME/bin/sw_module_qualFilter.pl")
+@Application(name = "SequenceReadQualityFilter", executable = "perl $MAPSEQ_CLIENT_HOME/bin/sw_module_qualFilter.pl")
 public class SequenceReadQualityFilter extends Module {
 
     @InputArgument()

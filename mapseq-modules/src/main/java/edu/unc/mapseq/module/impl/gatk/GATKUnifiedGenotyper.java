@@ -15,7 +15,7 @@ import edu.unc.mapseq.module.annotations.OutputArgument;
 import edu.unc.mapseq.module.annotations.OutputValidations;
 import edu.unc.mapseq.module.constraints.FileIsReadable;
 
-@Application(name = "GATKUnifiedGenotyper", executable = "$JAVA_HOME/bin/java -Xmx4g -Djava.io.tmpdir=$MAPSEQ_HOME/tmp -jar $%s_GATK_HOME/GenomeAnalysisTK.jar --analysis_type UnifiedGenotyper")
+@Application(name = "GATKUnifiedGenotyper", executable = "$JAVA_HOME/bin/java -Xmx4g -Djava.io.tmpdir=$MAPSEQ_CLIENT_HOME/tmp -jar $%s_GATK_HOME/GenomeAnalysisTK.jar --analysis_type UnifiedGenotyper")
 public class GATKUnifiedGenotyper extends Module {
 
     @NotNull(message = "inputFile is required", groups = InputValidations.class)

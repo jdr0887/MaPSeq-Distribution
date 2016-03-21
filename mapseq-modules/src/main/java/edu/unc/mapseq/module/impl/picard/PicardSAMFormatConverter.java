@@ -59,7 +59,7 @@ public class PicardSAMFormatConverter extends Module {
             List<String> argumentList = new ArrayList<String>();
             argumentList.add(String.format("MAX_RECORDS_IN_RAM=%d", maxRecordsInRAM));
             argumentList.add("VALIDATION_STRINGENCY=SILENT");
-            argumentList.add(String.format("TMP_DIR=%s/tmp", System.getenv("MAPSEQ_HOME")));
+            argumentList.add(String.format("TMP_DIR=%s/tmp", System.getenv("MAPSEQ_CLIENT_HOME")));
             argumentList.add("OUTPUT=" + output.getAbsolutePath());
             argumentList.add("INPUT=" + input.getAbsolutePath());
 
