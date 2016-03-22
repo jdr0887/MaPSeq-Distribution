@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,10 @@ import edu.unc.mapseq.dao.model.Sample;
 public class SampleWorkflowUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(SampleWorkflowUtil.class);
+
+    public static final Pattern read1Pattern = Pattern.compile("^.+_R1\\.fastq\\.gz$");
+
+    public static final Pattern read2Pattern = Pattern.compile("^.+_R2\\.fastq\\.gz$");
 
     public static String getRootFastqName(String name) {
         logger.debug("ENTERING getRootFastqName(String)");
@@ -49,26 +54,20 @@ public class SampleWorkflowUtil {
         for (FileData fileData : fileDataSet) {
             MimeType mimeType = fileData.getMimeType();
             if (mimeType != null && mimeType.equals(MimeType.FASTQ)) {
-                Pattern patternR1 = Pattern.compile(String.format("^%s.*_L00%d_R1\\.fastq\\.gz$",
-                        sample.getFlowcell().getName(), sample.getLaneIndex()));
-                Matcher matcherR1 = patternR1.matcher(fileData.getName());
-                File file = new File(fileData.getPath(), fileData.getName());
+                Matcher matcherR1 = read1Pattern.matcher(fileData.getName());
                 if (matcherR1.matches()) {
-                    logger.debug("found file: {}", file.getAbsolutePath());
-                    readPairList.add(file);
+                    readPairList.add(new File(fileData.getPath(), fileData.getName()));
                 }
 
-                Pattern patternR2 = Pattern.compile(String.format("^%s.*_L00%d_R2\\.fastq\\.gz$",
-                        sample.getFlowcell().getName(), sample.getLaneIndex()));
-                Matcher matcherR2 = patternR2.matcher(fileData.getName());
+                Matcher matcherR2 = read2Pattern.matcher(fileData.getName());
                 if (matcherR2.matches()) {
-                    logger.debug("found file: {}", file.getAbsolutePath());
-                    readPairList.add(file);
+                    readPairList.add(new File(fileData.getPath(), fileData.getName()));
                 }
             }
         }
-        readPairList.sort((a, b) -> a.getName().compareTo(b.getName()));
 
+        readPairList.sort((a, b) -> a.getName().compareTo(b.getName()));
+        readPairList.forEach(a -> logger.info(a.getAbsolutePath()));
         return readPairList;
     }
 
@@ -86,25 +85,30 @@ public class SampleWorkflowUtil {
         logger.info("fileDataSet.size() = {}", fileDataSet.size());
 
         for (FileData fileData : fileDataSet) {
-            if (fileData.getMimeType().equals(mimeType)) {
-                List<Job> jobList = null;
-                try {
-                    jobList = mapseqDAOBeanService.getJobDAO().findByFileDataIdAndWorkflowId(fileData.getId(),
-                            clazz.getName(), workflowId);
-                } catch (MaPSeqDAOException e) {
-                    e.printStackTrace();
+            if (!fileData.getMimeType().equals(mimeType)) {
+                continue;
+            }
+            logger.debug(fileData.toString());
+            try {
+                List<Job> jobList = mapseqDAOBeanService.getJobDAO().findByFileDataIdAndWorkflowId(fileData.getId(),
+                        clazz.getName(), workflowId);
+                if (CollectionUtils.isEmpty(jobList)) {
+                    logger.warn("No Jobs found");
+                    continue;
                 }
-                if (jobList != null && jobList.size() > 0) {
-                    for (Job job : jobList) {
-                        if (job.getName().contains(clazz.getSimpleName())) {
-                            logger.debug("using FileData: {}", fileData.toString());
-                            logger.debug("from Job: {}", job.toString());
-                            ret = new File(fileData.getPath(), fileData.getName());
-                            break;
-                        }
+                for (Job job : jobList) {
+                    if (job.getName().contains(clazz.getSimpleName())) {
+                        logger.debug(job.toString());
+                        ret = new File(fileData.getPath(), fileData.getName());
+                        break;
                     }
                 }
+            } catch (MaPSeqDAOException e) {
+                e.printStackTrace();
             }
+        }
+        if (ret != null) {
+            logger.info("File: {}", ret.getAbsolutePath());
         }
         return ret;
     }
