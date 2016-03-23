@@ -2,13 +2,13 @@
   <parent>
     <groupId>edu.unc.mapseq.distribution</groupId>
     <artifactId>modules</artifactId>
-    <version>0.6.26-SNAPSHOT</version>
+    <version>0.6.26</version>
   </parent>
   <name>MaPSeq :: Distribution :: Modules :: Core</name>
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.unc.mapseq.distribution.modules</groupId>
   <artifactId>mapseq-module-core</artifactId>
-  <version>0.6.26-SNAPSHOT</version>
+  <version>0.6.26</version>
   <packaging>bundle</packaging>
   <build>
     <plugins>
@@ -38,7 +38,7 @@
       <plugin>
         <groupId>edu.unc.mapseq.distribution.mapseq-maven-plugins</groupId>
         <artifactId>mapseq-module-cli-generator-plugin</artifactId>
-        <version>0.6.26-SNAPSHOT</version>
+        <version>0.6.26</version>
         <executions>
           <execution>
             <id>1</id>
