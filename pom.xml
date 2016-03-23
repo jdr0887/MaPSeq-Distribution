@@ -154,10 +154,15 @@
       	<version>${mapseq.version}</version>
       </dependency>
       <dependency>
-      	<groupId>edu.unc.mapseq.distribution</groupId>
-      	<artifactId>mapseq-modules</artifactId>
+      	<groupId>edu.unc.mapseq.distribution.modules</groupId>
+      	<artifactId>mapseq-module-core</artifactId>
       	<version>0.6.26-SNAPSHOT</version>
       </dependency>
+      <dependency>
+      	<groupId>edu.unc.mapseq.distribution.modules</groupId>
+      	<artifactId>mapseq-module-sequencing</artifactId>
+      	<version>0.6.26-SNAPSHOT</version>
+      </dependency>      
       <dependency>
 	<groupId>edu.unc.mapseq.distribution.mapseq-dao</groupId>
 	<artifactId>mapseq-dao-soap</artifactId>
@@ -285,9 +290,9 @@
   <modules>
     <module>mapseq-commands</module>
     <module>mapseq-dao</module>
-    <module>mapseq-modules</module>
     <module>mapseq-maven-plugins</module>
-    <module>mapseq-module-cli-generator</module>
+    <module>mapseq-module-cli-generator</module>    
+    <module>mapseq-modules</module>
     <module>mapseq-reports</module>
     <module>mapseq-tasks</module>
     <module>mapseq-features</module>
