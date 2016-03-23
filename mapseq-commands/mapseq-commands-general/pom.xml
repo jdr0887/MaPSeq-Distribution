@@ -12,9 +12,13 @@
   <packaging>bundle</packaging>
   <dependencies>
     <dependency>
-      <groupId>edu.unc.mapseq.distribution</groupId>
-      <artifactId>mapseq-modules</artifactId>
+      <groupId>edu.unc.mapseq.distribution.modules</groupId>
+      <artifactId>mapseq-module-core</artifactId>
     </dependency>
+    <dependency>
+      <groupId>edu.unc.mapseq.distribution.modules</groupId>
+      <artifactId>mapseq-module-sequencing</artifactId>
+    </dependency>    
   </dependencies>
   <build>
     <plugins>
