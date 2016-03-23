@@ -88,7 +88,8 @@
 
   <feature name="mapseq-workflows" version="${project.version}" resolver="(obr)">
     <bundle>mvn:edu.unc.mapseq/mapseq-module-api/${mapseq.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.distribution/mapseq-modules/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.modules/mapseq-module-core/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.modules/mapseq-module-sequencing/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq/mapseq-workflow-api/${mapseq.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution/mapseq-workflow-impl/${project.version}</bundle>
   </feature>
