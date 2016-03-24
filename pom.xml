@@ -11,7 +11,7 @@
   <version>0.6.27-SNAPSHOT</version>
   <packaging>pom</packaging>
   <properties>
-    <mapseq.version>0.6.13</mapseq.version>
+    <mapseq.version>0.6.14</mapseq.version>
     <spring.version>4.2.3.RELEASE</spring.version>    
   </properties>
   <issueManagement>
