@@ -22,7 +22,7 @@ import edu.unc.mapseq.module.constraints.Contains;
 import edu.unc.mapseq.module.constraints.FileIsNotEmpty;
 import edu.unc.mapseq.module.constraints.FileIsReadable;
 
-@Application(name = "PicardMarkDuplicates")
+@Application(name = "PicardFixMate")
 public class PicardFixMate extends Module {
 
     @NotNull(message = "Input is required", groups = InputValidations.class)
