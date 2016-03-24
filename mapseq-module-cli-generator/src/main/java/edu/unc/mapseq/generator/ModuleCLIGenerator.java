@@ -96,11 +96,21 @@ public class ModuleCLIGenerator extends AbstractGenerator {
                 // cliClass._implements(runnableJClass);
                 cliClass._implements(callableJClass.narrow(moduleOutputJClass));
 
+                JFieldVar fieldFieldVar = cliClass.field(JMod.PUBLIC | JMod.STATIC | JMod.FINAL, stringJClass,
+                        "DRYRUN");
+                fieldFieldVar.init(JExpr.lit("--dryRun"));
+
+                fieldFieldVar = cliClass.field(JMod.PUBLIC | JMod.STATIC | JMod.FINAL, stringJClass, "PERSISTFILEDATA");
+                fieldFieldVar.init(JExpr.lit("--persistFileData"));
+
+                fieldFieldVar = cliClass.field(JMod.PUBLIC | JMod.STATIC | JMod.FINAL, stringJClass, "VALIDATE");
+                fieldFieldVar.init(JExpr.lit("--validate"));
+
                 Field[] fieldArray = clazz.getDeclaredFields();
                 for (Field field : fieldArray) {
                     if (field.isAnnotationPresent(InputArgument.class)
                             || field.isAnnotationPresent(OutputArgument.class)) {
-                        JFieldVar fieldFieldVar = cliClass.field(JMod.PUBLIC | JMod.STATIC | JMod.FINAL, stringJClass,
+                        fieldFieldVar = cliClass.field(JMod.PUBLIC | JMod.STATIC | JMod.FINAL, stringJClass,
                                 field.getName().toUpperCase());
                         fieldFieldVar.init(JExpr.lit("--" + field.getName()));
                     }
@@ -245,14 +255,20 @@ public class ModuleCLIGenerator extends AbstractGenerator {
                         .invoke("withLongOpt").arg(JExpr.lit("dryRun")).invoke("create")));
 
         mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption")
+                .arg(optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit("validate")).invoke("hasArg")
+                        .invoke("withDescription")
+                        .arg(JExpr.lit("run validation on inputs and outputs (default is true)")).invoke("withLongOpt")
+                        .arg(JExpr.lit("validate")).invoke("create")));
+
+        mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption")
                 .arg(optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit("persistFileData"))
                         .invoke("withDescription").arg(JExpr.lit("persist FileData's if they exist"))
                         .invoke("withLongOpt").arg(JExpr.lit("persistFileData")).invoke("create")));
 
         mainMethodBlock.add(cliOptionsFieldVar.invoke("addOption")
-                .arg(optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit("serializeFile")).invoke("hasArg")
+                .arg(optionBuilderJClass.staticInvoke("withArgName").arg(JExpr.lit("serialize")).invoke("hasArg")
                         .invoke("withDescription").arg(JExpr.lit("Serialize File")).invoke("withLongOpt")
-                        .arg(JExpr.lit("serializeFile")).invoke("create")));
+                        .arg(JExpr.lit("serialize")).invoke("create")));
 
         for (Field field : fieldArray) {
             if (field.isAnnotationPresent(InputArgument.class)) {
@@ -384,13 +400,26 @@ public class ModuleCLIGenerator extends AbstractGenerator {
         hasOptionConditionalThenBlock
                 .add(applicationVar.invoke(String.format("set%s", StringUtils.capitalize(paramName))).arg(paramVar));
 
-        paramName = "serializeFile";
+        paramName = "serialize";
         hasOptionConditional = tryBlockBody._if(commandLineVar.invoke("hasOption").arg(paramName));
         hasOptionConditionalThenBlock = hasOptionConditional._then();
         paramVar = hasOptionConditionalThenBlock.decl(fileJClass, paramName);
         paramVar.init(JExpr._new(fileJClass).arg(commandLineVar.invoke("getOptionValue").arg(paramName)));
         hasOptionConditionalThenBlock
                 .add(applicationVar.invoke(String.format("set%s", StringUtils.capitalize(paramName))).arg(paramVar));
+
+        paramName = "validate";
+        hasOptionConditional = tryBlockBody._if(commandLineVar.invoke("hasOption").arg(paramName));
+        hasOptionConditionalThenBlock = hasOptionConditional._then();
+        paramVar = hasOptionConditionalThenBlock.decl(stringJClass, paramName);
+        paramVar.init(commandLineVar.invoke("getOptionValue").arg(paramName));
+
+        JConditional validateConditional = hasOptionConditionalThenBlock
+                ._if(stringUtilsJClass.staticInvoke("isNotEmpty").arg(paramVar)
+                        .cand(paramVar.invoke("equalsIgnoreCase").arg(JExpr.lit("false"))));
+        JBlock validateConditionalThenBlock = validateConditional._then();
+        validateConditionalThenBlock.add(
+                applicationVar.invoke("set" + StringUtils.capitalize(paramName)).arg(booleanJClass.staticRef("FALSE")));
 
         hasOptionConditional = tryBlockBody._if(commandLineVar.invoke("hasOption").arg("dryRun"));
         hasOptionConditionalThenBlock = hasOptionConditional._then();
