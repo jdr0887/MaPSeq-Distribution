@@ -42,7 +42,7 @@ public class WorkflowJobFactory {
             builder.priority(count * 10);
         }
 
-        builder.addArgument(moduleClass.getName()).addArgument("--serializeFile", String.format("%s.xml", jobName));
+        builder.addArgument(moduleClass.getName()).addArgument("--serialize", String.format("%s.xml", jobName));
 
         for (ClassAdvertisement classAd : ClassAdvertisementFactory.getDefaultClassAds()) {
             try {
