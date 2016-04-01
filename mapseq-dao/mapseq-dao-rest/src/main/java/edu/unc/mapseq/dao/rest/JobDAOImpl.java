@@ -21,7 +21,7 @@ import edu.unc.mapseq.dao.model.Job;
 @Component
 public class JobDAOImpl extends NamedEntityDAOImpl<Job, Long> implements JobDAO {
 
-    private final Logger logger = LoggerFactory.getLogger(JobDAOImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(JobDAOImpl.class);
 
     public JobDAOImpl() {
         super(Job.class);

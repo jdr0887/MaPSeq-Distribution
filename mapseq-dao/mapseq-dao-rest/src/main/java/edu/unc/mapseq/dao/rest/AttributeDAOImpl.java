@@ -15,7 +15,7 @@ import edu.unc.mapseq.dao.model.Attribute;
 @Component
 public class AttributeDAOImpl extends BaseDAOImpl<Attribute, Long> implements AttributeDAO {
 
-    private final Logger logger = LoggerFactory.getLogger(AttributeDAOImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(AttributeDAOImpl.class);
 
     public AttributeDAOImpl() {
         super(Attribute.class);

@@ -19,7 +19,7 @@ import edu.unc.mapseq.dao.model.FileData;
 @Component
 public class FileDataDAOImpl extends BaseDAOImpl<FileData, Long> implements FileDataDAO {
 
-    private final Logger logger = LoggerFactory.getLogger(FileDataDAOImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(FileDataDAOImpl.class);
 
     public FileDataDAOImpl() {
         super(FileData.class);

@@ -21,7 +21,7 @@ import edu.unc.mapseq.dao.model.Sample;
 @Component
 public class SampleDAOImpl extends NamedEntityDAOImpl<Sample, Long> implements SampleDAO {
 
-    private final Logger logger = LoggerFactory.getLogger(SampleDAOImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(SampleDAOImpl.class);
 
     public SampleDAOImpl() {
         super(Sample.class);
