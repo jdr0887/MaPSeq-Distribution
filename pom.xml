@@ -11,7 +11,7 @@
   <version>0.6.28-SNAPSHOT</version>
   <packaging>pom</packaging>
   <properties>
-    <mapseq.version>0.6.14</mapseq.version>
+    <mapseq.version>0.6.15-SNAPSHOT</mapseq.version>
     <spring.version>4.2.3.RELEASE</spring.version>    
   </properties>
   <issueManagement>
@@ -144,6 +144,11 @@
       	<version>${mapseq.version}</version>
       </dependency>
       <dependency>
+	<groupId>edu.unc.mapseq.distribution.mapseq-workflows</groupId>
+	<artifactId>mapseq-workflow-core</artifactId>
+	<version>0.6.28-SNAPSHOT</version>      	
+      </dependency>
+      <dependency>
       	<groupId>org.apache.commons</groupId>
       	<artifactId>commons-email</artifactId>
       	<version>1.3.1</version>
@@ -154,12 +159,12 @@
       	<version>${mapseq.version}</version>
       </dependency>
       <dependency>
-      	<groupId>edu.unc.mapseq.distribution.modules</groupId>
+      	<groupId>edu.unc.mapseq.distribution.mapseq-modules</groupId>
       	<artifactId>mapseq-module-core</artifactId>
       	<version>0.6.28-SNAPSHOT</version>
       </dependency>
       <dependency>
-      	<groupId>edu.unc.mapseq.distribution.modules</groupId>
+      	<groupId>edu.unc.mapseq.distribution.mapseq-modules</groupId>
       	<artifactId>mapseq-module-sequencing</artifactId>
       	<version>0.6.28-SNAPSHOT</version>
       </dependency>      
@@ -299,7 +304,7 @@
     <!-- <module>mapseq-server</module> -->
     <module>mapseq-webapp</module>
     <module>mapseq-web-services</module>
-    <module>mapseq-workflow-impl</module>    
+    <module>mapseq-workflows</module>
     <module>mapseq-client</module>
   </modules>
 </project>

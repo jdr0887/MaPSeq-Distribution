@@ -62,13 +62,8 @@
     </dependency>
   </dependencies>
   <modules>
-    <module>mapseq-commands-general</module>
+    <module>mapseq-commands-core</module>
     <module>mapseq-commands-migration</module>
-    <module>mapseq-commands-workflow-run</module>
-    <module>mapseq-commands-workflow</module>
-    <module>mapseq-commands-study</module>
-    <module>mapseq-commands-sample</module>
-    <module>mapseq-commands-flowcell</module>
-    <module>mapseq-commands-reports</module>
+    <module>mapseq-commands-sequencing</module>
   </modules>
 </project>

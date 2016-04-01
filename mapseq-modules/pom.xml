@@ -7,7 +7,7 @@
   <name>MaPSeq :: Distribution :: Modules</name>
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.unc.mapseq.distribution</groupId>
-  <artifactId>modules</artifactId>
+  <artifactId>mapseq-modules</artifactId>
   <version>0.6.28-SNAPSHOT</version>
   <packaging>pom</packaging>
   <dependencies>
