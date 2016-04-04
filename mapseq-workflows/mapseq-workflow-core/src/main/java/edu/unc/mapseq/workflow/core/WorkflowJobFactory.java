@@ -16,20 +16,15 @@ public class WorkflowJobFactory {
 
     public static CondorJobBuilder createJob(int count, Class<?> moduleClass, Long workflowRunAttemptId)
             throws WorkflowException {
-        return createJob(count, moduleClass, workflowRunAttemptId, null, false);
+        return createJob(count, moduleClass, workflowRunAttemptId, false);
     }
 
-    public static CondorJobBuilder createJob(int count, Class<?> moduleClass, Long workflowRunAttemptId, Long sampleId)
-            throws WorkflowException {
-        return createJob(count, moduleClass, workflowRunAttemptId, sampleId, true);
-    }
-
-    public static CondorJobBuilder createJob(int count, Class<?> moduleClass, Long workflowRunAttemptId, Long sampleId,
+    public static CondorJobBuilder createJob(int count, Class<?> moduleClass, Long workflowRunAttemptId,
             boolean persistFileData) throws WorkflowException {
-        return createJob(count, moduleClass, workflowRunAttemptId, sampleId, persistFileData, 3);
+        return createJob(count, moduleClass, workflowRunAttemptId, persistFileData, 3);
     }
 
-    public static CondorJobBuilder createJob(int count, Class<?> moduleClass, Long workflowRunAttemptId, Long sampleId,
+    public static CondorJobBuilder createJob(int count, Class<?> moduleClass, Long workflowRunAttemptId,
             boolean persistFileData, Integer retry) throws WorkflowException {
         logger.debug("ENTERING createJob(int, Class<?>, WorkflowPlan, boolean, Integer)");
         logger.debug("moduleClass.getSimpleName(): {}", moduleClass.getSimpleName());
@@ -54,10 +49,6 @@ public class WorkflowJobFactory {
 
         if (workflowRunAttemptId != null) {
             builder.addArgument("--workflowRunAttemptId", workflowRunAttemptId.toString());
-        }
-
-        if (sampleId != null) {
-            builder.addArgument("--sampleId", sampleId.toString());
         }
 
         if (persistFileData) {
