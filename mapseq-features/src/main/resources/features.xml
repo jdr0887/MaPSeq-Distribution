@@ -88,21 +88,16 @@
 
   <feature name="mapseq-workflows" version="${project.version}" resolver="(obr)">
     <bundle>mvn:edu.unc.mapseq/mapseq-module-api/${mapseq.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.distribution.modules/mapseq-module-core/${project.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.distribution.modules/mapseq-module-sequencing/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-modules/mapseq-module-core/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-modules/mapseq-module-sequencing/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq/mapseq-workflow-api/${mapseq.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.distribution/mapseq-workflow-impl/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-workflows/mapseq-workflow-core/${project.version}</bundle>    
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-workflows/mapseq-workflow-sequencing/${project.version}</bundle>
   </feature>
 
   <feature name="mapseq-commands" version="${project.version}" resolver="(obr)">
-    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-commands/mapseq-commands-flowcell/${project.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-commands/mapseq-commands-general/${project.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-commands/mapseq-commands-migration/${project.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-commands/mapseq-commands-reports/${project.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-commands/mapseq-commands-sample/${project.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-commands/mapseq-commands-study/${project.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-commands/mapseq-commands-workflow/${project.version}</bundle>
-    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-commands/mapseq-commands-workflow-run/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-commands/mapseq-commands-core/${project.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq.distribution.mapseq-commands/mapseq-commands-sequencing/${project.version}</bundle>
   </feature>		      
 
   <feature name="mapseq-reports" version="${project.version}" resolver="(obr)">
