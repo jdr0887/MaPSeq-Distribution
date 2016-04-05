@@ -7,7 +7,7 @@
   <name>MaPSeq :: Distribution :: Commands :: Core</name>
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.unc.mapseq.distribution.mapseq-commands</groupId>
-  <artifactId>mapseq-commands-general</artifactId>
+  <artifactId>mapseq-commands-core</artifactId>
   <version>0.6.29-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <dependencies>
@@ -47,7 +47,7 @@
 	    <Private-Package />
 	    <Export-Package>edu.unc.mapseq.commands.core*</Export-Package>
 	    <Import-Package>*</Import-Package>
-            <Karaf-Commands>edu.unc.mapseq.commands.core</Karaf-Commands>
+            <Karaf-Commands>edu.unc.mapseq.commands.core*</Karaf-Commands>
 	  </instructions>
 	</configuration>
       </plugin>
