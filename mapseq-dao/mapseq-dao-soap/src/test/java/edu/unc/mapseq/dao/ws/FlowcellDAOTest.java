@@ -28,7 +28,10 @@ import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.model.Attribute;
 import edu.unc.mapseq.dao.model.FileData;
 import edu.unc.mapseq.dao.model.Flowcell;
+import edu.unc.mapseq.dao.model.MimeType;
 import edu.unc.mapseq.dao.model.Sample;
+import edu.unc.mapseq.dao.model.Workflow;
+import edu.unc.mapseq.dao.model.WorkflowRun;
 import edu.unc.mapseq.dao.soap.SOAPDAOManager;
 
 public class FlowcellDAOTest {
@@ -92,16 +95,62 @@ public class FlowcellDAOTest {
     public void ncgenesMigrationPull() {
         try {
             SOAPDAOManager daoMgr = SOAPDAOManager.getInstance();
-            List<Flowcell> entityList = daoMgr.getMaPSeqDAOBeanService().getFlowcellDAO().findByStudyName("NC_GENES");
-            if (CollectionUtils.isNotEmpty(entityList)) {
-                for (Flowcell flowcell : entityList) {
-                    JAXBContext context = JAXBContext.newInstance(Flowcell.class);
-                    Marshaller m = context.createMarshaller();
-                    m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-                    File moduleClassXMLFile = new File("/tmp/flowcells",
-                            String.format("%s-%d.xml", "Flowcell", flowcell.getId()));
+
+            List<Workflow> workflowList = daoMgr.getMaPSeqDAOBeanService().getWorkflowDAO().findAll();
+            if (CollectionUtils.isNotEmpty(workflowList)) {
+                JAXBContext context = JAXBContext.newInstance(Workflow.class);
+                Marshaller m = context.createMarshaller();
+                m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+                for (Workflow workflow : workflowList) {
+                    File moduleClassXMLFile = new File("/tmp/workflows",
+                            String.format("%s-%d.xml", "Workflow", workflow.getId()));
                     FileWriter fw = new FileWriter(moduleClassXMLFile);
-                    m.marshal(flowcell, fw);
+                    m.marshal(workflow, fw);
+                }
+            }
+
+            List<Flowcell> flowcellList = daoMgr.getMaPSeqDAOBeanService().getFlowcellDAO().findByStudyName("NC_GENES");
+            if (CollectionUtils.isNotEmpty(flowcellList)) {
+                for (Flowcell flowcell : flowcellList) {
+
+                    List<Sample> sampleList = daoMgr.getMaPSeqDAOBeanService().getSampleDAO()
+                            .findByFlowcellId(flowcell.getId());
+
+                    if (CollectionUtils.isNotEmpty(sampleList)) {
+
+                        JAXBContext context = JAXBContext.newInstance(Sample.class);
+                        Marshaller m = context.createMarshaller();
+                        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+                        for (Sample sample : sampleList) {
+
+                            File moduleClassXMLFile = new File("/tmp/samples",
+                                    String.format("%s-%d.xml", "Sample", sample.getId()));
+                            FileWriter fw = new FileWriter(moduleClassXMLFile);
+                            m.marshal(sample, fw);
+
+                            List<WorkflowRun> sampleWorkflowRunList = daoMgr.getMaPSeqDAOBeanService()
+                                    .getWorkflowRunDAO().findBySampleId(sample.getId());
+
+                            if (CollectionUtils.isNotEmpty(sampleWorkflowRunList)) {
+
+                                
+                                
+                            }
+
+
+                        }
+                    }
+
+                    List<WorkflowRun> flowcellWorkflowRunList = daoMgr.getMaPSeqDAOBeanService().getWorkflowRunDAO()
+                            .findByFlowcellId(flowcell.getId());
+
+                    if (CollectionUtils.isNotEmpty(flowcellWorkflowRunList)) {
+                        for (WorkflowRun workflowRun : flowcellWorkflowRunList) {
+
+                        }
+                    }
+
                 }
             }
         } catch (MaPSeqDAOException | JAXBException | IOException e) {
@@ -119,22 +168,27 @@ public class FlowcellDAOTest {
                     JAXBContext context = JAXBContext.newInstance(Flowcell.class);
                     Unmarshaller unmarshaller = context.createUnmarshaller();
                     Flowcell flowcell = (Flowcell) unmarshaller.unmarshal(a.toFile());
-                    System.out.println(flowcell.toString());
-
-                    if (CollectionUtils.isNotEmpty(flowcell.getAttributes())) {
-
-                    }
-
-                    if (CollectionUtils.isNotEmpty(flowcell.getFileDatas())) {
-                        for (FileData fileData : flowcell.getFileDatas()) {
-                            fileData.setId(null);
-                            // daoMgr.getMaPSeqDAOBeanService().getFileDataDAO().save(fileData);
-                            System.out.println(fileData.toString());
-                        }
-                    }
 
                     flowcell.setId(null);
-                    // daoMgr.getMaPSeqDAOBeanService().getFlowcellDAO().save(flowcell);
+                    flowcell.setAttributes(new HashSet<Attribute>());
+                    flowcell.setFileDatas(new HashSet<FileData>());
+                    flowcell.setBaseDirectory("/projects/sequence_analysis/medgenwork/NC_GENES/BCL");
+
+                    Long flowcellId = daoMgr.getMaPSeqDAOBeanService().getFlowcellDAO().save(flowcell);
+                    flowcell.setId(flowcellId);
+
+                    System.out.println(flowcell.toString());
+
+                    Attribute attribute = new Attribute("readCount", "2");
+                    attribute.setId(daoMgr.getMaPSeqDAOBeanService().getAttributeDAO().save(attribute));
+                    flowcell.getAttributes().add(attribute);
+
+                    FileData fileData = new FileData(flowcell.getName(),
+                            "/projects/sequence_analysis/medgenwork/NC_GENES/SampleSheets", MimeType.TEXT_CSV);
+                    fileData.setId(daoMgr.getMaPSeqDAOBeanService().getFileDataDAO().save(fileData));
+                    flowcell.getFileDatas().add(fileData);
+
+                    daoMgr.getMaPSeqDAOBeanService().getFlowcellDAO().save(flowcell);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -171,7 +225,7 @@ public class FlowcellDAOTest {
             });
 
             Collections.synchronizedSet(flowcellNameSet);
-            
+
             List<String> flowcellNameList = new ArrayList<>(flowcellNameSet);
             flowcellNameList.sort((a, b) -> a.compareTo(b));
             flowcellNameList.forEach(a -> {
