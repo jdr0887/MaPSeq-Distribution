@@ -19,12 +19,10 @@
     <dependency>
       <groupId>edu.unc.mapseq.mapseq-dao</groupId>
       <artifactId>mapseq-dao-api</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>edu.unc.mapseq</groupId>
       <artifactId>mapseq-workflow-api</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.renci.commons</groupId>
