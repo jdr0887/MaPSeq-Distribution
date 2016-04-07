@@ -26,12 +26,11 @@ import org.junit.Test;
 import edu.unc.mapseq.dao.FlowcellDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.model.Attribute;
-import edu.unc.mapseq.dao.model.FileData;
 import edu.unc.mapseq.dao.model.Flowcell;
-import edu.unc.mapseq.dao.model.MimeType;
 import edu.unc.mapseq.dao.model.Sample;
 import edu.unc.mapseq.dao.model.Workflow;
 import edu.unc.mapseq.dao.model.WorkflowRun;
+import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
 import edu.unc.mapseq.dao.soap.SOAPDAOManager;
 
 public class FlowcellDAOTest {
@@ -96,16 +95,35 @@ public class FlowcellDAOTest {
         try {
             SOAPDAOManager daoMgr = SOAPDAOManager.getInstance();
 
+            JAXBContext workflowContext = JAXBContext.newInstance(Workflow.class);
+            Marshaller workflowMarshaller = workflowContext.createMarshaller();
+            workflowMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+            JAXBContext flowcellContext = JAXBContext.newInstance(Flowcell.class);
+            Marshaller flowcellMarshaller = flowcellContext.createMarshaller();
+            flowcellMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+            JAXBContext sampleContext = JAXBContext.newInstance(Sample.class);
+            Marshaller sampleMarshaller = sampleContext.createMarshaller();
+            sampleMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+            JAXBContext workflowRunContext = JAXBContext.newInstance(WorkflowRun.class);
+            Marshaller workflowRunMarshaller = workflowRunContext.createMarshaller();
+            workflowRunMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+            JAXBContext workflowRunAttemptContext = JAXBContext.newInstance(WorkflowRunAttempt.class);
+            Marshaller workflowRunAttemptMarshaller = workflowRunAttemptContext.createMarshaller();
+            workflowRunAttemptMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
             List<Workflow> workflowList = daoMgr.getMaPSeqDAOBeanService().getWorkflowDAO().findAll();
             if (CollectionUtils.isNotEmpty(workflowList)) {
-                JAXBContext context = JAXBContext.newInstance(Workflow.class);
-                Marshaller m = context.createMarshaller();
-                m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
                 for (Workflow workflow : workflowList) {
-                    File moduleClassXMLFile = new File("/tmp/workflows",
+                    File moduleClassXMLFile = new File("/tmp/mapseq/workflows",
                             String.format("%s-%d.xml", "Workflow", workflow.getId()));
-                    FileWriter fw = new FileWriter(moduleClassXMLFile);
-                    m.marshal(workflow, fw);
+                    moduleClassXMLFile.getParentFile().mkdirs();
+                    try (FileWriter fw = new FileWriter(moduleClassXMLFile)) {
+                        workflowMarshaller.marshal(workflow, fw);
+                    }
                 }
             }
 
@@ -113,40 +131,93 @@ public class FlowcellDAOTest {
             if (CollectionUtils.isNotEmpty(flowcellList)) {
                 for (Flowcell flowcell : flowcellList) {
 
+                    System.out.println(flowcell.toString());
+
+                    File flowcellXMLFile = new File("/tmp/mapseq/flowcells",
+                            String.format("%s-%d.xml", "Flowcell", flowcell.getId()));
+                    flowcellXMLFile.getParentFile().mkdirs();
+                    try (FileWriter fw = new FileWriter(flowcellXMLFile)) {
+                        sampleMarshaller.marshal(flowcell, fw);
+                    }
+
+                    List<WorkflowRun> flowcellWorkflowRunList = daoMgr.getMaPSeqDAOBeanService().getWorkflowRunDAO()
+                            .findByFlowcellId(flowcell.getId());
+                    if (CollectionUtils.isNotEmpty(flowcellWorkflowRunList)) {
+                        for (WorkflowRun workflowRun : flowcellWorkflowRunList) {
+
+                            System.out.println(workflowRun.toString());
+
+                            File WorkflowRunXMLFile = new File("/tmp/mapseq/flowcells/workflowruns",
+                                    String.format("%s-%d.xml", "WorkflowRun", workflowRun.getId()));
+                            WorkflowRunXMLFile.getParentFile().mkdirs();
+                            try (FileWriter fw = new FileWriter(WorkflowRunXMLFile)) {
+                                workflowRunMarshaller.marshal(workflowRun, fw);
+                            }
+
+                            List<WorkflowRunAttempt> workflowRunAttemptList = daoMgr.getMaPSeqDAOBeanService()
+                                    .getWorkflowRunAttemptDAO().findByWorkflowRunId(workflowRun.getId());
+
+                            if (CollectionUtils.isNotEmpty(workflowRunAttemptList)) {
+                                for (WorkflowRunAttempt workflowRunAttempt : workflowRunAttemptList) {
+                                    File workflowRunAttemptXMLFile = new File(
+                                            "/tmp/mapseq/flowcells/workflowrunattempts", String.format("%s-%d.xml",
+                                                    "WorkflowRunAttempt", workflowRunAttempt.getId()));
+                                    workflowRunAttemptXMLFile.getParentFile().mkdirs();
+                                    try (FileWriter fw = new FileWriter(workflowRunAttemptXMLFile)) {
+                                        workflowRunAttemptMarshaller.marshal(workflowRunAttempt, fw);
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+
                     List<Sample> sampleList = daoMgr.getMaPSeqDAOBeanService().getSampleDAO()
                             .findByFlowcellId(flowcell.getId());
-
                     if (CollectionUtils.isNotEmpty(sampleList)) {
-
-                        JAXBContext context = JAXBContext.newInstance(Sample.class);
-                        Marshaller m = context.createMarshaller();
-                        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-
                         for (Sample sample : sampleList) {
 
-                            File moduleClassXMLFile = new File("/tmp/samples",
+                            System.out.println(sample.toString());
+
+                            File sampleXMLFile = new File("/tmp/mapseq/samples",
                                     String.format("%s-%d.xml", "Sample", sample.getId()));
-                            FileWriter fw = new FileWriter(moduleClassXMLFile);
-                            m.marshal(sample, fw);
+                            sampleXMLFile.getParentFile().mkdirs();
+                            try (FileWriter fw = new FileWriter(sampleXMLFile)) {
+                                sampleMarshaller.marshal(sample, fw);
+                            }
 
                             List<WorkflowRun> sampleWorkflowRunList = daoMgr.getMaPSeqDAOBeanService()
                                     .getWorkflowRunDAO().findBySampleId(sample.getId());
 
                             if (CollectionUtils.isNotEmpty(sampleWorkflowRunList)) {
+                                for (WorkflowRun workflowRun : sampleWorkflowRunList) {
 
-                                
-                                
+                                    System.out.println(workflowRun.toString());
+
+                                    File moduleClassXMLFile = new File("/tmp/mapseq/samples/workflowruns",
+                                            String.format("%s-%d.xml", "WorkflowRun", workflowRun.getId()));
+                                    moduleClassXMLFile.getParentFile().mkdirs();
+                                    try (FileWriter fw = new FileWriter(moduleClassXMLFile)) {
+                                        workflowRunMarshaller.marshal(workflowRun, fw);
+                                    }
+
+                                    List<WorkflowRunAttempt> workflowRunAttemptList = daoMgr.getMaPSeqDAOBeanService()
+                                            .getWorkflowRunAttemptDAO().findByWorkflowRunId(workflowRun.getId());
+
+                                    if (CollectionUtils.isNotEmpty(workflowRunAttemptList)) {
+                                        for (WorkflowRunAttempt workflowRunAttempt : workflowRunAttemptList) {
+                                            File workflowRunAttemptXMLFile = new File(
+                                                    "/tmp/mapseq/samples/workflowrunattempts",
+                                                    String.format("%s-%d.xml", "WorkflowRunAttempt",
+                                                            workflowRunAttempt.getId()));
+                                            workflowRunAttemptXMLFile.getParentFile().mkdirs();
+                                            try (FileWriter fw = new FileWriter(workflowRunAttemptXMLFile)) {
+                                                workflowRunAttemptMarshaller.marshal(workflowRunAttempt, fw);
+                                            }
+                                        }
+                                    }
+                                }
                             }
-
-
-                        }
-                    }
-
-                    List<WorkflowRun> flowcellWorkflowRunList = daoMgr.getMaPSeqDAOBeanService().getWorkflowRunDAO()
-                            .findByFlowcellId(flowcell.getId());
-
-                    if (CollectionUtils.isNotEmpty(flowcellWorkflowRunList)) {
-                        for (WorkflowRun workflowRun : flowcellWorkflowRunList) {
 
                         }
                     }
@@ -159,43 +230,125 @@ public class FlowcellDAOTest {
     }
 
     @Test
-    public void ncgenesMigrationPush() {
+    public void ncgenesWorkflowRunsPull() {
         try {
             SOAPDAOManager daoMgr = SOAPDAOManager.getInstance();
 
-            Files.list(new File("/tmp/flowcells").toPath()).parallel().forEach(a -> {
-                try {
-                    JAXBContext context = JAXBContext.newInstance(Flowcell.class);
-                    Unmarshaller unmarshaller = context.createUnmarshaller();
-                    Flowcell flowcell = (Flowcell) unmarshaller.unmarshal(a.toFile());
+            JAXBContext workflowRunContext = JAXBContext.newInstance(WorkflowRun.class);
+            Marshaller workflowRunMarshaller = workflowRunContext.createMarshaller();
+            workflowRunMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
-                    flowcell.setId(null);
-                    flowcell.setAttributes(new HashSet<Attribute>());
-                    flowcell.setFileDatas(new HashSet<FileData>());
-                    flowcell.setBaseDirectory("/projects/sequence_analysis/medgenwork/NC_GENES/BCL");
+            JAXBContext workflowRunAttemptContext = JAXBContext.newInstance(WorkflowRunAttempt.class);
+            Marshaller workflowRunAttemptMarshaller = workflowRunAttemptContext.createMarshaller();
+            workflowRunAttemptMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
-                    Long flowcellId = daoMgr.getMaPSeqDAOBeanService().getFlowcellDAO().save(flowcell);
-                    flowcell.setId(flowcellId);
+            List<Flowcell> flowcellList = daoMgr.getMaPSeqDAOBeanService().getFlowcellDAO().findByStudyName("NC_GENES");
 
-                    System.out.println(flowcell.toString());
+            if (CollectionUtils.isNotEmpty(flowcellList)) {
 
-                    Attribute attribute = new Attribute("readCount", "2");
-                    attribute.setId(daoMgr.getMaPSeqDAOBeanService().getAttributeDAO().save(attribute));
-                    flowcell.getAttributes().add(attribute);
+                for (Flowcell flowcell : flowcellList) {
 
-                    FileData fileData = new FileData(flowcell.getName(),
-                            "/projects/sequence_analysis/medgenwork/NC_GENES/SampleSheets", MimeType.TEXT_CSV);
-                    fileData.setId(daoMgr.getMaPSeqDAOBeanService().getFileDataDAO().save(fileData));
-                    flowcell.getFileDatas().add(fileData);
+                    List<Sample> sampleList = daoMgr.getMaPSeqDAOBeanService().getSampleDAO()
+                            .findByFlowcellId(flowcell.getId());
 
-                    daoMgr.getMaPSeqDAOBeanService().getFlowcellDAO().save(flowcell);
+                    if (CollectionUtils.isNotEmpty(sampleList)) {
+                        for (Sample sample : sampleList) {
 
-                } catch (Exception e) {
-                    e.printStackTrace();
+                            List<WorkflowRun> sampleWorkflowRunList = daoMgr.getMaPSeqDAOBeanService()
+                                    .getWorkflowRunDAO().findBySampleId(sample.getId());
+
+                            if (CollectionUtils.isNotEmpty(sampleWorkflowRunList)) {
+                                for (WorkflowRun workflowRun : sampleWorkflowRunList) {
+                                    workflowRun.getSamples().add(sample);
+                                    File workflowRunXMLFile = new File("/tmp/mapseq/workflowruns",
+                                            String.format("%s-%d.xml", "WorkflowRun", workflowRun.getId()));
+                                    workflowRunXMLFile.getParentFile().mkdirs();
+                                    try (FileWriter fw = new FileWriter(workflowRunXMLFile)) {
+                                        workflowRunMarshaller.marshal(workflowRun, fw);
+                                    }
+
+                                    List<WorkflowRunAttempt> workflowRunAttemptList = daoMgr.getMaPSeqDAOBeanService()
+                                            .getWorkflowRunAttemptDAO().findByWorkflowRunId(workflowRun.getId());
+
+                                    if (CollectionUtils.isNotEmpty(workflowRunAttemptList)) {
+                                        for (WorkflowRunAttempt workflowRunAttempt : workflowRunAttemptList) {
+                                            File workflowRunAttemptXMLFile = new File("/tmp/mapseq/workflowrunattempts",
+                                                    String.format("%s-%d.xml", "WorkflowRunAttempt",
+                                                            workflowRunAttempt.getId()));
+                                            workflowRunAttemptXMLFile.getParentFile().mkdirs();
+                                            try (FileWriter fw = new FileWriter(workflowRunAttemptXMLFile)) {
+                                                workflowRunAttemptMarshaller.marshal(workflowRunAttempt, fw);
+                                            }
+
+                                        }
+                                    }
+
+                                }
+                            }
+
+                        }
+                    }
+
                 }
-            });
 
-        } catch (IOException e) {
+            }
+        } catch (MaPSeqDAOException | JAXBException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void ncgenesWorkflowRunAttemptsPull() {
+        try {
+            SOAPDAOManager daoMgr = SOAPDAOManager.getInstance();
+
+            JAXBContext workflowRunAttemptContext = JAXBContext.newInstance(WorkflowRunAttempt.class);
+            Marshaller workflowRunAttemptMarshaller = workflowRunAttemptContext.createMarshaller();
+            workflowRunAttemptMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+            List<Flowcell> flowcellList = daoMgr.getMaPSeqDAOBeanService().getFlowcellDAO().findByStudyName("NC_GENES");
+
+            if (CollectionUtils.isNotEmpty(flowcellList)) {
+                for (Flowcell flowcell : flowcellList) {
+
+                    List<Sample> sampleList = daoMgr.getMaPSeqDAOBeanService().getSampleDAO()
+                            .findByFlowcellId(flowcell.getId());
+
+                    if (CollectionUtils.isNotEmpty(sampleList)) {
+                        for (Sample sample : sampleList) {
+
+                            List<WorkflowRun> workflowRunList = daoMgr.getMaPSeqDAOBeanService().getWorkflowRunDAO()
+                                    .findBySampleId(sample.getId());
+
+                            if (CollectionUtils.isNotEmpty(workflowRunList)) {
+                                for (WorkflowRun workflowRun : workflowRunList) {
+
+                                    List<WorkflowRunAttempt> workflowRunAttemptList = daoMgr.getMaPSeqDAOBeanService()
+                                            .getWorkflowRunAttemptDAO().findByWorkflowRunId(workflowRun.getId());
+
+                                    if (CollectionUtils.isNotEmpty(workflowRunList)) {
+                                        for (WorkflowRunAttempt workflowRunAttempt : workflowRunAttemptList) {
+                                            File moduleClassXMLFile = new File("/tmp/mapseq/workflowrunattempts",
+                                                    String.format("%s-%d.xml", "WorkflowRunAttempt",
+                                                            workflowRunAttempt.getId()));
+                                            moduleClassXMLFile.getParentFile().mkdirs();
+                                            try (FileWriter fw = new FileWriter(moduleClassXMLFile)) {
+                                                workflowRunAttemptMarshaller.marshal(workflowRunAttempt, fw);
+                                            }
+
+                                        }
+                                    }
+
+                                }
+                            }
+
+                        }
+                    }
+
+                }
+
+            }
+        } catch (MaPSeqDAOException | JAXBException | IOException e) {
             e.printStackTrace();
         }
     }
