@@ -13,7 +13,6 @@ import java.util.Set;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.PropertyException;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
@@ -24,6 +23,9 @@ import edu.unc.mapseq.dao.FlowcellDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.model.Attribute;
 import edu.unc.mapseq.dao.model.Flowcell;
+import edu.unc.mapseq.dao.model.Sample;
+import edu.unc.mapseq.dao.model.Workflow;
+import edu.unc.mapseq.dao.model.WorkflowRun;
 
 public class FlowcellTest {
 
@@ -69,6 +71,94 @@ public class FlowcellTest {
         }
     }
 
+    
+    @Test
+    public void ncgenesMigrationPull() {
+        try {
+            RESTDAOManager daoMgr = RESTDAOManager.getInstance();
+
+            JAXBContext workflowContext = JAXBContext.newInstance(Workflow.class);
+            Marshaller workflowMarshaller = workflowContext.createMarshaller();
+            workflowMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+            JAXBContext sampleContext = JAXBContext.newInstance(Sample.class);
+            Marshaller sampleMarshaller = sampleContext.createMarshaller();
+            sampleMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+            JAXBContext workflowRunContext = JAXBContext.newInstance(WorkflowRun.class);
+            Marshaller workflowRunMarshaller = workflowRunContext.createMarshaller();
+            workflowRunMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+            List<Workflow> workflowList = daoMgr.getMaPSeqDAOBeanService().getWorkflowDAO().findAll();
+            if (CollectionUtils.isNotEmpty(workflowList)) {
+                for (Workflow workflow : workflowList) {
+                    File moduleClassXMLFile = new File("/tmp/mapseq/workflows",
+                            String.format("%s-%d.xml", "Workflow", workflow.getId()));
+                    moduleClassXMLFile.getParentFile().mkdirs();
+                    try (FileWriter fw = new FileWriter(moduleClassXMLFile)) {
+                        workflowMarshaller.marshal(workflow, fw);
+                    }
+                }
+            }
+
+            List<Flowcell> flowcellList = daoMgr.getMaPSeqDAOBeanService().getFlowcellDAO().findByStudyName("NC_GENES");
+            if (CollectionUtils.isNotEmpty(flowcellList)) {
+                for (Flowcell flowcell : flowcellList) {
+
+                    List<Sample> sampleList = daoMgr.getMaPSeqDAOBeanService().getSampleDAO()
+                            .findByFlowcellId(flowcell.getId());
+
+                    if (CollectionUtils.isNotEmpty(sampleList)) {
+                        for (Sample sample : sampleList) {
+
+                            File sampleXMLFile = new File("/tmp/mapseq/samples",
+                                    String.format("%s-%d.xml", "Sample", sample.getId()));
+                            sampleXMLFile.getParentFile().mkdirs();
+                            try (FileWriter fw = new FileWriter(sampleXMLFile)) {
+                                sampleMarshaller.marshal(sample, fw);
+                            }
+
+                            List<WorkflowRun> sampleWorkflowRunList = daoMgr.getMaPSeqDAOBeanService()
+                                    .getWorkflowRunDAO().findBySampleId(sample.getId());
+
+                            if (CollectionUtils.isNotEmpty(sampleWorkflowRunList)) {
+                                for (WorkflowRun workflowRun : sampleWorkflowRunList) {
+                                    File moduleClassXMLFile = new File("/tmp/mapseq/workflowruns",
+                                            String.format("%s-%d.xml", "WorkflowRun", workflowRun.getId()));
+                                    moduleClassXMLFile.getParentFile().mkdirs();
+                                    try (FileWriter fw = new FileWriter(moduleClassXMLFile)) {
+                                        workflowRunMarshaller.marshal(workflowRun, fw);
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+
+                    // List<WorkflowRun> flowcellWorkflowRunList = daoMgr.getMaPSeqDAOBeanService().getWorkflowRunDAO()
+                    // .findByFlowcellId(flowcell.getId());
+                    //
+                    // if (CollectionUtils.isNotEmpty(flowcellWorkflowRunList)) {
+                    //
+                    // for (WorkflowRun workflowRun : flowcellWorkflowRunList) {
+                    //
+                    // File moduleClassXMLFile = new File("/tmp/mapseq/workflowruns",
+                    // String.format("%s-%d.xml", "WorkflowRun", workflowRun.getId()));
+                    // moduleClassXMLFile.getParentFile().mkdirs();
+                    // FileWriter fw = new FileWriter(moduleClassXMLFile);
+                    // workflowRunMarshaller.marshal(workflowRun, fw);
+                    //
+                    // }
+                    // }
+
+                }
+            }
+        } catch (MaPSeqDAOException | JAXBException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    
     @Test
     public void testFindByCreationDateRange() {
         RESTDAOManager daoMgr = RESTDAOManager.getInstance();
