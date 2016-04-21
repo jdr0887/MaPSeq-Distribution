@@ -6,8 +6,6 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
-import net.sf.picard.sam.AddOrReplaceReadGroups;
-
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +24,7 @@ import edu.unc.mapseq.module.annotations.OutputValidations;
 import edu.unc.mapseq.module.constraints.Contains;
 import edu.unc.mapseq.module.constraints.FileIsNotEmpty;
 import edu.unc.mapseq.module.constraints.FileIsReadable;
+import net.sf.picard.sam.AddOrReplaceReadGroups;
 
 @Application(name = "PicardAddOrReplaceReadGroups")
 public class PicardAddOrReplaceReadGroups extends Module {

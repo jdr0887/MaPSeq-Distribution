@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
-import net.sf.picard.sam.SamFormatConverter;
 import edu.unc.mapseq.dao.model.FileData;
 import edu.unc.mapseq.dao.model.MimeType;
 import edu.unc.mapseq.module.DefaultModuleOutput;
@@ -20,6 +19,7 @@ import edu.unc.mapseq.module.annotations.OutputArgument;
 import edu.unc.mapseq.module.annotations.OutputValidations;
 import edu.unc.mapseq.module.constraints.FileIsNotEmpty;
 import edu.unc.mapseq.module.constraints.FileIsReadable;
+import net.sf.picard.sam.SamFormatConverter;
 
 @Application(name = "PicardSAMFormatConverter")
 public class PicardSAMFormatConverter extends Module {
