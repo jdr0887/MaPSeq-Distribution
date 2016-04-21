@@ -2,6 +2,7 @@ package edu.unc.mapseq.commands.core.workflowrun;
 
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
@@ -53,20 +54,25 @@ public class EditWorkflowRunAttributeAction implements Action {
             }
 
             Set<Attribute> attributeSet = entity.getAttributes();
-            if (attributeSet != null && attributeSet.size() > 0) {
-                for (Attribute attribute : attributeSet) {
-                    if (attribute.getName().equals(name)) {
-                        attribute.setValue(value);
-                        try {
-                            attributeDAO.save(attribute);
-                        } catch (MaPSeqDAOException e) {
-                            logger.error("MaPSeqDAOException", e);
-                        }
-                        break;
+
+            if (CollectionUtils.isEmpty(attributeSet)) {
+                System.out.printf("No attributes found for: %s\n", entity.toString());
+                return null;
+            }
+
+            for (Attribute attribute : attributeSet) {
+                if (attribute.getName().equals(name)) {
+                    attribute.setValue(value);
+                    try {
+                        attributeDAO.save(attribute);
+                    } catch (MaPSeqDAOException e) {
+                        logger.error("MaPSeqDAOException", e);
                     }
+                    break;
                 }
             }
         } catch (MaPSeqDAOException e) {
+            e.printStackTrace();
         }
 
         return null;
