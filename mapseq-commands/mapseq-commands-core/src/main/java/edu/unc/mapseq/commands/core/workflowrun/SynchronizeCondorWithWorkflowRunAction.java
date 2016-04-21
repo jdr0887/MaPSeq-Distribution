@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.karaf.shell.api.action.Action;
@@ -57,7 +58,7 @@ public class SynchronizeCondorWithWorkflowRunAction implements Action {
                 }
             }
 
-            if (workflowRunList != null && workflowRunList.size() > 0) {
+            if (CollectionUtils.isNotEmpty(workflowRunList)) {
                 workflowRunList.sort((a, b) -> a.getId().compareTo(b.getId()));
 
                 for (WorkflowRun workflowRun : workflowRunList) {
@@ -67,62 +68,65 @@ public class SynchronizeCondorWithWorkflowRunAction implements Action {
 
                     List<WorkflowRunAttempt> attempts = workflowRunAttemptDAO.findByWorkflowRunId(workflowRun.getId());
 
-                    for (WorkflowRunAttempt attempt : attempts) {
+                    if (CollectionUtils.isNotEmpty(attempts)) {
+                        for (WorkflowRunAttempt attempt : attempts) {
 
-                        File dagOutFile = new File(attempt.getSubmitDirectory(),
-                                String.format("%s.dag.dagman.out", workflow.getName()));
+                            File dagOutFile = new File(attempt.getSubmitDirectory(),
+                                    String.format("%s.dag.dagman.out", workflow.getName()));
 
-                        if (!dagOutFile.exists()) {
-                            System.out.printf("%s doesn't exist%n", dagOutFile.getAbsolutePath());
-                            continue;
-                        }
-
-                        CondorLookupDAGStatusCallable callable = new CondorLookupDAGStatusCallable(dagOutFile);
-                        CondorJobStatusType statusType = CondorJobStatusType.UNEXPANDED;
-                        try {
-                            statusType = callable.call();
-                        } catch (JLRMException e) {
-                            e.printStackTrace();
-                        }
-
-                        boolean jobFinished = false;
-                        switch (statusType.getCode()) {
-                            case 1:
-                            case 2:
-                                jobFinished = false;
-                                break;
-                            case 3:
-                            case 4:
-                            case 5:
-                                jobFinished = true;
-                                break;
-                            default:
-                                jobFinished = false;
-                                break;
-                        }
-
-                        if (jobFinished) {
-
-                            List<String> dagFileLines = FileUtils.readLines(dagOutFile);
-                            for (String line : dagFileLines) {
-                                if (line.contains("All jobs Completed!")) {
-                                    String[] lineSplit = line.split(" ");
-                                    if (attempt.getStarted() == null) {
-                                        Calendar c = Calendar.getInstance();
-                                        c.setTime(workflowRun.getCreated());
-                                        c.add(Calendar.MINUTE, 2);
-                                        attempt.setStarted(c.getTime());
-                                    }
-                                    Date endDate = DateUtils.parseDate(
-                                            String.format("%s %s", lineSplit[0], lineSplit[1]),
-                                            new String[] { "MM/dd/yy HH:mm:ss" });
-                                    Calendar c = Calendar.getInstance();
-                                    c.setTime(endDate);
-                                    attempt.setFinished(c.getTime());
-                                }
+                            if (!dagOutFile.exists()) {
+                                System.out.printf("%s doesn't exist%n", dagOutFile.getAbsolutePath());
+                                continue;
                             }
-                            attempt.setStatus(WorkflowRunAttemptStatusType.DONE);
-                            workflowRunAttemptDAO.save(attempt);
+
+                            CondorLookupDAGStatusCallable callable = new CondorLookupDAGStatusCallable(dagOutFile);
+                            CondorJobStatusType statusType = CondorJobStatusType.UNEXPANDED;
+                            try {
+                                statusType = callable.call();
+                            } catch (JLRMException e) {
+                                e.printStackTrace();
+                            }
+
+                            boolean jobFinished = false;
+                            switch (statusType.getCode()) {
+                                case 1:
+                                case 2:
+                                    jobFinished = false;
+                                    break;
+                                case 3:
+                                case 4:
+                                case 5:
+                                    jobFinished = true;
+                                    break;
+                                default:
+                                    jobFinished = false;
+                                    break;
+                            }
+
+                            if (jobFinished) {
+
+                                List<String> dagFileLines = FileUtils.readLines(dagOutFile);
+                                for (String line : dagFileLines) {
+                                    if (line.contains("All jobs Completed!")) {
+                                        String[] lineSplit = line.split(" ");
+                                        if (attempt.getStarted() == null) {
+                                            Calendar c = Calendar.getInstance();
+                                            c.setTime(workflowRun.getCreated());
+                                            c.add(Calendar.MINUTE, 2);
+                                            attempt.setStarted(c.getTime());
+                                        }
+                                        Date endDate = DateUtils.parseDate(
+                                                String.format("%s %s", lineSplit[0], lineSplit[1]),
+                                                new String[] { "MM/dd/yy HH:mm:ss" });
+                                        Calendar c = Calendar.getInstance();
+                                        c.setTime(endDate);
+                                        attempt.setFinished(c.getTime());
+                                    }
+                                }
+                                attempt.setStatus(WorkflowRunAttemptStatusType.DONE);
+                                workflowRunAttemptDAO.save(attempt);
+                            }
+
                         }
                     }
                 }
