@@ -6,6 +6,7 @@ import java.util.Formatter;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
@@ -38,49 +39,52 @@ public class ListWorkflowRunsAction implements Action {
         logger.debug("ENTERING execute()");
 
         try {
+
+            List<WorkflowRunAttempt> attempts = workflowRunAttemptDAO.findByWorkflowId(workflowId);
+            if (CollectionUtils.isEmpty(attempts)) {
+                System.out.println("No WorkflowRunAttempts found");
+                return null;
+            }
+
             StringBuilder sb = new StringBuilder();
             Formatter formatter = new Formatter(sb, Locale.US);
             String format = "%1$-12s %2$-16s %3$-56s %4$-20s %5$-20s %6$-20s %7$s%n";
             formatter.format(format, "ID", "WorkflowRun ID", "WorkflowRun Name", "Created", "Started", "Finished",
                     "Status");
 
-            List<WorkflowRunAttempt> attempts = workflowRunAttemptDAO.findByWorkflowId(workflowId);
+            for (WorkflowRunAttempt attempt : attempts) {
 
-            if (attempts != null && !attempts.isEmpty()) {
-                for (WorkflowRunAttempt attempt : attempts) {
-
-                    Date createdDate = attempt.getCreated();
-                    String formattedCreatedDate = "";
-                    if (createdDate != null) {
-                        formattedCreatedDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
-                                .format(createdDate);
-                    }
-
-                    Date startDate = attempt.getStarted();
-                    String formattedStartDate = "";
-                    if (startDate != null) {
-                        formattedStartDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
-                                .format(startDate);
-                    }
-
-                    Date endDate = attempt.getFinished();
-                    String formattedEndDate = "";
-                    if (endDate != null) {
-                        formattedEndDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
-                                .format(endDate);
-                    }
-
-                    formatter.format(format, attempt.getId(), attempt.getWorkflowRun().getId(),
-                            attempt.getWorkflowRun().getName(), formattedCreatedDate, formattedStartDate,
-                            formattedEndDate, attempt.getStatus().toString());
-                    formatter.flush();
-
+                Date createdDate = attempt.getCreated();
+                String formattedCreatedDate = "";
+                if (createdDate != null) {
+                    formattedCreatedDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
+                            .format(createdDate);
                 }
+
+                Date startDate = attempt.getStarted();
+                String formattedStartDate = "";
+                if (startDate != null) {
+                    formattedStartDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
+                            .format(startDate);
+                }
+
+                Date endDate = attempt.getFinished();
+                String formattedEndDate = "";
+                if (endDate != null) {
+                    formattedEndDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
+                            .format(endDate);
+                }
+
+                formatter.format(format, attempt.getId(), attempt.getWorkflowRun().getId(),
+                        attempt.getWorkflowRun().getName(), formattedCreatedDate, formattedStartDate, formattedEndDate,
+                        attempt.getStatus().toString());
+                formatter.flush();
 
             }
 
             System.out.print(formatter.toString());
             formatter.close();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
