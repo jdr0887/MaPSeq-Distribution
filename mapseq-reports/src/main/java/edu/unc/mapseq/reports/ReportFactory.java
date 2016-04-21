@@ -82,9 +82,9 @@ public class ReportFactory {
             ChartManager chartMgr = ChartManager.getInstance();
 
             JFreeChart chart = chartMgr.createPieChart(
-                    String.format("Job Count Per Cluster", workflow.getName()),
-                    String.format("(%s - %s)", DateFormatUtils.format(startDate, "MM/dd"),
-                            DateFormatUtils.format(endDate, "MM/dd")), dataset);
+                    String.format("Job Count Per Cluster", workflow.getName()), String.format("(%s - %s)",
+                            DateFormatUtils.format(startDate, "MM/dd"), DateFormatUtils.format(endDate, "MM/dd")),
+                    dataset);
             chartFile = chartMgr.saveAsPNG(chart, 600, 400);
 
         } catch (Exception e) {
@@ -219,10 +219,8 @@ public class ReportFactory {
             }
 
             ChartManager chartMgr = ChartManager.getInstance();
-            JFreeChart chart = chartMgr.createPieChart(
-                    "WorkflowRun Count",
-                    String.format("(%s - %s)", DateFormatUtils.format(startDate, "MM/dd"),
-                            DateFormatUtils.format(endDate, "MM/dd")), dataset);
+            JFreeChart chart = chartMgr.createPieChart("WorkflowRun Count", String.format("(%s - %s)",
+                    DateFormatUtils.format(startDate, "MM/dd"), DateFormatUtils.format(endDate, "MM/dd")), dataset);
             chartFile = chartMgr.saveAsPNG(chart, 600, 400);
         } catch (Exception e) {
             e.printStackTrace();
@@ -279,9 +277,9 @@ public class ReportFactory {
 
             ChartManager chartMgr = ChartManager.getInstance();
             JFreeChart chart = chartMgr.createPieChart(
-                    "WorkflowRunAttempt Duration",
-                    String.format("(%s - %s)", DateFormatUtils.format(startDate, "MM/dd"),
-                            DateFormatUtils.format(endDate, "MM/dd")), dataset);
+                    "WorkflowRunAttempt Duration", String.format("(%s - %s)",
+                            DateFormatUtils.format(startDate, "MM/dd"), DateFormatUtils.format(endDate, "MM/dd")),
+                    dataset);
             PiePlot piePlot = (PiePlot) chart.getPlot();
             piePlot.setLabelGenerator(new CustomLabelGenerator());
             chartFile = chartMgr.saveAsPNG(chart, 600, 400);
@@ -330,9 +328,9 @@ public class ReportFactory {
 
             ChartManager chartMgr = ChartManager.getInstance();
             chartFile = chartMgr.createBarChartAsPNG(
-                    String.format("WorkflowRunAttempts", workflowName),
-                    String.format("(%s - %s)", DateFormatUtils.format(startDate, "MM/dd"),
-                            DateFormatUtils.format(endDate, "MM/dd")), dataset);
+                    String.format("WorkflowRunAttempts", workflowName), String.format("(%s - %s)",
+                            DateFormatUtils.format(startDate, "MM/dd"), DateFormatUtils.format(endDate, "MM/dd")),
+                    dataset);
         } catch (Exception e) {
             e.printStackTrace();
         }

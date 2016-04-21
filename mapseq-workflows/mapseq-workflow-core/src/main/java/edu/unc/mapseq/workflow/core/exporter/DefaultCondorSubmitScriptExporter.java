@@ -218,7 +218,8 @@ public class DefaultCondorSubmitScriptExporter extends CondorSubmitScriptExporte
         sb.append("if [ -e ~/.bashrc ]; then . ~/.bashrc; fi\n");
         sb.append("if [ -e ~/.mapseqrc ]; then . ~/.mapseqrc; fi\n");
         sb.append("if [ -e ~/.jlrmrc ]; then . ~/.jlrmrc; fi\n");
-        sb.append("if [ \"x$MAPSEQ_CLIENT_HOME\" = \"x\" ]; then echo \"ERROR: MAPSEQ_CLIENT_HOME has to be set\"; exit 1; fi\n");
+        sb.append(
+                "if [ \"x$MAPSEQ_CLIENT_HOME\" = \"x\" ]; then echo \"ERROR: MAPSEQ_CLIENT_HOME has to be set\"; exit 1; fi\n");
         sb.append("/bin/hostname -f; /usr/bin/id; /bin/env\n");
 
         String commandFormat = "%nRC=0%n%s%nRC=$?; if [ $RC != 0 ]; then exit $RC; fi%n";

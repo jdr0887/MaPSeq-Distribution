@@ -48,7 +48,8 @@ public class WorkflowRunAttemptServiceImpl implements WorkflowRunAttemptService 
     }
 
     @Override
-    public List<WorkflowRunAttempt> findByCreatedDateRangeAndWorkflowId(String started, String finished, Long workflowId) {
+    public List<WorkflowRunAttempt> findByCreatedDateRangeAndWorkflowId(String started, String finished,
+            Long workflowId) {
         logger.debug("ENTERING findByCreatedDateRangeAndWorkflowId(String, String, Long)");
         List<WorkflowRunAttempt> ret = new ArrayList<>();
         if (StringUtils.isEmpty(started)) {
@@ -115,8 +116,8 @@ public class WorkflowRunAttemptServiceImpl implements WorkflowRunAttemptService 
         try {
             parsedStartDate = DateUtils.parseDate(started,
                     new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
-            parsedEndDate = DateUtils
-                    .parseDate(finished, new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
+            parsedEndDate = DateUtils.parseDate(finished,
+                    new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
         } catch (ParseException e) {
             logger.error("ParseException", e);
         }

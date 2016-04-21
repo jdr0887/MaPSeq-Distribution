@@ -67,5 +67,4 @@ public class SequencingWorkflowUtil {
         return readPairList;
     }
 
-
 }

@@ -51,7 +51,6 @@ public class CopyFile extends Module {
     @Override
     public ModuleOutput call() throws ModuleException {
         DefaultModuleOutput moduleOutput = new DefaultModuleOutput();
-        int exitCode = 0;
         try {
 
             if (destination.exists()) {
@@ -74,9 +73,9 @@ public class CopyFile extends Module {
         } catch (Exception e) {
             e.printStackTrace();
             moduleOutput.setError(new StringBuilder(e.getMessage()));
-            moduleOutput.setExitCode(exitCode);
+            moduleOutput.setExitCode(-1);
         }
-        moduleOutput.setExitCode(exitCode);
+        moduleOutput.setExitCode(0);
         return moduleOutput;
     }
 

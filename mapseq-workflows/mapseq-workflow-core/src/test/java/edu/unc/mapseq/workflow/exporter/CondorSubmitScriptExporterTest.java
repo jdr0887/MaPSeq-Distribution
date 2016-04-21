@@ -29,7 +29,8 @@ public class CondorSubmitScriptExporterTest {
         scriptSB.append("if [ -e ~/.bashrc ]; then . ~/.bashrc; fi\n");
         scriptSB.append("if [ -e ~/.mapseqrc ]; then . ~/.mapseqrc; fi\n");
         scriptSB.append("if [ -e ~/.jlrmrc ]; then . ~/.jlrmrc; fi\n");
-        scriptSB.append("if [ \"x$MAPSEQ_CLIENT_HOME\" = \"x\" ]; then echo \"ERROR: MAPSEQ_CLIENT_HOME has to be set\"; exit 1; fi\n");
+        scriptSB.append(
+                "if [ \"x$MAPSEQ_CLIENT_HOME\" = \"x\" ]; then echo \"ERROR: MAPSEQ_CLIENT_HOME has to be set\"; exit 1; fi\n");
         scriptSB.append("/bin/hostname -f\n");
         scriptSB.append("/usr/bin/id\n");
 
@@ -81,7 +82,8 @@ public class CondorSubmitScriptExporterTest {
         if (job.getInitialDirectory() != null) {
 
             StringBuilder transferOutputCommandSB = new StringBuilder();
-            transferOutputCommandSB.append("$MAPSEQ_CLIENT_HOME/bin/mapseq-transfer-output-files.sh --host=$DATA_MOVER");
+            transferOutputCommandSB
+                    .append("$MAPSEQ_CLIENT_HOME/bin/mapseq-transfer-output-files.sh --host=$DATA_MOVER");
             transferOutputCommandSB.append(String.format(" --username=%s", username));
             String initialDir = job.getInitialDirectory();
             transferOutputCommandSB.append(String.format(" --remoteDirectory=%s", initialDir));
@@ -90,8 +92,8 @@ public class CondorSubmitScriptExporterTest {
 
             if (StringUtils.isEmpty(job.getSiteName()) && StringUtils.isNotEmpty(job.getName())) {
                 transferOutputCommandSB.append(String.format(" --file=%s.xml", job.getName()));
-                removeOutputFilesSB.append(String.format("if [ -e %1$s.xml ]; then /bin/rm %1$s.xml; fi%n",
-                        job.getName()));
+                removeOutputFilesSB
+                        .append(String.format("if [ -e %1$s.xml ]; then /bin/rm %1$s.xml; fi%n", job.getName()));
             }
 
             if (job.getTransferOutputList().size() > 0) {
@@ -131,7 +133,8 @@ public class CondorSubmitScriptExporterTest {
         sb.append("if [ -e ~/.bashrc ]; then . ~/.bashrc; fi\n");
         sb.append("if [ -e ~/.mapseqrc ]; then . ~/.mapseqrc; fi\n");
         sb.append("if [ -e ~/.jlrmrc ]; then . ~/.jlrmrc; fi\n");
-        sb.append("if [ \"x$MAPSEQ_CLIENT_HOME\" = \"x\" ]; then echo \"ERROR: MAPSEQ_CLIENT_HOME has to be set\"; exit 1; fi\n");
+        sb.append(
+                "if [ \"x$MAPSEQ_CLIENT_HOME\" = \"x\" ]; then echo \"ERROR: MAPSEQ_CLIENT_HOME has to be set\"; exit 1; fi\n");
         sb.append("/bin/hostname -f; /usr/bin/id\n");
 
         String commandFormat = "%nRC=0%n%s%nRC=$?; if [ $RC != 0 ]; then exit $RC; fi%n";

@@ -71,7 +71,6 @@ public class FlowcellTest {
         }
     }
 
-    
     @Test
     public void ncgenesMigrationPull() {
         try {
@@ -158,7 +157,6 @@ public class FlowcellTest {
         }
     }
 
-    
     @Test
     public void testFindByCreationDateRange() {
         RESTDAOManager daoMgr = RESTDAOManager.getInstance();

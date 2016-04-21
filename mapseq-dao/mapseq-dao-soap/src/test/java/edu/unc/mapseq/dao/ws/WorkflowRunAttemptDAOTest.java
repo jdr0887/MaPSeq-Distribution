@@ -9,7 +9,6 @@ import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.PropertyException;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 import javax.xml.ws.soap.SOAPBinding;
@@ -69,8 +68,8 @@ public class WorkflowRunAttemptDAOTest {
 
         try {
             long startTime = System.currentTimeMillis();
-            workflowRunList.addAll(workflowRunService.findByStudyNameAndSampleNameAndWorkflowName("NC_GENES",
-                    "NCG_00517%", "CASAVA"));
+            workflowRunList.addAll(
+                    workflowRunService.findByStudyNameAndSampleNameAndWorkflowName("NC_GENES", "NCG_00517%", "CASAVA"));
             long endTime = System.currentTimeMillis();
             System.out.println((endTime - startTime) / 1000);
 

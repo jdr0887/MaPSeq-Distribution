@@ -79,7 +79,8 @@ public class FileDataServiceImpl implements FileDataService {
 
     @Override
     public Long upload(DataHandler data, String flowcell, String workflow, String name, String mimeType) {
-        logger.debug("ENTERING upload(Holder<DataHandler>, Holder<String>, Holder<String>, Holder<String>, Holder<String>)");
+        logger.debug(
+                "ENTERING upload(Holder<DataHandler>, Holder<String>, Holder<String>, Holder<String>, Holder<String>)");
         FileData fileData = null;
 
         String path = String.format("%s/%s/%s", System.getenv("MAPSEQ_OUTPUT_DIRECTORY"), flowcell, workflow);

@@ -147,10 +147,10 @@ public class FlowcellDAOTest {
 
                             System.out.println(workflowRun.toString());
 
-                            File WorkflowRunXMLFile = new File("/tmp/mapseq/flowcells/workflowruns",
+                            File workflowRunXMLFile = new File("/tmp/mapseq/flowcells/workflowruns",
                                     String.format("%s-%d.xml", "WorkflowRun", workflowRun.getId()));
-                            WorkflowRunXMLFile.getParentFile().mkdirs();
-                            try (FileWriter fw = new FileWriter(WorkflowRunXMLFile)) {
+                            workflowRunXMLFile.getParentFile().mkdirs();
+                            try (FileWriter fw = new FileWriter(workflowRunXMLFile)) {
                                 workflowRunMarshaller.marshal(workflowRun, fw);
                             }
 

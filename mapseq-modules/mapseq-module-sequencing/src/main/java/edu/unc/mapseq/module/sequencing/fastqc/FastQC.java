@@ -7,6 +7,16 @@ import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.unc.mapseq.module.DefaultModuleOutput;
+import edu.unc.mapseq.module.Module;
+import edu.unc.mapseq.module.ModuleException;
+import edu.unc.mapseq.module.ModuleOutput;
+import edu.unc.mapseq.module.annotations.Application;
+import edu.unc.mapseq.module.annotations.InputArgument;
+import edu.unc.mapseq.module.annotations.InputValidations;
+import edu.unc.mapseq.module.annotations.OutputValidations;
+import edu.unc.mapseq.module.constraints.FileIsNotEmpty;
+import edu.unc.mapseq.module.constraints.FileIsReadable;
 import uk.ac.babraham.FastQC.Analysis.AnalysisListener;
 import uk.ac.babraham.FastQC.Modules.BasicStats;
 import uk.ac.babraham.FastQC.Modules.KmerContent;
@@ -22,16 +32,6 @@ import uk.ac.babraham.FastQC.Modules.SequenceLengthDistribution;
 import uk.ac.babraham.FastQC.Report.HTMLReportArchive;
 import uk.ac.babraham.FastQC.Sequence.SequenceFactory;
 import uk.ac.babraham.FastQC.Sequence.SequenceFile;
-import edu.unc.mapseq.module.DefaultModuleOutput;
-import edu.unc.mapseq.module.Module;
-import edu.unc.mapseq.module.ModuleException;
-import edu.unc.mapseq.module.ModuleOutput;
-import edu.unc.mapseq.module.annotations.Application;
-import edu.unc.mapseq.module.annotations.InputArgument;
-import edu.unc.mapseq.module.annotations.InputValidations;
-import edu.unc.mapseq.module.annotations.OutputValidations;
-import edu.unc.mapseq.module.constraints.FileIsNotEmpty;
-import edu.unc.mapseq.module.constraints.FileIsReadable;
 
 @Application(name = "FastQC")
 public class FastQC extends Module {

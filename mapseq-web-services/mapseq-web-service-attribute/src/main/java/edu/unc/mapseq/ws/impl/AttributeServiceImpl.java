@@ -50,7 +50,7 @@ public class AttributeServiceImpl implements AttributeService {
 
     public AttributeDAO getAttributeDAO() {
         return attributeDAO;
-    } 
+    }
 
     public void setAttributeDAO(AttributeDAO attributeDAO) {
         this.attributeDAO = attributeDAO;

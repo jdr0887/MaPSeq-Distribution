@@ -79,7 +79,6 @@ public abstract class AbstractSequencingWorkflow extends AbstractWorkflow {
         }
     }
 
-    
     @Override
     public void postRun() throws WorkflowException {
         super.postRun();
