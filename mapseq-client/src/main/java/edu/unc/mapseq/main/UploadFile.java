@@ -99,12 +99,12 @@ public class UploadFile implements Runnable {
     public static void main(String[] args) {
 
         cliOptions.addOption(OptionBuilder.withLongOpt("file").withArgName("file").isRequired().hasArgs().create());
-        cliOptions.addOption(OptionBuilder.withLongOpt("mimeType").withArgName("mimeType").isRequired().hasArg()
-                .create());
-        cliOptions.addOption(OptionBuilder.withLongOpt("flowcell").withArgName("flowcell").isRequired().hasArg()
-                .create());
-        cliOptions.addOption(OptionBuilder.withLongOpt("workflow").withArgName("workflow").isRequired().hasArg()
-                .create());
+        cliOptions.addOption(
+                OptionBuilder.withLongOpt("mimeType").withArgName("mimeType").isRequired().hasArg().create());
+        cliOptions.addOption(
+                OptionBuilder.withLongOpt("flowcell").withArgName("flowcell").isRequired().hasArg().create());
+        cliOptions.addOption(
+                OptionBuilder.withLongOpt("workflow").withArgName("workflow").isRequired().hasArg().create());
         cliOptions.addOption(OptionBuilder.withLongOpt("help").withDescription("print this help message")
                 .withLongOpt("help").create("?"));
 

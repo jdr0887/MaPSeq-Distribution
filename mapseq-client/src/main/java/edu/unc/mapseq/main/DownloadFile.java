@@ -78,8 +78,8 @@ public class DownloadFile implements Runnable {
     @SuppressWarnings("static-access")
     public static void main(String[] args) {
 
-        cliOptions.addOption(OptionBuilder.withLongOpt("fileDataId").withArgName("fileDataId").isRequired().hasArgs()
-                .create());
+        cliOptions.addOption(
+                OptionBuilder.withLongOpt("fileDataId").withArgName("fileDataId").isRequired().hasArgs().create());
         cliOptions.addOption(OptionBuilder.withLongOpt("destinationDirectory").withArgName("destinationDirectory")
                 .isRequired().hasArgs().create());
         cliOptions.addOption(OptionBuilder.withLongOpt("help").withDescription("print this help message")

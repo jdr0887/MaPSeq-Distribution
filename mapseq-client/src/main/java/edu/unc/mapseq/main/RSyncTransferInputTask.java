@@ -42,8 +42,8 @@ public class RSyncTransferInputTask implements Callable<Integer> {
         String rsyncCommand = "$RSYNC_HOME/rsync --rsh=\"ssh -c arcfour\"";
         StringBuilder commandSB = new StringBuilder();
         if (files.size() == 1) {
-            commandSB.append(String.format("%s %s@%s:%s/%s .", rsyncCommand, username, host, remoteDirectory,
-                    files.get(0)));
+            commandSB.append(
+                    String.format("%s %s@%s:%s/%s .", rsyncCommand, username, host, remoteDirectory, files.get(0)));
         } else if (files.size() > 1) {
             commandSB.append(String.format("%s %s@%s:%s/{%s} .", rsyncCommand, username, host, remoteDirectory,
                     StringUtils.join(files, ",")));

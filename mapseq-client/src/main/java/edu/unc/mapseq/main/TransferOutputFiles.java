@@ -57,8 +57,8 @@ public class TransferOutputFiles extends AbstractTransferFiles {
         cliOptions.addOption(OptionBuilder.withLongOpt("host").withArgName("host").isRequired().hasArg().create());
         cliOptions.addOption(OptionBuilder.withLongOpt("remoteDirectory").withArgName("remoteDirectory").isRequired()
                 .hasArg().create());
-        cliOptions.addOption(OptionBuilder.withLongOpt("username").withArgName("username").isRequired().hasArg()
-                .create());
+        cliOptions.addOption(
+                OptionBuilder.withLongOpt("username").withArgName("username").isRequired().hasArg().create());
         cliOptions.addOption(OptionBuilder.withLongOpt("file").withArgName("file").hasArgs().create());
         cliOptions.addOption(OptionBuilder.withLongOpt("help").withDescription("print this help message")
                 .withLongOpt("help").create("?"));
