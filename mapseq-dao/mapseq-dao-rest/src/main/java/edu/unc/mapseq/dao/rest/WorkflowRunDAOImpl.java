@@ -76,7 +76,8 @@ public class WorkflowRunDAOImpl extends NamedEntityDAOImpl<WorkflowRun, Long> im
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
         Collection<? extends WorkflowRun> ret = client
                 .path("findByStudyNameAndSampleNameAndWorkflowName/{studyName}/{sampleName}/{workflowName}", studyName,
-                        sampleName, workflowName).accept(MediaType.APPLICATION_JSON).getCollection(WorkflowRun.class);
+                        sampleName, workflowName)
+                .accept(MediaType.APPLICATION_JSON).getCollection(WorkflowRun.class);
         return new ArrayList<WorkflowRun>(ret);
     }
 
@@ -93,8 +94,7 @@ public class WorkflowRunDAOImpl extends NamedEntityDAOImpl<WorkflowRun, Long> im
     public WorkflowRun findByWorkflowRunAttemptId(Long workflowRunAttemptId) throws MaPSeqDAOException {
         logger.debug("ENTERING findByWorkflowRunAttemptId(Long)");
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
-        WorkflowRun workflowRun = client
-                .path("findByWorkflowRunAttemptId/{workflowRunAttemptId}", workflowRunAttemptId)
+        WorkflowRun workflowRun = client.path("findByWorkflowRunAttemptId/{workflowRunAttemptId}", workflowRunAttemptId)
                 .accept(MediaType.APPLICATION_JSON).get(WorkflowRun.class);
         return workflowRun;
     }

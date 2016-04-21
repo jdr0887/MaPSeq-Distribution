@@ -42,9 +42,8 @@ public class WorkflowRunAttemptDAOImpl extends BaseDAOImpl<WorkflowRunAttempt, L
     public List<WorkflowRunAttempt> findByWorkflowRunId(Long workflowRunId) throws MaPSeqDAOException {
         logger.info("ENTERING findByWorkflowRunId(Long)");
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
-        Collection<? extends WorkflowRunAttempt> ret = client
-                .path("findByWorkflowRunId/{workflowRunId}", workflowRunId).accept(MediaType.APPLICATION_JSON)
-                .getCollection(WorkflowRunAttempt.class);
+        Collection<? extends WorkflowRunAttempt> ret = client.path("findByWorkflowRunId/{workflowRunId}", workflowRunId)
+                .accept(MediaType.APPLICATION_JSON).getCollection(WorkflowRunAttempt.class);
         return new ArrayList<WorkflowRunAttempt>(ret);
     }
 
@@ -57,8 +56,8 @@ public class WorkflowRunAttemptDAOImpl extends BaseDAOImpl<WorkflowRunAttempt, L
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
         Collection<? extends WorkflowRunAttempt> ret = client
                 .path("findByCreatedDateRangeAndWorkflowId/{startDate}/{endDate}/{workflowId}", formattedStartDate,
-                        formattedEndDate, workflowId).accept(MediaType.APPLICATION_JSON)
-                .getCollection(WorkflowRunAttempt.class);
+                        formattedEndDate, workflowId)
+                .accept(MediaType.APPLICATION_JSON).getCollection(WorkflowRunAttempt.class);
         return new ArrayList<WorkflowRunAttempt>(ret);
     }
 
@@ -115,8 +114,8 @@ public class WorkflowRunAttemptDAOImpl extends BaseDAOImpl<WorkflowRunAttempt, L
     }
 
     @Override
-    public List<WorkflowRunAttempt> findByWorkflowNameAndStatus(String workflowName, WorkflowRunAttemptStatusType status)
-            throws MaPSeqDAOException {
+    public List<WorkflowRunAttempt> findByWorkflowNameAndStatus(String workflowName,
+            WorkflowRunAttemptStatusType status) throws MaPSeqDAOException {
         logger.info("ENTERING findByWorkflowNameAndStatus(String, WorkflowRunAttemptStatusType)");
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
         Collection<? extends WorkflowRunAttempt> ret = client

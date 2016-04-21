@@ -72,7 +72,8 @@ public class JobDAOImpl extends NamedEntityDAOImpl<Job, Long> implements JobDAO 
         WebClient client = WebClient.create(getRestServiceURL(), getProviders());
         Collection<? extends Job> ret = client
                 .path("findByWorkflowIdAndCreatedDateRange/{workflowId}/{startDate}/{endDate}", workflowId, startDate,
-                        endDate).accept(MediaType.APPLICATION_JSON).getCollection(Job.class);
+                        endDate)
+                .accept(MediaType.APPLICATION_JSON).getCollection(Job.class);
         return new ArrayList<Job>(ret);
     }
 

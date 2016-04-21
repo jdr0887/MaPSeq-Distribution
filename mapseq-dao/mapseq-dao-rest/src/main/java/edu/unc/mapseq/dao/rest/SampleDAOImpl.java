@@ -77,8 +77,8 @@ public class SampleDAOImpl extends NamedEntityDAOImpl<Sample, Long> implements S
     @Override
     public List<Sample> findByName(String name) throws MaPSeqDAOException {
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
-        Collection<? extends Sample> results = client.path("findByName/{name}", name)
-                .accept(MediaType.APPLICATION_JSON).getCollection(Sample.class);
+        Collection<? extends Sample> results = client.path("findByName/{name}", name).accept(MediaType.APPLICATION_JSON)
+                .getCollection(Sample.class);
         return new ArrayList<Sample>(results);
     }
 

@@ -13,7 +13,6 @@ import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import edu.unc.mapseq.config.MaPSeqConfigurationService;
 import edu.unc.mapseq.dao.BaseDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
-import edu.unc.mapseq.dao.model.Attribute;
 import edu.unc.mapseq.dao.model.Persistable;
 
 public abstract class BaseDAOImpl<T extends Persistable, ID extends Serializable> implements BaseDAO<T, ID> {
@@ -31,7 +30,7 @@ public abstract class BaseDAOImpl<T extends Persistable, ID extends Serializable
         ObjectMapper mapper = new ObjectMapper();
         mapper.getDeserializationConfig().useRootWrapping();
         // mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        //mapper.enable(MapperFeature.USE_ANNOTATIONS);
+        // mapper.enable(MapperFeature.USE_ANNOTATIONS);
         mapper.enable(MapperFeature.USE_WRAPPER_NAME_AS_PROPERTY_NAME);
         // mapper.readerWithView(Attribute.class);
         provider.setMapper(mapper);

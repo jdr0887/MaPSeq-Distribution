@@ -48,8 +48,8 @@ public class FileDataDAOImpl extends BaseDAOImpl<FileData, Long> implements File
         logger.debug("ENTERING findByExample(FileData)");
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true).type(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON);
-        Collection<? extends FileData> ret = client.path("findByExample")
-                .postAndGetCollection(fileData, FileData.class);
+        Collection<? extends FileData> ret = client.path("findByExample").postAndGetCollection(fileData,
+                FileData.class);
         return new ArrayList<FileData>(ret);
     }
 
