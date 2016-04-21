@@ -39,42 +39,44 @@ public class ListWorkflowRunAttemptsAction implements Action {
         logger.debug("ENTERING execute()");
 
         try {
+
+            List<WorkflowRunAttempt> attempts = workflowRunAttemptDAO.findByWorkflowRunId(workflowRunId);
+
+            if (CollectionUtils.isEmpty(attempts)) {
+                System.out.printf("No WorkflowRunAttempt found");
+                return null;
+            }
+
             StringBuilder sb = new StringBuilder();
             Formatter formatter = new Formatter(sb, Locale.US);
             String format = "%1$-12s %2$-20s %3$-20s %4$-20s %5$-16s %6$-16s %7$s%n";
             formatter.format(format, "ID", "Created", "Started", "Finished", "Status", "CondorJobId", "Submit Dir");
 
-            List<WorkflowRunAttempt> attempts = workflowRunAttemptDAO.findByWorkflowRunId(workflowRunId);
+            for (WorkflowRunAttempt attempt : attempts) {
 
-            if (CollectionUtils.isNotEmpty(attempts)) {
-                for (WorkflowRunAttempt attempt : attempts) {
-
-                    Date createdDate = attempt.getCreated();
-                    String formattedCreatedDate = "";
-                    if (createdDate != null) {
-                        formattedCreatedDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
-                                .format(createdDate);
-                    }
-
-                    Date startDate = attempt.getStarted();
-                    String formattedStartDate = "";
-                    if (startDate != null) {
-                        formattedStartDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
-                                .format(startDate);
-                    }
-                    Date endDate = attempt.getFinished();
-                    String formattedEndDate = "";
-                    if (endDate != null) {
-                        formattedEndDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
-                                .format(endDate);
-                    }
-
-                    formatter.format(format, attempt.getId(), formattedCreatedDate, formattedStartDate,
-                            formattedEndDate, attempt.getStatus().toString(), attempt.getCondorDAGClusterId(),
-                            attempt.getSubmitDirectory());
-                    formatter.flush();
-
+                Date createdDate = attempt.getCreated();
+                String formattedCreatedDate = "";
+                if (createdDate != null) {
+                    formattedCreatedDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
+                            .format(createdDate);
                 }
+
+                Date startDate = attempt.getStarted();
+                String formattedStartDate = "";
+                if (startDate != null) {
+                    formattedStartDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
+                            .format(startDate);
+                }
+                Date endDate = attempt.getFinished();
+                String formattedEndDate = "";
+                if (endDate != null) {
+                    formattedEndDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
+                            .format(endDate);
+                }
+
+                formatter.format(format, attempt.getId(), formattedCreatedDate, formattedStartDate, formattedEndDate,
+                        attempt.getStatus().toString(), attempt.getCondorDAGClusterId(), attempt.getSubmitDirectory());
+                formatter.flush();
 
             }
 
