@@ -4,6 +4,7 @@ import java.util.Formatter;
 import java.util.Locale;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
@@ -44,22 +45,26 @@ public class ListWorkflowRunAttributesAction implements Action {
                 return null;
             }
 
+            Set<Attribute> attributeSet = entity.getAttributes();
+
+            if (CollectionUtils.isEmpty(attributeSet)) {
+                System.out.printf("No attributes found for: %s\n", entity.toString());
+                return null;
+            }
+
             StringBuilder sb = new StringBuilder();
             String format = "%1$-12s %2$-40s %3$s%n";
 
             Formatter formatter = new Formatter(sb, Locale.US);
             formatter.format(format, "ID", "Name", "Value");
-
-            Set<Attribute> attributeSet = entity.getAttributes();
-            if (attributeSet != null && !attributeSet.isEmpty()) {
-                for (Attribute attribute : attributeSet) {
-                    formatter.format(format, attribute.getId(), attribute.getName(), attribute.getValue());
-                    formatter.flush();
-                }
+            for (Attribute attribute : attributeSet) {
+                formatter.format(format, attribute.getId(), attribute.getName(), attribute.getValue());
+                formatter.flush();
             }
             System.out.println(formatter.toString());
             formatter.close();
         } catch (MaPSeqDAOException e) {
+            e.printStackTrace();
         }
 
         return null;
