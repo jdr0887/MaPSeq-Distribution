@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
@@ -42,7 +43,7 @@ public class ResetWorkflowRunAction implements Action {
     public Object execute() {
         logger.debug("ENTERING execute()");
 
-        if (this.workflowRunIdList != null && this.workflowRunIdList.size() > 0) {
+        if (CollectionUtils.isNotEmpty(workflowRunIdList)) {
 
             for (Long workflowRunId : this.workflowRunIdList) {
                 logger.debug("resetting WorkflowRun: {}", workflowRunId);
