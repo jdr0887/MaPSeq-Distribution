@@ -55,10 +55,8 @@ public class FlowcellServiceImpl implements FlowcellService {
             return ret;
         }
         try {
-            Date parsedStartDate = DateUtils.parseDate(startDate,
-                    new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
-            Date parsedEndDate = DateUtils.parseDate(endDate,
-                    new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
+            Date parsedStartDate = DateUtils.parseDate(startDate, new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
+            Date parsedEndDate = DateUtils.parseDate(endDate, new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
             ret.addAll(flowcellDAO.findByCreatedDateRange(parsedStartDate, parsedEndDate));
         } catch (ParseException | MaPSeqDAOException e) {
             logger.error("MaPSeqDAOException", e);
@@ -95,6 +93,18 @@ public class FlowcellServiceImpl implements FlowcellService {
         List<Flowcell> ret = new ArrayList<Flowcell>();
         try {
             ret.addAll(flowcellDAO.findByStudyName(name));
+        } catch (MaPSeqDAOException e) {
+            logger.error("MaPSeqDAOException", e);
+        }
+        return ret;
+    }
+
+    @Override
+    public List<Flowcell> findByStudyId(Long studyId) {
+        logger.debug("ENTERING findByStudyId(Long)");
+        List<Flowcell> ret = new ArrayList<Flowcell>();
+        try {
+            ret.addAll(flowcellDAO.findByStudyId(studyId));
         } catch (MaPSeqDAOException e) {
             logger.error("MaPSeqDAOException", e);
         }

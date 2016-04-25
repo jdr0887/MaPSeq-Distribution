@@ -73,6 +73,13 @@ public class FlowcellDAOImpl extends NamedEntityDAOImpl<Flowcell, Long> implemen
     }
 
     @Override
+    public List<Flowcell> findByStudyId(Long studyId) throws MaPSeqDAOException {
+        logger.debug("ENTERING findByStudyId(Long)");
+        List<Flowcell> sequencerRunList = flowcellService.findByStudyId(studyId);
+        return sequencerRunList;
+    }
+
+    @Override
     public List<Flowcell> findByCreatedDateRange(Date startDate, Date endDate) throws MaPSeqDAOException {
         logger.debug("ENTERING findByCreatedDateRange(Date, Date)");
         String formattedStartDate = DateFormatUtils.ISO_DATE_FORMAT.format(startDate);

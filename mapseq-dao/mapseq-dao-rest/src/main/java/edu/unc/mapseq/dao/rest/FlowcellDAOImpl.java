@@ -28,6 +28,15 @@ public class FlowcellDAOImpl extends NamedEntityDAOImpl<Flowcell, Long> implemen
     }
 
     @Override
+    public List<Flowcell> findByStudyId(Long studyId) throws MaPSeqDAOException {
+        logger.debug("ENTERING findByStudyId(studyId)");
+        WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
+        Collection<? extends Flowcell> ret = client.path("findByStudyId/{id}", studyId).accept(MediaType.APPLICATION_JSON)
+                .getCollection(Flowcell.class);
+        return new ArrayList<Flowcell>(ret);
+    }
+
+    @Override
     public Long save(Flowcell entity) throws MaPSeqDAOException {
         logger.debug("ENTERING save(Long)");
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true).type(MediaType.APPLICATION_JSON)
@@ -57,8 +66,8 @@ public class FlowcellDAOImpl extends NamedEntityDAOImpl<Flowcell, Long> implemen
     public List<Flowcell> findByStudyName(String name) throws MaPSeqDAOException {
         logger.debug("ENTERING findByStudyName(String)");
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
-        Collection<? extends Flowcell> ret = client.path("findByStudyName/{name}", name)
-                .accept(MediaType.APPLICATION_JSON).getCollection(Flowcell.class);
+        Collection<? extends Flowcell> ret = client.path("findByStudyName/{name}", name).accept(MediaType.APPLICATION_JSON)
+                .getCollection(Flowcell.class);
         return new ArrayList<Flowcell>(ret);
     }
 
@@ -77,8 +86,7 @@ public class FlowcellDAOImpl extends NamedEntityDAOImpl<Flowcell, Long> implemen
     @Override
     public List<Flowcell> findAll() throws MaPSeqDAOException {
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
-        Collection<? extends Flowcell> ret = client.path("findAll").accept(MediaType.APPLICATION_JSON)
-                .getCollection(Flowcell.class);
+        Collection<? extends Flowcell> ret = client.path("findAll").accept(MediaType.APPLICATION_JSON).getCollection(Flowcell.class);
         return new ArrayList<Flowcell>(ret);
     }
 
