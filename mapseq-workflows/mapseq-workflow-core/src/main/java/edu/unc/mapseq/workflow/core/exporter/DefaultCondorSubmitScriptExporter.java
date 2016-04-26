@@ -8,6 +8,7 @@ import static org.renci.jlrm.condor.ClassAdvertisementFactory.CLASS_AD_KEY_LOG;
 import static org.renci.jlrm.condor.ClassAdvertisementFactory.CLASS_AD_KEY_OUTPUT;
 import static org.renci.jlrm.condor.ClassAdvertisementFactory.CLASS_AD_KEY_PRIORITY;
 import static org.renci.jlrm.condor.ClassAdvertisementFactory.CLASS_AD_KEY_REQUEST_CPUS;
+import static org.renci.jlrm.condor.ClassAdvertisementFactory.CLASS_AD_KEY_REQUEST_DISK;
 import static org.renci.jlrm.condor.ClassAdvertisementFactory.CLASS_AD_KEY_REQUEST_MEMORY;
 import static org.renci.jlrm.condor.ClassAdvertisementFactory.CLASS_AD_KEY_REQUIREMENTS;
 import static org.renci.jlrm.condor.ClassAdvertisementFactory.CLASS_AD_KEY_TRANSFER_EXECUTABLE;
@@ -87,6 +88,10 @@ public class DefaultCondorSubmitScriptExporter extends CondorSubmitScriptExporte
 
                     classAd = ClassAdvertisementFactory.getClassAd(CLASS_AD_KEY_REQUEST_MEMORY).clone();
                     classAd.setValue(job.getMemory().toString());
+                    job.getClassAdvertisments().add(classAd);
+
+                    classAd = ClassAdvertisementFactory.getClassAd(CLASS_AD_KEY_REQUEST_DISK).clone();
+                    classAd.setValue("5GB");
                     job.getClassAdvertisments().add(classAd);
 
                     if (job.getInitialDirectory() != null) {
