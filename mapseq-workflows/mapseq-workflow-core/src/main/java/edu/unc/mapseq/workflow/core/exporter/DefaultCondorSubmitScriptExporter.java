@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 
 public class DefaultCondorSubmitScriptExporter extends CondorSubmitScriptExporter {
 
-    private final Logger logger = LoggerFactory.getLogger(DefaultCondorSubmitScriptExporter.class);
+    private static final Logger logger = LoggerFactory.getLogger(DefaultCondorSubmitScriptExporter.class);
 
     public DefaultCondorSubmitScriptExporter() {
         super();
