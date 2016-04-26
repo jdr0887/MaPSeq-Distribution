@@ -87,7 +87,7 @@ public class DefaultCondorSubmitScriptExporter extends CondorSubmitScriptExporte
                     job.getClassAdvertisments().add(classAd);
 
                     classAd = ClassAdvertisementFactory.getClassAd(CLASS_AD_KEY_REQUEST_MEMORY).clone();
-                    classAd.setValue(job.getMemory().toString());
+                    classAd.setValue(job.getMemory());
                     job.getClassAdvertisments().add(classAd);
 
                     classAd = ClassAdvertisementFactory.getClassAd(CLASS_AD_KEY_REQUEST_DISK).clone();
