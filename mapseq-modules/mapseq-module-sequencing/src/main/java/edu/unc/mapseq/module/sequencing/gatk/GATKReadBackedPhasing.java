@@ -12,7 +12,7 @@ import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.annotations.OutputArgument;
 
-@Application(name = "GATKReadBackedPhasing", executable = "$JAVA_HOME/bin/java -Xmx4g -Djava.io.tmpdir=$MAPSEQ_CLIENT_HOME/tmp -jar $%s_GATK_HOME/GenomeAnalysisTK.jar --analysis_type ReadBackedPhasing")
+@Application(name = "GATKReadBackedPhasing", executable = "$JAVA7_HOME/bin/java -Xmx4g -Djava.io.tmpdir=$MAPSEQ_CLIENT_HOME/tmp -jar $%s_GATK_HOME/GenomeAnalysisTK.jar --analysis_type ReadBackedPhasing")
 public class GATKReadBackedPhasing extends Module {
 
     @NotNull(message = "out is required", groups = InputValidations.class)
