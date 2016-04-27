@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang.StringUtils;
+
 import edu.unc.mapseq.dao.model.FileData;
 import edu.unc.mapseq.dao.model.MimeType;
 import edu.unc.mapseq.module.DefaultModuleOutput;
@@ -22,7 +24,7 @@ import edu.unc.mapseq.module.constraints.FileIsNotEmpty;
 import edu.unc.mapseq.module.constraints.FileIsReadable;
 import net.sf.picard.sam.FixMateInformation;
 
-@Application(name = "PicardFixMate")
+@Application(name = "PicardFixMate", executable = "$JAVA7_HOME/bin/java -Xmx4g -Djava.io.tmpdir=$MAPSEQ_CLIENT_HOME/tmp -jar $%s_PICARD_HOME/picard.jar FixMateInformation %s")
 public class PicardFixMate extends Module {
 
     @NotNull(message = "Input is required", groups = InputValidations.class)
@@ -54,6 +56,19 @@ public class PicardFixMate extends Module {
     }
 
     @Override
+    public String getExecutable() {
+        List<String> argumentList = new ArrayList<String>();
+        argumentList.add(String.format("MAX_RECORDS_IN_RAM=%d", maxRecordsInRAM));
+        argumentList.add("VALIDATION_STRINGENCY=SILENT");
+        argumentList.add("SORT_ORDER=" + this.sortOrder);
+        argumentList.add(String.format("TMP_DIR=%s/tmp", System.getenv("MAPSEQ_CLIENT_HOME")));
+        argumentList.add(String.format("OUTPUT=%s", output.getAbsolutePath()));
+        argumentList.add(String.format("INPUT=%s", input.getAbsolutePath()));
+        String args = StringUtils.join(argumentList, " ");
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName().toUpperCase(), args);
+    }
+
+    @Override
     public ModuleOutput call() throws ModuleException {
 
         DefaultModuleOutput moduleOutput = new DefaultModuleOutput();
@@ -61,13 +76,6 @@ public class PicardFixMate extends Module {
         try {
 
             List<String> argumentList = new ArrayList<String>();
-
-            argumentList.add(String.format("MAX_RECORDS_IN_RAM=%d", maxRecordsInRAM));
-            argumentList.add("VALIDATION_STRINGENCY=SILENT");
-            argumentList.add("SORT_ORDER=" + this.sortOrder);
-            argumentList.add(String.format("TMP_DIR=%s/tmp", System.getenv("MAPSEQ_CLIENT_HOME")));
-            argumentList.add("OUTPUT=" + output.getAbsolutePath());
-            argumentList.add("INPUT=" + input.getAbsolutePath());
 
             exitCode = new FixMateInformation().instanceMain(argumentList.toArray(new String[argumentList.size()]));
         } catch (Exception e) {
@@ -122,8 +130,8 @@ public class PicardFixMate extends Module {
 
     @Override
     public String toString() {
-        return String.format("PicardFixMate [input=%s, output=%s, sortOrder=%s, maxRecordsInRAM=%s, toString()=%s]",
-                input, output, sortOrder, maxRecordsInRAM, super.toString());
+        return String.format("PicardFixMate [input=%s, output=%s, sortOrder=%s, maxRecordsInRAM=%s, toString()=%s]", input, output,
+                sortOrder, maxRecordsInRAM, super.toString());
     }
 
 }

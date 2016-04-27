@@ -6,12 +6,10 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
-import edu.unc.mapseq.dao.model.FileData;
+import org.apache.commons.lang.StringUtils;
+
 import edu.unc.mapseq.dao.model.MimeType;
-import edu.unc.mapseq.module.DefaultModuleOutput;
 import edu.unc.mapseq.module.Module;
-import edu.unc.mapseq.module.ModuleException;
-import edu.unc.mapseq.module.ModuleOutput;
 import edu.unc.mapseq.module.annotations.Application;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
@@ -19,9 +17,8 @@ import edu.unc.mapseq.module.annotations.OutputArgument;
 import edu.unc.mapseq.module.annotations.OutputValidations;
 import edu.unc.mapseq.module.constraints.FileIsNotEmpty;
 import edu.unc.mapseq.module.constraints.FileIsReadable;
-import net.sf.picard.sam.ReorderSam;
 
-@Application(name = "PicardReorderSAM")
+@Application(name = "PicardReorderSAM", executable = "$JAVA7_HOME/bin/java -Xmx4g -Djava.io.tmpdir=$MAPSEQ_CLIENT_HOME/tmp -jar $%s_PICARD_HOME/picard.jar ReorderSam %s")
 public class PicardReorderSAM extends Module {
 
     @NotNull(message = "Input is required", groups = InputValidations.class)
@@ -56,37 +53,17 @@ public class PicardReorderSAM extends Module {
     }
 
     @Override
-    public ModuleOutput call() throws ModuleException {
-
-        DefaultModuleOutput moduleOutput = new DefaultModuleOutput();
-        int exitCode = 0;
-        try {
-
-            List<String> argumentList = new ArrayList<String>();
-            argumentList.add(String.format("MAX_RECORDS_IN_RAM=%d", maxRecordsInRAM));
-            argumentList.add("VALIDATION_STRINGENCY=SILENT");
-            argumentList.add("CREATE_INDEX=" + createIndex.toString());
-            argumentList.add(String.format("TMP_DIR=%s/tmp", System.getenv("MAPSEQ_CLIENT_HOME")));
-            argumentList.add("REFERENCE=" + referenceSequence.getAbsolutePath());
-            argumentList.add("OUTPUT=" + output.getAbsolutePath());
-            argumentList.add("INPUT=" + input.getAbsolutePath());
-
-            exitCode = new ReorderSam().instanceMain(argumentList.toArray(new String[argumentList.size()]));
-        } catch (Exception e) {
-            e.printStackTrace();
-            moduleOutput.setError(new StringBuilder(e.getMessage()));
-            moduleOutput.setExitCode(-1);
-            return moduleOutput;
-        }
-        moduleOutput.setExitCode(exitCode);
-
-        FileData fm = new FileData();
-        fm.setMimeType(MimeType.APPLICATION_BAM);
-        fm.setPath(output.getParentFile().getAbsolutePath());
-        fm.setName(output.getName());
-        getFileDatas().add(fm);
-
-        return moduleOutput;
+    public String getExecutable() {
+        List<String> argumentList = new ArrayList<String>();
+        argumentList.add(String.format("MAX_RECORDS_IN_RAM=%d", maxRecordsInRAM));
+        argumentList.add("VALIDATION_STRINGENCY=SILENT");
+        argumentList.add(String.format("CREATE_INDEX=%s", createIndex.toString()));
+        argumentList.add(String.format("TMP_DIR=%s/tmp", System.getenv("MAPSEQ_CLIENT_HOME")));
+        argumentList.add(String.format("REFERENCE=", referenceSequence.getAbsolutePath()));
+        argumentList.add(String.format("OUTPUT=%s", output.getAbsolutePath()));
+        argumentList.add(String.format("INPUT=%s", input.getAbsolutePath()));
+        String args = StringUtils.join(argumentList, " ");
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName().toUpperCase(), args);
     }
 
     public Integer getMaxRecordsInRAM() {
@@ -132,8 +109,8 @@ public class PicardReorderSAM extends Module {
     @Override
     public String toString() {
         return String.format(
-                "PicardReorderSAM [input=%s, output=%s, referenceSequence=%s, maxRecordsInRAM=%s, createIndex=%s, toString()=%s]",
-                input, output, referenceSequence, maxRecordsInRAM, createIndex, super.toString());
+                "PicardReorderSAM [input=%s, output=%s, referenceSequence=%s, maxRecordsInRAM=%s, createIndex=%s, toString()=%s]", input,
+                output, referenceSequence, maxRecordsInRAM, createIndex, super.toString());
     }
 
 }
