@@ -22,7 +22,7 @@ import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.constraints.FileIsReadable;
 
-@Application(name = "GATKDepthOfCoverage", executable = "$JAVA_HOME/bin/java -Xmx4g -Djava.io.tmpdir=$MAPSEQ_CLIENT_HOME/tmp -jar $%s_GATK3_HOME/GenomeAnalysisTK.jar --analysis_type DepthOfCoverage")
+@Application(name = "GATKDepthOfCoverage", executable = "$JAVA7_HOME/bin/java -Xmx4g -Djava.io.tmpdir=$MAPSEQ_CLIENT_HOME/tmp -jar $%s_GATK3_HOME/GenomeAnalysisTK.jar --analysis_type DepthOfCoverage")
 public class GATKDepthOfCoverage extends Module {
 
     @NotNull(message = "key is required", groups = InputValidations.class)
