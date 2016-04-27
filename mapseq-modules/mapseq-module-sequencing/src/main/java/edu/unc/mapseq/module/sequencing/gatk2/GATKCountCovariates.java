@@ -14,7 +14,7 @@ import edu.unc.mapseq.module.annotations.OutputArgument;
 import edu.unc.mapseq.module.annotations.OutputValidations;
 import edu.unc.mapseq.module.constraints.FileIsReadable;
 
-@Application(name = "GATKCountCovariates", executable = "$JAVA_HOME/bin/java -Xmx4g -Djava.io.tmpdir=$MAPSEQ_CLIENT_HOME/tmp -jar $%s_GATK2_HOME/GenomeAnalysisTK.jar --analysis_type CountCovariates")
+@Application(name = "GATKCountCovariates", executable = "$JAVA7_HOME/bin/java -Xmx4g -Djava.io.tmpdir=$MAPSEQ_CLIENT_HOME/tmp -jar $%s_GATK2_HOME/GenomeAnalysisTK.jar --analysis_type CountCovariates")
 public class GATKCountCovariates extends Module {
 
     @NotNull(message = "key is required", groups = InputValidations.class)
