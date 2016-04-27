@@ -14,27 +14,18 @@
     <dependency>
       <groupId>uk.ac.bbsrc.babraham</groupId>
       <artifactId>FastQC</artifactId>
-      <version>0.10.1</version>
     </dependency>
-    <dependency>
-      <groupId>net.sf.picard</groupId>
-      <artifactId>picard</artifactId>
-      <version>1.55</version>
-    </dependency>  
     <dependency>
       <groupId>org.renci.osgi.bundles</groupId>
       <artifactId>biojava-3.0.7-bundle</artifactId>
-      <version>0.0.4</version>
     </dependency>
     <dependency>
       <groupId>edu.unc.bioinf.ubu</groupId>
       <artifactId>ubu</artifactId>
-      <version>1.2</version>
     </dependency>
     <dependency>
       <groupId>org.renci.converter</groupId>
       <artifactId>converter-core</artifactId>
-      <version>0.0.2</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
