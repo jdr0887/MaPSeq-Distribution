@@ -4,8 +4,6 @@ import java.io.File;
 
 import javax.validation.constraints.NotNull;
 
-import org.apache.commons.lang3.StringUtils;
-
 import edu.unc.mapseq.dao.model.MimeType;
 import edu.unc.mapseq.module.Module;
 import edu.unc.mapseq.module.annotations.Application;
@@ -73,31 +71,6 @@ public class PicardAddOrReplaceReadGroups extends Module {
 
     @Override
     public String getExecutable() {
-
-        if (StringUtils.isNotEmpty(readGroupId)) {
-            readGroupId = StringUtils.wrap(readGroupId, '\'');
-        }
-
-        if (StringUtils.isNotEmpty(readGroupLibrary)) {
-            readGroupLibrary = StringUtils.wrap(readGroupLibrary, '\'');
-        }
-
-        if (StringUtils.isNotEmpty(readGroupPlatform)) {
-            readGroupPlatform = StringUtils.wrap(readGroupPlatform, '\'');
-        }
-
-        if (StringUtils.isNotEmpty(readGroupPlatformUnit)) {
-            readGroupPlatformUnit = StringUtils.wrap(readGroupPlatformUnit, '\'');
-        }
-
-        if (StringUtils.isNotEmpty(readGroupSampleName)) {
-            readGroupSampleName = StringUtils.wrap(readGroupSampleName, '\'');
-        }
-
-        if (StringUtils.isNotEmpty(readGroupCenterName)) {
-            readGroupCenterName = StringUtils.wrap(readGroupCenterName, '\'');
-        }
-
         return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName().toUpperCase());
     }
 
