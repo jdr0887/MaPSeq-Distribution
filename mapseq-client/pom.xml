@@ -2,13 +2,13 @@
   <parent>
     <groupId>edu.unc.mapseq</groupId>
     <artifactId>distribution</artifactId>
-    <version>0.6.36-SNAPSHOT</version>
+    <version>0.6.36</version>
   </parent>
   <name>MaPSeq :: Distribution :: Client</name>
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.unc.mapseq.distribution</groupId>
   <artifactId>mapseq-client</artifactId>
-  <version>0.6.36-SNAPSHOT</version>
+  <version>0.6.36</version>
   <packaging>jar</packaging>
   <dependencies>
     <dependency>
@@ -106,7 +106,7 @@
       <plugin>
         <groupId>edu.unc.mapseq.distribution.mapseq-maven-plugins</groupId>
         <artifactId>mapseq-scripts-plugin</artifactId>
-        <version>0.6.36-SNAPSHOT</version>
+        <version>0.6.36</version>
         <executions>
           <execution>
 	    <id>mapseq-transfer-inputs</id>
