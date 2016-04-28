@@ -80,13 +80,13 @@ public class PicardAddOrReplaceReadGroups extends Module {
         argumentList.add(String.format("SORT_ORDER=%s", this.sortOrder));
         argumentList.add(String.format("MAX_RECORDS_IN_RAM=%d", maxRecordsInRAM));
         argumentList.add(String.format("TMP_DIR=%s/tmp", System.getenv("MAPSEQ_CLIENT_HOME")));
-        argumentList.add(String.format("RGID=%s", this.readGroupId));
-        argumentList.add(String.format("RGLB=%s", this.readGroupLibrary));
-        argumentList.add(String.format("RGPL=%s", this.readGroupPlatform));
-        argumentList.add(String.format("RGPU=%s", this.readGroupPlatformUnit));
-        argumentList.add(String.format("RGSM=%s", this.readGroupSampleName));
+        argumentList.add(String.format("RGID='%s'", this.readGroupId));
+        argumentList.add(String.format("RGLB='%s'", this.readGroupLibrary));
+        argumentList.add(String.format("RGPL='%s'", this.readGroupPlatform));
+        argumentList.add(String.format("RGPU='%s'", this.readGroupPlatformUnit));
+        argumentList.add(String.format("RGSM='%s'", this.readGroupSampleName));
         if (StringUtils.isNotEmpty(readGroupCenterName)) {
-            argumentList.add(String.format("RGCN=%s", this.readGroupCenterName));
+            argumentList.add(String.format("RGCN='%s'", this.readGroupCenterName));
         }
         argumentList.add("RGDS=GENERATED_BY_MAPSEQ");
         argumentList.add(String.format("OUTPUT=%s", output.getAbsolutePath()));

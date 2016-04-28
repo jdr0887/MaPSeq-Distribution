@@ -60,7 +60,7 @@ public class PicardFixMate extends Module {
         List<String> argumentList = new ArrayList<String>();
         argumentList.add(String.format("MAX_RECORDS_IN_RAM=%d", maxRecordsInRAM));
         argumentList.add("VALIDATION_STRINGENCY=SILENT");
-        argumentList.add("SORT_ORDER=" + this.sortOrder);
+        argumentList.add(String.format("SORT_ORDER=%s", this.sortOrder));
         argumentList.add(String.format("TMP_DIR=%s/tmp", System.getenv("MAPSEQ_CLIENT_HOME")));
         argumentList.add(String.format("OUTPUT=%s", output.getAbsolutePath()));
         argumentList.add(String.format("INPUT=%s", input.getAbsolutePath()));

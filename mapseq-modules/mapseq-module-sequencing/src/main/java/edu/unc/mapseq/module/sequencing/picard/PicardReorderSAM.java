@@ -59,7 +59,7 @@ public class PicardReorderSAM extends Module {
         argumentList.add("VALIDATION_STRINGENCY=SILENT");
         argumentList.add(String.format("CREATE_INDEX=%s", createIndex.toString()));
         argumentList.add(String.format("TMP_DIR=%s/tmp", System.getenv("MAPSEQ_CLIENT_HOME")));
-        argumentList.add(String.format("REFERENCE=", referenceSequence.getAbsolutePath()));
+        argumentList.add(String.format("REFERENCE=%s", referenceSequence.getAbsolutePath()));
         argumentList.add(String.format("OUTPUT=%s", output.getAbsolutePath()));
         argumentList.add(String.format("INPUT=%s", input.getAbsolutePath()));
         String args = StringUtils.join(argumentList, " ");
