@@ -6,8 +6,6 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
-import org.apache.commons.lang.StringUtils;
-
 import edu.unc.mapseq.dao.model.MimeType;
 import edu.unc.mapseq.module.Module;
 import edu.unc.mapseq.module.annotations.Application;
@@ -20,26 +18,26 @@ import edu.unc.mapseq.module.constraints.FileIsNotEmpty;
 import edu.unc.mapseq.module.constraints.FileIsReadable;
 import edu.unc.mapseq.module.constraints.FileListIsReadable;
 
-@Application(name = "PicardMergeSAM", executable = "$JAVA8_HOME/bin/java -Xmx4g -Djava.io.tmpdir=$MAPSEQ_CLIENT_HOME/tmp -jar $%s_PICARD2_HOME/picard.jar MergeSamFiles %s")
+@Application(name = "PicardMergeSAM", executable = "$JAVA8_HOME/bin/java -Xmx4g -jar $%s_PICARD2_HOME/picard.jar MergeSamFiles TMP_DIR=$MAPSEQ_CLIENT_HOME/tmp VALIDATION_STRINGENCY=SILENT")
 public class PicardMergeSAM extends Module {
 
     @NotNull(message = "Input is required", groups = InputValidations.class)
-    @InputArgument(description = "The BAM or SAM file to parse.")
+    @InputArgument(flag = "INPUT", delimiter = "=", description = "The BAM or SAM file to parse.")
     @FileListIsReadable(message = "input file is not readable", groups = InputValidations.class)
     private List<File> input;
 
     @NotNull(message = "Output is required", groups = InputValidations.class)
     @FileIsReadable(message = "Invalid output file", groups = OutputValidations.class)
     @FileIsNotEmpty(message = "output file is empty", groups = OutputValidations.class)
-    @OutputArgument(persistFileData = true, mimeType = MimeType.APPLICATION_BAM)
+    @OutputArgument(flag = "OUTPUT", delimiter = "=", persistFileData = true, mimeType = MimeType.APPLICATION_BAM)
     private File output;
 
     @NotNull(message = "sortOrder is required", groups = InputValidations.class)
     @Contains(values = { "unsorted", "queryname", "coordinate" })
-    @InputArgument
+    @InputArgument(flag = "SORT_ORDER", delimiter = "=")
     private String sortOrder;
 
-    @InputArgument
+    @InputArgument(flag = "MAX_RECORDS_IN_RAM", delimiter = "=")
     private Integer maxRecordsInRAM = 1000000;
 
     public PicardMergeSAM() {
@@ -53,17 +51,7 @@ public class PicardMergeSAM extends Module {
 
     @Override
     public String getExecutable() {
-        List<String> argumentList = new ArrayList<String>();
-        argumentList.add(String.format("MAX_RECORDS_IN_RAM=%d", maxRecordsInRAM));
-        argumentList.add("VALIDATION_STRINGENCY=SILENT");
-        argumentList.add(String.format("SORT_ORDER=%s", sortOrder));
-        argumentList.add(String.format("TMP_DIR=%s/tmp", System.getenv("MAPSEQ_CLIENT_HOME")));
-        argumentList.add(String.format("OUTPUT=%s", output.getAbsolutePath()));
-        for (File f : input) {
-            argumentList.add(String.format("INPUT=%s", f.getAbsolutePath()));
-        }
-        String args = StringUtils.join(argumentList, " ");
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName().toUpperCase(), args);
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName().toUpperCase());
     }
 
     public Integer getMaxRecordsInRAM() {
