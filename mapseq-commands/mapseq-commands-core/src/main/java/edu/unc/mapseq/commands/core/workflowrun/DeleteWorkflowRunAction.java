@@ -40,7 +40,7 @@ public class DeleteWorkflowRunAction implements Action {
     public Object execute() {
         logger.debug("ENTERING execute()");
 
-        if (CollectionUtils.isNotEmpty(workflowRunIdList)) {
+        if (CollectionUtils.isEmpty(workflowRunIdList)) {
             System.out.printf("Please specify at least one WorkflowRun.id value");
             return null;
         }
