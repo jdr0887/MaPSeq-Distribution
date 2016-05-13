@@ -4,16 +4,7 @@ import java.io.File;
 
 import javax.validation.constraints.NotNull;
 
-import org.renci.common.exec.BashExecutor;
-import org.renci.common.exec.CommandInput;
-import org.renci.common.exec.CommandOutput;
-import org.renci.common.exec.Executor;
-import org.renci.common.exec.ExecutorException;
-
 import edu.unc.mapseq.module.Module;
-import edu.unc.mapseq.module.ModuleException;
-import edu.unc.mapseq.module.ModuleOutput;
-import edu.unc.mapseq.module.ShellModuleOutput;
 import edu.unc.mapseq.module.annotations.Application;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
