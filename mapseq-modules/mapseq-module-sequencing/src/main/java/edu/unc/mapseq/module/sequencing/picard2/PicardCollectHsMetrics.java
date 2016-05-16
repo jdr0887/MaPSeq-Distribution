@@ -70,6 +70,12 @@ public class PicardCollectHsMetrics extends Module {
     @InputArgument(flag = "SAMPLE_SIZE", delimiter = "=")
     private Integer sampleSize = 10000;
 
+    @InputArgument(flag = "REFERENCE_SEQUENCE", delimiter = "=")
+    private File referenceSequence;
+
+    @InputArgument(flag = "MAX_RECORDS_IN_RAM", delimiter = "=")
+    private Integer maxRecordsInRAM = 1000000;
+
     public PicardCollectHsMetrics() {
         super();
     }
@@ -196,17 +202,35 @@ public class PicardCollectHsMetrics extends Module {
         this.sampleSize = sampleSize;
     }
 
+    public Integer getMaxRecordsInRAM() {
+        return maxRecordsInRAM;
+    }
+
+    public void setMaxRecordsInRAM(Integer maxRecordsInRAM) {
+        this.maxRecordsInRAM = maxRecordsInRAM;
+    }
+
+    public File getReferenceSequence() {
+        return referenceSequence;
+    }
+
+    public void setReferenceSequence(File referenceSequence) {
+        this.referenceSequence = referenceSequence;
+    }
+
     @Override
     public String toString() {
         return String.format(
-                "PicardCollectHsMetrics [input=%s, output=%s, baitIntervals=%s, targetIntervals=%s, baitSetName=%s, minimumMappingQuality=%s, minimumBaseQuality=%s, clipOverlappingReads=%s, metricAccumulationLevel=%s, perTargetCoverage=%s, perBaseCoverage=%s, nearDistance=%s, coverageGap=%s, sampleSize=%s]",
+                "PicardCollectHsMetrics [input=%s, output=%s, baitIntervals=%s, targetIntervals=%s, baitSetName=%s, minimumMappingQuality=%s, minimumBaseQuality=%s, clipOverlappingReads=%s, metricAccumulationLevel=%s, perTargetCoverage=%s, perBaseCoverage=%s, nearDistance=%s, coverageGap=%s, sampleSize=%s, referenceSequence=%s, maxRecordsInRAM=%s]",
                 input, output, baitIntervals, targetIntervals, baitSetName, minimumMappingQuality, minimumBaseQuality, clipOverlappingReads,
-                metricAccumulationLevel, perTargetCoverage, perBaseCoverage, nearDistance, coverageGap, sampleSize);
+                metricAccumulationLevel, perTargetCoverage, perBaseCoverage, nearDistance, coverageGap, sampleSize, referenceSequence,
+                maxRecordsInRAM);
     }
 
     public static void main(String[] args) {
         PicardCollectHsMetrics module = new PicardCollectHsMetrics();
         module.setWorkflowName("TEST");
+        module.setReferenceSequence(new File("/tmp", "reference.fa"));
         module.setInput(new File("/tmp", "input.sam"));
         module.setOutput(new File("/tmp", "output.bam"));
         module.setBaitIntervals(new File("/tmp", "baitIntervals.interval_list"));
