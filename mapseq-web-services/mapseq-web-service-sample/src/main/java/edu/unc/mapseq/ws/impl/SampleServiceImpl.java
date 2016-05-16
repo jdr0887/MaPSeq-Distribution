@@ -72,10 +72,8 @@ public class SampleServiceImpl implements SampleService {
             return ret;
         }
         try {
-            Date parsedStartDate = DateUtils.parseDate(startDate,
-                    new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
-            Date parsedEndDate = DateUtils.parseDate(endDate,
-                    new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
+            Date parsedStartDate = DateUtils.parseDate(startDate, new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
+            Date parsedEndDate = DateUtils.parseDate(endDate, new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
             ret.addAll(sampleDAO.findByCreatedDateRange(parsedStartDate, parsedEndDate));
         } catch (ParseException | MaPSeqDAOException e) {
             logger.error("MaPSeqDAOException", e);
@@ -93,6 +91,30 @@ public class SampleServiceImpl implements SampleService {
         }
         try {
             ret.addAll(sampleDAO.findByFlowcellId(flowcellId));
+        } catch (MaPSeqDAOException e) {
+            logger.error("Error", e);
+        }
+        return ret;
+    }
+
+    @Override
+    public List<Sample> findByFlowcellNameAndSampleNameAndLaneIndex(String flowcellName, String sampleName, Integer laneIndex) {
+        logger.debug("ENTERING findByFlowcellNameAndSampleNameAndLaneIndex(String, String, Integer)");
+        List<Sample> ret = new ArrayList<Sample>();
+        if (StringUtils.isEmpty(flowcellName)) {
+            logger.warn("flowcellName is empty");
+            return ret;
+        }
+        if (StringUtils.isEmpty(sampleName)) {
+            logger.warn("sampleName is empty");
+            return ret;
+        }
+        if (laneIndex == null) {
+            logger.warn("laneIndex is null");
+            return ret;
+        }
+        try {
+            ret.addAll(sampleDAO.findByFlowcellNameAndSampleNameAndLaneIndex(flowcellName, sampleName, laneIndex));
         } catch (MaPSeqDAOException e) {
             logger.error("Error", e);
         }

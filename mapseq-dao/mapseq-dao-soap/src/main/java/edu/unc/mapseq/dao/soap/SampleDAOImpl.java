@@ -73,6 +73,14 @@ public class SampleDAOImpl extends NamedEntityDAOImpl<Sample, Long> implements S
     }
 
     @Override
+    public List<Sample> findByFlowcellNameAndSampleNameAndLaneIndex(String flowcellName, String sampleName, Integer laneIndex)
+            throws MaPSeqDAOException {
+        logger.debug("ENTERING findByFlowcellNameAndSampleNameAndLaneIndex(String, String, Integer)");
+        List<Sample> ret = sampleService.findByFlowcellNameAndSampleNameAndLaneIndex(flowcellName, sampleName, laneIndex);
+        return ret;
+    }
+
+    @Override
     public List<Sample> findByCreatedDateRange(Date startDate, Date endDate) throws MaPSeqDAOException {
         logger.debug("ENTERING findByCreatedDateRange(Date, Date)");
         String formattedStartDate = DateFormatUtils.ISO_DATE_FORMAT.format(startDate);

@@ -38,8 +38,7 @@ public class SampleDAOImpl extends NamedEntityDAOImpl<Sample, Long> implements S
     @Override
     public Long save(Sample entity) throws MaPSeqDAOException {
         logger.debug("ENTERING save(HTSFSample)");
-        WebClient client = WebClient.create(getRestServiceURL()).type(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON);
+        WebClient client = WebClient.create(getRestServiceURL()).type(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON);
         Response response = client.path("/").post(entity);
         Long id = response.readEntity(Long.class);
         return id;
@@ -48,16 +47,27 @@ public class SampleDAOImpl extends NamedEntityDAOImpl<Sample, Long> implements S
     @Override
     public List<Sample> findByFlowcellId(Long flowcellId) throws MaPSeqDAOException {
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
-        Collection<? extends Sample> results = client.path("findByFlowcellId/{id}", flowcellId)
-                .accept(MediaType.APPLICATION_JSON).getCollection(Sample.class);
+        Collection<? extends Sample> results = client.path("findByFlowcellId/{id}", flowcellId).accept(MediaType.APPLICATION_JSON)
+                .getCollection(Sample.class);
         return new ArrayList<Sample>(results);
     }
 
     @Override
     public List<Sample> findByNameAndFlowcellId(String name, Long flowcellId) throws MaPSeqDAOException {
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
+        Collection<? extends Sample> results = client.path("findByNameAndFlowcellId/{flowcellId}/{sampleName}", flowcellId, name)
+                .accept(MediaType.APPLICATION_JSON).getCollection(Sample.class);
+        return new ArrayList<Sample>(results);
+    }
+
+    @Override
+    public List<Sample> findByFlowcellNameAndSampleNameAndLaneIndex(String flowcellName, String sampleName, Integer laneIndex)
+            throws MaPSeqDAOException {
+        logger.debug("ENTERING findByFlowcellNameAndSampleNameAndLaneIndex(String, String, Integer)");
+        WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
         Collection<? extends Sample> results = client
-                .path("findByNameAndFlowcellId/{flowcellId}/{sampleName}", flowcellId, name)
+                .path("findByFlowcellNameAndSampleNameAndLaneIndex/{flowcellName}/{sampleName}/laneIndex", flowcellName, sampleName,
+                        laneIndex)
                 .accept(MediaType.APPLICATION_JSON).getCollection(Sample.class);
         return new ArrayList<Sample>(results);
     }
@@ -68,8 +78,7 @@ public class SampleDAOImpl extends NamedEntityDAOImpl<Sample, Long> implements S
         String formattedStartDate = DateFormatUtils.ISO_DATE_FORMAT.format(startDate);
         String formattedEndDate = DateFormatUtils.ISO_DATE_FORMAT.format(endDate);
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
-        Collection<? extends Sample> ret = client
-                .path("findByCreatedDateRange/{startDate}/{endDate}", formattedStartDate, formattedEndDate)
+        Collection<? extends Sample> ret = client.path("findByCreatedDateRange/{startDate}/{endDate}", formattedStartDate, formattedEndDate)
                 .accept(MediaType.APPLICATION_JSON).getCollection(Sample.class);
         return new ArrayList<Sample>(ret);
     }
