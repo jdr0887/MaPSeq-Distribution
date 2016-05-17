@@ -35,26 +35,26 @@ public class PicardAddOrReplaceReadGroups extends Module {
     private String sortOrder;
 
     @NotNull(message = "readGroupId is required", groups = InputValidations.class)
-    @InputArgument(flag = "RGID", delimiter = "=")
+    @InputArgument(flag = "RGID", delimiter = "=", wrapValueInSingleQuotes = true)
     private String readGroupId;
 
     @NotNull(message = "readGroupLibrary is required", groups = InputValidations.class)
-    @InputArgument(flag = "RGLB", delimiter = "=")
+    @InputArgument(flag = "RGLB", delimiter = "=", wrapValueInSingleQuotes = true)
     private String readGroupLibrary;
 
     @NotNull(message = "readGroupPlatform is required", groups = InputValidations.class)
-    @InputArgument(flag = "RGPL", delimiter = "=")
+    @InputArgument(flag = "RGPL", delimiter = "=", wrapValueInSingleQuotes = true)
     private String readGroupPlatform;
 
     @NotNull(message = "readGroupPlatformUnit is required", groups = InputValidations.class)
-    @InputArgument(flag = "RGPU", delimiter = "=")
+    @InputArgument(flag = "RGPU", delimiter = "=", wrapValueInSingleQuotes = true)
     private String readGroupPlatformUnit;
 
     @NotNull(message = "readGroupSampleName is required", groups = InputValidations.class)
-    @InputArgument(flag = "RGSM", delimiter = "=")
+    @InputArgument(flag = "RGSM", delimiter = "=", wrapValueInSingleQuotes = true)
     private String readGroupSampleName;
 
-    @InputArgument(flag = "RGCN", delimiter = "=")
+    @InputArgument(flag = "RGCN", delimiter = "=", wrapValueInSingleQuotes = true)
     private String readGroupCenterName;
 
     @InputArgument(flag = "MAX_RECORDS_IN_RAM", delimiter = "=")

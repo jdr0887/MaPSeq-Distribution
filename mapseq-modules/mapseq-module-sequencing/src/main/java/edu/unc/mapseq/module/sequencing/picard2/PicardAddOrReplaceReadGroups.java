@@ -35,26 +35,26 @@ public class PicardAddOrReplaceReadGroups extends Module {
     private String sortOrder;
 
     @NotNull(message = "readGroupId is required", groups = InputValidations.class)
-    @InputArgument(flag = "RGID", delimiter = "=")
+    @InputArgument(flag = "RGID", delimiter = "=", wrapValueInSingleQuotes = true)
     private String readGroupId;
 
     @NotNull(message = "readGroupLibrary is required", groups = InputValidations.class)
-    @InputArgument(flag = "RGLB", delimiter = "=")
+    @InputArgument(flag = "RGLB", delimiter = "=", wrapValueInSingleQuotes = true)
     private String readGroupLibrary;
 
     @NotNull(message = "readGroupPlatform is required", groups = InputValidations.class)
-    @InputArgument(flag = "RGPL", delimiter = "=")
+    @InputArgument(flag = "RGPL", delimiter = "=", wrapValueInSingleQuotes = true)
     private String readGroupPlatform;
 
     @NotNull(message = "readGroupPlatformUnit is required", groups = InputValidations.class)
-    @InputArgument(flag = "RGPU", delimiter = "=")
+    @InputArgument(flag = "RGPU", delimiter = "=", wrapValueInSingleQuotes = true)
     private String readGroupPlatformUnit;
 
     @NotNull(message = "readGroupSampleName is required", groups = InputValidations.class)
-    @InputArgument(flag = "RGSM", delimiter = "=")
+    @InputArgument(flag = "RGSM", delimiter = "=", wrapValueInSingleQuotes = true)
     private String readGroupSampleName;
 
-    @InputArgument(flag = "RGCN", delimiter = "=")
+    @InputArgument(flag = "RGCN", delimiter = "=", wrapValueInSingleQuotes = true)
     private String readGroupCenterName;
 
     @InputArgument(flag = "MAX_RECORDS_IN_RAM", delimiter = "=")
@@ -167,9 +167,9 @@ public class PicardAddOrReplaceReadGroups extends Module {
         module.setWorkflowName("TEST");
         module.setReadGroupId("151123_UNC16-SN851_0629_AH5FG2ADXX-AAACAT_L002");
         module.setReadGroupLibrary("H5FG2ADXX_NCG_00731_L2_AAACAT");
-        module.setReadGroupPlatform("ILLUMINA");
+        module.setReadGroupPlatform("Illumina HiSeq 2000");
         module.setReadGroupPlatformUnit("Illumina HiSeq 2000");
-        module.setReadGroupSampleName("H5FG2ADXX_NCG_00731_L2_AAACAT");
+        module.setReadGroupSampleName("H5FG2ADXX NCG_00731_L2_AAACAT");
         module.setReadGroupCenterName("UNC");
         module.setSortOrder("coordinate");
         module.setInput(new File("/tmp", "input.sam"));
