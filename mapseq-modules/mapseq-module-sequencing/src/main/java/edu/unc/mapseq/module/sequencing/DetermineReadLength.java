@@ -35,7 +35,7 @@ import edu.unc.mapseq.module.constraints.FileListIsReadable;
 @Application(name = "DetermineMaxReadLength")
 public class DetermineReadLength extends Module {
 
-    private final Logger logger = LoggerFactory.getLogger(DetermineReadLength.class);
+    private static final Logger logger = LoggerFactory.getLogger(DetermineReadLength.class);
 
     @NotNull(message = "input is required", groups = InputValidations.class)
     @FileListIsReadable(message = "input does not exist or is not readable", groups = InputValidations.class)
