@@ -32,7 +32,7 @@ import edu.unc.mapseq.module.constraints.FileIsReadable;
 // @Application(name = "ConfigureBCLToFastQ", executable = "$%s_CASAVA_HOME/bin/configureBclToFastq.pl")
 public class ConfigureBCLToFastq extends Module {
 
-    private final Logger logger = LoggerFactory.getLogger(ConfigureBCLToFastq.class);
+    private static final Logger logger = LoggerFactory.getLogger(ConfigureBCLToFastq.class);
 
     @NotNull(message = "outputDir is required", groups = InputValidations.class)
     @InputArgument
