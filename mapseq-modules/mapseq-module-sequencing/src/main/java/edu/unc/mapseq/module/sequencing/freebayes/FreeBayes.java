@@ -230,7 +230,7 @@ public class FreeBayes extends Module {
     private Double readDependenceFactor;
 
     @InputArgument(flag = "--genotype-qualities", description = "Calculate the marginal probability of genotypes and report as GQ in each sample field in the VCF output.")
-    private String genotypeQualities;
+    private Boolean genotypeQualities;
 
     public FreeBayes() {
         super();
@@ -799,11 +799,11 @@ public class FreeBayes extends Module {
         this.readDependenceFactor = readDependenceFactor;
     }
 
-    public String getGenotypeQualities() {
+    public Boolean getGenotypeQualities() {
         return genotypeQualities;
     }
 
-    public void setGenotypeQualities(String genotypeQualities) {
+    public void setGenotypeQualities(Boolean genotypeQualities) {
         this.genotypeQualities = genotypeQualities;
     }
 
