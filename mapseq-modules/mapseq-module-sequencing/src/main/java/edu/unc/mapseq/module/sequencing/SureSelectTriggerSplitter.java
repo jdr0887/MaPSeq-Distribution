@@ -10,7 +10,7 @@ import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
 import edu.unc.mapseq.module.annotations.OutputArgument;
 
-@Application(name = "SureSelectTriggerSplitter", executable = "$PERL_HOME/bin/perl %s_SURESELECT_TRIGGER_SPLITTER_HOME/bin/SureSelectTargetSpliter_FBPloidyMaker.pl")
+@Application(name = "SureSelectTriggerSplitter", executable = "$PERL_HOME/bin/perl $%s_SURESELECT_TRIGGER_SPLITTER_HOME/bin/SureSelectTargetSpliter_FBPloidyMaker.pl")
 public class SureSelectTriggerSplitter extends Module {
 
     @NotNull(message = "intervalList is required", groups = InputValidations.class)
