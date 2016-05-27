@@ -3,6 +3,7 @@ package edu.unc.mapseq.workflow.sequencing;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,9 +11,11 @@ import org.slf4j.LoggerFactory;
 import edu.unc.mapseq.dao.FlowcellDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.SampleDAO;
+import edu.unc.mapseq.dao.WorkflowRunDAO;
 import edu.unc.mapseq.dao.model.Attribute;
 import edu.unc.mapseq.dao.model.Flowcell;
 import edu.unc.mapseq.dao.model.Sample;
+import edu.unc.mapseq.dao.model.SampleWorkflowRunDependency;
 import edu.unc.mapseq.dao.model.Workflow;
 import edu.unc.mapseq.dao.model.WorkflowRun;
 import edu.unc.mapseq.workflow.WorkflowException;
@@ -86,16 +89,14 @@ public abstract class AbstractSequencingMessageListener extends AbstractMessageL
         return sample;
     }
 
-    protected WorkflowRun createWorkflowRun(WorkflowMessage workflowMessage, Workflow workflow)
-            throws WorkflowException {
+    protected WorkflowRun createWorkflowRun(WorkflowMessage workflowMessage, Workflow workflow) throws WorkflowException {
         logger.debug("ENTERING createWorkflowRun(WorkflowMessage, Workflow)");
 
         Set<Flowcell> flowcellSet = new HashSet<Flowcell>();
         WorkflowRun workflowRun = null;
 
         for (WorkflowEntity entity : workflowMessage.getEntities()) {
-            if (StringUtils.isNotEmpty(entity.getEntityType())
-                    && Flowcell.class.getSimpleName().equals(entity.getEntityType())) {
+            if (StringUtils.isNotEmpty(entity.getEntityType()) && Flowcell.class.getSimpleName().equals(entity.getEntityType())) {
                 Flowcell flowcell = getFlowcell(entity);
                 flowcellSet.add(flowcell);
             }
@@ -103,8 +104,7 @@ public abstract class AbstractSequencingMessageListener extends AbstractMessageL
 
         Set<Sample> sampleSet = new HashSet<Sample>();
         for (WorkflowEntity entity : workflowMessage.getEntities()) {
-            if (StringUtils.isNotEmpty(entity.getEntityType())
-                    && Sample.class.getSimpleName().equals(entity.getEntityType())) {
+            if (StringUtils.isNotEmpty(entity.getEntityType()) && Sample.class.getSimpleName().equals(entity.getEntityType())) {
                 Sample sample = getSample(entity);
                 sampleSet.add(sample);
             }
@@ -116,8 +116,7 @@ public abstract class AbstractSequencingMessageListener extends AbstractMessageL
         }
 
         for (WorkflowEntity entity : workflowMessage.getEntities()) {
-            if (StringUtils.isNotEmpty(entity.getEntityType())
-                    && WorkflowRun.class.getSimpleName().equals(entity.getEntityType())) {
+            if (StringUtils.isNotEmpty(entity.getEntityType()) && WorkflowRun.class.getSimpleName().equals(entity.getEntityType())) {
                 workflowRun = getWorkflowRun(workflow, entity);
             }
         }
@@ -133,6 +132,37 @@ public abstract class AbstractSequencingMessageListener extends AbstractMessageL
 
         if (!sampleSet.isEmpty()) {
             workflowRun.setSamples(sampleSet);
+        }
+
+        WorkflowRunDAO workflowRunDAO = getWorkflowBeanService().getMaPSeqDAOBeanService().getWorkflowRunDAO();
+        try {
+            workflowRun.setId(workflowRunDAO.save(workflowRun));
+            logger.debug("WorkflowRun: {}", workflowRun.toString());
+        } catch (MaPSeqDAOException e) {
+            throw new WorkflowException(e);
+        }
+
+        if (CollectionUtils.isNotEmpty(sampleSet)) {
+            for (Sample sample : sampleSet) {
+                for (WorkflowEntity entity : workflowMessage.getEntities()) {
+                    if (StringUtils.isNotEmpty(entity.getEntityType()) && Sample.class.getSimpleName().equals(entity.getEntityType())
+                            && sample.getId().equals(entity.getId()) && entity.getUpstreamWorkflowRunId() != null) {
+                        try {
+                            WorkflowRun parentWorkflowRun = workflowRunDAO.findById(entity.getUpstreamWorkflowRunId());
+                            if (parentWorkflowRun == null) {
+                                throw new WorkflowException(
+                                        String.format("Could not find upstream workflow run: %d", entity.getUpstreamWorkflowRunId()));
+                            }
+                            SampleWorkflowRunDependency sampleWorkflowRunDependency = new SampleWorkflowRunDependency(sample,
+                                    parentWorkflowRun, workflowRun);
+                            getWorkflowBeanService().getMaPSeqDAOBeanService().getSampleWorkflowRunDependencyDAO()
+                                    .save(sampleWorkflowRunDependency);
+                        } catch (MaPSeqDAOException e) {
+                            throw new WorkflowException(e);
+                        }
+                    }
+                }
+            }
         }
 
         return workflowRun;
