@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import edu.unc.mapseq.dao.AttributeDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
+import edu.unc.mapseq.dao.WorkflowRunDAO;
 import edu.unc.mapseq.dao.model.Attribute;
 import edu.unc.mapseq.dao.model.Workflow;
 import edu.unc.mapseq.dao.model.WorkflowRun;
@@ -34,27 +35,19 @@ public abstract class AbstractMessageListener implements MessageListener {
     }
 
     protected WorkflowRun getWorkflowRun(Workflow workflow, WorkflowEntity workflowEntity) throws WorkflowException {
-        logger.debug("ENTERING getWorkflowRun(Workflow, JSONObject)");
-
+        logger.debug("ENTERING getWorkflowRun(Workflow, WorkflowEntity)");
         WorkflowRun workflowRun = null;
         if (StringUtils.isNotEmpty(workflowEntity.getName())) {
-
             workflowRun = new WorkflowRun(workflowEntity.getName());
             workflowRun.setWorkflow(workflow);
-
             Set<Attribute> attributes = parseAttributes(workflowRun.getAttributes(), workflowEntity.getAttributes());
             workflowRun.setAttributes(attributes);
-
         }
-
-        if (workflowRun != null) {
-            logger.debug("WorkflowRun: {}", workflowRun.toString());
-        }
-
         return workflowRun;
     }
 
     protected Set<Attribute> parseAttributes(Set<Attribute> attributeSet, List<WorkflowAttribute> workflowAttributes) {
+        logger.debug("ENTERING parseAttributes(Set<Attribute>, List<WorkflowAttribute>)");
 
         AttributeDAO attributeDAO = getWorkflowBeanService().getMaPSeqDAOBeanService().getAttributeDAO();
 
@@ -71,8 +64,8 @@ public abstract class AbstractMessageListener implements MessageListener {
 
             try {
                 if (!attributeNameSet.contains(workflowEntityAttribute.getName())) {
-                    Attribute attribute = new Attribute(workflowEntityAttribute.getName(),
-                            workflowEntityAttribute.getValue());
+                    Attribute attribute = new Attribute(workflowEntityAttribute.getName(), workflowEntityAttribute.getValue());
+                    attribute.setId(workflowBeanService.getMaPSeqDAOBeanService().getAttributeDAO().save(attribute));
                     attributeSet.add(attribute);
                 } else {
                     for (Attribute attribute : attributeSet) {
@@ -91,15 +84,13 @@ public abstract class AbstractMessageListener implements MessageListener {
         return attributeSet;
     }
 
-    protected WorkflowRun createWorkflowRun(WorkflowMessage workflowMessage, Workflow workflow)
-            throws WorkflowException {
+    protected WorkflowRun createWorkflowRun(WorkflowMessage workflowMessage, Workflow workflow) throws WorkflowException {
         logger.debug("ENTERING createWorkflowRun(WorkflowMessage, Workflow)");
 
         WorkflowRun workflowRun = null;
 
         for (WorkflowEntity entity : workflowMessage.getEntities()) {
-            if (StringUtils.isNotEmpty(entity.getEntityType())
-                    && WorkflowRun.class.getSimpleName().equals(entity.getEntityType())) {
+            if (StringUtils.isNotEmpty(entity.getEntityType()) && WorkflowRun.class.getSimpleName().equals(entity.getEntityType())) {
                 workflowRun = getWorkflowRun(workflow, entity);
             }
         }
@@ -107,6 +98,14 @@ public abstract class AbstractMessageListener implements MessageListener {
         if (workflowRun == null) {
             logger.warn("WorkflowRun is null...not running anything");
             throw new WorkflowException("WorkflowRun is null...not running anything");
+        }
+
+        WorkflowRunDAO workflowRunDAO = getWorkflowBeanService().getMaPSeqDAOBeanService().getWorkflowRunDAO();
+        try {
+            workflowRun.setId(workflowRunDAO.save(workflowRun));
+            logger.debug("WorkflowRun: {}", workflowRun.toString());
+        } catch (MaPSeqDAOException e) {
+            throw new WorkflowException(e);
         }
 
         return workflowRun;
