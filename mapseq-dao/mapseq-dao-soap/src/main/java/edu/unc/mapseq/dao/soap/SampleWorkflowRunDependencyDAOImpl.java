@@ -66,4 +66,11 @@ public class SampleWorkflowRunDependencyDAOImpl extends BaseDAOImpl<SampleWorkfl
         return results;
     }
 
+    @Override
+    public List<SampleWorkflowRunDependency> findBySampleId(Long sampleId) throws MaPSeqDAOException {
+        logger.debug("ENTERING findBySampleId(Long)");
+        List<SampleWorkflowRunDependency> results = sampleWorkflowRunDependencyService.findBySampleId(sampleId);
+        return results;
+    }
+
 }
