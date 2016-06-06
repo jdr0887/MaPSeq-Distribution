@@ -55,4 +55,13 @@ public class SampleWorkflowRunDependencyDAOImpl extends BaseDAOImpl<SampleWorkfl
         return new ArrayList<SampleWorkflowRunDependency>(results);
     }
 
+    @Override
+    public List<SampleWorkflowRunDependency> findBySampleId(Long sampleId) throws MaPSeqDAOException {
+        logger.debug("ENTERING findBySampleId(Long)");
+        WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
+        Collection<? extends SampleWorkflowRunDependency> results = client.path("findBySampleId/{sampleId}", sampleId)
+                .accept(MediaType.APPLICATION_JSON).getCollection(SampleWorkflowRunDependency.class);
+        return new ArrayList<SampleWorkflowRunDependency>(results);
+    }
+
 }
