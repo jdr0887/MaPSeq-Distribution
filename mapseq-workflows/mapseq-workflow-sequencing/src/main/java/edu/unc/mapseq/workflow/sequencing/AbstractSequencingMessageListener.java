@@ -136,7 +136,11 @@ public abstract class AbstractSequencingMessageListener extends AbstractMessageL
 
         WorkflowRunDAO workflowRunDAO = getWorkflowBeanService().getMaPSeqDAOBeanService().getWorkflowRunDAO();
         try {
+            Set<Attribute> workflowRunAttributes = workflowRun.getAttributes();
+            workflowRun.setAttributes(null);
             workflowRun.setId(workflowRunDAO.save(workflowRun));
+            workflowRun.setAttributes(workflowRunAttributes);
+            workflowRunDAO.save(workflowRun);
             logger.debug("WorkflowRun: {}", workflowRun.toString());
         } catch (MaPSeqDAOException e) {
             throw new WorkflowException(e);
