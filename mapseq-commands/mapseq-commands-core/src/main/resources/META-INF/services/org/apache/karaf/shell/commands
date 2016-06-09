@@ -1,4 +1,5 @@
 edu.unc.mapseq.commands.core.FindFilesAction
+edu.unc.mapseq.commands.core.CreateFileAction
 edu.unc.mapseq.commands.core.ListMimeTypesAction
 edu.unc.mapseq.commands.core.ListModulesAction
 edu.unc.mapseq.commands.core.workflow.CreateWorkflowAction
