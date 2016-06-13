@@ -66,6 +66,13 @@ public class SampleDAOImpl extends NamedEntityDAOImpl<Sample, Long> implements S
     }
 
     @Override
+    public List<Sample> findByStudyId(Long studyId) throws MaPSeqDAOException {
+        logger.debug("ENTERING findByStudyId(Long)");
+        List<Sample> sampleList = sampleService.findByStudyId(studyId);
+        return sampleList;
+    }
+
+    @Override
     public List<Sample> findByNameAndFlowcellId(String name, Long flowcellId) throws MaPSeqDAOException {
         logger.debug("ENTERING findByNameAndFlowcellId(String, Long)");
         List<Sample> ret = sampleService.findByNameAndFlowcellId(name, flowcellId);

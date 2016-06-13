@@ -98,6 +98,22 @@ public class SampleServiceImpl implements SampleService {
     }
 
     @Override
+    public List<Sample> findByStudyId(Long studyId) {
+        logger.debug("ENTERING findByFlowcellId(Long)");
+        List<Sample> ret = new ArrayList<Sample>();
+        if (studyId == null) {
+            logger.warn("studyId is null");
+            return ret;
+        }
+        try {
+            ret.addAll(sampleDAO.findByStudyId(studyId));
+        } catch (MaPSeqDAOException e) {
+            logger.error("Error", e);
+        }
+        return ret;
+    }
+
+    @Override
     public List<Sample> findByFlowcellNameAndSampleNameAndLaneIndex(String flowcellName, String sampleName, Integer laneIndex) {
         logger.debug("ENTERING findByFlowcellNameAndSampleNameAndLaneIndex(String, String, Integer)");
         List<Sample> ret = new ArrayList<Sample>();
