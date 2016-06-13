@@ -2,7 +2,7 @@
   <parent>
     <groupId>edu.unc.mapseq</groupId>
     <artifactId>mapseq</artifactId>
-    <version>0.1.24</version>
+    <version>0.1.25</version>
   </parent>
   <name>MaPSeq :: Distribution</name>
   <modelVersion>4.0.0</modelVersion>
@@ -11,7 +11,7 @@
   <version>0.6.49-SNAPSHOT</version>
   <packaging>pom</packaging>
   <properties>
-    <mapseq.version>0.6.22</mapseq.version>
+    <mapseq.version>0.6.23</mapseq.version>
     <spring.version>4.2.3.RELEASE</spring.version>    
   </properties>
   <issueManagement>
@@ -152,6 +152,11 @@
       	<groupId>edu.unc.mapseq.distribution</groupId>
       	<artifactId>mapseq-reports</artifactId>
       	<version>0.6.49-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+	<groupId>edu.unc.mapseq.distribution.mapseq-workflows</groupId>
+	<artifactId>mapseq-workflow-sequencing</artifactId>
+	<version>0.6.49-SNAPSHOT</version>      
       </dependency>
       <dependency>
       	<groupId>edu.unc.mapseq.distribution</groupId>
