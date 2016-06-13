@@ -18,7 +18,7 @@ import edu.unc.mapseq.ws.WorkflowService;
 
 public class WorkflowServiceImpl implements WorkflowService {
 
-    private final Logger logger = LoggerFactory.getLogger(WorkflowServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(WorkflowServiceImpl.class);
 
     private WorkflowDAO workflowDAO;
 
@@ -29,13 +29,13 @@ public class WorkflowServiceImpl implements WorkflowService {
     @Override
     public List<Workflow> findAll() {
         logger.debug("ENTERING findAll()");
-        List<Workflow> workflow = null;
+        List<Workflow> ret = new ArrayList<>();
         try {
-            workflow = workflowDAO.findAll();
+            ret.addAll(workflowDAO.findAll());
         } catch (MaPSeqDAOException e) {
             logger.error("Error", e);
         }
-        return workflow;
+        return ret;
     }
 
     @Override
@@ -70,10 +70,8 @@ public class WorkflowServiceImpl implements WorkflowService {
             return ret;
         }
         try {
-            Date parsedStartDate = DateUtils.parseDate(started,
-                    new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
-            Date parsedEndDate = DateUtils.parseDate(finished,
-                    new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
+            Date parsedStartDate = DateUtils.parseDate(started, new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
+            Date parsedEndDate = DateUtils.parseDate(finished, new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
             ret.addAll(workflowDAO.findByCreatedDateRange(parsedStartDate, parsedEndDate));
         } catch (ParseException e) {
             logger.error("Error", e);
