@@ -63,5 +63,6 @@
     <module>mapseq-commands-core</module>
     <module>mapseq-commands-migration</module>
     <module>mapseq-commands-sequencing</module>
+    <module>mapseq-commands-validation</module>
   </modules>
 </project>
