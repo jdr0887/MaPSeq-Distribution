@@ -18,7 +18,7 @@ import edu.unc.mapseq.ws.StudyService;
 
 public class StudyServiceImpl implements StudyService {
 
-    private final Logger logger = LoggerFactory.getLogger(StudyServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(StudyServiceImpl.class);
 
     private StudyDAO studyDAO;
 
