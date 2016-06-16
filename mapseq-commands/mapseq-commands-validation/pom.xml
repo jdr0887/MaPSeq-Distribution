@@ -8,7 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.unc.mapseq.distribution.mapseq-commands</groupId>
   <artifactId>mapseq-commands-validation</artifactId>
-  <version>0.6.49-SNAPSHOT</version>
+  <version>0.6.50-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <dependencies>
     <dependency>
