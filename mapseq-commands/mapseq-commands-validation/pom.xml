@@ -2,13 +2,13 @@
   <parent>
     <groupId>edu.unc.mapseq.distribution</groupId>
     <artifactId>mapseq-commands</artifactId>
-    <version>0.6.52-SNAPSHOT</version>
+    <version>0.6.52</version>
   </parent>
   <name>MaPSeq :: Distribution :: Commands :: Validation</name>
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.unc.mapseq.distribution.mapseq-commands</groupId>
   <artifactId>mapseq-commands-validation</artifactId>
-  <version>0.6.52-SNAPSHOT</version>
+  <version>0.6.52</version>
   <packaging>bundle</packaging>
   <dependencies>
     <dependency>
