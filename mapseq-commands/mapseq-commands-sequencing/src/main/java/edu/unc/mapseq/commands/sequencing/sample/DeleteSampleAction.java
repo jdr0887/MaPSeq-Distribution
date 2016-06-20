@@ -15,10 +15,12 @@ import edu.unc.mapseq.dao.JobDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.SampleDAO;
+import edu.unc.mapseq.dao.SampleWorkflowRunDependencyDAO;
 import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
 import edu.unc.mapseq.dao.WorkflowRunDAO;
 import edu.unc.mapseq.dao.model.Job;
 import edu.unc.mapseq.dao.model.Sample;
+import edu.unc.mapseq.dao.model.SampleWorkflowRunDependency;
 import edu.unc.mapseq.dao.model.WorkflowRun;
 import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
 
@@ -46,6 +48,7 @@ public class DeleteSampleAction implements Action {
         WorkflowRunAttemptDAO workflowRunAttemptDAO = maPSeqDAOBeanService.getWorkflowRunAttemptDAO();
         WorkflowRunDAO workflowRunDAO = maPSeqDAOBeanService.getWorkflowRunDAO();
         JobDAO jobDAO = maPSeqDAOBeanService.getJobDAO();
+        SampleWorkflowRunDependencyDAO sampleWorkflowRunDependencyDAO = maPSeqDAOBeanService.getSampleWorkflowRunDependencyDAO();
 
         if (CollectionUtils.isEmpty(sampleIdList)) {
             logger.warn("Sample list is empty");
@@ -69,7 +72,8 @@ public class DeleteSampleAction implements Action {
                         logger.warn("No WorkflowRunAttempts found");
                         continue;
                     }
-                    for (WorkflowRunAttempt attempt : workflowRun.getAttempts()) {
+                    
+                    for (WorkflowRunAttempt attempt : attempts) {
                         List<Job> jobList = jobDAO.findByWorkflowRunAttemptId(attempt.getId());
                         if (CollectionUtils.isNotEmpty(jobList)) {
                             for (Job job : jobList) {
@@ -90,6 +94,10 @@ public class DeleteSampleAction implements Action {
                 }
                 workflowRunDAO.delete(workflowRunList);
                 logger.info("Number of WorkflowRuns deleted: {}", workflowRunList.size());
+
+                List<SampleWorkflowRunDependency> sampleWorkflowRunDepedencyList = sampleWorkflowRunDependencyDAO
+                        .findBySampleId(sample.getId());
+                sampleWorkflowRunDependencyDAO.delete(sampleWorkflowRunDepedencyList);
 
                 sample.setAttributes(null);
                 sample.setFileDatas(null);
