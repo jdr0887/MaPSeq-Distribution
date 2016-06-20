@@ -61,43 +61,43 @@ public class DeleteSampleAction implements Action {
                 Sample sample = sampleDAO.findById(id);
                 List<WorkflowRun> workflowRunList = workflowRunDAO.findBySampleId(sample.getId());
 
-                if (CollectionUtils.isEmpty(workflowRunList)) {
-                    logger.warn("No WorkflowRuns found");
-                    continue;
-                }
+                if (CollectionUtils.isNotEmpty(workflowRunList)) {
+                    for (WorkflowRun workflowRun : workflowRunList) {
+                        List<WorkflowRunAttempt> attempts = workflowRunAttemptDAO.findByWorkflowRunId(workflowRun.getId());
+                        if (CollectionUtils.isNotEmpty(attempts)) {
 
-                for (WorkflowRun workflowRun : workflowRunList) {
-                    List<WorkflowRunAttempt> attempts = workflowRunAttemptDAO.findByWorkflowRunId(workflowRun.getId());
-                    if (CollectionUtils.isEmpty(attempts)) {
-                        logger.warn("No WorkflowRunAttempts found");
-                        continue;
-                    }
-                    
-                    for (WorkflowRunAttempt attempt : attempts) {
-                        List<Job> jobList = jobDAO.findByWorkflowRunAttemptId(attempt.getId());
-                        if (CollectionUtils.isNotEmpty(jobList)) {
-                            for (Job job : jobList) {
-                                job.setAttributes(null);
-                                job.setFileDatas(null);
-                                jobDAO.save(job);
+                            for (WorkflowRunAttempt attempt : attempts) {
+                                List<Job> jobList = jobDAO.findByWorkflowRunAttemptId(attempt.getId());
+                                if (CollectionUtils.isNotEmpty(jobList)) {
+                                    for (Job job : jobList) {
+                                        job.setAttributes(null);
+                                        job.setFileDatas(null);
+                                        jobDAO.save(job);
+                                    }
+                                    jobDAO.delete(jobList);
+                                    logger.info("Number of Jobs deleted: {}", jobList.size());
+                                }
                             }
-                            jobDAO.delete(jobList);
-                            logger.info("Number of Jobs deleted: {}", jobList.size());
-                        }
-                    }
-                    workflowRunAttemptDAO.delete(attempts);
-                    logger.info("Number of WorkflowRunAttempts deleted: {}", attempts.size());
 
-                    workflowRun.setAttributes(null);
-                    workflowRun.setFileDatas(null);
-                    workflowRunDAO.save(workflowRun);
+                            workflowRunAttemptDAO.delete(attempts);
+                            logger.info("Number of WorkflowRunAttempts deleted: {}", attempts.size());
+
+                        }
+
+                        workflowRun.setAttributes(null);
+                        workflowRun.setFileDatas(null);
+                        workflowRunDAO.save(workflowRun);
+                    }
+                    workflowRunDAO.delete(workflowRunList);
+                    logger.info("Number of WorkflowRuns deleted: {}", workflowRunList.size());
                 }
-                workflowRunDAO.delete(workflowRunList);
-                logger.info("Number of WorkflowRuns deleted: {}", workflowRunList.size());
 
                 List<SampleWorkflowRunDependency> sampleWorkflowRunDepedencyList = sampleWorkflowRunDependencyDAO
                         .findBySampleId(sample.getId());
-                sampleWorkflowRunDependencyDAO.delete(sampleWorkflowRunDepedencyList);
+                if (CollectionUtils.isNotEmpty(sampleWorkflowRunDepedencyList)) {
+                    sampleWorkflowRunDependencyDAO.delete(sampleWorkflowRunDepedencyList);
+                    logger.info("Number of SampleWorkflowRunDependency deleted: {}", sampleWorkflowRunDepedencyList.size());
+                }
 
                 sample.setAttributes(null);
                 sample.setFileDatas(null);
