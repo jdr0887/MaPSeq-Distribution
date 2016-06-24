@@ -16,6 +16,12 @@ public class IRODSBean {
         super();
     }
 
+    public IRODSBean(File file, String type) {
+        super();
+        this.file = file;
+        this.type = type;
+    }
+
     public IRODSBean(File file, String type, String version, String dx) {
         super();
         this.file = file;
