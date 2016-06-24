@@ -2,8 +2,6 @@ package edu.unc.mapseq.workflow.sequencing;
 
 import java.io.File;
 
-import edu.unc.mapseq.config.RunModeType;
-
 public class IRODSBean {
 
     private File file;
@@ -14,19 +12,16 @@ public class IRODSBean {
 
     private String dx;
 
-    private RunModeType runMode;
-
     public IRODSBean() {
         super();
     }
 
-    public IRODSBean(File file, String type, String version, String dx, RunModeType runMode) {
+    public IRODSBean(File file, String type, String version, String dx) {
         super();
         this.file = file;
         this.type = type;
         this.version = version;
         this.dx = dx;
-        this.runMode = runMode;
     }
 
     public File getFile() {
@@ -59,14 +54,6 @@ public class IRODSBean {
 
     public void setDx(String dx) {
         this.dx = dx;
-    }
-
-    public RunModeType getRunMode() {
-        return runMode;
-    }
-
-    public void setRunMode(RunModeType runMode) {
-        this.runMode = runMode;
     }
 
 }
