@@ -22,13 +22,12 @@ import org.renci.jlrm.condor.ext.CondorJobVertexNameProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.unc.mapseq.config.MaPSeqConfigurationService;
-import edu.unc.mapseq.config.RunModeType;
 import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
 import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
 import edu.unc.mapseq.dao.model.WorkflowRunAttemptStatusType;
+import edu.unc.mapseq.workflow.SystemType;
 import edu.unc.mapseq.workflow.Workflow;
 import edu.unc.mapseq.workflow.WorkflowBeanService;
 import edu.unc.mapseq.workflow.WorkflowException;
@@ -49,8 +48,6 @@ public abstract class AbstractWorkflow implements Workflow {
     private WorkflowBeanService workflowBeanService;
 
     private Graph<CondorJob, CondorJobEdge> graph;
-
-    private RunModeType runMode = RunModeType.PROD;
 
     public AbstractWorkflow() {
         super();
@@ -74,8 +71,8 @@ public abstract class AbstractWorkflow implements Workflow {
 
         Set<CondorJob> condorJobSet = graph.vertexSet();
         for (CondorJob condorJob : condorJobSet) {
-            if (StringUtils.isEmpty(condorJob.getSiteName()) && (condorJob.getTransferInputList().size() == 0
-                    && condorJob.getTransferOutputList().size() == 0)) {
+            if (StringUtils.isEmpty(condorJob.getSiteName())
+                    && (condorJob.getTransferInputList().size() == 0 && condorJob.getTransferOutputList().size() == 0)) {
                 throw new WorkflowException("can't have a job where both siteName & list of inputs/outputs are empty");
             }
         }
@@ -132,11 +129,6 @@ public abstract class AbstractWorkflow implements Workflow {
 
         logger.debug("submitDirectory = {}", this.submitDirectory.getAbsolutePath());
 
-        String version = getVersion();
-        if (StringUtils.isEmpty(version) || (StringUtils.isNotEmpty(version) && version.contains("SNAPSHOT"))) {
-            this.runMode = RunModeType.DEV;
-        }
-
     }
 
     @Override
@@ -150,8 +142,7 @@ public abstract class AbstractWorkflow implements Workflow {
 
         boolean includeGlideinRequirements = true;
         try {
-            MaPSeqConfigurationService configService = getWorkflowBeanService().getMaPSeqConfigurationService();
-            if (configService != null && configService.getRunMode().equals(RunModeType.DEV)) {
+            if (SystemType.DEVELOPMENT.equals(getSystem())) {
                 includeGlideinRequirements = false;
             }
         } catch (Exception e) {
@@ -186,8 +177,7 @@ public abstract class AbstractWorkflow implements Workflow {
                 jobNode.setCluster(clusterId);
                 jobNode.setJobId(0);
                 hasSubmittedSuccessfully = true;
-                logger.info("jobNode.getSubmitFile().getAbsolutePath() = {}",
-                        jobNode.getSubmitFile().getAbsolutePath());
+                logger.info("jobNode.getSubmitFile().getAbsolutePath() = {}", jobNode.getSubmitFile().getAbsolutePath());
             } catch (Exception e) {
                 ++backOffCount;
                 hasSubmittedSuccessfully = false;
@@ -199,8 +189,7 @@ public abstract class AbstractWorkflow implements Workflow {
         }
 
         if (!hasSubmittedSuccessfully) {
-            throw new WorkflowException(
-                    String.format("Backed off %d times & still could not submit to condor", getBackOffMultiplier()));
+            throw new WorkflowException(String.format("Backed off %d times & still could not submit to condor", getBackOffMultiplier()));
         }
 
         try {
@@ -251,14 +240,8 @@ public abstract class AbstractWorkflow implements Workflow {
             }
         }
 
-        RunModeType runMode = RunModeType.PROD;
-        String version = getVersion();
-        if (StringUtils.isEmpty(version) || (StringUtils.isNotEmpty(version) && version.contains("SNAPSHOT"))) {
-            runMode = RunModeType.DEV;
-        }
-
-        if (getWorkflowRunAttempt().getStatus().equals(WorkflowRunAttemptStatusType.DONE)
-                && runMode.equals(RunModeType.PROD) && this.submitDirectory != null && this.submitDirectory.exists()) {
+        if (getWorkflowRunAttempt().getStatus().equals(WorkflowRunAttemptStatusType.DONE) && SystemType.PRODUCTION.equals(getSystem())
+                && this.submitDirectory != null && this.submitDirectory.exists()) {
             List<File> fileList = Arrays.asList(submitDirectory.listFiles());
             if (fileList != null && !fileList.isEmpty()) {
                 for (File file : fileList) {
@@ -266,8 +249,7 @@ public abstract class AbstractWorkflow implements Workflow {
                         continue;
                     }
 
-                    if (file.getName().endsWith(".xml") || file.getName().endsWith(".out")
-                            || file.getName().endsWith(".log")) {
+                    if (file.getName().endsWith(".xml") || file.getName().endsWith(".out") || file.getName().endsWith(".log")) {
                         file.delete();
                     }
                 }
@@ -321,14 +303,6 @@ public abstract class AbstractWorkflow implements Workflow {
 
     public void setBackOffMultiplier(Integer backOffMultiplier) {
         this.backOffMultiplier = backOffMultiplier;
-    }
-
-    public RunModeType getRunMode() {
-        return runMode;
-    }
-
-    public void setRunMode(RunModeType runMode) {
-        this.runMode = runMode;
     }
 
 }
