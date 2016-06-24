@@ -1,1 +1,2 @@
 edu.unc.mapseq.commands.validation.CheckIRODSRegistrationAction
+edu.unc.mapseq.commands.validation.LogNonExistingFilesAction
