@@ -61,4 +61,10 @@ public class FileDataDAOImpl extends BaseDAOImpl<FileData, Long> implements File
         return fileDataService.findByExample(fileData);
     }
 
+    @Override
+    public List<FileData> findAll() {
+        logger.debug("ENTERING findAll()");
+        return null;
+    }
+
 }

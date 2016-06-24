@@ -1,5 +1,7 @@
 package edu.unc.mapseq.dao.soap;
 
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 
 import org.apache.cxf.endpoint.Client;
@@ -51,6 +53,12 @@ public class AttributeDAOImpl extends BaseDAOImpl<Attribute, Long> implements At
     public Attribute findById(Long id) throws MaPSeqDAOException {
         logger.debug("ENTERING findById(Long)");
         return attributeService.findById(id);
+    }
+
+    @Override
+    public List<Attribute> findAll() {
+        logger.debug("ENTERING findAll()");
+        return null;
     }
 
 }

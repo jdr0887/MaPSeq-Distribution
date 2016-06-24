@@ -1,5 +1,7 @@
 package edu.unc.mapseq.dao.rest;
 
+import java.util.List;
+
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -37,6 +39,12 @@ public class AttributeDAOImpl extends BaseDAOImpl<Attribute, Long> implements At
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
         Attribute attribute = client.path("findById/{id}", id).accept(MediaType.APPLICATION_JSON).get(Attribute.class);
         return attribute;
+    }
+
+    @Override
+    public List<Attribute> findAll() throws MaPSeqDAOException {
+        logger.debug("ENTERING findAll()");
+        return null;
     }
 
 }

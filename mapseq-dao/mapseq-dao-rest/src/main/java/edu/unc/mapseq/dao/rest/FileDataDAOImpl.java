@@ -53,4 +53,10 @@ public class FileDataDAOImpl extends BaseDAOImpl<FileData, Long> implements File
         return new ArrayList<FileData>(ret);
     }
 
+    @Override
+    public List<FileData> findAll() throws MaPSeqDAOException {
+        logger.debug("ENTERING findAll()");
+        return null;
+    }
+
 }
