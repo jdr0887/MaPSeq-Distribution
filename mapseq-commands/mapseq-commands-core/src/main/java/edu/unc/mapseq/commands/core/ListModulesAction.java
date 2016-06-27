@@ -38,9 +38,18 @@ public class ListModulesAction implements Action {
 
         for (Bundle bundle : bundleArray) {
             logger.info("bundle: {}", bundle.getLocation());
-            if (bundle.getSymbolicName().equals("mapseq-modules")) {
-                Enumeration<URL> e = bundle.findEntries("edu/unc/mapseq/module", "*CLI.class", true);
+            if (bundle.getSymbolicName().equals("mapseq-module-core")) {
+                Enumeration<URL> e = bundle.findEntries("edu/unc/mapseq/module/core", "*CLI.class", true);
                 formatter.format(format, "Name");
+                while (e.hasMoreElements()) {
+                    URL url = e.nextElement();
+                    String path = url.getPath();
+                    formatter.format(format, path.replace("CLI.class", "").replaceFirst("/", "").replace("/", "."));
+                    formatter.flush();
+                }
+            }
+            if (bundle.getSymbolicName().equals("mapseq-module-sequencing")) {
+                Enumeration<URL> e = bundle.findEntries("edu/unc/mapseq/module/sequencing", "*CLI.class", true);
                 while (e.hasMoreElements()) {
                     URL url = e.nextElement();
                     String path = url.getPath();
