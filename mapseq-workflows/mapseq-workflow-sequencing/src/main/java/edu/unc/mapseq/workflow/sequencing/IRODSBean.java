@@ -1,33 +1,32 @@
 package edu.unc.mapseq.workflow.sequencing;
 
 import java.io.File;
+import java.util.List;
+
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
 public class IRODSBean {
 
     private File file;
 
-    private String type;
-
-    private String version;
-
-    private String dx;
+    private List<ImmutablePair<String, String>> attributes;
 
     public IRODSBean() {
         super();
     }
 
-    public IRODSBean(File file, String type) {
+    public IRODSBean(File file, List<ImmutablePair<String, String>> attributes) {
         super();
         this.file = file;
-        this.type = type;
+        this.attributes = attributes;
     }
 
-    public IRODSBean(File file, String type, String version, String dx) {
-        super();
-        this.file = file;
-        this.type = type;
-        this.version = version;
-        this.dx = dx;
+    public List<ImmutablePair<String, String>> getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(List<ImmutablePair<String, String>> attributes) {
+        this.attributes = attributes;
     }
 
     public File getFile() {
@@ -36,30 +35,6 @@ public class IRODSBean {
 
     public void setFile(File file) {
         this.file = file;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    public String getDx() {
-        return dx;
-    }
-
-    public void setDx(String dx) {
-        this.dx = dx;
     }
 
 }
