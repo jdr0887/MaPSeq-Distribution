@@ -6,8 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
@@ -29,8 +27,6 @@ import edu.unc.mapseq.workflow.core.AbstractWorkflow;
 public abstract class AbstractSequencingWorkflow extends AbstractWorkflow {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractSequencingWorkflow.class);
-
-    private static final Pattern versionPattern = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)(-SNAPSHOT)?");
 
     public AbstractSequencingWorkflow() {
         super();
@@ -161,21 +157,6 @@ public abstract class AbstractSequencingWorkflow extends AbstractWorkflow {
             }
         }
         return ret;
-    }
-
-    public File createVersionedOutputDirectory(String sampleOutputDir) {
-        logger.debug("ENTERING createVersionedOutputDirectory(String)");
-        File workflowDirectory = new File(sampleOutputDir, getName());
-        Matcher m = versionPattern.matcher(getVersion());
-        File versionDirectory = new File(workflowDirectory, getVersion());
-        if (m.matches()) {
-            versionDirectory = new File(workflowDirectory,
-                    String.format("%s.%s", m.group(1).toString(), m.group(2).toString()));
-        } else {
-            versionDirectory = new File(workflowDirectory, "0.1");
-        }
-        logger.debug("output directory: {}", versionDirectory.getAbsolutePath());
-        return versionDirectory;
     }
 
 }
