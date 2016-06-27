@@ -25,7 +25,7 @@ public class PicardCollectHsMetrics extends Module {
 
     @NotNull(message = "Output is required", groups = InputValidations.class)
     @FileIsNotEmpty(message = "output file is empty", groups = OutputValidations.class)
-    @OutputArgument(flag = "OUTPUT", delimiter = "=", persistFileData = true, mimeType = MimeType.APPLICATION_BAM)
+    @OutputArgument(flag = "OUTPUT", delimiter = "=", persistFileData = true, mimeType = MimeType.TEXT_PLAIN)
     private File output;
 
     @NotNull(message = "Bait Intervals file is required", groups = InputValidations.class)
