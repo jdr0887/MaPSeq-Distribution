@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.unc.mapseq.dao.model.MimeType;
 import edu.unc.mapseq.module.DefaultModuleOutput;
 import edu.unc.mapseq.module.Module;
 import edu.unc.mapseq.module.ModuleException;
@@ -14,6 +15,7 @@ import edu.unc.mapseq.module.ModuleOutput;
 import edu.unc.mapseq.module.annotations.Application;
 import edu.unc.mapseq.module.annotations.InputArgument;
 import edu.unc.mapseq.module.annotations.InputValidations;
+import edu.unc.mapseq.module.annotations.OutputArgument;
 import edu.unc.mapseq.module.annotations.OutputValidations;
 import edu.unc.mapseq.module.constraints.FileIsNotEmpty;
 import edu.unc.mapseq.module.constraints.FileIsReadable;
@@ -50,7 +52,7 @@ public class FastQC extends Module {
 
     @NotNull(message = "output is required", groups = InputValidations.class)
     @FileIsNotEmpty(message = "output is empty", groups = OutputValidations.class)
-    @InputArgument
+    @OutputArgument(mimeType = MimeType.APPLICATION_ZIP)
     private File output;
 
     public FastQC() {
