@@ -2,13 +2,13 @@
   <parent>
     <groupId>edu.unc.mapseq</groupId>
     <artifactId>distribution</artifactId>
-    <version>0.6.54-SNAPSHOT</version>
+    <version>0.6.54</version>
   </parent>
   <name>MaPSeq :: Distribution :: Tasks</name>
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.unc.mapseq.distribution</groupId>
   <artifactId>mapseq-tasks</artifactId>
-  <version>0.6.54-SNAPSHOT</version>
+  <version>0.6.54</version>
   <packaging>bundle</packaging>
   <dependencies>
     <dependency>
