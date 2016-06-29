@@ -86,8 +86,7 @@ public class ConfigureBCLToFastq extends Module {
     }
 
     public String getExecutable() {
-        return String.format(getModuleClass().getAnnotation(Application.class).executable(),
-                getWorkflowName().toUpperCase());
+        return String.format(getModuleClass().getAnnotation(Application.class).executable(), getWorkflowName().toUpperCase());
     }
 
     @Override
@@ -247,9 +246,9 @@ public class ConfigureBCLToFastq extends Module {
     @Override
     public String toString() {
         return String.format(
-                "ConfigureBCLToFastq [logger=%s, outputDir=%s, fastqClusterCount=%s, inputDir=%s, sampleSheet=%s, force=%s, ignoreMissingBCL=%s, mismatches=%s, indexLength=%s, read1Length=%s, read2Length=%s, ignoreMissingStats=%s, tiles=%s, toString()=%s]",
-                logger, outputDir, fastqClusterCount, inputDir, sampleSheet, force, ignoreMissingBCL, mismatches,
-                indexLength, read1Length, read2Length, ignoreMissingStats, tiles, super.toString());
+                "ConfigureBCLToFastq [outputDir=%s, fastqClusterCount=%s, inputDir=%s, sampleSheet=%s, force=%s, ignoreMissingBCL=%s, mismatches=%s, indexLength=%s, read1Length=%s, read2Length=%s, ignoreMissingStats=%s, tiles=%s, toString()=%s]",
+                outputDir, fastqClusterCount, inputDir, sampleSheet, force, ignoreMissingBCL, mismatches, indexLength, read1Length,
+                read2Length, ignoreMissingStats, tiles, super.toString());
     }
 
     public static void main(String[] args) {
@@ -260,10 +259,11 @@ public class ConfigureBCLToFastq extends Module {
         module.setMismatches(Boolean.TRUE);
         module.setIgnoreMissingBCL(Boolean.TRUE);
         module.setIgnoreMissingStats(Boolean.TRUE);
+        module.setIndexLength(8);
         module.setFastqClusterCount(0);
         module.setTiles(1);
         module.setOutputDir(new File("outputdir"));
-        module.setSampleSheet(new File("samplesheet"));
+        module.setSampleSheet(new File("/tmp", "samplesheet.csv"));
         module.setForce(Boolean.TRUE);
 
         try {
