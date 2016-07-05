@@ -6,9 +6,11 @@ import java.util.Date;
 
 import org.junit.Test;
 
+import edu.unc.mapseq.dao.AttributeDAO;
 import edu.unc.mapseq.dao.JobDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
+import edu.unc.mapseq.dao.model.Attribute;
 import edu.unc.mapseq.dao.model.Job;
 import edu.unc.mapseq.dao.model.JobStatusType;
 import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
@@ -24,6 +26,17 @@ public class JobDAOTest {
             Job job = jobDAO.findById(4L);
             assertNotNull(job);
         } catch (MaPSeqDAOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testAddFileToJob() {
+        try {
+            SOAPDAOManager daoMgr = SOAPDAOManager.getInstance();
+            JobDAO jobDAO = daoMgr.getMaPSeqDAOBeanService().getJobDAO();
+            jobDAO.addFileData(792999L, 2552406L);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
