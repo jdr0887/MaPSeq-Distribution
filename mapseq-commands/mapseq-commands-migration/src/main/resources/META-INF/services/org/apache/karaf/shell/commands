@@ -1,3 +1,1 @@
 edu.unc.mapseq.commands.migration.MigrateFileDatasAction
-edu.unc.mapseq.commands.migration.MigrateNECFileDatasAction
-edu.unc.mapseq.commands.migration.SynchronizeFileDataWithFSAction
