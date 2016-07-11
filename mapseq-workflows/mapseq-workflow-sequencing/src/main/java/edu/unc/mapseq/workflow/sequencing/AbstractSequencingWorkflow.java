@@ -33,40 +33,6 @@ public abstract class AbstractSequencingWorkflow extends AbstractWorkflow {
     }
 
     @Override
-    public void init() throws WorkflowException {
-        super.init();
-
-        Set<Sample> samples = getAggregatedSamples();
-
-        String outputDirectory = System.getenv("MAPSEQ_OUTPUT_DIRECTORY");
-
-        if (CollectionUtils.isNotEmpty(samples)) {
-
-            for (Sample sample : samples) {
-                try {
-                    File studyDirectory = new File(outputDirectory, sample.getStudy().getName());
-                    File analysisDirectory = new File(studyDirectory, "analysis");
-                    File flowcellDirectory = new File(analysisDirectory, sample.getFlowcell().getName());
-                    File sampleOutputDir = new File(flowcellDirectory,
-                            String.format("L%03d_%s", sample.getLaneIndex(), sample.getBarcode()));
-                    sampleOutputDir.mkdirs();
-
-                    if (sample.getOutputDirectory() == null || (sample.getOutputDirectory() != null
-                            && !sample.getOutputDirectory().equals(sampleOutputDir.getAbsolutePath()))) {
-                        logger.info("creating sample output directory: {}", sampleOutputDir.getAbsolutePath());
-                        sample.setOutputDirectory(sampleOutputDir.getAbsolutePath());
-                        getWorkflowBeanService().getMaPSeqDAOBeanService().getSampleDAO().save(sample);
-                    }
-                } catch (MaPSeqDAOException e) {
-                    logger.error("Could not persist Sample");
-                    throw new WorkflowException("Could not persist Sample");
-                }
-            }
-        }
-
-    }
-
-    @Override
     public void preRun() throws WorkflowException {
         super.preRun();
         Map<String, String> attributes = getWorkflowBeanService().getAttributes();
@@ -159,19 +125,4 @@ public abstract class AbstractSequencingWorkflow extends AbstractWorkflow {
         return ret;
     }
 
-    public File createOutputDirectory(Sample sample) {
-        logger.debug("ENTERING createOutputDirectory(Sample)");
-        String outputDirectory = System.getenv("MAPSEQ_OUTPUT_DIRECTORY");
-        File systemDirectory = new File(outputDirectory, getSystem().getValue());
-        File studyDirectory = new File(systemDirectory, sample.getStudy().getName());
-        File analysisDirectory = new File(studyDirectory, "analysis");
-        File flowcellDirectory = new File(analysisDirectory, sample.getFlowcell().getName());
-        File sampleOutputDir = new File(flowcellDirectory, String.format("L%03d_%s", sample.getLaneIndex(), sample.getBarcode()));
-        File workflowDirectory = new File(sampleOutputDir, getName());
-        if (!workflowDirectory.exists()) {
-            workflowDirectory.mkdirs();
-        }
-        logger.debug("output directory: {}", workflowDirectory.getAbsolutePath());
-        return workflowDirectory;
-    }
 }
