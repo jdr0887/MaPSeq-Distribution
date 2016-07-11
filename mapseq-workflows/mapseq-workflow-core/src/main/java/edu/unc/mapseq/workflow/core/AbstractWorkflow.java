@@ -27,7 +27,7 @@ import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
 import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
 import edu.unc.mapseq.dao.model.WorkflowRunAttemptStatusType;
-import edu.unc.mapseq.workflow.SystemType;
+import edu.unc.mapseq.dao.model.WorkflowSystemType;
 import edu.unc.mapseq.workflow.Workflow;
 import edu.unc.mapseq.workflow.WorkflowBeanService;
 import edu.unc.mapseq.workflow.WorkflowException;
@@ -123,7 +123,7 @@ public abstract class AbstractWorkflow implements Workflow {
 
         File submitDir = new File(homeDirectory, "submit");
         File datedDir = new File(submitDir, DateFormatUtils.ISO_DATE_FORMAT.format(new Date()));
-        File namedDir = new File(datedDir, getName());
+        File namedDir = new File(datedDir, getWorkflowRunAttempt().getWorkflowRun().getWorkflow().getName());
         this.submitDirectory = new File(namedDir, UUID.randomUUID().toString());
         this.submitDirectory.mkdirs();
 
@@ -142,7 +142,7 @@ public abstract class AbstractWorkflow implements Workflow {
 
         boolean includeGlideinRequirements = true;
         try {
-            if (SystemType.DEVELOPMENT.equals(getSystem())) {
+            if (WorkflowSystemType.DEVELOPMENT.equals(getWorkflowRunAttempt().getWorkflowRun().getWorkflow().getSystem())) {
                 includeGlideinRequirements = false;
             }
         } catch (Exception e) {
@@ -151,7 +151,8 @@ public abstract class AbstractWorkflow implements Workflow {
 
         // DefaultCondorSubmitScriptExporter exporter = new DefaultCondorSubmitScriptExporter();
         SecureCondorSubmitScriptExporter exporter = new SecureCondorSubmitScriptExporter();
-        jobNode = exporter.export(getName(), this.submitDirectory, getGraph(), includeGlideinRequirements);
+        jobNode = exporter.export(getWorkflowRunAttempt().getWorkflowRun().getWorkflow().getName(), this.submitDirectory, getGraph(),
+                includeGlideinRequirements);
         if (!jobNode.getSubmitFile().exists()) {
             logger.info("jobNode.getSubmitFile().getAbsolutePath() = {}", jobNode.getSubmitFile().getAbsolutePath());
             throw new WorkflowException("jobNode.getSubmitFile() doesn't exist");
@@ -197,7 +198,8 @@ public abstract class AbstractWorkflow implements Workflow {
             props.setProperty("rankdir", "LR");
             CondorDOTExporter<CondorJob, CondorJobEdge> dotExporter = new CondorDOTExporter<CondorJob, CondorJobEdge>(
                     new CondorJobVertexNameProvider(), new CondorJobVertexNameProvider(), null, null, null, props);
-            File dotFile = new File(this.submitDirectory, getName() + ".dag.dot");
+            File dotFile = new File(this.submitDirectory,
+                    String.format("%s.dag.dot", getWorkflowRunAttempt().getWorkflowRun().getWorkflow().getName()));
             FileWriter fw = new FileWriter(dotFile);
             dotExporter.export(fw, graph);
         } catch (IOException e) {
@@ -223,13 +225,14 @@ public abstract class AbstractWorkflow implements Workflow {
     public void cleanUp() throws WorkflowException {
         logger.debug("ENTERING cleanUp()");
 
+        WorkflowRunAttempt attempt = getWorkflowRunAttempt();
+
         String mapseqHome = System.getenv("MAPSEQ_CLIENT_HOME");
         if (StringUtils.isNotEmpty(mapseqHome)) {
             File tmpDir = new File(mapseqHome, "tmp");
-            File tmpWorkflowDir = new File(tmpDir, getName());
-            WorkflowRunAttempt attempt = getWorkflowRunAttempt();
+            File tmpWorkflowDir = new File(tmpDir, attempt.getWorkflowRun().getWorkflow().getName());
             if (attempt != null) {
-                File tmpWorkflowAttemptDir = new File(tmpWorkflowDir, getWorkflowRunAttempt().getId().toString());
+                File tmpWorkflowAttemptDir = new File(tmpWorkflowDir, attempt.getId().toString());
                 if (tmpWorkflowAttemptDir.exists()) {
                     try {
                         FileUtils.deleteDirectory(tmpWorkflowAttemptDir);
@@ -240,12 +243,13 @@ public abstract class AbstractWorkflow implements Workflow {
             }
         }
 
-        if (getWorkflowRunAttempt().getStatus().equals(WorkflowRunAttemptStatusType.DONE) && SystemType.PRODUCTION.equals(getSystem())
-                && this.submitDirectory != null && this.submitDirectory.exists()) {
+        if (attempt.getStatus().equals(WorkflowRunAttemptStatusType.DONE)
+                && WorkflowSystemType.PRODUCTION.equals(attempt.getWorkflowRun().getWorkflow().getSystem()) && this.submitDirectory != null
+                && this.submitDirectory.exists()) {
             List<File> fileList = Arrays.asList(submitDirectory.listFiles());
             if (fileList != null && !fileList.isEmpty()) {
                 for (File file : fileList) {
-                    if (file.getName().startsWith(getName())) {
+                    if (file.getName().startsWith(attempt.getWorkflowRun().getWorkflow().getName())) {
                         continue;
                     }
 
