@@ -88,6 +88,7 @@ public class SequencingWorkflowUtil {
         }
 
         logger.info("fileDataSet.size() = {}", fileDataSet.size());
+        String outputDirectory = System.getenv("MAPSEQ_OUTPUT_DIRECTORY");
 
         // first check if there is a parent WorkflowRun
         try {
@@ -110,9 +111,15 @@ public class SequencingWorkflowUtil {
                         }
 
                         if (ret == null) {
-                            File outputDirectory = new File(sample.getOutputDirectory(), parentWorkflowRun.getWorkflow().getName());
-                            if (outputDirectory.exists()) {
-                                for (File f : outputDirectory.listFiles()) {
+                            File systemDirectory = new File(outputDirectory, parentWorkflowRun.getWorkflow().getSystem().getValue());
+                            File studyDirectory = new File(systemDirectory, sample.getStudy().getName());
+                            File analysisDirectory = new File(studyDirectory, "analysis");
+                            File flowcellDirectory = new File(analysisDirectory, sample.getFlowcell().getName());
+                            File sampleOutputDir = new File(flowcellDirectory,
+                                    String.format("L%03d_%s", sample.getLaneIndex(), sample.getBarcode()));
+                            File workflowDirectory = new File(sampleOutputDir, parentWorkflowRun.getWorkflow().getName());
+                            if (workflowDirectory.exists()) {
+                                for (File f : workflowDirectory.listFiles()) {
                                     if (f.getName().endsWith(extension)) {
                                         ret = f;
                                         break asdf;
@@ -141,9 +148,16 @@ public class SequencingWorkflowUtil {
                         }
 
                         if (ret == null) {
-                            File outputDirectory = new File(sample.getOutputDirectory(), upstreamWorkflow.getName());
-                            if (outputDirectory.exists()) {
-                                for (File f : outputDirectory.listFiles()) {
+                            File systemDirectory = new File(outputDirectory, upstreamWorkflow.getSystem().getValue());
+                            File studyDirectory = new File(systemDirectory, sample.getStudy().getName());
+                            File analysisDirectory = new File(studyDirectory, "analysis");
+                            File flowcellDirectory = new File(analysisDirectory, sample.getFlowcell().getName());
+                            File sampleOutputDir = new File(flowcellDirectory,
+                                    String.format("L%03d_%s", sample.getLaneIndex(), sample.getBarcode()));
+                            File workflowDirectory = new File(sampleOutputDir, upstreamWorkflow.getName());
+
+                            if (workflowDirectory.exists()) {
+                                for (File f : workflowDirectory.listFiles()) {
                                     if (f.getName().endsWith(extension)) {
                                         ret = f;
                                         break asdf;
@@ -186,6 +200,22 @@ public class SequencingWorkflowUtil {
         }
 
         return ret;
+    }
+
+    public static File createOutputDirectory(Sample sample, Workflow workflow) {
+        logger.debug("ENTERING createOutputDirectory(Sample, Workflow)");
+        String outputDirectory = System.getenv("MAPSEQ_OUTPUT_DIRECTORY");
+        File systemDirectory = new File(outputDirectory, workflow.getSystem().getValue());
+        File studyDirectory = new File(systemDirectory, sample.getStudy().getName());
+        File analysisDirectory = new File(studyDirectory, "analysis");
+        File flowcellDirectory = new File(analysisDirectory, sample.getFlowcell().getName());
+        File sampleOutputDir = new File(flowcellDirectory, String.format("L%03d_%s", sample.getLaneIndex(), sample.getBarcode()));
+        File workflowDirectory = new File(sampleOutputDir, workflow.getName());
+        if (!workflowDirectory.exists()) {
+            workflowDirectory.mkdirs();
+        }
+        logger.info("workflowDirectory: {}", workflowDirectory.getAbsolutePath());
+        return workflowDirectory;
     }
 
 }
