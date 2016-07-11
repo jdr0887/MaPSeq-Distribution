@@ -33,9 +33,11 @@ import edu.unc.mapseq.dao.FlowcellDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.SampleDAO;
 import edu.unc.mapseq.dao.StudyDAO;
+import edu.unc.mapseq.dao.WorkflowDAO;
 import edu.unc.mapseq.dao.model.Flowcell;
 import edu.unc.mapseq.dao.model.Sample;
 import edu.unc.mapseq.dao.model.Study;
+import edu.unc.mapseq.dao.model.Workflow;
 
 @Command(scope = "mapseq", name = "check-irods-registration", description = "Check IRODS Registration")
 @Service
@@ -135,6 +137,9 @@ public class CheckIRODSRegistrationAction implements Action {
     private SampleDAO sampleDAO;
 
     @Reference
+    private WorkflowDAO workflowDAO;
+
+    @Reference
     private FileDataDAO fileDataDAO;
 
     @Option(name = "--sampleId", description = "sampleId", required = false, multiValued = false)
@@ -228,7 +233,7 @@ public class CheckIRODSRegistrationAction implements Action {
         return null;
     }
 
-    private void check(BufferedWriter bw, Flowcell flowcell, Sample sample) throws IOException {
+    private void check(BufferedWriter bw, Flowcell flowcell, Sample sample) throws IOException, MaPSeqDAOException {
 
         int idx = sample.getName().lastIndexOf("-");
         String participantId = idx != -1 ? sample.getName().substring(0, idx) : sample.getName();
@@ -241,8 +246,25 @@ public class CheckIRODSRegistrationAction implements Action {
         }
 
         // first check for casava generated files
-        File ncgenesCASAVADirectory = new File(sample.getOutputDirectory(), "NCGenesCASAVA");
-        File fastqR1File = new File(ncgenesCASAVADirectory,
+
+        String outputDirectory = System.getenv("MAPSEQ_OUTPUT_DIRECTORY");
+        Workflow workflow = null;
+        List<Workflow> workflowList = workflowDAO.findByName("NCGenesCASAVA");
+        if (CollectionUtils.isEmpty(workflowList)) {
+            logger.error("Cound not find NCGenesCASAVA workflow");
+            return;
+        }
+
+        workflow = workflowList.get(0);
+
+        File systemDirectory = new File(outputDirectory, workflow.getSystem().getValue());
+        File studyDirectory = new File(systemDirectory, sample.getStudy().getName());
+        File analysisDirectory = new File(studyDirectory, "analysis");
+        File flowcellDirectory = new File(analysisDirectory, sample.getFlowcell().getName());
+        File sampleOutputDir = new File(flowcellDirectory, String.format("L%03d_%s", sample.getLaneIndex(), sample.getBarcode()));
+        File workflowDirectory = new File(sampleOutputDir, workflow.getName());
+
+        File fastqR1File = new File(workflowDirectory,
                 String.format("%s_%s_L%03d_R%d.fastq.gz", flowcell.getName(), sample.getBarcode(), sample.getLaneIndex(), 1));
         String fastqR1FileInIrods = String.format("/MedGenZone/sequence_data/ncgenes/%s/%s", participantId, fastqR1File.getName());
         commandOutput = checkForFileExistence(fastqR1FileInIrods);
@@ -251,7 +273,7 @@ public class CheckIRODSRegistrationAction implements Action {
             bw.newLine();
         }
 
-        File fastqR2File = new File(ncgenesCASAVADirectory,
+        File fastqR2File = new File(workflowDirectory,
                 String.format("%s_%s_L%03d_R%d.fastq.gz", flowcell.getName(), sample.getBarcode(), sample.getLaneIndex(), 2));
         String fastqR2FileInIrods = String.format("/MedGenZone/sequence_data/ncgenes/%s/%s", participantId, fastqR2File.getName());
         commandOutput = checkForFileExistence(fastqR2FileInIrods);
@@ -261,11 +283,24 @@ public class CheckIRODSRegistrationAction implements Action {
         }
 
         // first check for baseline generated files
-        File ncgenesBaselineDirectory = new File(sample.getOutputDirectory(), "NCGenesBaseline");
+        workflowList = workflowDAO.findByName("NCGenesBaseline");
+        if (CollectionUtils.isEmpty(workflowList)) {
+            logger.error("Cound not find NCGenesBaseline workflow");
+            return;
+        }
+
+        workflow = workflowList.get(0);
+
+        systemDirectory = new File(outputDirectory, workflow.getSystem().getValue());
+        studyDirectory = new File(systemDirectory, sample.getStudy().getName());
+        analysisDirectory = new File(studyDirectory, "analysis");
+        flowcellDirectory = new File(analysisDirectory, sample.getFlowcell().getName());
+        sampleOutputDir = new File(flowcellDirectory, String.format("L%03d_%s", sample.getLaneIndex(), sample.getBarcode()));
+        workflowDirectory = new File(sampleOutputDir, workflow.getName());
 
         String fastqLaneRootName = String.format("%s_%s_L%03d", flowcell.getName(), sample.getBarcode(), sample.getLaneIndex());
 
-        File writeVCFHeaderOut = new File(ncgenesBaselineDirectory, fastqLaneRootName + ".vcf.hdr");
+        File writeVCFHeaderOut = new File(workflowDirectory, fastqLaneRootName + ".vcf.hdr");
         String writeVCFHeaderOutInIrods = String.format("/MedGenZone/sequence_data/ncgenes/%s/%s", participantId,
                 writeVCFHeaderOut.getName());
         commandOutput = checkForFileExistence(writeVCFHeaderOutInIrods);
@@ -274,7 +309,7 @@ public class CheckIRODSRegistrationAction implements Action {
             bw.newLine();
         }
 
-        File fastqcR1Output = new File(ncgenesBaselineDirectory, fastqLaneRootName + "_R1.fastqc.zip");
+        File fastqcR1Output = new File(workflowDirectory, fastqLaneRootName + "_R1.fastqc.zip");
         String fastqcR1OutputInIrods = String.format("/MedGenZone/sequence_data/ncgenes/%s/%s", participantId, fastqcR1Output.getName());
         commandOutput = checkForFileExistence(fastqcR1OutputInIrods);
         if (commandOutput.getExitCode() != 0) {
@@ -282,7 +317,7 @@ public class CheckIRODSRegistrationAction implements Action {
             bw.newLine();
         }
 
-        File fastqcR2Output = new File(ncgenesBaselineDirectory, fastqLaneRootName + "_R1.fastqc.zip");
+        File fastqcR2Output = new File(workflowDirectory, fastqLaneRootName + "_R1.fastqc.zip");
         String fastqcR2OutputInIrods = String.format("/MedGenZone/sequence_data/ncgenes/%s/%s", participantId, fastqcR2Output.getName());
         commandOutput = checkForFileExistence(fastqcR2OutputInIrods);
         if (commandOutput.getExitCode() != 0) {
@@ -290,12 +325,12 @@ public class CheckIRODSRegistrationAction implements Action {
             bw.newLine();
         }
 
-        File bwaSAMPairedEndOutFile = new File(ncgenesBaselineDirectory, fastqLaneRootName + ".sam");
-        File fixRGOutput = new File(ncgenesBaselineDirectory, bwaSAMPairedEndOutFile.getName().replace(".sam", ".fixed-rg.bam"));
-        File picardMarkDuplicatesOutput = new File(ncgenesBaselineDirectory, fixRGOutput.getName().replace(".bam", ".deduped.bam"));
-        File indelRealignerOut = new File(ncgenesBaselineDirectory, picardMarkDuplicatesOutput.getName().replace(".bam", ".realign.bam"));
-        File picardFixMateOutput = new File(ncgenesBaselineDirectory, indelRealignerOut.getName().replace(".bam", ".fixmate.bam"));
-        File gatkTableRecalibrationOut = new File(ncgenesBaselineDirectory, picardFixMateOutput.getName().replace(".bam", ".recal.bam"));
+        File bwaSAMPairedEndOutFile = new File(workflowDirectory, fastqLaneRootName + ".sam");
+        File fixRGOutput = new File(workflowDirectory, bwaSAMPairedEndOutFile.getName().replace(".sam", ".fixed-rg.bam"));
+        File picardMarkDuplicatesOutput = new File(workflowDirectory, fixRGOutput.getName().replace(".bam", ".deduped.bam"));
+        File indelRealignerOut = new File(workflowDirectory, picardMarkDuplicatesOutput.getName().replace(".bam", ".realign.bam"));
+        File picardFixMateOutput = new File(workflowDirectory, indelRealignerOut.getName().replace(".bam", ".fixmate.bam"));
+        File gatkTableRecalibrationOut = new File(workflowDirectory, picardFixMateOutput.getName().replace(".bam", ".recal.bam"));
         String gatkTableRecalibrationOutInIrods = String.format("/MedGenZone/sequence_data/ncgenes/%s/%s", participantId,
                 gatkTableRecalibrationOut.getName());
         commandOutput = checkForFileExistence(gatkTableRecalibrationOutInIrods);
@@ -304,8 +339,7 @@ public class CheckIRODSRegistrationAction implements Action {
             bw.newLine();
         }
 
-        File gatkTableRecalibrationIndexOut = new File(ncgenesBaselineDirectory,
-                gatkTableRecalibrationOut.getName().replace(".bam", ".bai"));
+        File gatkTableRecalibrationIndexOut = new File(workflowDirectory, gatkTableRecalibrationOut.getName().replace(".bam", ".bai"));
         String gatkTableRecalibrationIndexOutInIrods = String.format("/MedGenZone/sequence_data/ncgenes/%s/%s", participantId,
                 gatkTableRecalibrationIndexOut.getName());
         commandOutput = checkForFileExistence(gatkTableRecalibrationIndexOutInIrods);
@@ -314,7 +348,7 @@ public class CheckIRODSRegistrationAction implements Action {
             bw.newLine();
         }
 
-        File sampleCumulativeCoverageCountsFile = new File(ncgenesBaselineDirectory,
+        File sampleCumulativeCoverageCountsFile = new File(workflowDirectory,
                 gatkTableRecalibrationOut.getName().replace(".bam", ".coverage.sample_cumulative_coverage_counts"));
         String sampleCumulativeCoverageCountsFileInIrods = String.format("/MedGenZone/sequence_data/ncgenes/%s/%s", participantId,
                 sampleCumulativeCoverageCountsFile.getName());
@@ -324,7 +358,7 @@ public class CheckIRODSRegistrationAction implements Action {
             bw.newLine();
         }
 
-        File sampleCumulativeCoverageProportionsFile = new File(ncgenesBaselineDirectory,
+        File sampleCumulativeCoverageProportionsFile = new File(workflowDirectory,
                 gatkTableRecalibrationOut.getName().replace(".bam", ".coverage.sample_cumulative_coverage_proportions"));
         String sampleCumulativeCoverageProportionsFileInIrods = String.format("/MedGenZone/sequence_data/ncgenes/%s/%s", participantId,
                 sampleCumulativeCoverageProportionsFile.getName());
@@ -334,7 +368,7 @@ public class CheckIRODSRegistrationAction implements Action {
             bw.newLine();
         }
 
-        File sampleIntervalStatisticsFile = new File(ncgenesBaselineDirectory,
+        File sampleIntervalStatisticsFile = new File(workflowDirectory,
                 gatkTableRecalibrationOut.getName().replace(".bam", ".coverage.sample_interval_statistics"));
         String sampleIntervalStatisticsFileInIrods = String.format("/MedGenZone/sequence_data/ncgenes/%s/%s", participantId,
                 sampleIntervalStatisticsFile.getName());
@@ -344,7 +378,7 @@ public class CheckIRODSRegistrationAction implements Action {
             bw.newLine();
         }
 
-        File sampleIntervalSummaryFile = new File(ncgenesBaselineDirectory,
+        File sampleIntervalSummaryFile = new File(workflowDirectory,
                 gatkTableRecalibrationOut.getName().replace(".bam", ".coverage.sample_interval_summary"));
         String sampleIntervalSummaryFileInIrods = String.format("/MedGenZone/sequence_data/ncgenes/%s/%s", participantId,
                 sampleIntervalSummaryFile.getName());
@@ -354,7 +388,7 @@ public class CheckIRODSRegistrationAction implements Action {
             bw.newLine();
         }
 
-        File sampleStatisticsFile = new File(ncgenesBaselineDirectory,
+        File sampleStatisticsFile = new File(workflowDirectory,
                 gatkTableRecalibrationOut.getName().replace(".bam", ".coverage.sample_statistics"));
         String sampleStatisticsFileInIrods = String.format("/MedGenZone/sequence_data/ncgenes/%s/%s", participantId,
                 sampleStatisticsFile.getName());
@@ -364,7 +398,7 @@ public class CheckIRODSRegistrationAction implements Action {
             bw.newLine();
         }
 
-        File sampleSummaryFile = new File(ncgenesBaselineDirectory,
+        File sampleSummaryFile = new File(workflowDirectory,
                 gatkTableRecalibrationOut.getName().replace(".bam", ".coverage.sample_summary"));
         String sampleSummaryFileInIrods = String.format("/MedGenZone/sequence_data/ncgenes/%s/%s", participantId,
                 sampleSummaryFile.getName());
@@ -374,8 +408,7 @@ public class CheckIRODSRegistrationAction implements Action {
             bw.newLine();
         }
 
-        File samtoolsFlagstatOut = new File(ncgenesBaselineDirectory,
-                gatkTableRecalibrationOut.getName().replace(".bam", ".samtools.flagstat"));
+        File samtoolsFlagstatOut = new File(workflowDirectory, gatkTableRecalibrationOut.getName().replace(".bam", ".samtools.flagstat"));
         String samtoolsFlagstatOutInIrods = String.format("/MedGenZone/sequence_data/ncgenes/%s/%s", participantId,
                 samtoolsFlagstatOut.getName());
         commandOutput = checkForFileExistence(samtoolsFlagstatOutInIrods);
@@ -384,7 +417,7 @@ public class CheckIRODSRegistrationAction implements Action {
             bw.newLine();
         }
 
-        File gatkFlagstatOut = new File(ncgenesBaselineDirectory, gatkTableRecalibrationOut.getName().replace(".bam", ".gatk.flagstat"));
+        File gatkFlagstatOut = new File(workflowDirectory, gatkTableRecalibrationOut.getName().replace(".bam", ".gatk.flagstat"));
         String gatkFlagstatOutInIrods = String.format("/MedGenZone/sequence_data/ncgenes/%s/%s", participantId, gatkFlagstatOut.getName());
         commandOutput = checkForFileExistence(gatkFlagstatOutInIrods);
         if (commandOutput.getExitCode() != 0) {
@@ -392,8 +425,8 @@ public class CheckIRODSRegistrationAction implements Action {
             bw.newLine();
         }
 
-        File filterVariant1Output = new File(ncgenesBaselineDirectory, gatkTableRecalibrationOut.getName().replace(".bam", ".variant.vcf"));
-        File gatkApplyRecalibrationOut = new File(ncgenesBaselineDirectory,
+        File filterVariant1Output = new File(workflowDirectory, gatkTableRecalibrationOut.getName().replace(".bam", ".variant.vcf"));
+        File gatkApplyRecalibrationOut = new File(workflowDirectory,
                 filterVariant1Output.getName().replace(".vcf", ".recalibrated.filtered.vcf"));
         String gatkApplyRecalibrationOutInIrods = String.format("/MedGenZone/sequence_data/ncgenes/%s/%s", participantId,
                 gatkApplyRecalibrationOut.getName());
@@ -403,7 +436,7 @@ public class CheckIRODSRegistrationAction implements Action {
             bw.newLine();
         }
 
-        File filterVariant2Output = new File(ncgenesBaselineDirectory, filterVariant1Output.getName().replace(".vcf", ".ic_snps.vcf"));
+        File filterVariant2Output = new File(workflowDirectory, filterVariant1Output.getName().replace(".vcf", ".ic_snps.vcf"));
         String filterVariant2OutputInIrods = String.format("/MedGenZone/sequence_data/ncgenes/%s/%s", participantId,
                 filterVariant2Output.getName());
         commandOutput = checkForFileExistence(filterVariant2OutputInIrods);
