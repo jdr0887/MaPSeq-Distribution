@@ -45,6 +45,14 @@ public class SampleDAOImpl extends NamedEntityDAOImpl<Sample, Long> implements S
     }
 
     @Override
+    public List<Sample> findByLaneIndexAndBarcode(Integer laneIndex, String barcode) throws MaPSeqDAOException {
+        WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
+        Collection<? extends Sample> results = client.path("findByLaneIndexAndBarcode/{laneIndex}/{barcode}", laneIndex, barcode)
+                .accept(MediaType.APPLICATION_JSON).getCollection(Sample.class);
+        return new ArrayList<Sample>(results);
+    }
+
+    @Override
     public List<Sample> findByFlowcellId(Long flowcellId) throws MaPSeqDAOException {
         WebClient client = WebClient.create(getRestServiceURL(), getProviders(), true);
         Collection<? extends Sample> results = client.path("findByFlowcellId/{id}", flowcellId).accept(MediaType.APPLICATION_JSON)

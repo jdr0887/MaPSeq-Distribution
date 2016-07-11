@@ -59,6 +59,27 @@ public class SampleServiceImpl implements SampleService {
     }
 
     @Override
+    public List<Sample> findByLaneIndexAndBarcode(Integer laneIndex, String barcode) throws MaPSeqDAOException {
+        logger.debug("ENTERING findByLaneIndexAndBarcode(Integer, String)");
+        List<Sample> ret = new ArrayList<Sample>();
+
+        if (laneIndex == null) {
+            logger.warn("laneIndex is null");
+            return ret;
+        }
+        if (StringUtils.isEmpty(barcode)) {
+            logger.warn("barcode is empty");
+            return ret;
+        }
+        try {
+            ret.addAll(sampleDAO.findByLaneIndexAndBarcode(laneIndex, barcode));
+        } catch (MaPSeqDAOException e) {
+            logger.error("MaPSeqDAOException", e);
+        }
+        return ret;
+    }
+
+    @Override
     public List<Sample> findByCreatedDateRange(String startDate, String endDate) {
         logger.debug("ENTERING findByCreatedDateRange(String, String)");
         List<Sample> ret = new ArrayList<Sample>();
@@ -76,7 +97,7 @@ public class SampleServiceImpl implements SampleService {
             Date parsedEndDate = DateUtils.parseDate(endDate, new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
             ret.addAll(sampleDAO.findByCreatedDateRange(parsedStartDate, parsedEndDate));
         } catch (ParseException | MaPSeqDAOException e) {
-            logger.error("MaPSeqDAOException", e);
+            logger.error(e.getMessage(), e);
         }
         return ret;
     }

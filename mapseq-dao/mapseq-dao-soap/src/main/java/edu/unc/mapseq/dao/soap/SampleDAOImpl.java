@@ -80,6 +80,13 @@ public class SampleDAOImpl extends NamedEntityDAOImpl<Sample, Long> implements S
     }
 
     @Override
+    public List<Sample> findByLaneIndexAndBarcode(Integer laneIndex, String barcode) throws MaPSeqDAOException {
+        logger.debug("ENTERING findByLaneIndexAndBarcode(Integer, String)");
+        List<Sample> ret = sampleService.findByLaneIndexAndBarcode(laneIndex, barcode);
+        return ret;
+    }
+
+    @Override
     public List<Sample> findByFlowcellNameAndSampleNameAndLaneIndex(String flowcellName, String sampleName, Integer laneIndex)
             throws MaPSeqDAOException {
         logger.debug("ENTERING findByFlowcellNameAndSampleNameAndLaneIndex(String, String, Integer)");
