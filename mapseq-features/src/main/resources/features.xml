@@ -9,7 +9,8 @@
     <bundle>mvn:commons-digester/commons-digester/1.8.1</bundle>
     <bundle>mvn:commons-collections/commons-collections/${commons.collections.version}</bundle>
     <bundle>mvn:commons-beanutils/commons-beanutils/${commons.beanutils.version}</bundle>
-    <bundle>mvn:commons-discovery/commons-discovery/${commons.discovery.version}</bundle>    
+    <bundle>mvn:commons-discovery/commons-discovery/${commons.discovery.version}</bundle>
+    <bundle>mvn:org.apache.commons/commons-csv/${commons.csv.version}</bundle>    
     <bundle>mvn:org.apache.commons/commons-math3/${commons.math.version}</bundle>
     <bundle>mvn:org.apache.commons/commons-lang3/${commons.lang3.version}</bundle>
     <bundle>mvn:org.apache.commons/commons-collections4/${commons.collections4.version}</bundle>    
