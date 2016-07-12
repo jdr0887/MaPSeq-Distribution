@@ -76,7 +76,7 @@ public class ListSamplesAction implements Action {
             if (CollectionUtils.isNotEmpty(sampleList)) {
                 StringBuilder sb = new StringBuilder();
                 Formatter formatter = new Formatter(sb, Locale.US);
-                String format = "%1$-12s %2$-20s %3$-40s %4$-8s %5$-20s %6$s%n";
+                String format = "%1$-12s %2$-20s %3$-40s %4$-8s %5$s%n";
                 formatter.format(format, "ID", "Created", "Name", "Lane", "Barcode");
 
                 for (Sample sample : sampleList) {
