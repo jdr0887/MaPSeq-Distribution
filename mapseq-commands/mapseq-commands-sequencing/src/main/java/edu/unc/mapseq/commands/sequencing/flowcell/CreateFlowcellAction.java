@@ -4,8 +4,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.karaf.shell.api.action.Action;
-import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
+import org.apache.karaf.shell.api.action.Option;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 
@@ -20,10 +20,10 @@ public class CreateFlowcellAction implements Action {
     @Reference
     private FlowcellDAO flowcellDAO;
 
-    @Argument(index = 0, name = "baseRunFolder", description = "The folder parent to the flowcell directory", required = true, multiValued = false)
+    @Option(name = "--baseRunFolder", description = "The folder parent to the flowcell directory", required = true, multiValued = false)
     private String baseRunFolder;
 
-    @Argument(index = 1, name = "name", description = "Name", required = true, multiValued = false)
+    @Option(name = "--name", description = "Name", required = true, multiValued = false)
     private String name;
 
     public CreateFlowcellAction() {
