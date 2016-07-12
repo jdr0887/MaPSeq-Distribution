@@ -10,6 +10,13 @@
   <artifactId>mapseq-commands-sequencing</artifactId>
   <version>0.6.59-SNAPSHOT</version>
   <packaging>bundle</packaging>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-csv</artifactId>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
   <build>
     <plugins>
       <plugin>
