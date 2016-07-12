@@ -1,20 +1,25 @@
 package edu.unc.mapseq.commands.sequencing.flowcell;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.LineNumberReader;
-import java.io.StringReader;
+import java.io.Reader;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 
+import edu.unc.mapseq.dao.AttributeDAO;
 import edu.unc.mapseq.dao.FlowcellDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.SampleDAO;
@@ -37,6 +42,9 @@ public class CreateFlowcellFromSampleSheetAction implements Action {
     @Reference
     private SampleDAO sampleDAO;
 
+    @Reference
+    private AttributeDAO attributeDAO;
+
     @Argument(index = 0, name = "baseRunFolder", description = "The folder parent to the flowcell directory", required = true, multiValued = false)
     private String baseRunFolder;
 
@@ -50,7 +58,6 @@ public class CreateFlowcellFromSampleSheetAction implements Action {
         super();
     }
 
-    @SuppressWarnings("unused")
     @Override
     public Object execute() {
 
@@ -59,54 +66,56 @@ public class CreateFlowcellFromSampleSheetAction implements Action {
             flowcell.setBaseDirectory(baseRunFolder);
             flowcell.setId(flowcellDAO.save(flowcell));
 
-            LineNumberReader lnr = new LineNumberReader(new StringReader(FileUtils.readFileToString(sampleSheet)));
-            lnr.readLine();
-            String line;
+            Reader in = new FileReader(sampleSheet);
+            Iterable<CSVRecord> records = CSVFormat.DEFAULT.withHeader("FCID", "Lane", "SampleID", "SampleRef", "Index", "Description",
+                    "Control", "Recipe", "Operator", "SampleProject").parse(in);
+            final Set<String> studyNameSet = new HashSet<>();
+            records.forEach(a -> studyNameSet.add(a.get("SampleProject")));
+            Collections.synchronizedSet(studyNameSet);
 
-            while ((line = lnr.readLine()) != null) {
+            if (CollectionUtils.isEmpty(studyNameSet)) {
+                System.out.println("No Study names in SampleSheet");
+                return null;
+            }
 
-                String[] st = line.split(",");
-                String flowcellProper = st[0];
-                String laneIndex = st[1];
-                String sampleId = st[2];
-                String sampleRef = st[3];
-                String index = st[4];
-                String description = st[5];
-                String control = st[6];
-                String recipe = st[7];
-                String operator = st[8];
-                String sampleProject = st[9];
+            if (studyNameSet.size() > 1) {
+                System.out.println("More than one Study in SampleSheet");
+                return null;
+            }
 
-                List<Study> studyList = studyDAO.findByName(sampleProject);
-                if (studyList == null || (studyList != null && studyList.isEmpty())) {
-                    System.err.printf("Study doesn't exist...fix your sample sheet for column 9 (sampleProject)");
-                    return null;
-                }
+            String foundStudyName = studyNameSet.iterator().next();
 
-                Study study = studyList.get(0);
+            List<Study> foundStudies = studyDAO.findByName(foundStudyName);
+            if (CollectionUtils.isEmpty(foundStudies)) {
+                System.out.printf("No Studies found for: %s%n", foundStudyName);
+                return null;
+            }
+
+            Study study = foundStudies.get(0);
+
+            for (CSVRecord record : records) {
+                String laneIndex = record.get("Lane");
+                String sampleId = record.get("SampleID");
+                String barcode = record.get("Index");
+                String description = record.get("Description");
 
                 Sample sample = new Sample(sampleId);
-                sample.setBarcode(index);
+                sample.setBarcode(barcode);
                 sample.setLaneIndex(Integer.valueOf(laneIndex));
                 sample.setFlowcell(flowcell);
                 sample.setStudy(study);
-
-                Set<Attribute> attributes = sample.getAttributes();
-                if (attributes == null) {
-                    attributes = new HashSet<Attribute>();
-                }
-                Attribute descAttribute = new Attribute("production.id.description", description);
-                attributes.add(descAttribute);
-                sample.setAttributes(attributes);
-
                 sample.setId(sampleDAO.save(sample));
-
+                if (StringUtils.isNotEmpty(description)) {
+                    Attribute attribute = new Attribute("production.id.description", description);
+                    attribute.setId(attributeDAO.save(attribute));
+                    sample.getAttributes().add(attribute);
+                }
+                sampleDAO.save(sample);
             }
+
             System.out.println("Flowcell ID: " + flowcell.getId());
 
-        } catch (MaPSeqDAOException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (IOException | MaPSeqDAOException e) {
             e.printStackTrace();
         }
 
