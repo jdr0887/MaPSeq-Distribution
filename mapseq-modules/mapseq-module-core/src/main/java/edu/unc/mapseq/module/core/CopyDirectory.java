@@ -57,13 +57,13 @@ public class CopyDirectory extends Module {
             }
 
             FileUtils.copyDirectory(source, destination);
+            moduleOutput.setExitCode(0);
 
         } catch (Exception e) {
             e.printStackTrace();
             moduleOutput.setError(new StringBuilder(e.getMessage()));
             moduleOutput.setExitCode(-1);
         }
-        moduleOutput.setExitCode(0);
         return moduleOutput;
     }
 
