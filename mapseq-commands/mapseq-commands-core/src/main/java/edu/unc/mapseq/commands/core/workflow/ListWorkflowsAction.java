@@ -39,19 +39,18 @@ public class ListWorkflowsAction implements Action {
 
             if (CollectionUtils.isNotEmpty(workflowList)) {
                 StringBuilder sb = new StringBuilder();
-                String format = "%1$-12s %2$-20s %3$-30s%n";
+                String format = "%1$-12s %2$-20s %3$-30s %4$s%n";
                 Formatter formatter = new Formatter(sb, Locale.US);
-                formatter.format(format, "ID", "Created", "Name");
+                formatter.format(format, "ID", "Created", "Name", "System");
                 for (Workflow workflow : workflowList) {
 
                     Date createdDate = workflow.getCreated();
                     String formattedCreatedDate = "";
                     if (createdDate != null) {
-                        formattedCreatedDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
-                                .format(createdDate);
+                        formattedCreatedDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(createdDate);
                     }
 
-                    formatter.format(format, workflow.getId(), formattedCreatedDate, workflow.getName());
+                    formatter.format(format, workflow.getId(), formattedCreatedDate, workflow.getName(), workflow.getSystem().getValue());
                     formatter.flush();
                 }
                 System.out.println(formatter.toString());
