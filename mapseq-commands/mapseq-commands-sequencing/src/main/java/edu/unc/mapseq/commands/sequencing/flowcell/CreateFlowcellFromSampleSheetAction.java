@@ -67,8 +67,8 @@ public class CreateFlowcellFromSampleSheetAction implements Action {
             flowcell.setId(flowcellDAO.save(flowcell));
 
             Reader in = new FileReader(sampleSheet);
-            Iterable<CSVRecord> records = CSVFormat.DEFAULT.withHeader("FCID", "Lane", "SampleID", "SampleRef", "Index", "Description",
-                    "Control", "Recipe", "Operator", "SampleProject").parse(in);
+            Iterable<CSVRecord> records = CSVFormat.DEFAULT.withSkipHeaderRecord().withHeader("FCID", "Lane", "SampleID", "SampleRef",
+                    "Index", "Description", "Control", "Recipe", "Operator", "SampleProject").parse(in);
             final Set<String> studyNameSet = new HashSet<>();
             records.forEach(a -> studyNameSet.add(a.get("SampleProject")));
             Collections.synchronizedSet(studyNameSet);
