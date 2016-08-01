@@ -54,13 +54,12 @@ public class AlignStat extends Module {
 
         DefaultModuleOutput moduleOutput = new DefaultModuleOutput();
 
-        int exitCode = 0;
-        try {
+        int totalCount = 0;
+        int mappedCount = 0;
+        int percent = 0;
 
-            int totalCount = 0;
-            int mappedCount = 0;
+        try (FileReader fr = new FileReader(inFile); BufferedReader br = new BufferedReader(fr)) {
             String line;
-            BufferedReader br = new BufferedReader(new FileReader(inFile));
             while ((line = br.readLine()) != null) {
                 if (line.startsWith("@")) {
                     continue;
@@ -86,31 +85,33 @@ public class AlignStat extends Module {
                 }
                 ++mappedCount;
             }
-            br.close();
 
-            int percent = (mappedCount / totalCount) * 100;
+            percent = (mappedCount / totalCount) * 100;
 
+        } catch (Exception e) {
+            e.printStackTrace();
+            moduleOutput.setError(new StringBuilder(e.getMessage()));
+            moduleOutput.setExitCode(-1);
+            return moduleOutput;
+        }
+
+        try (FileWriter fw = new FileWriter(outFile)) {
             Properties props = new Properties();
             props.put("alignstat_query_file", inFile.getAbsolutePath());
             props.put("alignstat_total_read", totalCount);
             props.put("alignstat_mapped_read", mappedCount);
             props.put("alignstat_mapped_percent", percent);
             props.put("alignstat_flag", (percent < 30 || percent > 90) ? 1 : 0);
-
-            FileWriter fw = new FileWriter(outFile);
             props.store(fw, null);
             fw.flush();
-            fw.close();
-
         } catch (Exception e) {
             e.printStackTrace();
             moduleOutput.setError(new StringBuilder(e.getMessage()));
-            moduleOutput.setExitCode(exitCode);
+            moduleOutput.setExitCode(-1);
             return moduleOutput;
         }
 
-        moduleOutput.setExitCode(exitCode);
-
+        moduleOutput.setExitCode(0);
         return moduleOutput;
     }
 
