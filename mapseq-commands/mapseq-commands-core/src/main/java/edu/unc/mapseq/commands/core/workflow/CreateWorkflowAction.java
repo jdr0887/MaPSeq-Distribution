@@ -7,7 +7,6 @@ import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 
 import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
-import edu.unc.mapseq.dao.MaPSeqDAOException;
 import edu.unc.mapseq.dao.model.Workflow;
 import edu.unc.mapseq.dao.model.WorkflowSystemType;
 
