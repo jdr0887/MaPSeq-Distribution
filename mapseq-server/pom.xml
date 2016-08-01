@@ -81,7 +81,7 @@
       <groupId>org.renci.gate</groupId>
       <artifactId>gate-features</artifactId>
       <classifier>features</classifier>
-      <version>0.2.25</version>
+      <version>0.2.26</version>
       <type>xml</type>
       <scope>runtime</scope>
     </dependency>
