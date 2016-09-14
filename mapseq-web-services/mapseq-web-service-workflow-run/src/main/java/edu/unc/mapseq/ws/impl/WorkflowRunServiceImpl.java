@@ -4,6 +4,9 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.ListIterator;
+
+import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
@@ -12,8 +15,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.unc.mapseq.dao.MaPSeqDAOException;
+import edu.unc.mapseq.dao.WorkflowRunAttemptDAO;
 import edu.unc.mapseq.dao.WorkflowRunDAO;
 import edu.unc.mapseq.dao.model.WorkflowRun;
+import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
+import edu.unc.mapseq.dao.model.WorkflowRunAttemptStatusType;
 import edu.unc.mapseq.ws.WorkflowRunService;
 
 public class WorkflowRunServiceImpl implements WorkflowRunService {
@@ -22,8 +28,45 @@ public class WorkflowRunServiceImpl implements WorkflowRunService {
 
     private WorkflowRunDAO workflowRunDAO;
 
+    private WorkflowRunAttemptDAO workflowRunAttemptDAO;
+
     public WorkflowRunServiceImpl() {
         super();
+    }
+
+    @Override
+    public Response reset(Long workflowRunId) throws MaPSeqDAOException {
+        logger.debug("ENTERING reset(Long)");
+
+        if (workflowRunId == null) {
+            return Response.status(Response.Status.NOT_ACCEPTABLE).build();
+        }
+
+        try {
+            List<WorkflowRunAttempt> attempts = workflowRunAttemptDAO.findByWorkflowRunId(workflowRunId);
+
+            ListIterator<WorkflowRunAttempt> iter = new ArrayList<WorkflowRunAttempt>(attempts).listIterator(attempts.size());
+            if (iter.hasPrevious()) {
+                WorkflowRunAttempt latestAttempt = iter.previous();
+                latestAttempt.setStatus(WorkflowRunAttemptStatusType.RESET);
+                Date date = new Date();
+                if (latestAttempt.getStarted() == null) {
+                    latestAttempt.setStarted(date);
+                }
+                latestAttempt.setFinished(date);
+                workflowRunAttemptDAO.save(latestAttempt);
+            }
+
+            WorkflowRunAttempt attempt = new WorkflowRunAttempt();
+            attempt.setStatus(WorkflowRunAttemptStatusType.PENDING);
+            attempt.setWorkflowRun(workflowRunDAO.findById(workflowRunId));
+            workflowRunAttemptDAO.save(attempt);
+
+        } catch (MaPSeqDAOException e) {
+            e.printStackTrace();
+        }
+
+        return Response.ok().build();
     }
 
     @Override
@@ -64,8 +107,7 @@ public class WorkflowRunServiceImpl implements WorkflowRunService {
     }
 
     @Override
-    public List<WorkflowRun> findByStudyNameAndSampleNameAndWorkflowName(String studyName, String sampleName,
-            String workflowName) {
+    public List<WorkflowRun> findByStudyNameAndSampleNameAndWorkflowName(String studyName, String sampleName, String workflowName) {
         logger.debug("ENTERING findByStudyNameAndSampleNameAndWorkflowName(String, String, String)");
         List<WorkflowRun> ret = new ArrayList<WorkflowRun>();
         if (StringUtils.isEmpty(studyName)) {
@@ -131,10 +173,8 @@ public class WorkflowRunServiceImpl implements WorkflowRunService {
             return ret;
         }
         try {
-            Date parsedStartDate = DateUtils.parseDate(startDate,
-                    new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
-            Date parsedEndDate = DateUtils.parseDate(endDate,
-                    new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
+            Date parsedStartDate = DateUtils.parseDate(startDate, new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
+            Date parsedEndDate = DateUtils.parseDate(endDate, new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
             ret.addAll(workflowRunDAO.findByCreatedDateRange(parsedStartDate, parsedEndDate));
         } catch (ParseException e1) {
             e1.printStackTrace();
@@ -234,6 +274,14 @@ public class WorkflowRunServiceImpl implements WorkflowRunService {
 
     public void setWorkflowRunDAO(WorkflowRunDAO workflowRunDAO) {
         this.workflowRunDAO = workflowRunDAO;
+    }
+
+    public WorkflowRunAttemptDAO getWorkflowRunAttemptDAO() {
+        return workflowRunAttemptDAO;
+    }
+
+    public void setWorkflowRunAttemptDAO(WorkflowRunAttemptDAO workflowRunAttemptDAO) {
+        this.workflowRunAttemptDAO = workflowRunAttemptDAO;
     }
 
 }
