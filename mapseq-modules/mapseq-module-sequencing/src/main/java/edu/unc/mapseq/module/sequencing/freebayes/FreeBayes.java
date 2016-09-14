@@ -808,11 +808,17 @@ public class FreeBayes extends Module {
     }
 
     public static void main(String[] args) {
+        
         FreeBayes module = new FreeBayes();
         module.setWorkflowName("TEST");
-        module.setFastaReference(new File("/tmp", "asdf.fa"));
+        module.setGenotypeQualities(true);
+        module.setReportMonomorphic(true);
+        module.setFastaReference(new File("/projects/mapseq/data/references/BUILD.38/BUILD.38.p7.plusM.sorted.shortid.Ymasked.fa"));
         module.setBam(new File("/tmp", "asdf.bam"));
         module.setVcf(new File("/tmp", "asdf.vcf"));
+        module.setTargets(new File("/projects/mapseq/data/resources/intervals/agilent_v4_capture_region_pm_75.shortid.interval_list"));
+        module.setCopyNumberMap(new File("/projects/mapseq/data/resources/intervals/agilent_v4_capture_region_pm_75.shortid.interval_list"));
+        
         try {
             module.call();
         } catch (Exception e) {
