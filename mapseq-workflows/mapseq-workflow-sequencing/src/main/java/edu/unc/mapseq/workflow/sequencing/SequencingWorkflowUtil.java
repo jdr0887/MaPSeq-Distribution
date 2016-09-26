@@ -19,8 +19,8 @@ import edu.unc.mapseq.dao.model.Job;
 import edu.unc.mapseq.dao.model.MimeType;
 import edu.unc.mapseq.dao.model.Sample;
 import edu.unc.mapseq.dao.model.SampleWorkflowRunDependency;
-import edu.unc.mapseq.dao.model.WorkflowRun;
 import edu.unc.mapseq.dao.model.Workflow;
+import edu.unc.mapseq.dao.model.WorkflowRun;
 
 public class SequencingWorkflowUtil {
 
@@ -216,6 +216,29 @@ public class SequencingWorkflowUtil {
         }
         logger.info("workflowDirectory: {}", workflowDirectory.getAbsolutePath());
         return workflowDirectory;
+    }
+
+    public static Job findJob(MaPSeqDAOBeanService mapseqDAOBeanService, Long workflowRunAttemptId, String name, File output)
+            throws MaPSeqDAOException {
+        logger.debug("ENTERING findJob(Long, String, File)");
+        Job ret = null;
+        List<Job> foundJobs = mapseqDAOBeanService.getJobDAO().findByWorkflowRunAttemptIdAndName(workflowRunAttemptId, name);
+        if (CollectionUtils.isNotEmpty(foundJobs)) {
+            for (Job foundJob : foundJobs) {
+                if (CollectionUtils.isNotEmpty(foundJob.getFileDatas())) {
+                    for (FileData fileData : foundJob.getFileDatas()) {
+                        if (fileData.toFile().equals(output)) {
+                            ret = foundJob;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        if (ret != null) {
+            logger.debug(ret.toString());
+        }
+        return ret;
     }
 
 }
