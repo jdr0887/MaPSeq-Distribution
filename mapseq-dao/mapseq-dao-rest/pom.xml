@@ -2,13 +2,13 @@
   <parent>
     <groupId>edu.unc.mapseq.distribution</groupId>
     <artifactId>mapseq-dao</artifactId>
-    <version>0.6.65-SNAPSHOT</version>
+    <version>0.6.65</version>
   </parent>
   <name>MaPSeq :: Distribution :: DAO :: REST</name>
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.unc.mapseq.distribution.mapseq-dao</groupId>
   <artifactId>mapseq-dao-rest</artifactId>
-  <version>0.6.65-SNAPSHOT</version>
+  <version>0.6.65</version>
   <packaging>bundle</packaging>
   <dependencies>
     <dependency>
