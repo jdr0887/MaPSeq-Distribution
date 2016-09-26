@@ -28,8 +28,7 @@ public class JobDAOImpl extends NamedEntityDAOImpl<Job, Long> implements JobDAO 
     }
 
     @Override
-    public List<Job> findByFileDataIdAndWorkflowId(Long fileDataId, String clazzName, Long workflowId)
-            throws MaPSeqDAOException {
+    public List<Job> findByFileDataIdAndWorkflowId(Long fileDataId, String clazzName, Long workflowId) throws MaPSeqDAOException {
         return null;
     }
 
@@ -66,13 +65,20 @@ public class JobDAOImpl extends NamedEntityDAOImpl<Job, Long> implements JobDAO 
     }
 
     @Override
-    public List<Job> findByWorkflowIdAndCreatedDateRange(Long workflowId, Date startDate, Date endDate)
-            throws MaPSeqDAOException {
+    public List<Job> findByWorkflowRunAttemptIdAndName(Long jobId, String name) throws MaPSeqDAOException {
+        logger.debug("ENTERING findByWorkflowRunAttemptIdAndName(Long, Date, Date)");
+        WebClient client = WebClient.create(getRestServiceURL(), getProviders());
+        Collection<? extends Job> ret = client.path("findByWorkflowRunAttemptIdAndName/{name}/{name}", jobId, name)
+                .accept(MediaType.APPLICATION_JSON).getCollection(Job.class);
+        return new ArrayList<Job>(ret);
+    }
+
+    @Override
+    public List<Job> findByWorkflowIdAndCreatedDateRange(Long workflowId, Date startDate, Date endDate) throws MaPSeqDAOException {
         logger.debug("ENTERING findByWorkflowIdAndCreatedDateRange(Long, Date, Date)");
         WebClient client = WebClient.create(getRestServiceURL(), getProviders());
         Collection<? extends Job> ret = client
-                .path("findByWorkflowIdAndCreatedDateRange/{workflowId}/{startDate}/{endDate}", workflowId, startDate,
-                        endDate)
+                .path("findByWorkflowIdAndCreatedDateRange/{workflowId}/{startDate}/{endDate}", workflowId, startDate, endDate)
                 .accept(MediaType.APPLICATION_JSON).getCollection(Job.class);
         return new ArrayList<Job>(ret);
     }
