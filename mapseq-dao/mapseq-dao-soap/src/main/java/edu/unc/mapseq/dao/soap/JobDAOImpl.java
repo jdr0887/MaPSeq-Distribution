@@ -46,8 +46,7 @@ public class JobDAOImpl extends NamedEntityDAOImpl<Job, Long> implements JobDAO 
     }
 
     @Override
-    public List<Job> findByFileDataIdAndWorkflowId(Long fileDataId, String clazzName, Long workflowId)
-            throws MaPSeqDAOException {
+    public List<Job> findByFileDataIdAndWorkflowId(Long fileDataId, String clazzName, Long workflowId) throws MaPSeqDAOException {
         return null;
     }
 
@@ -82,14 +81,25 @@ public class JobDAOImpl extends NamedEntityDAOImpl<Job, Long> implements JobDAO 
     }
 
     @Override
-    public List<Job> findByWorkflowIdAndCreatedDateRange(Long workflowId, Date startDate, Date endDate)
-            throws MaPSeqDAOException {
+    public List<Job> findByWorkflowIdAndCreatedDateRange(Long workflowId, Date startDate, Date endDate) throws MaPSeqDAOException {
         logger.debug("ENTERING findByWorkflowIdAndCreatedDateRange(Long, Date, Date)");
         String formattedStartDate = DateFormatUtils.ISO_DATE_FORMAT.format(startDate);
         String formattedEndDate = DateFormatUtils.ISO_DATE_FORMAT.format(endDate);
         List<Job> ret = null;
         try {
             ret = jobService.findByWorkflowIdAndCreatedDateRange(workflowId, formattedStartDate, formattedEndDate);
+        } catch (Exception e) {
+            logger.error("Exception", e);
+        }
+        return ret;
+    }
+
+    @Override
+    public List<Job> findByWorkflowRunAttemptIdAndName(Long workflowRunAttemptId, String name) throws MaPSeqDAOException {
+        logger.debug("ENTERING findByWorkflowRunAttemptIdAndName(Long, String, Date)");
+        List<Job> ret = null;
+        try {
+            ret = jobService.findByWorkflowRunAttemptIdAndName(workflowRunAttemptId, name);
         } catch (Exception e) {
             logger.error("Exception", e);
         }

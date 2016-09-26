@@ -78,6 +78,26 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
+    public List<Job> findByWorkflowRunAttemptIdAndName(Long workflowRunAttemptId, String name) {
+        logger.debug("ENTERING findByWorkflowRunAttemptIdAndName(Long, String)");
+        List<Job> ret = new ArrayList<>();
+        if (workflowRunAttemptId == null) {
+            logger.warn("workflowRunAttemptId is null");
+            return ret;
+        }
+        if (StringUtils.isEmpty(name)) {
+            logger.warn("name is empty");
+            return ret;
+        }
+        try {
+            ret.addAll(jobDAO.findByWorkflowRunAttemptIdAndName(workflowRunAttemptId, name));
+        } catch (MaPSeqDAOException e) {
+            logger.error("Error", e);
+        }
+        return ret;
+    }
+
+    @Override
     public List<Job> findByWorkflowIdAndCreatedDateRange(Long workflowId, String startDate, String endDate) {
         logger.debug("ENTERING findByWorkflowIdAndCreatedDateRange(Long, String, String)");
         List<Job> ret = new ArrayList<Job>();
@@ -94,10 +114,8 @@ public class JobServiceImpl implements JobService {
             return ret;
         }
         try {
-            Date parsedStartDate = DateUtils.parseDate(startDate,
-                    new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
-            Date parsedEndDate = DateUtils.parseDate(endDate,
-                    new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
+            Date parsedStartDate = DateUtils.parseDate(startDate, new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
+            Date parsedEndDate = DateUtils.parseDate(endDate, new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
             ret.addAll(jobDAO.findByWorkflowIdAndCreatedDateRange(workflowId, parsedStartDate, parsedEndDate));
         } catch (ParseException | MaPSeqDAOException e) {
             logger.error("Error", e);
@@ -118,10 +136,8 @@ public class JobServiceImpl implements JobService {
             return ret;
         }
         try {
-            Date parsedStartDate = DateUtils.parseDate(startDate,
-                    new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
-            Date parsedEndDate = DateUtils.parseDate(endDate,
-                    new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
+            Date parsedStartDate = DateUtils.parseDate(startDate, new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
+            Date parsedEndDate = DateUtils.parseDate(endDate, new String[] { DateFormatUtils.ISO_DATE_FORMAT.getPattern() });
             ret.addAll(jobDAO.findByCreatedDateRange(parsedStartDate, parsedEndDate));
         } catch (ParseException | MaPSeqDAOException e) {
             logger.error("Error", e);
