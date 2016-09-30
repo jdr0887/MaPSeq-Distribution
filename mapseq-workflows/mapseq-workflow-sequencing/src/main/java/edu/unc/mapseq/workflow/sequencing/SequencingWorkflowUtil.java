@@ -2,6 +2,7 @@ package edu.unc.mapseq.workflow.sequencing;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -12,15 +13,20 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.unc.mapseq.dao.FlowcellDAO;
 import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
+import edu.unc.mapseq.dao.SampleDAO;
 import edu.unc.mapseq.dao.model.FileData;
+import edu.unc.mapseq.dao.model.Flowcell;
 import edu.unc.mapseq.dao.model.Job;
 import edu.unc.mapseq.dao.model.MimeType;
 import edu.unc.mapseq.dao.model.Sample;
 import edu.unc.mapseq.dao.model.SampleWorkflowRunDependency;
 import edu.unc.mapseq.dao.model.Workflow;
 import edu.unc.mapseq.dao.model.WorkflowRun;
+import edu.unc.mapseq.dao.model.WorkflowRunAttempt;
+import edu.unc.mapseq.workflow.WorkflowException;
 
 public class SequencingWorkflowUtil {
 
@@ -72,6 +78,41 @@ public class SequencingWorkflowUtil {
         readPairList.sort((a, b) -> a.getName().compareTo(b.getName()));
         readPairList.forEach(a -> logger.info(a.getAbsolutePath()));
         return readPairList;
+    }
+
+    public static Set<Sample> getAggregatedSamples(MaPSeqDAOBeanService mapseqDAOBeanService, WorkflowRunAttempt workflowRunAttempt)
+            throws WorkflowException {
+
+        SampleDAO sampleDAO = mapseqDAOBeanService.getSampleDAO();
+        FlowcellDAO flowcellDAO = mapseqDAOBeanService.getFlowcellDAO();
+
+        Set<Sample> sampleSet = new HashSet<Sample>();
+
+        WorkflowRun workflowRun = workflowRunAttempt.getWorkflowRun();
+        try {
+            List<Sample> samples = sampleDAO.findByWorkflowRunId(workflowRun.getId());
+            if (CollectionUtils.isNotEmpty(samples)) {
+                sampleSet.addAll(samples);
+            }
+            List<Flowcell> flowcells = flowcellDAO.findByWorkflowRunId(workflowRun.getId());
+            if (CollectionUtils.isNotEmpty(flowcells)) {
+                for (Flowcell flowcell : flowcells) {
+                    List<Sample> sampleList = sampleDAO.findByFlowcellId(flowcell.getId());
+                    if (CollectionUtils.isNotEmpty(sampleList)) {
+                        sampleSet.addAll(sampleList);
+                    }
+                }
+            }
+        } catch (MaPSeqDAOException e) {
+            logger.error("MaPSeq Error", e);
+        }
+
+        if (sampleSet.isEmpty()) {
+            logger.error("Found no samples");
+            throw new WorkflowException("Found no samples");
+        }
+
+        return sampleSet;
     }
 
     public static File findFile(MaPSeqDAOBeanService mapseqDAOBeanService, Sample sample, WorkflowRun childWorkflowRun,
