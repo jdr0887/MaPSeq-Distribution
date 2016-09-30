@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.unc.mapseq.dao.model.FileData;
 import edu.unc.mapseq.dao.model.MimeType;
 import edu.unc.mapseq.module.DefaultModuleOutput;
 import edu.unc.mapseq.module.Module;
@@ -52,7 +53,7 @@ public class FastQC extends Module {
 
     @NotNull(message = "output is required", groups = InputValidations.class)
     @FileIsNotEmpty(message = "output is empty", groups = OutputValidations.class)
-    @OutputArgument(mimeType = MimeType.APPLICATION_ZIP)
+    @OutputArgument(persistFileData = true, mimeType = MimeType.APPLICATION_ZIP)
     private File output;
 
     public FastQC() {
@@ -75,15 +76,15 @@ public class FastQC extends Module {
                 public void analysisUpdated(SequenceFile file, int sequencesProcessed, int percentComplete) {
                     if (percentComplete % 5 == 0) {
                         if (percentComplete == 105) {
-                            moduleOutput.getError().append(
-                                    "It seems our guess for the total number of records wasn't very good.  Sorry about that.\n");
+                            moduleOutput.getError()
+                                    .append("It seems our guess for the total number of records wasn't very good.  Sorry about that.\n");
                         }
                         if (percentComplete > 100) {
-                            moduleOutput.getError().append("Still going at ").append(percentComplete)
-                                    .append("% complete for ").append(file.name()).append("\n");
-                        } else {
-                            moduleOutput.getOutput().append("Approx ").append(percentComplete).append("% complete for ")
+                            moduleOutput.getError().append("Still going at ").append(percentComplete).append("% complete for ")
                                     .append(file.name()).append("\n");
+                        } else {
+                            moduleOutput.getOutput().append("Approx ").append(percentComplete).append("% complete for ").append(file.name())
+                                    .append("\n");
                         }
                     }
                 }
@@ -113,13 +114,17 @@ public class FastQC extends Module {
 
             OverRepresentedSeqs os = new OverRepresentedSeqs();
 
-            QCModule[] module_list = new QCModule[] { new BasicStats(), new PerBaseQualityScores(),
-                    new PerSequenceQualityScores(), new PerBaseSequenceContent(), new PerBaseGCContent(),
-                    new PerSequenceGCContent(), new NContent(), new SequenceLengthDistribution(),
-                    os.duplicationLevelModule(), os, new KmerContent() };
+            QCModule[] module_list = new QCModule[] { new BasicStats(), new PerBaseQualityScores(), new PerSequenceQualityScores(),
+                    new PerBaseSequenceContent(), new PerBaseGCContent(), new PerSequenceGCContent(), new NContent(),
+                    new SequenceLengthDistribution(), os.duplicationLevelModule(), os, new KmerContent() };
 
             runner.startAnalysis(module_list);
             runner.run();
+
+            FileData fm = new FileData(output.getName(), output.getParentFile().getAbsolutePath(), MimeType.APPLICATION_ZIP);
+            logger.info(fm.toString());
+            getFileDatas().add(fm);
+
         } catch (Exception e) {
             logger.error("Exception", e);
             moduleOutput.getError().append(new StringBuilder(e.getMessage()));
@@ -155,8 +160,8 @@ public class FastQC extends Module {
 
     @Override
     public String toString() {
-        return String.format("FastQC [logger=%s, input=%s, ignore=%s, output=%s, toString()=%s]", logger, input, ignore,
-                output, super.toString());
+        return String.format("FastQC [logger=%s, input=%s, ignore=%s, output=%s, toString()=%s]", logger, input, ignore, output,
+                super.toString());
     }
 
 }
