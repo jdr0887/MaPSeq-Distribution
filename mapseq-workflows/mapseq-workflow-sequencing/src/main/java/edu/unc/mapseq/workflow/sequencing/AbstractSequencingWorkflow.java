@@ -1,9 +1,7 @@
 package edu.unc.mapseq.workflow.sequencing;
 
 import java.io.File;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -12,15 +10,10 @@ import org.apache.commons.collections4.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.unc.mapseq.dao.FlowcellDAO;
-import edu.unc.mapseq.dao.MaPSeqDAOBeanService;
 import edu.unc.mapseq.dao.MaPSeqDAOException;
-import edu.unc.mapseq.dao.SampleDAO;
 import edu.unc.mapseq.dao.model.FileData;
-import edu.unc.mapseq.dao.model.Flowcell;
 import edu.unc.mapseq.dao.model.MimeType;
 import edu.unc.mapseq.dao.model.Sample;
-import edu.unc.mapseq.dao.model.WorkflowRun;
 import edu.unc.mapseq.workflow.WorkflowException;
 import edu.unc.mapseq.workflow.core.AbstractWorkflow;
 
@@ -45,7 +38,8 @@ public abstract class AbstractSequencingWorkflow extends AbstractWorkflow {
     public void postRun() throws WorkflowException {
         super.postRun();
 
-        Set<Sample> sampleSet = getAggregatedSamples();
+        Set<Sample> sampleSet = SequencingWorkflowUtil.getAggregatedSamples(this.getWorkflowBeanService().getMaPSeqDAOBeanService(),
+                this.getWorkflowRunAttempt());
 
         if (CollectionUtils.isNotEmpty(sampleSet)) {
             for (Sample sample : sampleSet) {
@@ -71,41 +65,6 @@ public abstract class AbstractSequencingWorkflow extends AbstractWorkflow {
             }
         }
 
-    }
-
-    protected Set<Sample> getAggregatedSamples() throws WorkflowException {
-
-        MaPSeqDAOBeanService mapseqDAOBeanService = getWorkflowBeanService().getMaPSeqDAOBeanService();
-        SampleDAO sampleDAO = mapseqDAOBeanService.getSampleDAO();
-        FlowcellDAO flowcellDAO = mapseqDAOBeanService.getFlowcellDAO();
-
-        Set<Sample> sampleSet = new HashSet<Sample>();
-
-        WorkflowRun workflowRun = getWorkflowRunAttempt().getWorkflowRun();
-        try {
-            List<Sample> samples = sampleDAO.findByWorkflowRunId(workflowRun.getId());
-            if (CollectionUtils.isNotEmpty(samples)) {
-                sampleSet.addAll(samples);
-            }
-            List<Flowcell> flowcells = flowcellDAO.findByWorkflowRunId(workflowRun.getId());
-            if (CollectionUtils.isNotEmpty(flowcells)) {
-                for (Flowcell flowcell : flowcells) {
-                    List<Sample> sampleList = sampleDAO.findByFlowcellId(flowcell.getId());
-                    if (CollectionUtils.isNotEmpty(sampleList)) {
-                        sampleSet.addAll(sampleList);
-                    }
-                }
-            }
-        } catch (MaPSeqDAOException e) {
-            logger.error("MaPSeq Error", e);
-        }
-
-        if (sampleSet.isEmpty()) {
-            logger.error("Found no samples");
-            throw new WorkflowException("Found no samples");
-        }
-
-        return sampleSet;
     }
 
     public File findFileByMimeTypeAndSuffix(Set<FileData> fileDataSet, MimeType mimeType, String suffix) {
