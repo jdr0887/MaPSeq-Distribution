@@ -119,10 +119,9 @@ public class GATKVariantAnnotator extends Module {
         module.setPhoneHome("NO_ET");
         module.setReferenceSequence(
                 new File("/proj/renci/sequence_analysis/references/BUILD.37.1/bwa061sam0118", "BUILD.37.1.sorted.shortid.fa"));
-        module.setVcf(new File("/proj/seq/mapseq/RENCI/150106_UNC10-SN254_0682_BHBEF1ADXX/L002_TGACCA/NCGenes",
-                "150106_UNC10-SN254_0682_BHBEF1ADXX_TGACCA_L002.fixed-rg.deduped.realign.fixmate.recal.vcf"));
-        module.setBam(new File("/proj/seq/mapseq/RENCI/150106_UNC10-SN254_0682_BHBEF1ADXX/L002_TGACCA/NCGenes",
-                "150106_UNC10-SN254_0682_BHBEF1ADXX_TGACCA_L002.fixed-rg.deduped.realign.fixmate.recal.vcf"));
+        module.setVcf(new File("/tmp", "freebayes.vcf"));
+        module.setBam(new File("/tmp", "asdf.bam"));
+        module.setOut(new File("/tmp", "gatk.vcf"));
         List<String> annotationList = new ArrayList<String>();
         annotationList.add("QD");
         annotationList.add("HaplotypeScore");
