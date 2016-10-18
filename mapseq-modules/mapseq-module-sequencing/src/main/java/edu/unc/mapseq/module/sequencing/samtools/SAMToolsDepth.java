@@ -25,8 +25,14 @@ public class SAMToolsDepth extends Module {
     @NotNull(message = "bam is required", groups = InputValidations.class)
     @FileIsReadable(message = "Invalid bam file", groups = InputValidations.class)
     @FileIsNotEmpty(message = "bam is empty", groups = InputValidations.class)
-    @InputArgument(order = 2, delimiter = "")
+    @InputArgument(order = 99, delimiter = "")
     private File bam;
+
+    @InputArgument(order = 2, flag = "-q", description = "Only count reads with base quality greater than N")
+    private Integer baseQuality = 20;
+
+    @InputArgument(order = 3, flag = "-Q", description = "Only count reads with mapping quality greater than N")
+    private Integer mappingQuality = 20;
 
     @NotNull(message = "Output is required", groups = InputValidations.class)
     @OutputArgument(redirect = true, persistFileData = true, mimeType = MimeType.TEXT_COVERAGE_DEPTH)
@@ -70,9 +76,26 @@ public class SAMToolsDepth extends Module {
         this.output = output;
     }
 
+    public Integer getMappingQuality() {
+        return mappingQuality;
+    }
+
+    public void setMappingQuality(Integer mappingQuality) {
+        this.mappingQuality = mappingQuality;
+    }
+
+    public Integer getBaseQuality() {
+        return baseQuality;
+    }
+
+    public void setBaseQuality(Integer baseQuality) {
+        this.baseQuality = baseQuality;
+    }
+
     @Override
     public String toString() {
-        return String.format("SAMToolsDepth [bed=%s, bam=%s, output=%s]", bed, bam, output);
+        return String.format("SAMToolsDepth [bed=%s, bam=%s, baseQuality=%s, mappingQuality=%s, output=%s]", bed, bam, baseQuality,
+                mappingQuality, output);
     }
 
     public static void main(String[] args) {
