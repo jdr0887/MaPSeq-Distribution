@@ -7,6 +7,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.PosixFilePermission;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +17,8 @@ import javax.validation.constraints.NotNull;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.Sets;
 
 import edu.unc.mapseq.dao.model.FileData;
 import edu.unc.mapseq.dao.model.MimeType;
@@ -73,17 +76,21 @@ public class Zip extends Module {
             Map<String, String> env = new HashMap<>();
             env.put("create", "true");
             URI uri = URI.create(String.format("jar:file:%s", output.getAbsolutePath()));
+            StringBuilder messages = new StringBuilder();
             try (FileSystem zipfs = FileSystems.newFileSystem(uri, env)) {
                 for (File f : entry) {
                     Path externalPath = f.toPath();
                     Path internalPath = zipfs.getPath(String.format("/%s", f.getName()));
                     String message = String.format("adding %s to %s in %s", externalPath.toString(), internalPath.toString(),
                             output.getAbsolutePath());
+                    messages.append(message).append(System.getProperty("line.separator"));
                     logger.info(message);
-                    moduleOutput.getOutput().append(message);
                     Files.copy(externalPath, internalPath, StandardCopyOption.REPLACE_EXISTING);
                 }
             }
+            moduleOutput.getOutput().append(messages);
+            Files.setPosixFilePermissions(output.toPath(), Sets.newHashSet(PosixFilePermission.OWNER_READ, PosixFilePermission.OWNER_WRITE,
+                    PosixFilePermission.GROUP_READ, PosixFilePermission.GROUP_WRITE, PosixFilePermission.OTHERS_READ));
 
             FileData fileData = new FileData(output.getName(), output.getParentFile().getAbsolutePath(), MimeType.APPLICATION_ZIP);
             getFileDatas().add(fileData);
@@ -122,7 +129,8 @@ public class Zip extends Module {
             module.setWorkflowName("TEST");
             module.setEntry(Arrays.asList(new File("/tmp", "asdf.txt"), new File("/tmp", "zxcv.txt")));
             module.setOutput(new File("/tmp", "asdf.zip"));
-            module.call();
+            ModuleOutput output = module.call();
+            System.out.println(output.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
