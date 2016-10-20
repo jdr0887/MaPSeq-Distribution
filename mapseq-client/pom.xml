@@ -36,19 +36,19 @@
       <artifactId>log4j</artifactId>
     </dependency>
     <dependency>
-      <groupId>edu.unc.mapseq.distribution.mapseq-dao</groupId>
+      <groupId>edu.unc.mapseq.mapseq-dao</groupId>
       <artifactId>mapseq-dao-soap</artifactId>
     </dependency>
     <dependency>
-      <groupId>edu.unc.mapseq.distribution.mapseq-dao</groupId>
+      <groupId>edu.unc.mapseq.mapseq-dao</groupId>
       <artifactId>mapseq-dao-rest</artifactId>
     </dependency>
     <dependency>
-      <groupId>edu.unc.mapseq.distribution.mapseq-modules</groupId>
+      <groupId>edu.unc.mapseq.modules</groupId>
       <artifactId>mapseq-module-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>edu.unc.mapseq.distribution.mapseq-modules</groupId>
+      <groupId>edu.unc.mapseq.modules</groupId>
       <artifactId>mapseq-module-sequencing</artifactId>
     </dependency>    
     <dependency>

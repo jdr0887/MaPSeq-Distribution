@@ -25,11 +25,11 @@
       <artifactId>mapseq-tasks</artifactId>
     </dependency>
     <dependency>
-      <groupId>edu.unc.mapseq.distribution.mapseq-modules</groupId>
+      <groupId>edu.unc.mapseq.modules</groupId>
       <artifactId>mapseq-module-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>edu.unc.mapseq.distribution.mapseq-modules</groupId>
+      <groupId>edu.unc.mapseq.modules</groupId>
       <artifactId>mapseq-module-sequencing</artifactId>
     </dependency>    
   </dependencies>
