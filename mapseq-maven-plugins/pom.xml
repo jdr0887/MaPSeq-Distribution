@@ -11,7 +11,6 @@
   <version>0.6.78-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
-    <module>mapseq-module-cli-generator-plugin</module>
     <module>mapseq-scripts-plugin</module>
   </modules>
 </project>
