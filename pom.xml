@@ -2,7 +2,7 @@
   <parent>
     <groupId>edu.unc.mapseq</groupId>
     <artifactId>mapseq</artifactId>
-    <version>0.1.31</version>
+    <version>0.1.32</version>
   </parent>
   <name>MaPSeq :: Distribution</name>
   <modelVersion>4.0.0</modelVersion>
@@ -11,8 +11,8 @@
   <version>0.6.78-SNAPSHOT</version>
   <packaging>pom</packaging>
   <properties>
-    <mapseq.version>0.6.42</mapseq.version>
-    <spring.version>4.2.3.RELEASE</spring.version>    
+    <mapseq.version>0.6.43</mapseq.version>
+    <mapseq.modules.version>0.6.1</mapseq.modules.version>
   </properties>
   <issueManagement>
     <system>GitHub Issues</system>
@@ -104,26 +104,6 @@
 	<version>${jackson.version}</version>
       </dependency>
       <dependency>
-      	<groupId>org.springframework</groupId>
-      	<artifactId>spring-beans</artifactId>
-      	<version>${spring.version}</version>
-      </dependency>
-      <dependency>
-      	<groupId>org.springframework</groupId>
-      	<artifactId>spring-context</artifactId>
-      	<version>${spring.version}</version>
-      </dependency>
-      <dependency>
-      	<groupId>org.springframework</groupId>
-      	<artifactId>spring-context-support</artifactId>
-      	<version>${spring.version}</version>
-      </dependency>
-      <dependency>
-      	<groupId>org.springframework</groupId>
-      	<artifactId>spring-core</artifactId>
-      	<version>${spring.version}</version>
-      </dependency>
-      <dependency>
 	<groupId>org.bouncycastle</groupId>
 	<artifactId>bcprov-jdk16</artifactId>
 	<version>1.46</version>
@@ -184,24 +164,24 @@
       	<version>${mapseq.version}</version>
       </dependency>
       <dependency>
-      	<groupId>edu.unc.mapseq.distribution.mapseq-modules</groupId>
+      	<groupId>edu.unc.mapseq.modules</groupId>
       	<artifactId>mapseq-module-core</artifactId>
-      	<version>0.6.78-SNAPSHOT</version>
+      	<version>${mapseq.modules.version}</version>
       </dependency>
       <dependency>
-      	<groupId>edu.unc.mapseq.distribution.mapseq-modules</groupId>
+      	<groupId>edu.unc.mapseq.modules</groupId>
       	<artifactId>mapseq-module-sequencing</artifactId>
-      	<version>0.6.78-SNAPSHOT</version>
+      	<version>${mapseq.modules.version}</version>
       </dependency>      
       <dependency>
-	<groupId>edu.unc.mapseq.distribution.mapseq-dao</groupId>
+	<groupId>edu.unc.mapseq.mapseq-dao</groupId>
 	<artifactId>mapseq-dao-soap</artifactId>
-      	<version>0.6.78-SNAPSHOT</version>
+      	<version>${mapseq.version}</version>	
       </dependency>
       <dependency>
-	<groupId>edu.unc.mapseq.distribution.mapseq-dao</groupId>
+	<groupId>edu.unc.mapseq.mapseq-dao</groupId>
 	<artifactId>mapseq-dao-rest</artifactId>
-      	<version>0.6.78-SNAPSHOT</version>
+	<version>${mapseq.version}</version>	
       </dependency>
       <dependency>
       	<groupId>org.hibernate</groupId>
@@ -223,51 +203,6 @@
       	<artifactId>apache-karaf</artifactId>
       	<version>${karaf.version}</version>
       	<type>tar.gz</type>
-      </dependency>
-      <dependency>
-      	<groupId>org.apache.cxf</groupId>
-      	<artifactId>cxf-rt-ws-rm</artifactId>
-      	<version>${cxf.version}</version>
-      </dependency>
-      <dependency>
-      	<groupId>org.apache.cxf</groupId>
-      	<artifactId>cxf-rt-ws-security</artifactId>
-      	<version>${cxf.version}</version>
-      </dependency>
-      <dependency>
-      	<groupId>org.apache.cxf</groupId>
-      	<artifactId>cxf-rt-ws-addr</artifactId>
-      	<version>${cxf.version}</version>
-      </dependency>
-      <dependency>
-      	<groupId>org.apache.cxf</groupId>
-      	<artifactId>cxf-rt-ws-policy</artifactId>
-      	<version>${cxf.version}</version>
-      </dependency>
-      <dependency>
-	<groupId>org.apache.cxf</groupId>
-	<artifactId>cxf-rt-rs-client</artifactId>
-      	<version>${cxf.version}</version>
-      </dependency>
-      <dependency>
-	<groupId>org.apache.cxf</groupId>
-	<artifactId>cxf-rt-frontend-jaxrs</artifactId>
-	<version>${cxf.version}</version>
-      </dependency>
-      <dependency>
-      	<groupId>org.apache.cxf</groupId>
-      	<artifactId>cxf-rt-frontend-jaxws</artifactId>
-      	<version>${cxf.version}</version>
-      </dependency>
-      <dependency>
-      	<groupId>org.apache.cxf</groupId>
-      	<artifactId>cxf-rt-transports-http</artifactId>
-      	<version>${cxf.version}</version>
-      </dependency>
-      <dependency>
-      	<groupId>org.apache.cxf</groupId>
-      	<artifactId>cxf-rt-transports-http-jetty</artifactId>
-      	<version>${cxf.version}</version>
       </dependency>
       <dependency>
       	<groupId>org.renci.generator</groupId>
@@ -294,11 +229,6 @@
       	<artifactId>maven-plugin-api</artifactId>
       	<version>3.3.9</version>
       </dependency>      
-      <dependency>
-	<groupId>edu.unc.mapseq.distribution</groupId>
-	<artifactId>mapseq-module-cli-generator</artifactId>
-	<version>0.6.78-SNAPSHOT</version>
-      </dependency> 
     </dependencies>
   </dependencyManagement>
   <build>
@@ -319,10 +249,7 @@
   </build>
   <modules>
     <module>mapseq-commands</module>
-    <module>mapseq-dao</module>
     <module>mapseq-maven-plugins</module>
-    <module>mapseq-module-cli-generator</module>    
-    <module>mapseq-modules</module>
     <module>mapseq-reports</module>
     <module>mapseq-tasks</module>
     <module>mapseq-features</module>
