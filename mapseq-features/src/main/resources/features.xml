@@ -54,10 +54,6 @@
     <bundle>mvn:org.renci.osgi.bundles/jbzip2-0.9-bundle/0.0.1</bundle>
     <bundle>mvn:org.renci.osgi.bundles/fastqc-0.10.1-bundle/0.0.1</bundle>
     <bundle>mvn:org.renci.osgi.bundles/ubu-1.2-bundle/0.0.1</bundle>
-    <bundle>mvn:edu.unc.mapseq/mapseq-config/${mapseq.version}</bundle>
-  </feature>
-
-  <feature name="mapseq-dao" version="${project.version}" resolver="(obr)">
     <bundle>mvn:org.apache.geronimo.specs/geronimo-annotation_1.0_spec/1.1.1</bundle>
     <bundle>mvn:org.apache.geronimo.specs/geronimo-servlet_2.5_spec/1.2</bundle>
     <bundle>mvn:org.apache.geronimo.specs/geronimo-el_1.0_spec/1.0.1</bundle>
@@ -68,15 +64,24 @@
     <bundle>mvn:org.apache.xbean/xbean-asm5-shaded/4.3</bundle>
     <bundle>mvn:org.renci.osgi.bundles/openjpa-2.4.0-bundle/0.0.1</bundle>
     <!-- <bundle>mvn:org.eclipse.persistence/javax.persistence/2.1.0</bundle> -->
-    <!-- <bundle>mvn:org.apache.openjpa/openjpa/2.4.1</bundle>     -->
+    <!-- <bundle>mvn:org.apache.openjpa/openjpa/2.4.1</bundle>     -->        
+  </feature>
+
+  <feature name="mapseq-api" version="${project.version}" resolver="(obr)">
+    <bundle>mvn:edu.unc.mapseq/mapseq-config/${mapseq.version}</bundle>    
     <bundle>mvn:edu.unc.mapseq/mapseq-datasource/${mapseq.version}</bundle>        
     <bundle>mvn:edu.unc.mapseq.mapseq-dao/mapseq-dao-api/${mapseq.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq/mapseq-web-service-api/${mapseq.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq/mapseq-module-api/${mapseq.version}</bundle>
+    <bundle>mvn:edu.unc.mapseq/mapseq-workflow-api/${mapseq.version}</bundle>    
+  </feature>
+  
+  <feature name="mapseq-dao" version="${project.version}" resolver="(obr)">
     <bundle>mvn:edu.unc.mapseq.mapseq-dao/mapseq-dao-jpa/${mapseq.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.mapseq-dao/mapseq-dao-soap/${mapseq.version}</bundle>    
   </feature>
 
   <feature name="mapseq-web-services" version="${project.version}" resolver="(obr)">
-    <bundle>mvn:edu.unc.mapseq/mapseq-web-service-api/${mapseq.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-attribute/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-file-data/${project.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-web-services/mapseq-web-service-job/${project.version}</bundle>
@@ -89,13 +94,11 @@
   </feature>
 
   <feature name="mapseq-modules" version="${project.version}" resolver="(obr)">
-    <bundle>mvn:edu.unc.mapseq/mapseq-module-api/${mapseq.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.modules/mapseq-module-core/${mapseq.modules.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.modules/mapseq-module-sequencing/${mapseq.modules.version}</bundle>
   </feature>
 
   <feature name="mapseq-workflows" version="${project.version}" resolver="(obr)">
-    <bundle>mvn:edu.unc.mapseq/mapseq-workflow-api/${mapseq.version}</bundle>
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-workflows/mapseq-workflow-core/${project.version}</bundle>    
     <bundle>mvn:edu.unc.mapseq.distribution.mapseq-workflows/mapseq-workflow-sequencing/${project.version}</bundle>
   </feature>
