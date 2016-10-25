@@ -12,7 +12,7 @@
   <packaging>pom</packaging>
   <properties>
     <mapseq.version>0.6.47</mapseq.version>
-    <mapseq.modules.version>0.6.6</mapseq.modules.version>
+    <mapseq.modules.version>0.6.7</mapseq.modules.version>
   </properties>
   <issueManagement>
     <system>GitHub Issues</system>
