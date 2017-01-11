@@ -2,13 +2,13 @@
   <parent>
     <groupId>edu.unc.mapseq.distribution</groupId>
     <artifactId>mapseq-commands</artifactId>
-    <version>0.6.86</version>
+    <version>0.6.87-SNAPSHOT</version>
   </parent>
   <name>MaPSeq :: Distribution :: Commands :: Sequencing</name>
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.unc.mapseq.distribution.mapseq-commands</groupId>
   <artifactId>mapseq-commands-sequencing</artifactId>
-  <version>0.6.86</version>
+  <version>0.6.87-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <dependencies>
     <dependency>
