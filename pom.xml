@@ -11,8 +11,8 @@
   <version>0.6.90-SNAPSHOT</version>
   <packaging>pom</packaging>
   <properties>
-    <mapseq.version>0.6.49</mapseq.version>
-    <mapseq.modules.version>0.6.14</mapseq.modules.version>
+    <mapseq.version>0.6.50</mapseq.version>
+    <mapseq.modules.version>0.6.15</mapseq.modules.version>
   </properties>
   <issueManagement>
     <system>GitHub Issues</system>
