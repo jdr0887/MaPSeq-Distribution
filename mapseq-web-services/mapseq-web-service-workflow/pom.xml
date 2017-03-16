@@ -10,6 +10,9 @@
   <artifactId>mapseq-web-service-workflow</artifactId>
   <version>0.6.93-SNAPSHOT</version>
   <packaging>bundle</packaging>
+  <properties>
+    <maven.site.plugin.skip>true</maven.site.plugin.skip>    
+  </properties>    
   <build>
     <plugins>
       <plugin>

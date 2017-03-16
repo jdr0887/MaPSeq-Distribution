@@ -10,6 +10,9 @@
   <artifactId>mapseq-scripts-plugin</artifactId>
   <version>0.6.93-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
+  <properties>
+    <maven.site.plugin.skip>true</maven.site.plugin.skip>    
+  </properties>    
   <dependencies>
     <dependency>
       <groupId>org.slf4j</groupId>
