@@ -2,13 +2,13 @@
   <parent>
     <groupId>edu.unc.mapseq</groupId>
     <artifactId>distribution</artifactId>
-    <version>0.6.96</version>
+    <version>0.6.97-SNAPSHOT</version>
   </parent>
   <name>MaPSeq :: Distribution :: Maven Plugins</name>
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.unc.mapseq.distribution</groupId>
   <artifactId>mapseq-maven-plugins</artifactId>
-  <version>0.6.96</version>
+  <version>0.6.97-SNAPSHOT</version>
   <packaging>pom</packaging>
   <properties>
     <maven.site.plugin.skip>true</maven.site.plugin.skip>    
