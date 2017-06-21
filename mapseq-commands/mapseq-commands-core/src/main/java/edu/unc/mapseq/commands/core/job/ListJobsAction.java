@@ -53,8 +53,8 @@ public class ListJobsAction implements Action {
 
             StringBuilder sb = new StringBuilder();
             Formatter formatter = new Formatter(sb, Locale.US);
-            String format = "%1$-12s %2$-20s %3$-20s %4$-20s %5$-16s %6$s%n";
-            formatter.format(format, "ID", "Created", "Started", "Finished", "Status", "CommandLine");
+            String format = "%1$-12s %2$-20s %3$-20s %4$-20s %5$-20s %6$-12s %7$s%n";
+            formatter.format(format, "ID", "Name", "Created", "Started", "Finished", "Status", "CommandLine");
 
             for (Job job : jobs) {
 
@@ -75,7 +75,7 @@ public class ListJobsAction implements Action {
                     formattedEndDate = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(endDate);
                 }
 
-                formatter.format(format, job.getId(), formattedCreatedDate, formattedStartDate, formattedEndDate,
+                formatter.format(format, job.getId(), job.getName(), formattedCreatedDate, formattedStartDate, formattedEndDate,
                         job.getStatus().toString(), job.getCommandLine());
                 formatter.flush();
 
