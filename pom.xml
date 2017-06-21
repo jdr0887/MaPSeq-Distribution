@@ -13,7 +13,7 @@
   <properties>
     <maven.site.plugin.skip>false</maven.site.plugin.skip>
     <mapseq.version>0.6.53</mapseq.version>
-    <mapseq.modules.version>0.6.24</mapseq.modules.version>
+    <mapseq.modules.version>0.6.25</mapseq.modules.version>
   </properties>
   <issueManagement>
     <system>GitHub Issues</system>
