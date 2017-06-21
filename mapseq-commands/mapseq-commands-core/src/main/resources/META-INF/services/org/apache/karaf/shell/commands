@@ -2,6 +2,7 @@ edu.unc.mapseq.commands.core.FindFilesAction
 edu.unc.mapseq.commands.core.CreateFileAction
 edu.unc.mapseq.commands.core.ListMimeTypesAction
 edu.unc.mapseq.commands.core.ListModulesAction
+edu.unc.mapseq.commands.core.job.ListJobsAction
 edu.unc.mapseq.commands.core.workflow.CreateWorkflowAction
 edu.unc.mapseq.commands.core.workflow.ListWorkflowsAction
 edu.unc.mapseq.commands.core.workflowrun.CreateWorkflowRunAttributeAction
