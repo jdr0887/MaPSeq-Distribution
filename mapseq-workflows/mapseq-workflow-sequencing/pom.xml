@@ -2,13 +2,13 @@
   <parent>
     <groupId>edu.unc.mapseq.distribution</groupId>
     <artifactId>mapseq-workflows</artifactId>
-    <version>0.6.99</version>
+    <version>0.6.100-SNAPSHOT</version>
   </parent>
   <name>MaPSeq :: Distribution :: Workflow Sequencing</name>
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.unc.mapseq.distribution.mapseq-workflows</groupId>
   <artifactId>mapseq-workflow-sequencing</artifactId>
-  <version>0.6.99</version>
+  <version>0.6.100-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <properties>
     <maven.site.plugin.skip>true</maven.site.plugin.skip>    
